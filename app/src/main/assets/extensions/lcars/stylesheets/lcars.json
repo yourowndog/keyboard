@@ -1,0 +1,70 @@
+{
+  "@defines": {
+    "--canvas": "#0B0D13",
+    "--panel": "#5E6573",
+    "--panel-muted": "#8C93A3",
+    "--panel-deep": "#2B313A",
+    "--text": "#C7CCD8",
+    "--text-micro": "#F2F4F8",
+    "--accent-command": "#FF6A4D",
+    "--accent-active": "#5AC7E0",
+    "--accent-active-2": "#2BB7D0",
+    "--border": "#2B313A",
+    "--border-pressed": "#5AC7E0",
+    "--danger": "#FF3B2F",
+    "--accent-blue-deep": "#1E6D89"
+  },
+
+  "root": {
+    "background": "var(--canvas)",
+    "foreground": "var(--text)"
+  },
+
+  "rail": {
+    "background": "var(--panel-deep)",
+    "foreground": "var(--text)"
+  },
+
+  "key": {
+    "background": "var(--panel)",
+    "foreground": "var(--text)",
+    "cornerRadius": 14,
+    "borderColor": "var(--border)",
+    "borderWidth": 1
+  },
+
+  "key:pressed": {
+    "background": "var(--panel-deep)",
+    "borderColor": "var(--border-pressed)",
+    "borderWidth": 1
+  },
+
+  "key:disabled": {
+    "background": "var(--panel-muted)",
+    "foreground": "var(--text-micro)"
+  },
+
+  "key-hint": {
+    "foreground": "var(--text-micro)"
+  },
+
+  "key[code=ENTER]": {
+    "background": "var(--accent-command)",
+    "foreground": "#0A0A0A"
+  },
+
+  "key[code=VOICE_INPUT]": {
+    "background": "var(--panel)",
+    "foreground": "var(--accent-active)"
+  },
+
+  "key[code=SPACE]": {
+    "background": "var(--panel)",
+    "borderColor": "var(--border)"
+  },
+
+  "key[active=true]": {
+    "background": "var(--accent-active-2)",
+    "foreground": "#0A0A0A"
+  }
+}
