@@ -26,6 +26,7 @@ import android.inputmethodservice.ExtractEditText
 import android.media.MediaRecorder
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.util.Size
 import android.util.TypedValue
 import android.view.Gravity
