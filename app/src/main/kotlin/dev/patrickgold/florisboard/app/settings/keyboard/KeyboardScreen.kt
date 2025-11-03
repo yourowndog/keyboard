@@ -17,6 +17,7 @@
 package dev.patrickgold.florisboard.app.settings.keyboard
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.LocalNavController
 import dev.patrickgold.florisboard.app.Routes

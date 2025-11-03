@@ -226,10 +226,11 @@ class DiagnosticsLogReceiver : BroadcastReceiver() {
         const val ACTION_SAVE = "dev.patrickgold.florisboard.diagnostics.action.SAVE"
         const val EXTRA_STREAM = "dev.patrickgold.florisboard.diagnostics.extra.STREAM"
 
-        fun Intent.putStream(stream: DiagnosticsStream) = apply {
-            putExtra(EXTRA_STREAM, stream.name)
-        }
     }
+}
+
+private fun Intent.putStream(stream: DiagnosticsStream) = apply {
+    putExtra(DiagnosticsLogReceiver.EXTRA_STREAM, stream.name)
 }
 
 object WhisperNotify {
