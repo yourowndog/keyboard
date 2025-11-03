@@ -177,3 +177,6 @@ For a future agent, here are some things to consider to move this project from a
 ### Protection Checklist
 
 - [ ] Protect `stable/whisper-ok` on GitHub (no force-push, PRs required)
+### 2025-11-09 – gpt-5-codex
+* **Plan:** Restore ThemeLogger call sites in `ThemeManager` to pass plain `String` messages, fix the `ThemeExtensionComponentImpl` constructor usage in the default theme info, and ensure no geometry changes are touched. Afterwards, run `./gradlew :app:compileDebugKotlin` to confirm the build succeeds despite expected SDK tooling limits.
+* **Attempts:** `./gradlew :app:compileDebugKotlin` *(fails: Android SDK location not configured in this environment).* 
