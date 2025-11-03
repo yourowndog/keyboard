@@ -35,7 +35,9 @@ import dev.patrickgold.jetpref.datastore.ui.ListPreference
 import dev.patrickgold.jetpref.datastore.ui.Preference
 import dev.patrickgold.jetpref.datastore.ui.PreferenceGroup
 import dev.patrickgold.jetpref.datastore.ui.SwitchPreference
+import dev.patrickgold.jetpref.datastore.model.observeAsState
 import org.florisboard.lib.compose.stringRes
+import java.util.Locale
 
 @OptIn(ExperimentalJetPrefDatastoreUi::class)
 @Composable
@@ -148,6 +150,48 @@ fun KeyboardScreen() = FlorisScreen {
                 max = 10.0f,
                 stepIncrement = 0.5f,
             )
+            val lcarsGeometryEnabled by prefs.keyboard.lcarsGeometryEnabled.observeAsState()
+            SwitchPreference(
+                prefs.keyboard.lcarsGeometryEnabled,
+                title = stringRes(R.string.pref__keyboard__lcars_geometry_enabled__label),
+                summary = stringRes(R.string.pref__keyboard__lcars_geometry_enabled__summary),
+            )
+            if (lcarsGeometryEnabled) {
+                PreferenceGroup(title = stringRes(R.string.pref__keyboard__lcars_geometry__label)) {
+                    DialogSliderPreference(
+                        prefs.keyboard.lcarsDigitsHeightScale,
+                        title = stringRes(R.string.pref__keyboard__lcars_digits_height__label),
+                        valueLabel = { String.format(Locale.getDefault(), "%.2f", it) },
+                        min = 0.70f,
+                        max = 1.40f,
+                        stepIncrement = 0.01f,
+                    )
+                    DialogSliderPreference(
+                        prefs.keyboard.lcarsDigitsPillRatio,
+                        title = stringRes(R.string.pref__keyboard__lcars_digits_pill_ratio__label),
+                        valueLabel = { String.format(Locale.getDefault(), "%.2f", it) },
+                        min = 1.20f,
+                        max = 2.40f,
+                        stepIncrement = 0.05f,
+                    )
+                    DialogSliderPreference(
+                        prefs.keyboard.lcarsOthersHeightScale,
+                        title = stringRes(R.string.pref__keyboard__lcars_others_height__label),
+                        valueLabel = { String.format(Locale.getDefault(), "%.2f", it) },
+                        min = 0.70f,
+                        max = 1.40f,
+                        stepIncrement = 0.01f,
+                    )
+                    DialogSliderPreference(
+                        prefs.keyboard.lcarsOthersPillRatio,
+                        title = stringRes(R.string.pref__keyboard__lcars_others_pill_ratio__label),
+                        valueLabel = { String.format(Locale.getDefault(), "%.2f", it) },
+                        min = 1.20f,
+                        max = 2.40f,
+                        stepIncrement = 0.05f,
+                    )
+                }
+            }
             DialogSliderPreference(
                 primaryPref = prefs.keyboard.bottomOffsetPortrait,
                 secondaryPref = prefs.keyboard.bottomOffsetLandscape,

@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -42,6 +43,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -66,6 +68,7 @@ import dev.patrickgold.florisboard.ime.keyboard.ComputingEvaluator
 import dev.patrickgold.florisboard.ime.keyboard.FlorisImeSizing
 import dev.patrickgold.florisboard.ime.keyboard.KeyboardMode
 import dev.patrickgold.florisboard.ime.keyboard.SpaceBarMode
+import dev.patrickgold.florisboard.ime.keyboard.rememberKeyboardDimens
 import dev.patrickgold.florisboard.ime.popup.ExceptionsForKeyCodes
 import dev.patrickgold.florisboard.ime.popup.PopupUiController
 import dev.patrickgold.florisboard.ime.popup.rememberPopupUiController
@@ -96,6 +99,7 @@ import org.florisboard.lib.snygg.ui.SnyggIcon
 import org.florisboard.lib.snygg.ui.SnyggText
 import org.florisboard.lib.snygg.ui.rememberSnyggThemeQuery
 import kotlin.math.abs
+import kotlin.math.max
 import kotlin.math.sqrt
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
@@ -215,27 +219,108 @@ fun TextKeyboardLayout(
         val keyMarginH by prefs.keyboard.keySpacingHorizontal.observeAsTransformingState { it.dp.toPx() }
         val keyMarginV by prefs.keyboard.keySpacingVertical.observeAsTransformingState { it.dp.toPx() }
         val keyboardRowBaseHeight = FlorisImeSizing.keyboardRowBaseHeight
+        val geometryEnabled by prefs.keyboard.lcarsGeometryEnabled.observeAsState()
+        val keyboardDimens = rememberKeyboardDimens()
+        val digitsHeightPx = keyboardDimens.digitsHeight.toPx()
+        val othersHeightPx = keyboardDimens.othersHeight.toPx()
+        val digitsPill = keyboardDimens.digitsPill
+        val othersPill = keyboardDimens.othersPill
 
         val desiredKey = remember(
             keyboard, keyboardWidth, keyboardHeight, keyMarginH, keyMarginV,
-            keyboardRowBaseHeight, evaluator
+            keyboardRowBaseHeight, evaluator, geometryEnabled,
+            digitsHeightPx, othersHeightPx, digitsPill, othersPill,
         ) {
             TextKey(data = TextKeyData.UNSPECIFIED).also { desiredKey ->
+                val baseRowHeightPx = keyboardRowBaseHeight.toPx()
+                val baselineRowHeightPx = when (keyboard.mode) {
+                    KeyboardMode.CHARACTERS,
+                    KeyboardMode.NUMERIC_ADVANCED,
+                    KeyboardMode.SYMBOLS,
+                    KeyboardMode.SYMBOLS2 -> {
+                        (keyboardHeight / keyboard.rowCount)
+                            .coerceAtMost(baseRowHeightPx * 1.12f)
+                    }
+                    else -> baseRowHeightPx
+                }
+                val maxRowHeightPx = when (keyboard.mode) {
+                    KeyboardMode.CHARACTERS,
+                    KeyboardMode.NUMERIC_ADVANCED,
+                    KeyboardMode.SYMBOLS,
+                    KeyboardMode.SYMBOLS2 -> {
+                        (keyboardHeight / keyboard.rowCount)
+                            .coerceAtMost(baseRowHeightPx * 1.4f)
+                    }
+                    else -> baseRowHeightPx * 1.4f
+                }
+                val digitsScale = if (baseRowHeightPx > 0f) digitsHeightPx / baseRowHeightPx else 1.0f
+                val othersScale = if (baseRowHeightPx > 0f) othersHeightPx / baseRowHeightPx else 1.0f
+                val digitsRowHeight = if (geometryEnabled) baselineRowHeightPx * digitsScale else baselineRowHeightPx
+                val othersRowHeight = if (geometryEnabled) baselineRowHeightPx * othersScale else baselineRowHeightPx
+                val layoutRowHeight = max(digitsRowHeight, othersRowHeight)
+                    .coerceIn(baselineRowHeightPx * 0.7f, maxRowHeightPx)
                 desiredKey.touchBounds.apply {
                     width = keyboardWidth / 10f
-                    height = when (keyboard.mode) {
-                        KeyboardMode.CHARACTERS,
-                        KeyboardMode.NUMERIC_ADVANCED,
-                        KeyboardMode.SYMBOLS,
-                        KeyboardMode.SYMBOLS2 -> {
-                            (keyboardHeight / keyboard.rowCount)
-                                .coerceAtMost(keyboardRowBaseHeight.toPx() * 1.12f)
-                        }
-                        else -> keyboardRowBaseHeight.toPx()
-                    }
+                    height = layoutRowHeight
                 }
                 desiredKey.visibleBounds.applyFrom(desiredKey.touchBounds).deflateBy(keyMarginH, keyMarginV)
                 keyboard.layout(keyboardWidth, keyboardHeight, desiredKey, true)
+                if (geometryEnabled) {
+                    val verticalPadding = 2.0f * keyMarginV
+                    val horizontalPadding = 2.0f * keyMarginH
+                    val digitsTargetHeight = (digitsRowHeight - verticalPadding).coerceAtLeast(0f)
+                    val othersTargetHeight = (othersRowHeight - verticalPadding).coerceAtLeast(0f)
+                    val iterator = keyboard.keys()
+                    while (iterator.hasNext()) {
+                        val textKey = iterator.next()
+                        val keyCode = textKey.computedData.code
+                        val labelDigit = textKey.label?.singleOrNull()?.isDigit() == true
+                        val isDigit = (keyCode in '0'.code..'9'.code) || labelDigit
+                        val targetVisibleHeight = if (isDigit) digitsTargetHeight else othersTargetHeight
+                        val pillRatio = if (isDigit) digitsPill else othersPill
+                        val touchBounds = textKey.touchBounds
+                        val visibleBounds = textKey.visibleBounds
+                        val availableVisibleWidth = (touchBounds.width - horizontalPadding / 2.0f).coerceAtLeast(0f)
+                        val finalVisibleHeight = targetVisibleHeight
+                            .coerceIn(0f, touchBounds.height - verticalPadding)
+                        val targetVisibleWidth = (finalVisibleHeight * pillRatio)
+                            .coerceIn(0f, availableVisibleWidth)
+                        val centerX = touchBounds.center.x
+                        var halfWidth = targetVisibleWidth / 2.0f
+                        var left = centerX - halfWidth
+                        var right = centerX + halfWidth
+                        if (left < touchBounds.left) {
+                            val delta = touchBounds.left - left
+                            left += delta
+                            right += delta
+                        }
+                        if (right > touchBounds.right) {
+                            val delta = right - touchBounds.right
+                            left -= delta
+                            right -= delta
+                        }
+                        val centerY = touchBounds.center.y
+                        val adjustedVisibleHeight = finalVisibleHeight
+                            .coerceAtMost(touchBounds.height - verticalPadding)
+                        var halfHeight = adjustedVisibleHeight / 2.0f
+                        var top = centerY - halfHeight
+                        var bottom = centerY + halfHeight
+                        if (top < touchBounds.top) {
+                            val delta = touchBounds.top - top
+                            top += delta
+                            bottom += delta
+                        }
+                        if (bottom > touchBounds.bottom) {
+                            val delta = bottom - touchBounds.bottom
+                            top -= delta
+                            bottom -= delta
+                        }
+                        visibleBounds.left = left.coerceIn(touchBounds.left, touchBounds.right)
+                        visibleBounds.right = right.coerceIn(touchBounds.left, touchBounds.right)
+                        visibleBounds.top = top.coerceIn(touchBounds.top, touchBounds.bottom)
+                        visibleBounds.bottom = bottom.coerceIn(touchBounds.top, touchBounds.bottom)
+                    }
+                }
             }
         }
 
@@ -290,8 +375,11 @@ fun TextKeyboardLayout(
         val debugShowTouchBoundaries by prefs.devtools.showKeyTouchBoundaries.observeAsState()
         for (textKey in keyboard.keys()) {
             TextKeyButton(
-                textKey, evaluator, desiredKey,
-                debugShowTouchBoundaries,
+                key = textKey,
+                evaluator = evaluator,
+                desiredKey = desiredKey,
+                lcarsGeometryEnabled = geometryEnabled,
+                debugShowTouchBoundaries = debugShowTouchBoundaries,
             )
         }
 
@@ -312,6 +400,7 @@ private fun TextKeyButton(
     key: TextKey,
     evaluator: ComputingEvaluator,
     desiredKey: TextKey,
+    lcarsGeometryEnabled: Boolean,
     debugShowTouchBoundaries: Boolean,
 ) = with(LocalDensity.current) {
     val attributes = mapOf(
@@ -327,13 +416,19 @@ private fun TextKeyButton(
     val size = remember(key, desiredKey) {
         key.visibleBounds.size.toDpSize()
     }
+    val lcarsModifier = if (lcarsGeometryEnabled) {
+        Modifier.clip(RoundedCornerShape(percent = 50))
+    } else {
+        Modifier
+    }
     SnyggBox(
         FlorisImeUi.Key.elementName,
         attributes = attributes,
         selector = selector,
         modifier = Modifier
+            .absoluteOffset { key.visibleBounds.topLeft.toIntOffset() }
             .requiredSize(size)
-            .absoluteOffset { key.visibleBounds.topLeft.toIntOffset() },
+            .then(lcarsModifier),
     ) {
         val isTelPadKey = key.computedData.type == KeyType.NUMERIC && evaluator.keyboard.mode == KeyboardMode.PHONE
         key.label?.let { label ->
