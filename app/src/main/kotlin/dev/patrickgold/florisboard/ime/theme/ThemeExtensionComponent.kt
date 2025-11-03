@@ -91,8 +91,8 @@ class ThemeExtensionComponentEditor(
     fun build(): ThemeExtensionComponentImpl {
         val component = ThemeExtensionComponentImpl(
             id = id.trim(),
-            label = label.trim(),
-            authors = authors.filterNot { it.isBlank() },
+            labelRaw = label.trim(),
+            authorsRaw = authors.filterNot { it.isBlank() },
             isNightTheme = isNightTheme,
             stylesheetPath = stylesheetPath.takeUnless { it.isBlank() },
         )
