@@ -443,6 +443,13 @@
     <string name="pref__keyboard__landscape_input_ui_mode__label" comment="Preference value">Landscape fullscreen input</string>
     <string name="pref__keyboard__height_factor__label" comment="Preference title">Keyboard height</string>
     <string name="pref__keyboard__key_spacing__label" comment="Preference title">Key spacing</string>
+    <string name="pref__keyboard__lcars_geometry_enabled__label" comment="Preference title">Enable LCARS geometry controls</string>
+    <string name="pref__keyboard__lcars_geometry_enabled__summary" comment="Preference summary">Use LCARS-specific sliders to tune key height and pill ratios.</string>
+    <string name="pref__keyboard__lcars_geometry__label" comment="Preference group title">Key Geometry (LCARS)</string>
+    <string name="pref__keyboard__lcars_digits_height__label" comment="Preference title">Digits height</string>
+    <string name="pref__keyboard__lcars_digits_pill_ratio__label" comment="Preference title">Digits pill ratio</string>
+    <string name="pref__keyboard__lcars_others_height__label" comment="Preference title">Others height</string>
+    <string name="pref__keyboard__lcars_others_pill_ratio__label" comment="Preference title">Others pill ratio</string>
     <string name="pref__keyboard__bottom_offset__label" comment="Preference title">Bottom offset</string>
     <string name="pref__keyboard__group_keypress__label" comment="Preference group title">Key press</string>
     <string name="pref__keyboard__popup_enabled__label" comment="Preference title">Popup Visibility</string>

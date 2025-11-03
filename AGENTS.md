@@ -160,6 +160,11 @@ For a future agent, here are some things to consider to move this project from a
 * **Changes:** Taught `ExtensionManager` to recursively scan asset bundles with structured error reporting and theme diagnostics logging, generalized the diagnostics logger to serve both Whisper and theme streams with share/save actions, added a rescan & share box to the extension manager plus a toggle and share entry on the theme screen, updated `ThemeManager` to track discovery logs and optionally auto-select LCARS, refreshed the LCARS manifest metadata, bumped debug `versionCode`, and added a JVM test covering legacy theme manifest compatibility. Strings and UI wiring were expanded accordingly.
 * **Attempts:** `./gradlew testDebugUnitTest` *(fails: Android SDK location missing in the execution environment).*
 
+### 2025-11-08 – gpt-5-codex
+* **Plan:** Introduce LCARS key geometry controls that separate digits from other keys, surface the sliders in keyboard settings, and feed the scales into the runtime layout without breaking existing touch targets.
+* **Changes:** Added new datastore preferences plus Compose flows for LCARS geometry, exposed them in the keyboard settings screen with live-value sliders, created a `KeyboardDimens` helper to derive per-group heights and pill ratios, and taught the text keyboard layout to respect the feature flag, scale visible bounds per group, and clip keys to rounded capsules.
+* **Attempts:** No automated builds were run (Android toolchain unavailable in this environment).
+
 
 
 ## Stable Snapshots
