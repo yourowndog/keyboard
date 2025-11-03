@@ -155,6 +155,12 @@ For a future agent, here are some things to consider to move this project from a
 * **Changes:** Moved the LCARS assets into `app/src/main/assets/ime/theme/lcars/`, rewrote `extension.json` with `meta`/`themes` blocks matching the built-in theme manifest, updated `stylesheets/lcars.json` to use supported selectors and border syntax, and instrumented `ThemeManager` to emit a "Theme Load Report" with the discovered extension ids and currently resolved theme.
 * **Attempts:** Not run (`./gradlew` tasks require the Android SDK, which is unavailable in this execution environment).
 
+### 2025-11-08 – gpt-5-codex
+* **Plan:** Restore bundled theme discovery for LCARS, add an in-app rescan and diagnostics export path, generalize the on-device logger, and gate automatic LCARS activation behind a developer preference.
+* **Changes:** Taught `ExtensionManager` to recursively scan asset bundles with structured error reporting and theme diagnostics logging, generalized the diagnostics logger to serve both Whisper and theme streams with share/save actions, added a rescan & share box to the extension manager plus a toggle and share entry on the theme screen, updated `ThemeManager` to track discovery logs and optionally auto-select LCARS, refreshed the LCARS manifest metadata, bumped debug `versionCode`, and added a JVM test covering legacy theme manifest compatibility. Strings and UI wiring were expanded accordingly.
+* **Attempts:** `./gradlew testDebugUnitTest` *(fails: Android SDK location missing in the execution environment).*
+
+
 
 ## Stable Snapshots
 

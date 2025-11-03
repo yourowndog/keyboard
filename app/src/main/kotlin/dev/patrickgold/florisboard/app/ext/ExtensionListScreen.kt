@@ -29,7 +29,9 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
@@ -41,6 +43,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
@@ -51,10 +54,13 @@ import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.LocalNavController
 import dev.patrickgold.florisboard.app.Routes
 import dev.patrickgold.florisboard.extensionManager
+import dev.patrickgold.florisboard.diagnostics.ThemeLogger
 import dev.patrickgold.florisboard.ime.theme.ThemeExtension
 import dev.patrickgold.florisboard.lib.compose.FlorisScreen
 import dev.patrickgold.florisboard.lib.ext.ExtensionManager
 import dev.patrickgold.florisboard.lib.observeAsNonNullState
+import kotlinx.coroutines.launch
+import org.florisboard.lib.android.showShortToast
 import org.florisboard.lib.compose.FlorisOutlinedBox
 import org.florisboard.lib.compose.FlorisTextButton
 import org.florisboard.lib.compose.defaultFlorisOutlinedBox
@@ -97,6 +103,7 @@ fun ExtensionListScreen(type: ExtensionListScreenType, showUpdate: Boolean) = Fl
     val navController = LocalNavController.current
     val extensionManager by context.extensionManager()
     val extensionIndex by type.getExtensionIndex(extensionManager).observeAsNonNullState()
+    val scope = rememberCoroutineScope()
 
     var fabHeight by remember {
         mutableStateOf(0)
@@ -112,6 +119,56 @@ fun ExtensionListScreen(type: ExtensionListScreenType, showUpdate: Boolean) = Fl
             state = listState,
             contentPadding = PaddingValues(bottom = fabHeightDp),
         ) {
+            if (type == ExtensionListScreenType.EXT_THEME) {
+                item {
+                    FlorisOutlinedBox(
+                        modifier = Modifier.defaultFlorisOutlinedBox(),
+                        title = stringRes(R.string.ext__theme_rescan_box_title),
+                    ) {
+                        Text(
+                            modifier = Modifier.padding(start = 16.dp, top = 8.dp, end = 16.dp, bottom = 4.dp),
+                            text = stringRes(R.string.ext__theme_rescan_box_description),
+                            style = MaterialTheme.typography.bodySmall,
+                        )
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 6.dp),
+                        ) {
+                            FlorisTextButton(
+                                onClick = {
+                                    scope.launch {
+                                        val result = extensionManager.themes.rescan()
+                                        val message = if (result.errors.isEmpty()) {
+                                            context.getString(
+                                                R.string.ext__theme_rescan_result_success,
+                                                result.extensions,
+                                                result.components,
+                                            )
+                                        } else {
+                                            context.getString(
+                                                R.string.ext__theme_rescan_result_with_errors,
+                                                result.extensions,
+                                                result.components,
+                                                result.errors.size,
+                                            )
+                                        }
+                                        context.showShortToast(message)
+                                    }
+                                },
+                                icon = Icons.Default.Refresh,
+                                text = stringRes(R.string.ext__theme_rescan_action),
+                            )
+                            Spacer(modifier = Modifier.weight(1f))
+                            FlorisTextButton(
+                                onClick = { ThemeLogger.share(context) },
+                                icon = Icons.Outlined.Share,
+                                text = stringRes(R.string.pref__theme__share_logs_label),
+                            )
+                        }
+                    }
+                }
+            }
             if (showUpdate) {
                 item {
                     ImportExtensionBox(navController)

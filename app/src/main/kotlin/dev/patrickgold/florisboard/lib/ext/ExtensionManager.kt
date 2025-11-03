@@ -22,6 +22,7 @@ import android.os.FileObserver
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.LiveData
 import dev.patrickgold.florisboard.appContext
+import dev.patrickgold.florisboard.diagnostics.ThemeLogger
 import dev.patrickgold.florisboard.ime.keyboard.KeyboardExtension
 import dev.patrickgold.florisboard.ime.nlp.LanguagePackExtension
 import dev.patrickgold.florisboard.ime.text.composing.Appender
@@ -39,12 +40,14 @@ import dev.patrickgold.florisboard.lib.io.delete
 import dev.patrickgold.florisboard.lib.io.listDirs
 import dev.patrickgold.florisboard.lib.io.listFiles
 import dev.patrickgold.florisboard.lib.io.loadJsonAsset
+import dev.patrickgold.florisboard.lib.io.hasAsset
 import dev.patrickgold.florisboard.lib.observeAsNonNullState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
@@ -54,6 +57,7 @@ import org.florisboard.lib.android.FileObserver
 import org.florisboard.lib.kotlin.io.FsFile
 import org.florisboard.lib.kotlin.io.writeJson
 import org.florisboard.lib.kotlin.throwOnFailure
+import kotlin.jvm.Volatile
 
 @OptIn(ExperimentalSerializationApi::class)
 val ExtensionJsonConfig = Json {
@@ -79,6 +83,17 @@ val ExtensionJsonConfig = Json {
         }
     }
 }
+
+data class ExtensionDiscoveryError(
+    val location: String,
+    val reason: String,
+)
+
+data class ExtensionRescanResult(
+    val extensions: Int,
+    val components: Int,
+    val errors: List<ExtensionDiscoveryError>,
+)
 
 class ExtensionManager(context: Context) {
     companion object {
@@ -167,6 +182,11 @@ class ExtensionManager(context: Context) {
         private var fileObserver: FileObserver? = null
         private val initGuard = Mutex()
         private val refreshGuard = Mutex()
+        private val isThemeModule = modulePath == IME_THEME_PATH
+
+        @Volatile
+        var lastDiscoveryErrors: List<ExtensionDiscoveryError> = emptyList()
+            private set
 
         init {
             value = emptyList()
@@ -181,8 +201,9 @@ class ExtensionManager(context: Context) {
 
                     // Refresh index to new state
                     refreshGuard.withLock {
-                        staticExtensions = indexAssetsModule()
-                        refresh()
+                        val errors = mutableListOf<ExtensionDiscoveryError>()
+                        staticExtensions = indexAssetsModule(errors)
+                        refresh(errors)
                     }
 
                     // Stop watching on old file observer if one exists and start new observer on new path
@@ -200,36 +221,83 @@ class ExtensionManager(context: Context) {
             }
         }
 
-        private fun refresh() {
-            val dynamicExtensions = staticExtensions + indexInternalModule()
+        suspend fun rescan(): ExtensionRescanResult = withContext(Dispatchers.IO) {
+            refreshGuard.withLock {
+                val errors = mutableListOf<ExtensionDiscoveryError>()
+                logTheme { "Rescan requested for ${assetsModuleRef.relativePath}" }
+                staticExtensions = indexAssetsModule(errors)
+                val dynamicExtensions = refresh(errors)
+                ExtensionRescanResult(
+                    extensions = dynamicExtensions.size,
+                    components = dynamicExtensions.componentCount(),
+                    errors = lastDiscoveryErrors,
+                )
+            }
+        }
+
+        private fun refresh(errors: MutableList<ExtensionDiscoveryError>? = null): List<T> {
+            val dynamicExtensions = staticExtensions + indexInternalModule(errors)
             postValue(dynamicExtensions)
-        }
-
-        private fun indexAssetsModule(): List<T> {
-            val list = mutableListOf<T>()
-            assetsModuleRef.listDirs(appContext).fold(
-                onSuccess = { extRefs ->
-                    for (extRef in extRefs) {
-                        val fileRef = extRef.subRef(ExtensionDefaults.MANIFEST_FILE_NAME)
-                        fileRef.loadJsonAsset(appContext, serializer, ExtensionJsonConfig).fold(
-                            onSuccess = { ext ->
-                                ext.sourceRef = extRef
-                                list.add(ext)
-                            },
-                            onFailure = { error ->
-                                flogError { error.toString() }
-                            },
-                        )
+            if (errors != null) {
+                lastDiscoveryErrors = errors.toList()
+                logTheme {
+                    "Index complete: packs=${dynamicExtensions.size}, components=${dynamicExtensions.componentCount()}, errors=${lastDiscoveryErrors.size}"
+                }
+                if (lastDiscoveryErrors.isNotEmpty()) {
+                    lastDiscoveryErrors.forEach { error ->
+                        logTheme { "Error: ${error.location} → ${error.reason}" }
                     }
-                },
-                onFailure = { error ->
-                    flogError { error.toString() }
-                },
-            )
-            return list.toList()
+                }
+            }
+            return dynamicExtensions
         }
 
-        private fun indexInternalModule(): List<T> {
+        private fun indexAssetsModule(errors: MutableList<ExtensionDiscoveryError>): List<T> {
+            val discovered = mutableListOf<T>()
+            logTheme { "Scanning assets/${assetsModuleRef.relativePath}" }
+
+            fun walk(dirRef: FlorisRef) {
+                logTheme { "Inspecting ${dirRef.relativePath}" }
+                val manifestRef = dirRef.subRef(ExtensionDefaults.MANIFEST_FILE_NAME)
+                if (manifestRef.hasAsset(appContext)) {
+                    manifestRef.loadJsonAsset(appContext, serializer, ExtensionJsonConfig).fold(
+                        onSuccess = { ext ->
+                            ext.sourceRef = dirRef
+                            discovered.add(ext)
+                            logTheme {
+                                "Parsed ${ext.meta.id} (${ext.components().size} components) from ${manifestRef.relativePath}"
+                            }
+                        },
+                        onFailure = { error ->
+                            val reason = error.message ?: error.toString()
+                            errors.add(ExtensionDiscoveryError(manifestRef.relativePath, reason))
+                            flogError { reason }
+                            logTheme { "Failed to parse ${manifestRef.relativePath}: $reason" }
+                        },
+                    )
+                }
+
+                dirRef.listDirs(appContext).fold(
+                    onSuccess = { subDirs ->
+                        for (subDir in subDirs) {
+                            logTheme { "Found asset dir ${subDir.relativePath}" }
+                            walk(subDir)
+                        }
+                    },
+                    onFailure = { error ->
+                        val reason = error.message ?: error.toString()
+                        errors.add(ExtensionDiscoveryError(dirRef.relativePath, reason))
+                        flogError { reason }
+                        logTheme { "Failed to list ${dirRef.relativePath}: $reason" }
+                    },
+                )
+            }
+
+            walk(assetsModuleRef)
+            return discovered.toList()
+        }
+
+        private fun indexInternalModule(errors: MutableList<ExtensionDiscoveryError>? = null): List<T> {
             val list = mutableListOf<T>()
             internalModuleRef.listFiles(appContext).fold(
                 onSuccess = { extRefs ->
@@ -244,23 +312,45 @@ class ExtensionManager(context: Context) {
                                     onSuccess = { ext ->
                                         ext.sourceRef = extRef
                                         list.add(ext)
+                                        logTheme {
+                                            "Parsed ${ext.meta.id} from internal ${extRef.relativePath}"
+                                        }
                                     },
                                     onFailure = { error ->
-                                        flogError { error.toString() }
+                                        val reason = error.message ?: error.toString()
+                                        errors?.add(ExtensionDiscoveryError(extRef.relativePath, reason))
+                                        flogError { reason }
+                                        logTheme { "Failed to parse ${extRef.relativePath}: $reason" }
                                     },
                                 )
                             },
                             onFailure = { error ->
-                                flogError { error.toString() }
+                                val reason = error.message ?: error.toString()
+                                errors?.add(ExtensionDiscoveryError(extRef.relativePath, reason))
+                                flogError { reason }
+                                logTheme { "Failed to read ${extRef.relativePath}: $reason" }
                             },
                         )
                     }
                 },
                 onFailure = { error ->
-                    flogError { error.toString() }
+                    val reason = error.message ?: error.toString()
+                    errors?.add(ExtensionDiscoveryError(internalModuleRef.relativePath, reason))
+                    flogError { reason }
+                    logTheme { "Failed to list internal module ${internalModuleRef.relativePath}: $reason" }
                 },
             )
             return list.toList()
+        }
+
+        private fun List<T>.componentCount(): Int {
+            return sumOf { ext -> (ext as Extension).components().size }
+        }
+
+        private fun logTheme(message: () -> String) {
+            if (isThemeModule) {
+                ThemeLogger.log(appContext, message())
+            }
         }
     }
 }
