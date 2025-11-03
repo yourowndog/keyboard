@@ -109,9 +109,10 @@ class ThemeManager(context: Context) {
             }
             _indexedThemeConfigs.value = buildMap {
                 for (themeExtension in themeExtensions) {
-                    ThemeLogger.log(appContext) {
-                        "Discovered theme extension ${themeExtension.meta.id} with ${themeExtension.themes.size} theme(s)"
-                    }
+                    ThemeLogger.log(
+                        appContext,
+                        "Discovered theme extension ${themeExtension.meta.id} with ${themeExtension.themes.size} theme(s)",
+                    )
                     for (themeComponent in themeExtension.themes) {
                         put(ExtensionComponentName(themeExtension.meta.id, themeComponent.id), themeComponent)
                     }
@@ -123,11 +124,12 @@ class ThemeManager(context: Context) {
                 val active = activeName?.formattedId() ?: "<unknown>"
                 "Theme Load Report: discovered=$discovered active=$active"
             }
-            ThemeLogger.log(appContext) {
-                val discovered = themeExtensions.joinToString { "${it.meta.id}(${it.themes.size})" }
-                val prefsSnapshot = "day=${prefs.theme.dayThemeId.get().formattedId()} night=${prefs.theme.nightThemeId.get().formattedId()}"
-                "Theme index refresh → discovered=[$discovered] prefs=$prefsSnapshot"
-            }
+            val discovered = themeExtensions.joinToString { "${it.meta.id}(${it.themes.size})" }
+            val prefsSnapshot = "day=${prefs.theme.dayThemeId.get().formattedId()} night=${prefs.theme.nightThemeId.get().formattedId()}"
+            ThemeLogger.log(
+                appContext,
+                "Theme index refresh → discovered=[$discovered] prefs=$prefsSnapshot",
+            )
             maybeApplyLcarsDefault(themeExtensions)
         }
         indexedThemeConfigs.collectIn(scope) {
@@ -195,17 +197,20 @@ class ThemeManager(context: Context) {
                 val newInfo = ThemeInfo(activeName, themeConfig, newStylesheet, loadedDir, null)
                 cachedThemeInfos.add(newInfo)
                 _activeThemeInfo.value = newInfo
-                ThemeLogger.log(appContext) {
-                    "Loaded active theme ${newInfo.name.formattedId()} from ${themeExt.meta.id}"
-                }
+                ThemeLogger.log(
+                    appContext,
+                    "Loaded active theme ${newInfo.name.formattedId()} from ${themeExt.meta.id}",
+                )
             },
             onFailure = { cause ->
                 _activeThemeInfo.value = ThemeInfo.DEFAULT.copy(
                     loadFailure = LoadFailure(themeExt.meta, themeConfig, cause)
                 )
-                ThemeLogger.log(appContext) {
-                    "Failed to load ${themeExt.meta.id}/${themeConfig.id}: ${cause.message ?: cause::class.java.simpleName}"
-                }
+                val failureReason = cause.message ?: cause::class.java.simpleName
+                ThemeLogger.log(
+                    appContext,
+                    "Failed to load ${themeExt.meta.id}/${themeConfig.id}: $failureReason",
+                )
             },
         )
     }
@@ -244,12 +249,13 @@ class ThemeManager(context: Context) {
     }
 
     private fun logActiveThemeSnapshot(activeName: ExtensionComponentName) {
-        ThemeLogger.log(appContext) {
-            val day = prefs.theme.dayThemeId.get().formattedId()
-            val night = prefs.theme.nightThemeId.get().formattedId()
-            val mode = prefs.theme.mode.get()
-            "Active theme resolved → ${activeName.formattedId()} (mode=$mode, day=$day, night=$night)"
-        }
+        val day = prefs.theme.dayThemeId.get().formattedId()
+        val night = prefs.theme.nightThemeId.get().formattedId()
+        val mode = prefs.theme.mode.get()
+        ThemeLogger.log(
+            appContext,
+            "Active theme resolved → ${activeName.formattedId()} (mode=$mode, day=$day, night=$night)",
+        )
     }
 
     private fun maybeApplyLcarsDefault(themeExtensions: List<ThemeExtension>) {
@@ -257,14 +263,14 @@ class ThemeManager(context: Context) {
             return
         }
         val lcarsExtension = themeExtensions.find { it.meta.id == LCARS_EXTENSION_ID } ?: run {
-            ThemeLogger.log(appContext) { "LCARS extension not found during auto-select" }
+            ThemeLogger.log(appContext, "LCARS extension not found during auto-select")
             return
         }
         val targetNight = lcarsExtension.themes.find { it.id == LCARS_NIGHT_COMPONENT_ID }
             ?: lcarsExtension.themes.firstOrNull { it.isNightTheme }
             ?: lcarsExtension.themes.firstOrNull()
         if (targetNight == null) {
-            ThemeLogger.log(appContext) { "LCARS auto-select skipped: no night theme component" }
+            ThemeLogger.log(appContext, "LCARS auto-select skipped: no night theme component")
         } else {
             val desiredNight = ExtensionComponentName(lcarsExtension.meta.id, targetNight.id)
             val defaultNight = extCoreTheme("floris_night")
@@ -273,7 +279,10 @@ class ThemeManager(context: Context) {
                 scope.launch {
                     prefs.theme.nightThemeId.set(desiredNight)
                 }
-                ThemeLogger.log(appContext) { "Applied LCARS night theme ${desiredNight.formattedId()}" }
+                ThemeLogger.log(
+                    appContext,
+                    "Applied LCARS night theme ${desiredNight.formattedId()}",
+                )
             }
         }
 
@@ -287,10 +296,16 @@ class ThemeManager(context: Context) {
                 scope.launch {
                     prefs.theme.dayThemeId.set(desiredDay)
                 }
-                ThemeLogger.log(appContext) { "Applied LCARS day theme ${desiredDay.formattedId()}" }
+                ThemeLogger.log(
+                    appContext,
+                    "Applied LCARS day theme ${desiredDay.formattedId()}",
+                )
             }
         } else {
-            ThemeLogger.log(appContext) { "LCARS auto-select skipped for day theme: no day component available" }
+            ThemeLogger.log(
+                appContext,
+                "LCARS auto-select skipped for day theme: no day component available",
+            )
         }
     }
 
@@ -397,7 +412,11 @@ class ThemeManager(context: Context) {
         companion object {
             val DEFAULT = ThemeInfo(
                 name = extCoreTheme("base"),
-                config = ThemeExtensionComponentImpl(id = "base", label = "Base", authors = listOf()),
+                config = ThemeExtensionComponentImpl(
+                    id = "base",
+                    labelRaw = "Base",
+                    authorsRaw = emptyList(),
+                ),
                 stylesheet = FlorisImeThemeBaseStyle,
                 loadedDir = null,
                 loadFailure = null,

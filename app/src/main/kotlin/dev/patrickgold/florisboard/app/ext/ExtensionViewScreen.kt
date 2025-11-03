@@ -283,7 +283,12 @@ private fun PreviewExtensionViewerScreen() {
         ),
         dependencies = null,
         themes = listOf(
-            ThemeExtensionComponentImpl(id = "test", label = "Test", authors = listOf(), stylesheetPath = "test.json"),
+            ThemeExtensionComponentImpl(
+                id = "test",
+                labelRaw = "Test",
+                authorsRaw = emptyList(),
+                stylesheetPath = "test.json",
+            ),
         ),
     )
     ViewScreen(ext = testExtension)
