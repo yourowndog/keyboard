@@ -44,6 +44,7 @@ import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.appContext
 import dev.patrickgold.florisboard.extensionManager
 import dev.patrickgold.florisboard.ime.smartbar.CachedInlineSuggestionsChipStyleSet
+import dev.patrickgold.florisboard.lib.devtools.LogTopic
 import dev.patrickgold.florisboard.lib.devtools.flogInfo
 import dev.patrickgold.florisboard.lib.ext.ExtensionComponentName
 import dev.patrickgold.florisboard.lib.ext.ExtensionMeta
@@ -103,6 +104,12 @@ class ThemeManager(context: Context) {
                     }
                 }
             } to version
+            flogInfo(LogTopic.THEME_MANAGER) {
+                val discovered = themeExtensions.joinToString(prefix = "[", postfix = "]") { it.meta.id }
+                val activeName = runCatching { evaluateActiveThemeName() }.getOrNull()
+                val active = activeName?.formattedId() ?: "<unknown>"
+                "Theme Load Report: discovered=$discovered active=$active"
+            }
         }
         indexedThemeConfigs.collectIn(scope) {
             updateActiveTheme { cachedThemeInfos.clear() }
@@ -196,6 +203,10 @@ class ThemeManager(context: Context) {
                 }
             }
         }
+    }
+
+    private fun ExtensionComponentName.formattedId(): String {
+        return "${extensionId}/${componentId}"
     }
 
     /**
