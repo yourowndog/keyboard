@@ -150,6 +150,12 @@ For a future agent, here are some things to consider to move this project from a
 * **Changes:** Created the `v0.1-whisper-ok` annotated tag and `stable/whisper-ok` branch at commit `ee6c7a0`, appended a Stable Snapshots note plus protection checklist, and gathered theming reconnaissance for reporting.
 * **Attempts:** `git push origin stable/whisper-ok` *(fails: repository has no `origin` remote in this workspace).*; `git push origin v0.1-whisper-ok` *(fails for the same reason).*
 
+### 2025-11-07 – gpt-5-codex
+* **Plan:** Relocate the LCARS theme to the `ime/theme` asset group, conform the manifest to the `ThemeExtension` schema, refresh the stylesheet selectors for Snygg v2, and add startup logging that reports discovered theme extensions and the active component id.
+* **Changes:** Moved the LCARS assets into `app/src/main/assets/ime/theme/lcars/`, rewrote `extension.json` with `meta`/`themes` blocks matching the built-in theme manifest, updated `stylesheets/lcars.json` to use supported selectors and border syntax, and instrumented `ThemeManager` to emit a "Theme Load Report" with the discovered extension ids and currently resolved theme.
+* **Attempts:** Not run (`./gradlew` tasks require the Android SDK, which is unavailable in this execution environment).
+
+
 ## Stable Snapshots
 
 - **v0.1-whisper-ok** (`ee6c7a0`)
