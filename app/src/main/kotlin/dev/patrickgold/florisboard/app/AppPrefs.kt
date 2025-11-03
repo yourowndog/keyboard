@@ -794,6 +794,10 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "theme__editor_level",
             default = SnyggLevel.ADVANCED,
         )
+        val autoSelectLcars = boolean(
+            key = "theme__auto_select_lcars",
+            default = false,
+        )
     }
 
     override fun migrate(entry: PreferenceMigrationEntry): PreferenceMigrationEntry {

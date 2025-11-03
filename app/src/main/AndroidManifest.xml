@@ -57,7 +57,7 @@
         </service>
 
         <receiver
-            android:name="dev.patrickgold.florisboard.diagnostics.ShareWhisperLogReceiver"
+            android:name="dev.patrickgold.florisboard.diagnostics.DiagnosticsLogReceiver"
             android:exported="false" />
 
         <provider

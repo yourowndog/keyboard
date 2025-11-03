@@ -21,6 +21,7 @@ import dev.patrickgold.florisboard.lib.ext.ExtensionComponentName
 import org.florisboard.lib.snygg.SnyggStylesheetEditor
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 @Suppress("NOTHING_TO_INLINE")
 inline fun extCoreTheme(id: String) = ExtensionComponentName(
@@ -53,13 +54,23 @@ interface ThemeExtensionComponent : ExtensionComponent {
 @Serializable
 data class ThemeExtensionComponentImpl(
     override val id: String,
-    override val label: String,
-    override val authors: List<String>,
+    @SerialName("label")
+    private val labelRaw: String? = null,
+    @SerialName("name")
+    private val legacyLabel: String? = null,
+    @SerialName("authors")
+    private val authorsRaw: List<String>? = null,
     @SerialName("isNight")
     override val isNightTheme: Boolean = true,
     @SerialName("stylesheet")
     override val stylesheetPath: String? = null,
 ) : ThemeExtensionComponent {
+
+    @Transient
+    override val label: String = (labelRaw ?: legacyLabel ?: id).ifBlank { id }
+
+    @Transient
+    override val authors: List<String> = (authorsRaw ?: emptyList()).filter { it.isNotBlank() }
 
     fun edit() = ThemeExtensionComponentEditor(
         id, label, authors, isNightTheme, stylesheetPath ?: "",

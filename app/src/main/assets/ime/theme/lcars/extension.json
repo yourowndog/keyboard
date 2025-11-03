@@ -1,14 +1,14 @@
 {
   "\$": "ime.extension.theme",
   "meta": {
-    "id": "local.lcars",
+    "id": "dev.yourowndog.lcars",
     "version": "0.1.0",
     "title": "LCARS 25th",
     "description": "LCARS-inspired dark theme pack for FlorisBoard.",
     "maintainers": [
       "yourowndog"
     ],
-    "license": "proprietary"
+    "license": "MIT"
   },
   "themes": [
     {

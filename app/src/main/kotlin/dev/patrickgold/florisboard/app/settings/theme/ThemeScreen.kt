@@ -17,12 +17,14 @@
 package dev.patrickgold.florisboard.app.settings.theme
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Brightness2
 import androidx.compose.material.icons.filled.BrightnessAuto
 import androidx.compose.material.icons.filled.ColorLens
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.WbTwilight
+import androidx.compose.material.icons.outlined.Share
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -34,6 +36,7 @@ import dev.patrickgold.florisboard.app.Routes
 import dev.patrickgold.florisboard.app.enumDisplayEntriesOf
 import dev.patrickgold.florisboard.app.ext.AddonManagementReferenceBox
 import dev.patrickgold.florisboard.app.ext.ExtensionListScreenType
+import dev.patrickgold.florisboard.diagnostics.ThemeLogger
 import dev.patrickgold.florisboard.ime.theme.ThemeManager
 import dev.patrickgold.florisboard.ime.theme.ThemeMode
 import dev.patrickgold.florisboard.lib.compose.FlorisScreen
@@ -44,6 +47,7 @@ import dev.patrickgold.jetpref.datastore.ui.ColorPickerPreference
 import dev.patrickgold.jetpref.datastore.ui.ListPreference
 import dev.patrickgold.jetpref.datastore.ui.LocalTimePickerPreference
 import dev.patrickgold.jetpref.datastore.ui.Preference
+import dev.patrickgold.jetpref.datastore.ui.SwitchPreference
 import dev.patrickgold.jetpref.datastore.ui.isMaterialYou
 import org.florisboard.lib.color.ColorMappings
 import org.florisboard.lib.compose.stringRes
@@ -119,6 +123,18 @@ fun ThemeScreen() = FlorisScreen {
                     it
                 }
             }
+        )
+        SwitchPreference(
+            prefs.theme.autoSelectLcars,
+            icon = Icons.Default.AutoAwesome,
+            title = stringRes(R.string.pref__theme__lcars_auto_label),
+            summary = stringRes(R.string.pref__theme__lcars_auto_summary),
+        )
+        Preference(
+            icon = Icons.Outlined.Share,
+            title = stringRes(R.string.pref__theme__share_logs_label),
+            summary = stringRes(R.string.pref__theme__share_logs_summary),
+            onClick = { ThemeLogger.share(context) },
         )
 
         AddonManagementReferenceBox(type = ExtensionListScreenType.EXT_THEME)
