@@ -185,3 +185,8 @@ For a future agent, here are some things to consider to move this project from a
 * **Plan:** Expand the LCARS geometry sliders to support wide continuous ranges, fix the slider binding so values persist immediately, and remove hidden clamps in the layout that collapsed the user-selected heights or pill ratios.
 * **Changes:** Replaced the four LCARS sliders with custom in-place sliders that expose 0.10–2.00 and 1.00–3.00 ranges with live two-decimal readouts and DataStore persistence, clamped the stored preferences only to the wider safety ranges, and refactored the text keyboard layout to respect the new bounds while keeping touch and visible rectangles aligned with the pill ratio.
 * **Attempts:** Not run (UI/layout refactor; Android toolchain unavailable here).
+
+### 2025-11-11 – gpt-5-codex
+* **Plan:** Restore labeled LCARS geometry sliders with value chips, add advanced spacing controls backed by new gap preferences, and update the text keyboard layout to apply safe tap gaps and popup bounds based on visible rectangles.
+* **Changes:** Reworked the settings sliders to show chips with two-decimal readouts, added horizontal/vertical gap controls persisted as floats, clamped and converted the new preferences in the layout, enforced minimum touch areas before applying gap deflation, recalculated visible bounds for popups, and routed the popup provider through per-key visible rectangles.
+* **Attempts:** Not run (Android toolchain unavailable in this environment).
