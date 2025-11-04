@@ -360,7 +360,7 @@ fun TextKeyboardLayout(
                         visibleBounds.bottom = cy + minVisibleH / 2f
                     }
 
-                    if (BuildConfig.DEBUG) {
+                                        if (BuildConfig.DEBUG) {
                         if (visibleBounds.width < 14.dp.toPx() || visibleBounds.height < 14.dp.toPx()) {
                             flogDebug(LogTopic.TEXT_KEYBOARD_VIEW) {
                                 "Degenerate key: code=${textKey.computedData.code} size=${visibleBounds.width}x${visibleBounds.height}"
@@ -1233,6 +1233,13 @@ private class TextKeyboardLayoutController(
             return "${TouchPointer::class.simpleName} { id=$id, index=$index, initialKey=$initialKey, activeKey=$activeKey }"
         }
     }
+}
+
+private fun FlorisRect.clamp(minX: Float, minY: Float, maxX: Float, maxY: Float) {
+    left = left.coerceIn(minX, maxX)
+    top = top.coerceIn(minY, maxY)
+    right = right.coerceIn(minX, maxX)
+    bottom = bottom.coerceIn(minY, maxY)
 }
 
 private fun Float.coerceInSafe(min: Float, max: Float, lazyMessage: () -> Any = { "" }): Float {

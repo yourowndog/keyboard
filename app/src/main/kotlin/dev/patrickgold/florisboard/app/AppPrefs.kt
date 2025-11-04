@@ -74,14 +74,6 @@ import org.florisboard.lib.color.DEFAULT_GREEN
 
 val FlorisPreferenceStore = jetprefDataStoreOf(FlorisPreferenceModel::class)
 
-object LcarsDefaults {
-    const val DIGITS_HEIGHT = 1.0f
-    const val OTHERS_HEIGHT = 1.0f
-    const val DIGITS_PILL = 1.6f
-    const val OTHERS_PILL = 1.6f
-    const val ADV_SPACING_DP = 0f
-}
-
 @Preferences
 abstract class FlorisPreferenceModel : PreferenceModel() {
     companion object {
@@ -987,15 +979,15 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             "clipboard__max_history_size" -> {
                 entry.transform(key = "clipboard__history_size_limit")
             }
-            "clipboard__clear_primary_clip_deletes_last_item" -> {
+            "keyboard__clear_primary_clip_deletes_last_item" -> {
                 entry.transform(key = "clipboard__clear_primary_clip_affects_history_if_unpinned")
             }
 
-            "keyboard__lcars_digits_height_enabled" -> entry.transform(rawValue = "true"),
-            "keyboard__lcars_others_height_enabled" -> entry.transform(rawValue = "true"),
-            "keyboard__lcars_digits_pill_enabled" -> entry.transform(rawValue = "true"),
-            "keyboard__lcars_others_pill_enabled" -> entry.transform(rawValue = "true"),
-            "keyboard__lcars_advanced_spacing_enabled" -> entry.transform(rawValue = "true"),
+            "keyboard__lcars_digits_height_enabled" -> entry.transform(type = PreferenceType.boolean(), rawValue = "true")
+            "keyboard__lcars_others_height_enabled" -> entry.transform(type = PreferenceType.boolean(), rawValue = "true")
+            "keyboard__lcars_digits_pill_enabled" -> entry.transform(type = PreferenceType.boolean(), rawValue = "true")
+            "keyboard__lcars_others_pill_enabled" -> entry.transform(type = PreferenceType.boolean(), rawValue = "true")
+            "keyboard__lcars_advanced_spacing_enabled" -> entry.transform(type = PreferenceType.boolean(), rawValue = "true")
 
             // Default: keep entry
             else -> entry.keepAsIs()
