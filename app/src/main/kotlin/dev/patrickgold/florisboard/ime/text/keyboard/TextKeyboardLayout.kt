@@ -102,6 +102,13 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.sqrt
+import dev.patrickgold.florisboard.BuildConfig
+
+private val MIN_VISIBLE_W = 12.dp
+private val MIN_VISIBLE_H = 12.dp
+private val MIN_TOUCH_W = 24.dp
+private val MIN_TOUCH_H = 24.dp
+
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @OptIn(ExperimentalComposeUiApi::class)
@@ -242,7 +249,7 @@ fun TextKeyboardLayout(
             keyboard, keyboardWidth, keyboardHeight, keyMarginH, keyMarginV,
             keyboardRowBaseHeight, evaluator, geometryEnabled,
             digitsHeightPx, othersHeightPx, digitsPill, othersPill,
-            gapHpx, gapVpx, touchGapH, touchGapV, minTouchSizePx,
+            gapHpx, gapVpx, touchGapH, touchGapV,
         ) {
             TextKey(data = TextKeyData.UNSPECIFIED).also { desiredKey ->
                 val baseRowHeightPx = max(1f, keyboardRowBaseHeight.toPx())
@@ -264,9 +271,12 @@ fun TextKeyboardLayout(
                 desiredKey.visibleBounds.applyFrom(desiredKey.touchBounds).deflateBy(keyMarginH, keyMarginV)
                 keyboard.layout(keyboardWidth, keyboardHeight, desiredKey, true)
 
+                val minTouchW = MIN_TOUCH_W.toPx()
+                val minTouchH = MIN_TOUCH_H.toPx()
+
                 fun ensureBaseSize(rect: FlorisRect) {
-                    val requiredWidth = minTouchSizePx + touchGapH * 2.0f
-                    val requiredHeight = minTouchSizePx + touchGapV * 2.0f
+                    val requiredWidth = minTouchW + touchGapH * 2.0f
+                    val requiredHeight = minTouchH + touchGapV * 2.0f
                     var halfWidth = rect.width / 2.0f
                     var halfHeight = rect.height / 2.0f
                     var updated = false
@@ -292,12 +302,12 @@ fun TextKeyboardLayout(
                     var halfWidth = rect.width / 2.0f
                     var halfHeight = rect.height / 2.0f
                     var updated = false
-                    if (rect.width < minTouchSizePx) {
-                        halfWidth = minTouchSizePx / 2.0f
+                    if (rect.width < minTouchW) {
+                        halfWidth = minTouchW / 2.0f
                         updated = true
                     }
-                    if (rect.height < minTouchSizePx) {
-                        halfHeight = minTouchSizePx / 2.0f
+                    if (rect.height < minTouchH) {
+                        halfHeight = minTouchH / 2.0f
                         updated = true
                     }
                     if (updated) {
@@ -324,6 +334,28 @@ fun TextKeyboardLayout(
                     if (inflateX != 0f || inflateY != 0f) {
                         visibleBounds.inflateBy(inflateX, inflateY)
                     }
+
+                    val minVisibleW = MIN_VISIBLE_W.toPx()
+                    val minVisibleH = MIN_VISIBLE_H.toPx()
+                    if (visibleBounds.width < minVisibleW) {
+                        val cx = visibleBounds.center.x
+                        visibleBounds.left = cx - minVisibleW / 2f
+                        visibleBounds.right = cx + minVisibleW / 2f
+                    }
+                    if (visibleBounds.height < minVisibleH) {
+                        val cy = visibleBounds.center.y
+                        visibleBounds.top = cy - minVisibleH / 2f
+                        visibleBounds.bottom = cy + minVisibleH / 2f
+                    }
+
+                    if (BuildConfig.DEBUG) {
+                        if (visibleBounds.width < 14.dp.toPx() || visibleBounds.height < 14.dp.toPx()) {
+                            flogDebug(LogTopic.TEXT_KEYBOARD_VIEW) {
+                                "Degenerate key: code=${textKey.computedData.code} size=${visibleBounds.width}x${visibleBounds.height}"
+                            }
+                        }
+                    }
+
                     textKey.touchBounds.applyFrom(touchBounds)
                     textKey.visibleBounds.applyFrom(visibleBounds)
                 }
@@ -352,9 +384,12 @@ fun TextKeyboardLayout(
                             "key=${textKey.label}, targetH=$targetRowHeight, availH=$availableHeight"
                         }
 
+                        val safeHeight = max(MIN_VISIBLE_H.toPx(), finalHeight)
+                        val targetWidth = max(MIN_VISIBLE_W.toPx(), safeHeight * pillRatio)
+
                         val minKeyWidth = 0f
                         val maxKeyWidth = availableWidth
-                        val finalWidth = (finalHeight * pillRatio).coerceInSafe(minKeyWidth, maxKeyWidth) {
+                        val finalWidth = targetWidth.coerceInSafe(minKeyWidth, maxKeyWidth) {
                             "key=${textKey.label}, ratio=$pillRatio, availW=$availableWidth"
                         }
 
@@ -483,6 +518,12 @@ private fun TextKeyButton(
     lcarsGeometryEnabled: Boolean,
     debugShowTouchBoundaries: Boolean,
 ) = with(LocalDensity.current) {
+    if (key.label == null && key.foregroundImageVector == null && key.visibleBounds.width < 4.dp.toPx()) {
+        // This is likely a spacer key that has been shrunk to nothing, so don't draw it
+        // to prevent visual artifacts.
+        return@with
+    }
+
     val attributes = mapOf(
         FlorisImeUi.Attr.Code to key.computedData.code,
         FlorisImeUi.Attr.Mode to evaluator.keyboard.mode.toString(),

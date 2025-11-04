@@ -185,38 +185,38 @@ fun KeyboardScreen() = FlorisScreen {
                 PreferenceGroup(title = stringRes(R.string.pref__keyboard__lcars_geometry__label)) {
                     LCARSValueSlider(
                         preference = prefs.keyboard.lcarsDigitsHeightScale,
-                        title = stringRes(R.string.pref__keyboard__lcars_digits_height__label),
+                        title = "Digits – Height scale",
                         valueRange = 0.10f..2.00f,
                         enabled = lcarsGeometryEnabled,
                         valueFormatter = { value ->
-                            String.format(Locale.getDefault(), "%.2f×", value)
+                            String.format(Locale.US, "%.2f", value)
                         },
                     )
                     LCARSValueSlider(
                         preference = prefs.keyboard.lcarsDigitsPillRatio,
-                        title = stringRes(R.string.pref__keyboard__lcars_digits_pill_ratio__label),
+                        title = "Digits – Pill ratio",
                         valueRange = 1.00f..3.00f,
                         enabled = lcarsGeometryEnabled,
                         valueFormatter = { value ->
-                            String.format(Locale.getDefault(), "%.2f×", value)
+                            String.format(Locale.US, "%.2f", value)
                         },
                     )
                     LCARSValueSlider(
                         preference = prefs.keyboard.lcarsOthersHeightScale,
-                        title = stringRes(R.string.pref__keyboard__lcars_others_height__label),
+                        title = "Others – Height scale",
                         valueRange = 0.10f..2.00f,
                         enabled = lcarsGeometryEnabled,
                         valueFormatter = { value ->
-                            String.format(Locale.getDefault(), "%.2f×", value)
+                            String.format(Locale.US, "%.2f", value)
                         },
                     )
                     LCARSValueSlider(
                         preference = prefs.keyboard.lcarsOthersPillRatio,
-                        title = stringRes(R.string.pref__keyboard__lcars_others_pill_ratio__label),
+                        title = "Others – Pill ratio",
                         valueRange = 1.00f..3.00f,
                         enabled = lcarsGeometryEnabled,
                         valueFormatter = { value ->
-                            String.format(Locale.getDefault(), "%.2f×", value)
+                            String.format(Locale.US, "%.2f", value)
                         },
                     )
                 }
