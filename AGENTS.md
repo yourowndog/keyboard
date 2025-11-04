@@ -190,3 +190,8 @@ For a future agent, here are some things to consider to move this project from a
 * **Plan:** Restore labeled LCARS geometry sliders with value chips, add advanced spacing controls backed by new gap preferences, and update the text keyboard layout to apply safe tap gaps and popup bounds based on visible rectangles.
 * **Changes:** Reworked the settings sliders to show chips with two-decimal readouts, added horizontal/vertical gap controls persisted as floats, clamped and converted the new preferences in the layout, enforced minimum touch areas before applying gap deflation, recalculated visible bounds for popups, and routed the popup provider through per-key visible rectangles.
 * **Attempts:** Not run (Android toolchain unavailable in this environment).
+
+### 2025-11-12 – gpt-5-codex
+* **Plan:** Remove Material 2 chip usage from `KeyboardScreen` and replace it with Material 3 equivalents while keeping the slider value chips visually unchanged.
+* **Changes:** Swapped the LCARS slider readout to a new Material 3 `ValueChip` helper built on `SuggestionChipDefaults`, eliminating the old `ChipDefaults` dependency without altering the UI layout.
+* **Attempts:** `./gradlew :app:compileDebugKotlin` *(fails: Android SDK is unavailable in this environment).*
