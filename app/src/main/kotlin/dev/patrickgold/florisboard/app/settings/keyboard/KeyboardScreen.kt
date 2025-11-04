@@ -16,9 +16,24 @@
 
 package dev.patrickgold.florisboard.app.settings.keyboard
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Slider
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.unit.dp
 import dev.patrickgold.florisboard.R
+import dev.patrickgold.florisboard.app.FlorisPreferenceModel
 import dev.patrickgold.florisboard.app.LocalNavController
 import dev.patrickgold.florisboard.app.Routes
 import dev.patrickgold.florisboard.app.enumDisplayEntriesOf
@@ -30,13 +45,17 @@ import dev.patrickgold.florisboard.ime.smartbar.IncognitoDisplayMode
 import dev.patrickgold.florisboard.ime.text.key.KeyHintMode
 import dev.patrickgold.florisboard.ime.text.key.UtilityKeyAction
 import dev.patrickgold.florisboard.lib.compose.FlorisScreen
+import dev.patrickgold.jetpref.datastore.model.PreferenceData
 import dev.patrickgold.jetpref.datastore.ui.DialogSliderPreference
 import dev.patrickgold.jetpref.datastore.ui.ExperimentalJetPrefDatastoreUi
 import dev.patrickgold.jetpref.datastore.ui.ListPreference
 import dev.patrickgold.jetpref.datastore.ui.Preference
 import dev.patrickgold.jetpref.datastore.ui.PreferenceGroup
+import dev.patrickgold.jetpref.datastore.ui.PreferenceUiScope
 import dev.patrickgold.jetpref.datastore.ui.SwitchPreference
 import dev.patrickgold.jetpref.datastore.model.observeAsState
+import dev.patrickgold.jetpref.material.ui.JetPrefListItem
+import kotlinx.coroutines.launch
 import org.florisboard.lib.compose.stringRes
 import java.util.Locale
 
@@ -159,37 +178,29 @@ fun KeyboardScreen() = FlorisScreen {
             )
             if (lcarsGeometryEnabled) {
                 PreferenceGroup(title = stringRes(R.string.pref__keyboard__lcars_geometry__label)) {
-                    DialogSliderPreference(
-                        prefs.keyboard.lcarsDigitsHeightScale,
+                    LCARSGeometrySlider(
+                        preference = prefs.keyboard.lcarsDigitsHeightScale,
                         title = stringRes(R.string.pref__keyboard__lcars_digits_height__label),
-                        valueLabel = { String.format(Locale.getDefault(), "%.2f", it) },
-                        min = 0.70f,
-                        max = 1.40f,
-                        stepIncrement = 0.01f,
+                        valueRange = 0.10f..2.00f,
+                        enabled = lcarsGeometryEnabled,
                     )
-                    DialogSliderPreference(
-                        prefs.keyboard.lcarsDigitsPillRatio,
+                    LCARSGeometrySlider(
+                        preference = prefs.keyboard.lcarsDigitsPillRatio,
                         title = stringRes(R.string.pref__keyboard__lcars_digits_pill_ratio__label),
-                        valueLabel = { String.format(Locale.getDefault(), "%.2f", it) },
-                        min = 1.20f,
-                        max = 2.40f,
-                        stepIncrement = 0.05f,
+                        valueRange = 1.00f..3.00f,
+                        enabled = lcarsGeometryEnabled,
                     )
-                    DialogSliderPreference(
-                        prefs.keyboard.lcarsOthersHeightScale,
+                    LCARSGeometrySlider(
+                        preference = prefs.keyboard.lcarsOthersHeightScale,
                         title = stringRes(R.string.pref__keyboard__lcars_others_height__label),
-                        valueLabel = { String.format(Locale.getDefault(), "%.2f", it) },
-                        min = 0.70f,
-                        max = 1.40f,
-                        stepIncrement = 0.01f,
+                        valueRange = 0.10f..2.00f,
+                        enabled = lcarsGeometryEnabled,
                     )
-                    DialogSliderPreference(
-                        prefs.keyboard.lcarsOthersPillRatio,
+                    LCARSGeometrySlider(
+                        preference = prefs.keyboard.lcarsOthersPillRatio,
                         title = stringRes(R.string.pref__keyboard__lcars_others_pill_ratio__label),
-                        valueLabel = { String.format(Locale.getDefault(), "%.2f", it) },
-                        min = 1.20f,
-                        max = 2.40f,
-                        stepIncrement = 0.05f,
+                        valueRange = 1.00f..3.00f,
+                        enabled = lcarsGeometryEnabled,
                     )
                 }
             }
@@ -236,4 +247,59 @@ fun KeyboardScreen() = FlorisScreen {
             )
         }
     }
+}
+
+@Composable
+private fun PreferenceUiScope<FlorisPreferenceModel>.LCARSGeometrySlider(
+    preference: PreferenceData<Float>,
+    title: String,
+    valueRange: ClosedFloatingPointRange<Float>,
+    enabled: Boolean,
+) {
+    val scope = rememberCoroutineScope()
+    val prefValue by preference.observeAsState()
+    val minValue = valueRange.start
+    val maxValue = valueRange.endInclusive
+    var sliderValue by rememberSaveable(title) {
+        mutableFloatStateOf(prefValue.coerceIn(minValue, maxValue))
+    }
+
+    LaunchedEffect(prefValue) {
+        sliderValue = prefValue.coerceIn(minValue, maxValue)
+    }
+
+    JetPrefListItem(
+        text = title,
+        trailing = {
+            Column(
+                modifier = Modifier
+                    .padding(start = 16.dp)
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.End,
+            ) {
+                Text(
+                    text = String.format(Locale.getDefault(), "%.2f", sliderValue),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Slider(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = sliderValue,
+                    onValueChange = { value ->
+                        sliderValue = value
+                    },
+                    valueRange = valueRange,
+                    steps = 0,
+                    enabled = enabled,
+                    onValueChangeFinished = {
+                        val clamped = sliderValue.coerceIn(minValue, maxValue)
+                        sliderValue = clamped
+                        scope.launch {
+                            preference.set(clamped)
+                        }
+                    },
+                )
+            }
+        },
+    )
 }

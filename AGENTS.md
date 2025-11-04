@@ -179,4 +179,9 @@ For a future agent, here are some things to consider to move this project from a
 - [ ] Protect `stable/whisper-ok` on GitHub (no force-push, PRs required)
 ### 2025-11-09 – gpt-5-codex
 * **Plan:** Restore ThemeLogger call sites in `ThemeManager` to pass plain `String` messages, fix the `ThemeExtensionComponentImpl` constructor usage in the default theme info, and ensure no geometry changes are touched. Afterwards, run `./gradlew :app:compileDebugKotlin` to confirm the build succeeds despite expected SDK tooling limits.
-* **Attempts:** `./gradlew :app:compileDebugKotlin` *(fails: Android SDK location not configured in this environment).* 
+* **Attempts:** `./gradlew :app:compileDebugKotlin` *(fails: Android SDK location not configured in this environment).*
+
+### 2025-11-10 – gpt-5-codex
+* **Plan:** Expand the LCARS geometry sliders to support wide continuous ranges, fix the slider binding so values persist immediately, and remove hidden clamps in the layout that collapsed the user-selected heights or pill ratios.
+* **Changes:** Replaced the four LCARS sliders with custom in-place sliders that expose 0.10–2.00 and 1.00–3.00 ranges with live two-decimal readouts and DataStore persistence, clamped the stored preferences only to the wider safety ranges, and refactored the text keyboard layout to respect the new bounds while keeping touch and visible rectangles aligned with the pill ratio.
+* **Attempts:** Not run (UI/layout refactor; Android toolchain unavailable here).
