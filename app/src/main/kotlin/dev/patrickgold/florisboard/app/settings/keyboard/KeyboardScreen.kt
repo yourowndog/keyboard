@@ -16,12 +16,16 @@
 
 package dev.patrickgold.florisboard.app.settings.keyboard
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.ChipDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -29,8 +33,8 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.FlorisPreferenceModel
@@ -58,6 +62,7 @@ import dev.patrickgold.jetpref.material.ui.JetPrefListItem
 import kotlinx.coroutines.launch
 import org.florisboard.lib.compose.stringRes
 import java.util.Locale
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalJetPrefDatastoreUi::class)
 @Composable
@@ -178,29 +183,61 @@ fun KeyboardScreen() = FlorisScreen {
             )
             if (lcarsGeometryEnabled) {
                 PreferenceGroup(title = stringRes(R.string.pref__keyboard__lcars_geometry__label)) {
-                    LCARSGeometrySlider(
+                    LCARSValueSlider(
                         preference = prefs.keyboard.lcarsDigitsHeightScale,
                         title = stringRes(R.string.pref__keyboard__lcars_digits_height__label),
                         valueRange = 0.10f..2.00f,
                         enabled = lcarsGeometryEnabled,
+                        valueFormatter = { value ->
+                            String.format(Locale.getDefault(), "%.2f×", value)
+                        },
                     )
-                    LCARSGeometrySlider(
+                    LCARSValueSlider(
                         preference = prefs.keyboard.lcarsDigitsPillRatio,
                         title = stringRes(R.string.pref__keyboard__lcars_digits_pill_ratio__label),
                         valueRange = 1.00f..3.00f,
                         enabled = lcarsGeometryEnabled,
+                        valueFormatter = { value ->
+                            String.format(Locale.getDefault(), "%.2f×", value)
+                        },
                     )
-                    LCARSGeometrySlider(
+                    LCARSValueSlider(
                         preference = prefs.keyboard.lcarsOthersHeightScale,
                         title = stringRes(R.string.pref__keyboard__lcars_others_height__label),
                         valueRange = 0.10f..2.00f,
                         enabled = lcarsGeometryEnabled,
+                        valueFormatter = { value ->
+                            String.format(Locale.getDefault(), "%.2f×", value)
+                        },
                     )
-                    LCARSGeometrySlider(
+                    LCARSValueSlider(
                         preference = prefs.keyboard.lcarsOthersPillRatio,
                         title = stringRes(R.string.pref__keyboard__lcars_others_pill_ratio__label),
                         valueRange = 1.00f..3.00f,
                         enabled = lcarsGeometryEnabled,
+                        valueFormatter = { value ->
+                            String.format(Locale.getDefault(), "%.2f×", value)
+                        },
+                    )
+                }
+                PreferenceGroup(title = stringRes(R.string.pref__keyboard__lcars_spacing__label)) {
+                    LCARSValueSlider(
+                        preference = prefs.keyboard.lcarsGapHorizontalDp,
+                        title = stringRes(R.string.pref__keyboard__lcars_gap_horizontal__label),
+                        valueRange = -8.0f..16.0f,
+                        enabled = lcarsGeometryEnabled,
+                        valueFormatter = { value ->
+                            String.format(Locale.getDefault(), "%.2f dp", value)
+                        },
+                    )
+                    LCARSValueSlider(
+                        preference = prefs.keyboard.lcarsGapVerticalDp,
+                        title = stringRes(R.string.pref__keyboard__lcars_gap_vertical__label),
+                        valueRange = -4.0f..12.0f,
+                        enabled = lcarsGeometryEnabled,
+                        valueFormatter = { value ->
+                            String.format(Locale.getDefault(), "%.2f dp", value)
+                        },
                     )
                 }
             }
@@ -250,23 +287,33 @@ fun KeyboardScreen() = FlorisScreen {
 }
 
 @Composable
-private fun PreferenceUiScope<FlorisPreferenceModel>.LCARSGeometrySlider(
+private fun PreferenceUiScope<FlorisPreferenceModel>.LCARSValueSlider(
     preference: PreferenceData<Float>,
     title: String,
     valueRange: ClosedFloatingPointRange<Float>,
     enabled: Boolean,
+    valueFormatter: (Float) -> String,
 ) {
     val scope = rememberCoroutineScope()
     val prefValue by preference.observeAsState()
     val minValue = valueRange.start
     val maxValue = valueRange.endInclusive
+    fun clampAndRound(value: Float): Float {
+        val clamped = value.coerceIn(minValue, maxValue)
+        return (clamped * 100f).roundToInt() / 100f
+    }
     var sliderValue by rememberSaveable(title) {
-        mutableFloatStateOf(prefValue.coerceIn(minValue, maxValue))
+        mutableFloatStateOf(clampAndRound(prefValue))
     }
 
     LaunchedEffect(prefValue) {
-        sliderValue = prefValue.coerceIn(minValue, maxValue)
+        val rounded = clampAndRound(prefValue)
+        if (sliderValue != rounded) {
+            sliderValue = rounded
+        }
     }
+
+    val formattedValue = valueFormatter(sliderValue)
 
     JetPrefListItem(
         text = title,
@@ -277,25 +324,52 @@ private fun PreferenceUiScope<FlorisPreferenceModel>.LCARSGeometrySlider(
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.End,
             ) {
-                Text(
-                    text = String.format(Locale.getDefault(), "%.2f", sliderValue),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+                Row(
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    AssistChip(
+                        onClick = {},
+                        enabled = false,
+                        shape = MaterialTheme.shapes.small,
+                        colors = ChipDefaults.assistChipColors(
+                            disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                            disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        ),
+                        border = ChipDefaults.assistChipBorder(
+                            enabled = false,
+                        ),
+                        label = {
+                            Text(
+                                text = formattedValue,
+                                style = MaterialTheme.typography.labelLarge,
+                            )
+                        },
+                    )
+                }
                 Slider(
                     modifier = Modifier.fillMaxWidth(),
                     value = sliderValue,
                     onValueChange = { value ->
-                        sliderValue = value
+                        val rounded = clampAndRound(value)
+                        if (sliderValue != rounded) {
+                            sliderValue = rounded
+                            scope.launch {
+                                preference.set(rounded)
+                            }
+                        }
                     },
                     valueRange = valueRange,
                     steps = 0,
                     enabled = enabled,
                     onValueChangeFinished = {
-                        val clamped = sliderValue.coerceIn(minValue, maxValue)
-                        sliderValue = clamped
+                        val rounded = clampAndRound(sliderValue)
+                        if (sliderValue != rounded) {
+                            sliderValue = rounded
+                        }
                         scope.launch {
-                            preference.set(clamped)
+                            preference.set(rounded)
                         }
                     },
                 )

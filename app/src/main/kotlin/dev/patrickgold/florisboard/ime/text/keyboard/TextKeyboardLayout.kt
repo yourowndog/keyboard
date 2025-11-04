@@ -219,6 +219,12 @@ fun TextKeyboardLayout(
         val keyboardHeight = constraints.maxHeight.toFloat()
         val keyMarginH by prefs.keyboard.keySpacingHorizontal.observeAsTransformingState { it.dp.toPx() }
         val keyMarginV by prefs.keyboard.keySpacingVertical.observeAsTransformingState { it.dp.toPx() }
+        val rawGapH by prefs.keyboard.lcarsGapHorizontalDp.observeAsTransformingState {
+            it.coerceIn(-8.0f, 16.0f).dp.toPx()
+        }
+        val rawGapV by prefs.keyboard.lcarsGapVerticalDp.observeAsTransformingState {
+            it.coerceIn(-4.0f, 12.0f).dp.toPx()
+        }
         val keyboardRowBaseHeight = FlorisImeSizing.keyboardRowBaseHeight
         val geometryEnabled by prefs.keyboard.lcarsGeometryEnabled.observeAsState()
         val keyboardDimens = rememberKeyboardDimens()
@@ -226,11 +232,17 @@ fun TextKeyboardLayout(
         val othersHeightPx = keyboardDimens.othersHeight.toPx()
         val digitsPill = keyboardDimens.digitsPill
         val othersPill = keyboardDimens.othersPill
+        val gapHpx = if (geometryEnabled) rawGapH else 0f
+        val gapVpx = if (geometryEnabled) rawGapV else 0f
+        val touchGapH = max(gapHpx, 0f)
+        val touchGapV = max(gapVpx, 0f)
+        val minTouchSizePx = 40.dp.toPx()
 
         val desiredKey = remember(
             keyboard, keyboardWidth, keyboardHeight, keyMarginH, keyMarginV,
             keyboardRowBaseHeight, evaluator, geometryEnabled,
             digitsHeightPx, othersHeightPx, digitsPill, othersPill,
+            gapHpx, gapVpx, touchGapH, touchGapV, minTouchSizePx,
         ) {
             TextKey(data = TextKeyData.UNSPECIFIED).also { desiredKey ->
                 val baseRowHeightPx = keyboardRowBaseHeight.toPx()
@@ -249,12 +261,77 @@ fun TextKeyboardLayout(
                 }
                 desiredKey.visibleBounds.applyFrom(desiredKey.touchBounds).deflateBy(keyMarginH, keyMarginV)
                 keyboard.layout(keyboardWidth, keyboardHeight, desiredKey, true)
-                if (geometryEnabled) {
-                    val verticalPadding = 2.0f * keyMarginV
-                    val horizontalPadding = 2.0f * keyMarginH
-                    val iterator = keyboard.keys()
-                    while (iterator.hasNext()) {
-                        val textKey = iterator.next()
+
+                fun ensureBaseSize(rect: FlorisRect) {
+                    val requiredWidth = minTouchSizePx + touchGapH * 2.0f
+                    val requiredHeight = minTouchSizePx + touchGapV * 2.0f
+                    var halfWidth = rect.width / 2.0f
+                    var halfHeight = rect.height / 2.0f
+                    var updated = false
+                    if (rect.width < requiredWidth) {
+                        halfWidth = requiredWidth / 2.0f
+                        updated = true
+                    }
+                    if (rect.height < requiredHeight) {
+                        halfHeight = requiredHeight / 2.0f
+                        updated = true
+                    }
+                    if (updated) {
+                        val centerX = (rect.left + rect.right) / 2.0f
+                        val centerY = (rect.top + rect.bottom) / 2.0f
+                        rect.left = centerX - halfWidth
+                        rect.right = centerX + halfWidth
+                        rect.top = centerY - halfHeight
+                        rect.bottom = centerY + halfHeight
+                    }
+                }
+
+                fun ensureMinTouch(rect: FlorisRect) {
+                    var halfWidth = rect.width / 2.0f
+                    var halfHeight = rect.height / 2.0f
+                    var updated = false
+                    if (rect.width < minTouchSizePx) {
+                        halfWidth = minTouchSizePx / 2.0f
+                        updated = true
+                    }
+                    if (rect.height < minTouchSizePx) {
+                        halfHeight = minTouchSizePx / 2.0f
+                        updated = true
+                    }
+                    if (updated) {
+                        val centerX = (rect.left + rect.right) / 2.0f
+                        val centerY = (rect.top + rect.bottom) / 2.0f
+                        rect.left = centerX - halfWidth
+                        rect.right = centerX + halfWidth
+                        rect.top = centerY - halfHeight
+                        rect.bottom = centerY + halfHeight
+                    }
+                }
+
+                fun applySpacingAdjustments(textKey: TextKey) {
+                    val baseBounds = FlorisRect.from(textKey.touchBounds)
+                    ensureBaseSize(baseBounds)
+                    val touchBounds = FlorisRect.from(baseBounds)
+                    if (touchGapH > 0f || touchGapV > 0f) {
+                        touchBounds.deflateBy(touchGapH, touchGapV)
+                    }
+                    ensureMinTouch(touchBounds)
+                    val visibleBounds = FlorisRect.from(touchBounds)
+                    val inflateX = gapHpx - touchGapH
+                    val inflateY = gapVpx - touchGapV
+                    if (inflateX != 0f || inflateY != 0f) {
+                        visibleBounds.inflateBy(inflateX, inflateY)
+                    }
+                    textKey.touchBounds.applyFrom(touchBounds)
+                    textKey.visibleBounds.applyFrom(visibleBounds)
+                }
+
+                val verticalPadding = 2.0f * keyMarginV
+                val horizontalPadding = 2.0f * keyMarginH
+                val iterator = keyboard.keys()
+                while (iterator.hasNext()) {
+                    val textKey = iterator.next()
+                    if (geometryEnabled) {
                         val keyCode = textKey.computedData.code
                         val labelDigit = textKey.label?.singleOrNull()?.isDigit() == true
                         val isDigit = (keyCode in '0'.code..'9'.code) || labelDigit
@@ -277,35 +354,34 @@ fun TextKeyboardLayout(
                         if (finalWidth <= 0f || finalHeight <= 0f) {
                             val fallback = FlorisRect.from(touchBounds).deflatedBy(keyMarginH, keyMarginV)
                             textKey.touchBounds.applyFrom(fallback)
-                            textKey.visibleBounds.applyFrom(textKey.touchBounds)
-                            continue
+                        } else {
+                            val halfWidth = finalWidth / 2.0f
+                            val halfHeight = finalHeight / 2.0f
+                            val minCenterX = innerLeft + halfWidth
+                            val maxCenterX = innerRight - halfWidth
+                            val minCenterY = innerTop + halfHeight
+                            val maxCenterY = innerBottom - halfHeight
+                            val centerX = when {
+                                minCenterX > maxCenterX -> (innerLeft + innerRight) / 2.0f
+                                else -> touchBounds.center.x.coerceIn(minCenterX, maxCenterX)
+                            }
+                            val centerY = when {
+                                minCenterY > maxCenterY -> (innerTop + innerBottom) / 2.0f
+                                else -> touchBounds.center.y.coerceIn(minCenterY, maxCenterY)
+                            }
+                            val finalLeft = centerX - halfWidth
+                            val finalTop = centerY - halfHeight
+                            val finalRight = centerX + halfWidth
+                            val finalBottom = centerY + halfHeight
+                            textKey.touchBounds.apply {
+                                left = finalLeft
+                                top = finalTop
+                                right = finalRight
+                                bottom = finalBottom
+                            }
                         }
-                        val halfWidth = finalWidth / 2.0f
-                        val halfHeight = finalHeight / 2.0f
-                        val minCenterX = innerLeft + halfWidth
-                        val maxCenterX = innerRight - halfWidth
-                        val minCenterY = innerTop + halfHeight
-                        val maxCenterY = innerBottom - halfHeight
-                        val centerX = when {
-                            minCenterX > maxCenterX -> (innerLeft + innerRight) / 2.0f
-                            else -> touchBounds.center.x.coerceIn(minCenterX, maxCenterX)
-                        }
-                        val centerY = when {
-                            minCenterY > maxCenterY -> (innerTop + innerBottom) / 2.0f
-                            else -> touchBounds.center.y.coerceIn(minCenterY, maxCenterY)
-                        }
-                        val finalLeft = centerX - halfWidth
-                        val finalTop = centerY - halfHeight
-                        val finalRight = centerX + halfWidth
-                        val finalBottom = centerY + halfHeight
-                        textKey.touchBounds.apply {
-                            left = finalLeft
-                            top = finalTop
-                            right = finalRight
-                            bottom = finalBottom
-                        }
-                        textKey.visibleBounds.applyFrom(textKey.touchBounds)
                     }
+                    applySpacingAdjustments(textKey)
                 }
             }
         }
@@ -318,12 +394,12 @@ fun TextKeyboardLayout(
                 val keyPopupHeight: Float
                 when {
                     configuration.isOrientationLandscape() -> {
-                        keyPopupWidth = desiredKey.visibleBounds.width * 1.0f
-                        keyPopupHeight = desiredKey.visibleBounds.height * 3.0f
+                        keyPopupWidth = key.visibleBounds.width * 1.0f
+                        keyPopupHeight = key.visibleBounds.height * 3.0f
                     }
                     else -> {
-                        keyPopupWidth = desiredKey.visibleBounds.width * 1.1f
-                        keyPopupHeight = desiredKey.visibleBounds.height * 2.5f
+                        keyPopupWidth = key.visibleBounds.width * 1.1f
+                        keyPopupHeight = key.visibleBounds.height * 2.5f
                     }
                 }
                 val keyPopupDiffX = (key.visibleBounds.width - keyPopupWidth) / 2.0f

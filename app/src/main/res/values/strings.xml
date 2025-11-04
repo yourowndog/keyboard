@@ -450,6 +450,9 @@
     <string name="pref__keyboard__lcars_digits_pill_ratio__label" comment="Preference title">Digits pill ratio</string>
     <string name="pref__keyboard__lcars_others_height__label" comment="Preference title">Others height</string>
     <string name="pref__keyboard__lcars_others_pill_ratio__label" comment="Preference title">Others pill ratio</string>
+    <string name="pref__keyboard__lcars_spacing__label" comment="Preference group title">Advanced spacing</string>
+    <string name="pref__keyboard__lcars_gap_horizontal__label" comment="Preference title">Horizontal gap offset</string>
+    <string name="pref__keyboard__lcars_gap_vertical__label" comment="Preference title">Vertical gap offset</string>
     <string name="pref__keyboard__bottom_offset__label" comment="Preference title">Bottom offset</string>
     <string name="pref__keyboard__group_keypress__label" comment="Preference group title">Key press</string>
     <string name="pref__keyboard__popup_enabled__label" comment="Preference title">Popup Visibility</string>

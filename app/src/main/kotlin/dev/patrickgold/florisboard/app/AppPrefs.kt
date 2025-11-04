@@ -569,6 +569,14 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "keyboard__lcars_others_pill_ratio",
             default = 1.60f,
         )
+        val lcarsGapHorizontalDp = float(
+            key = "keyboard__lcars_gap_h_dp",
+            default = 0.0f,
+        )
+        val lcarsGapVerticalDp = float(
+            key = "keyboard__lcars_gap_v_dp",
+            default = 0.0f,
+        )
         val bottomOffsetPortrait = int(
             key = "keyboard__bottom_offset_portrait",
             default = 0,
