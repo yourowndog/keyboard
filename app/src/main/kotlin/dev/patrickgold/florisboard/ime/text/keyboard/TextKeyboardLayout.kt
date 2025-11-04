@@ -245,16 +245,18 @@ fun TextKeyboardLayout(
             gapHpx, gapVpx, touchGapH, touchGapV, minTouchSizePx,
         ) {
             TextKey(data = TextKeyData.UNSPECIFIED).also { desiredKey ->
-                val baseRowHeightPx = keyboardRowBaseHeight.toPx()
+                val baseRowHeightPx = max(1f, keyboardRowBaseHeight.toPx())
                 val rowCount = keyboard.rowCount.coerceAtLeast(1)
                 val availableRowHeightPx = if (rowCount > 0) keyboardHeight / rowCount else keyboardHeight
-                val minHeightPx = baseRowHeightPx * 0.10f
-                val maxHeightPx = availableRowHeightPx * 2.0f
+                val minRowHeightPx = baseRowHeightPx * 0.10f
+                val maxRowHeightPx = max(minRowHeightPx, availableRowHeightPx * 2.0f)
                 val digitsDesiredHeight = if (geometryEnabled) digitsHeightPx else baseRowHeightPx
                 val othersDesiredHeight = if (geometryEnabled) othersHeightPx else baseRowHeightPx
-                val digitsRowHeight = digitsDesiredHeight.coerceIn(minHeightPx, maxHeightPx)
-                val othersRowHeight = othersDesiredHeight.coerceIn(minHeightPx, maxHeightPx)
-                val layoutRowHeight = max(digitsRowHeight, othersRowHeight).coerceIn(minHeightPx, maxHeightPx)
+                val lazySliderInfo = { "sliders: digitsH=$digitsHeightPx, othersH=$othersHeightPx" }
+                val digitsRowHeight = digitsDesiredHeight.coerceInSafe(minRowHeightPx, maxRowHeightPx, lazySliderInfo)
+                val othersRowHeight = othersDesiredHeight.coerceInSafe(minRowHeightPx, maxRowHeightPx, lazySliderInfo)
+                val layoutRowHeight = max(digitsRowHeight, othersRowHeight)
+                    .coerceInSafe(minRowHeightPx, maxRowHeightPx, lazySliderInfo)
                 desiredKey.touchBounds.apply {
                     width = keyboardWidth / 10f
                     height = layoutRowHeight
@@ -328,6 +330,8 @@ fun TextKeyboardLayout(
 
                 val verticalPadding = 2.0f * keyMarginV
                 val horizontalPadding = 2.0f * keyMarginH
+                val safeVPad = max(0f, verticalPadding)
+                val safeHPad = max(0f, horizontalPadding)
                 val iterator = keyboard.keys()
                 while (iterator.hasNext()) {
                     val textKey = iterator.next()
@@ -338,37 +342,51 @@ fun TextKeyboardLayout(
                         val targetRowHeight = if (isDigit) digitsRowHeight else othersRowHeight
                         val pillRatio = if (isDigit) digitsPill else othersPill
                         val touchBounds = textKey.touchBounds
-                        val innerLeft = touchBounds.left + horizontalPadding / 2.0f
-                        val innerRight = touchBounds.right - horizontalPadding / 2.0f
-                        val innerTop = touchBounds.top + verticalPadding / 2.0f
-                        val innerBottom = touchBounds.bottom - verticalPadding / 2.0f
-                        val innerWidth = (innerRight - innerLeft).coerceAtLeast(0f)
-                        val innerHeight = (innerBottom - innerTop).coerceAtLeast(0f)
-                        val finalHeight = targetRowHeight
-                            .coerceIn(minHeightPx, maxHeightPx)
-                            .coerceAtMost(innerHeight)
-                            .coerceAtLeast(0f)
-                        val finalWidth = (finalHeight * pillRatio)
-                            .coerceAtMost(innerWidth)
-                            .coerceAtLeast(0f)
-                        if (finalWidth <= 0f || finalHeight <= 0f) {
+
+                        val availableWidth = max(1f, touchBounds.width - safeHPad)
+                        val availableHeight = max(1f, touchBounds.height - safeVPad)
+
+                        val minKeyHeight = minRowHeightPx
+                        val maxKeyHeight = max(minKeyHeight, availableHeight)
+                        val finalHeight = targetRowHeight.coerceInSafe(minKeyHeight, maxKeyHeight) {
+                            "key=${textKey.label}, targetH=$targetRowHeight, availH=$availableHeight"
+                        }
+
+                        val minKeyWidth = 0f
+                        val maxKeyWidth = availableWidth
+                        val finalWidth = (finalHeight * pillRatio).coerceInSafe(minKeyWidth, maxKeyWidth) {
+                            "key=${textKey.label}, ratio=$pillRatio, availW=$availableWidth"
+                        }
+
+                        if (finalWidth <= 1f || finalHeight <= 1f) {
                             val fallback = FlorisRect.from(touchBounds).deflatedBy(keyMarginH, keyMarginV)
+                            if (fallback.width < 1f) {
+                                val cx = fallback.center.x
+                                fallback.left = cx - 0.5f
+                                fallback.right = cx + 0.5f
+                            }
+                            if (fallback.height < 1f) {
+                                val cy = fallback.center.y
+                                fallback.top = cy - 0.5f
+                                fallback.bottom = cy + 0.5f
+                            }
                             textKey.touchBounds.applyFrom(fallback)
                         } else {
                             val halfWidth = finalWidth / 2.0f
                             val halfHeight = finalHeight / 2.0f
-                            val minCenterX = innerLeft + halfWidth
-                            val maxCenterX = innerRight - halfWidth
-                            val minCenterY = innerTop + halfHeight
-                            val maxCenterY = innerBottom - halfHeight
-                            val centerX = when {
-                                minCenterX > maxCenterX -> (innerLeft + innerRight) / 2.0f
-                                else -> touchBounds.center.x.coerceIn(minCenterX, maxCenterX)
-                            }
-                            val centerY = when {
-                                minCenterY > maxCenterY -> (innerTop + innerBottom) / 2.0f
-                                else -> touchBounds.center.y.coerceIn(minCenterY, maxCenterY)
-                            }
+                            val boundsLeft = touchBounds.left + safeHPad / 2f
+                            val boundsRight = touchBounds.right - safeHPad / 2f
+                            val boundsTop = touchBounds.top + safeVPad / 2f
+                            val boundsBottom = touchBounds.bottom - safeVPad / 2f
+
+                            val minCenterX = boundsLeft + halfWidth
+                            val maxCenterX = boundsRight - halfWidth
+                            val minCenterY = boundsTop + halfHeight
+                            val maxCenterY = boundsBottom - halfHeight
+
+                            val centerX = touchBounds.center.x.coerceInSafe(minCenterX, maxCenterX) { "key=${textKey.label}, axis=X" }
+                            val centerY = touchBounds.center.y.coerceInSafe(minCenterY, maxCenterY) { "key=${textKey.label}, axis=Y" }
+
                             val finalLeft = centerX - halfWidth
                             val finalTop = centerY - halfHeight
                             val finalRight = centerX + halfWidth
@@ -1162,4 +1180,16 @@ private class TextKeyboardLayoutController(
             return "${TouchPointer::class.simpleName} { id=$id, index=$index, initialKey=$initialKey, activeKey=$activeKey }"
         }
     }
+}
+
+private fun Float.coerceInSafe(min: Float, max: Float, lazyMessage: () -> Any = { "" }): Float {
+    if (!this.isFinite()) {
+        flogDebug(LogTopic.TEXT_KEYBOARD_VIEW) { "coerceInSafe guard: non-finite value. ${lazyMessage()}" }
+        return min
+    }
+    if (max < min) {
+        flogDebug(LogTopic.TEXT_KEYBOARD_VIEW) { "coerceInSafe guard: max ($max) < min ($min). ${lazyMessage()}" }
+        return min
+    }
+    return this.coerceIn(min, max)
 }
