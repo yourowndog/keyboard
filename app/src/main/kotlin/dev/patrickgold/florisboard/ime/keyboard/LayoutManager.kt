@@ -239,7 +239,11 @@ class LayoutManager(context: Context) {
                         if (modKey is TextKeyData && modKey.code == 0) {
                             rowArray.addAll(mainRow.map { TextKey(it) })
                         } else {
-                            rowArray.add(TextKey(modKey))
+                            if (modKey is TextKeyData && modKey.code == TextKeyData.LANGUAGE_SWITCH.code) {
+                                // Do not add the language switch key
+                            } else {
+                                rowArray.add(TextKey(modKey))
+                            }
                         }
                     }
                     val temp = Array(rowArray.size) { rowArray[it] }

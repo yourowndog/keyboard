@@ -1019,17 +1019,7 @@ class KeyboardManager(context: Context) : InputKeyEventReceiver {
                     }
                 }
                 KeyCode.LANGUAGE_SWITCH -> {
-                    val tempUtilityKeyAction = when {
-                        prefs.keyboard.utilityKeyEnabled.get() -> prefs.keyboard.utilityKeyAction.get()
-                        else -> UtilityKeyAction.DISABLED
-                    }
-                    when (tempUtilityKeyAction) {
-                        UtilityKeyAction.DISABLED,
-                        UtilityKeyAction.SWITCH_TO_EMOJIS -> false
-                        UtilityKeyAction.SWITCH_LANGUAGE,
-                        UtilityKeyAction.SWITCH_KEYBOARD_APP -> true
-                        UtilityKeyAction.DYNAMIC_SWITCH_LANGUAGE_EMOJIS -> shouldShowLanguageSwitch()
-                    }
+                    false
                 }
                 else -> true
             }

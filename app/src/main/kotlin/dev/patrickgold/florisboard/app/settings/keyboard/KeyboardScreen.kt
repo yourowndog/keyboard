@@ -185,59 +185,53 @@ fun KeyboardScreen() = FlorisScreen {
                 PreferenceGroup(title = stringRes(R.string.pref__keyboard__lcars_geometry__label)) {
                     LCARSValueSlider(
                         preference = prefs.keyboard.lcarsDigitsHeightScale,
+                        enabledPref = prefs.keyboard.lcarsDigitsHeightEnabled,
                         title = "Digits – Height scale",
+                        defaultValue = LcarsDefaults.DIGITS_HEIGHT,
                         valueRange = 0.10f..2.00f,
-                        enabled = lcarsGeometryEnabled,
-                        valueFormatter = { value ->
-                            String.format(Locale.US, "%.2f", value)
-                        },
+                        valueFormatter = { value -> String.format(Locale.US, "%.2f", value) },
                     )
                     LCARSValueSlider(
                         preference = prefs.keyboard.lcarsDigitsPillRatio,
+                        enabledPref = prefs.keyboard.lcarsDigitsPillEnabled,
                         title = "Digits – Pill ratio",
+                        defaultValue = LcarsDefaults.DIGITS_PILL,
                         valueRange = 1.00f..3.00f,
-                        enabled = lcarsGeometryEnabled,
-                        valueFormatter = { value ->
-                            String.format(Locale.US, "%.2f", value)
-                        },
+                        valueFormatter = { value -> String.format(Locale.US, "%.2f", value) },
                     )
                     LCARSValueSlider(
                         preference = prefs.keyboard.lcarsOthersHeightScale,
+                        enabledPref = prefs.keyboard.lcarsOthersHeightEnabled,
                         title = "Others – Height scale",
+                        defaultValue = LcarsDefaults.OTHERS_HEIGHT,
                         valueRange = 0.10f..2.00f,
-                        enabled = lcarsGeometryEnabled,
-                        valueFormatter = { value ->
-                            String.format(Locale.US, "%.2f", value)
-                        },
+                        valueFormatter = { value -> String.format(Locale.US, "%.2f", value) },
                     )
                     LCARSValueSlider(
                         preference = prefs.keyboard.lcarsOthersPillRatio,
+                        enabledPref = prefs.keyboard.lcarsOthersPillEnabled,
                         title = "Others – Pill ratio",
+                        defaultValue = LcarsDefaults.OTHERS_PILL,
                         valueRange = 1.00f..3.00f,
-                        enabled = lcarsGeometryEnabled,
-                        valueFormatter = { value ->
-                            String.format(Locale.US, "%.2f", value)
-                        },
+                        valueFormatter = { value -> String.format(Locale.US, "%.2f", value) },
                     )
                 }
                 PreferenceGroup(title = stringRes(R.string.pref__keyboard__lcars_spacing__label)) {
                     LCARSValueSlider(
                         preference = prefs.keyboard.lcarsGapHorizontalDp,
-                        title = stringRes(R.string.pref__keyboard__lcars_gap_horizontal__label),
+                        enabledPref = prefs.keyboard.lcarsAdvancedSpacingEnabled,
+                        title = "Horizontal gap",
+                        defaultValue = LcarsDefaults.ADV_SPACING_DP,
                         valueRange = -8.0f..16.0f,
-                        enabled = lcarsGeometryEnabled,
-                        valueFormatter = { value ->
-                            String.format(Locale.getDefault(), "%.2f dp", value)
-                        },
+                        valueFormatter = { value -> String.format(Locale.US, "%.2f dp", value) },
                     )
                     LCARSValueSlider(
                         preference = prefs.keyboard.lcarsGapVerticalDp,
-                        title = stringRes(R.string.pref__keyboard__lcars_gap_vertical__label),
+                        enabledPref = prefs.keyboard.lcarsAdvancedSpacingEnabled,
+                        title = "Vertical gap",
+                        defaultValue = LcarsDefaults.ADV_SPACING_DP,
                         valueRange = -4.0f..12.0f,
-                        enabled = lcarsGeometryEnabled,
-                        valueFormatter = { value ->
-                            String.format(Locale.getDefault(), "%.2f dp", value)
-                        },
+                        valueFormatter = { value -> String.format(Locale.US, "%.2f dp", value) },
                     )
                 }
             }
@@ -286,23 +280,30 @@ fun KeyboardScreen() = FlorisScreen {
     }
 }
 
+import androidx.compose.material3.Checkbox
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import dev.patrickgold.florisboard.app.LcarsDefaults
+
 @Composable
 private fun PreferenceUiScope<FlorisPreferenceModel>.LCARSValueSlider(
     preference: PreferenceData<Float>,
+    enabledPref: PreferenceData<Boolean>,
     title: String,
+    defaultValue: Float,
     valueRange: ClosedFloatingPointRange<Float>,
-    enabled: Boolean,
     valueFormatter: (Float) -> String,
 ) {
     val scope = rememberCoroutineScope()
     val prefValue by preference.observeAsState()
-    val minValue = valueRange.start
-    val maxValue = valueRange.endInclusive
+    val isEnabled by enabledPref.observeAsState()
+
     fun clampAndRound(value: Float): Float {
-        val clamped = value.coerceIn(minValue, maxValue)
+        val clamped = value.coerceIn(valueRange.start, valueRange.endInclusive)
         return (clamped * 100f).roundToInt() / 100f
     }
-    var sliderValue by rememberSaveable(title) {
+
+    var sliderValue by rememberSaveable(prefValue) {
         mutableFloatStateOf(clampAndRound(prefValue))
     }
 
@@ -313,52 +314,55 @@ private fun PreferenceUiScope<FlorisPreferenceModel>.LCARSValueSlider(
         }
     }
 
-    val formattedValue = valueFormatter(sliderValue)
+    val formattedValue = if (isEnabled) {
+        valueFormatter(sliderValue)
+    } else {
+        "${valueFormatter(defaultValue)} (default)"
+    }
 
-    JetPrefListItem(
-        text = title,
-        trailing = {
-            Column(
-                modifier = Modifier
-                    .padding(start = 16.dp)
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.End,
-            ) {
-                Row(
-                    horizontalArrangement = Arrangement.End,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    ValueChip(text = formattedValue)
+    Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.semantics { contentDescription = "LCARS $title $formattedValue" }
+        ) {
+            Checkbox(
+                checked = isEnabled,
+                onCheckedChange = { newIsEnabled ->
+                    scope.launch {
+                        enabledPref.set(newIsEnabled)
+                        if (!newIsEnabled) {
+                            preference.set(defaultValue)
+                        }
+                    }
                 }
-                Slider(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = sliderValue,
-                    onValueChange = { value ->
-                        val rounded = clampAndRound(value)
-                        if (sliderValue != rounded) {
-                            sliderValue = rounded
-                            scope.launch {
-                                preference.set(rounded)
-                            }
-                        }
-                    },
-                    valueRange = valueRange,
-                    steps = 0,
-                    enabled = enabled,
-                    onValueChangeFinished = {
-                        val rounded = clampAndRound(sliderValue)
-                        if (sliderValue != rounded) {
-                            sliderValue = rounded
-                        }
-                        scope.launch {
-                            preference.set(rounded)
-                        }
-                    },
-                )
-            }
-        },
-    )
+            )
+            Text(
+                text = title,
+                modifier = Modifier.weight(1f),
+                color = MaterialTheme.colorScheme.onBackground,
+            )
+            Text(
+                text = formattedValue,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.padding(start = 16.dp)
+            )
+        }
+        Slider(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
+            value = sliderValue,
+            onValueChange = { value ->
+                sliderValue = clampAndRound(value)
+            },
+            valueRange = valueRange,
+            steps = 0,
+            enabled = isEnabled,
+            onValueChangeFinished = {
+                scope.launch {
+                    preference.set(sliderValue)
+                }
+            },
+        )
+    }
 }
 
 @Composable

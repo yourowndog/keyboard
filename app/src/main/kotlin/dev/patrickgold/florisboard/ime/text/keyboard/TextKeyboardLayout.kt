@@ -235,12 +235,19 @@ fun TextKeyboardLayout(
         val keyboardRowBaseHeight = FlorisImeSizing.keyboardRowBaseHeight
         val geometryEnabled by prefs.keyboard.lcarsGeometryEnabled.observeAsState()
         val keyboardDimens = rememberKeyboardDimens()
-        val digitsHeightPx = keyboardDimens.digitsHeight.toPx()
-        val othersHeightPx = keyboardDimens.othersHeight.toPx()
-        val digitsPill = keyboardDimens.digitsPill
-        val othersPill = keyboardDimens.othersPill
-        val gapHpx = if (geometryEnabled) rawGapH else 0f
-        val gapVpx = if (geometryEnabled) rawGapV else 0f
+
+        val lcarsDigitsHeightEnabled by prefs.keyboard.lcarsDigitsHeightEnabled.observeAsState()
+        val lcarsOthersHeightEnabled by prefs.keyboard.lcarsOthersHeightEnabled.observeAsState()
+        val lcarsDigitsPillEnabled by prefs.keyboard.lcarsDigitsPillEnabled.observeAsState()
+        val lcarsOthersPillEnabled by prefs.keyboard.lcarsOthersPillEnabled.observeAsState()
+        val lcarsAdvancedSpacingEnabled by prefs.keyboard.lcarsAdvancedSpacingEnabled.observeAsState()
+
+        val digitsHeightPx = if (lcarsDigitsHeightEnabled) keyboardDimens.digitsHeight.toPx() else LcarsDefaults.DIGITS_HEIGHT
+        val othersHeightPx = if (lcarsOthersHeightEnabled) keyboardDimens.othersHeight.toPx() else LcarsDefaults.OTHERS_HEIGHT
+        val digitsPill = if (lcarsDigitsPillEnabled) keyboardDimens.digitsPill else LcarsDefaults.DIGITS_PILL
+        val othersPill = if (lcarsOthersPillEnabled) keyboardDimens.othersPill else LcarsDefaults.OTHERS_PILL
+        val gapHpx = if (geometryEnabled && lcarsAdvancedSpacingEnabled) rawGapH else 0f
+        val gapVpx = if (geometryEnabled && lcarsAdvancedSpacingEnabled) rawGapV else 0f
         val touchGapH = max(gapHpx, 0f)
         val touchGapV = max(gapVpx, 0f)
         val minTouchSizePx = 40.dp.toPx()
@@ -321,6 +328,11 @@ fun TextKeyboardLayout(
                 }
 
                 fun applySpacingAdjustments(textKey: TextKey) {
+                    val minW = 8f
+                    val minH = 8f
+                    val maxW = keyboardWidth
+                    val maxH = keyboardRowBaseHeight.toPx() * 1.4f
+
                     val baseBounds = FlorisRect.from(textKey.touchBounds)
                     ensureBaseSize(baseBounds)
                     val touchBounds = FlorisRect.from(baseBounds)
@@ -356,8 +368,8 @@ fun TextKeyboardLayout(
                         }
                     }
 
-                    textKey.touchBounds.applyFrom(touchBounds)
-                    textKey.visibleBounds.applyFrom(visibleBounds)
+                    textKey.touchBounds.clamp(0f, 0f, maxW, maxH)
+                    textKey.visibleBounds.applyFrom(textKey.touchBounds)
                 }
 
                 val verticalPadding = 2.0f * keyMarginV
