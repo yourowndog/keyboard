@@ -35,10 +35,18 @@ fun rememberKeyboardDimens(): KeyboardDimens {
     val prefs by FlorisPreferenceStore
     val baseHeight = FlorisImeSizing.keyboardRowBaseHeight
     val geometryEnabled by prefs.keyboard.lcarsGeometryEnabled.observeAsState()
-    val digitsHeightScale by prefs.keyboard.lcarsDigitsHeightScale.observeAsTransformingState { it }
-    val digitsPillRatio by prefs.keyboard.lcarsDigitsPillRatio.observeAsTransformingState { it }
-    val othersHeightScale by prefs.keyboard.lcarsOthersHeightScale.observeAsTransformingState { it }
-    val othersPillRatio by prefs.keyboard.lcarsOthersPillRatio.observeAsTransformingState { it }
+    val digitsHeightScale by prefs.keyboard.lcarsDigitsHeightScale.observeAsTransformingState {
+        it.coerceIn(0.10f, 2.00f)
+    }
+    val digitsPillRatio by prefs.keyboard.lcarsDigitsPillRatio.observeAsTransformingState {
+        it.coerceIn(1.00f, 3.00f)
+    }
+    val othersHeightScale by prefs.keyboard.lcarsOthersHeightScale.observeAsTransformingState {
+        it.coerceIn(0.10f, 2.00f)
+    }
+    val othersPillRatio by prefs.keyboard.lcarsOthersPillRatio.observeAsTransformingState {
+        it.coerceIn(1.00f, 3.00f)
+    }
 
     val digitsHeight = if (geometryEnabled) baseHeight * digitsHeightScale else baseHeight
     val othersHeight = if (geometryEnabled) baseHeight * othersHeightScale else baseHeight
