@@ -23,9 +23,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
+import androidx.compose.material3.SuggestionChip
+import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.AssistChip
-import androidx.compose.material3.ChipDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -329,24 +329,7 @@ private fun PreferenceUiScope<FlorisPreferenceModel>.LCARSValueSlider(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth(),
                 ) {
-                    AssistChip(
-                        onClick = {},
-                        enabled = false,
-                        shape = MaterialTheme.shapes.small,
-                        colors = ChipDefaults.assistChipColors(
-                            disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                            disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        ),
-                        border = ChipDefaults.assistChipBorder(
-                            enabled = false,
-                        ),
-                        label = {
-                            Text(
-                                text = formattedValue,
-                                style = MaterialTheme.typography.labelLarge,
-                            )
-                        },
-                    )
+                    ValueChip(text = formattedValue)
                 }
                 Slider(
                     modifier = Modifier.fillMaxWidth(),
@@ -374,6 +357,32 @@ private fun PreferenceUiScope<FlorisPreferenceModel>.LCARSValueSlider(
                     },
                 )
             }
+        },
+    )
+}
+
+@Composable
+private fun ValueChip(
+    text: String,
+    modifier: Modifier = Modifier,
+) {
+    SuggestionChip(
+        modifier = modifier,
+        onClick = {},
+        enabled = false,
+        shape = MaterialTheme.shapes.small,
+        colors = SuggestionChipDefaults.suggestionChipColors(
+            disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+            disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        ),
+        border = SuggestionChipDefaults.suggestionChipBorder(
+            enabled = false,
+        ),
+        label = {
+            Text(
+                text = text,
+                style = MaterialTheme.typography.labelLarge,
+            )
         },
     )
 }
