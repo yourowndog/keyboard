@@ -79,6 +79,7 @@ import dev.patrickgold.florisboard.ime.text.key.KeyCode
 import dev.patrickgold.florisboard.ime.text.key.KeyType
 import dev.patrickgold.florisboard.ime.text.key.KeyVariation
 import dev.patrickgold.florisboard.ime.theme.FlorisImeUi
+import dev.patrickgold.florisboard.app.settings.keyboard.LcarsDefaults
 import dev.patrickgold.florisboard.keyboardManager
 import dev.patrickgold.florisboard.lib.FlorisRect
 import dev.patrickgold.florisboard.lib.Pointer
