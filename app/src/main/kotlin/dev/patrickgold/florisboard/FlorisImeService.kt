@@ -561,6 +561,8 @@ class FlorisImeService : LifecycleInputMethodService() {
         setTheme(R.style.FlorisImeTheme)
     }
 
+    override fun shouldOfferSwitchingToNextInputMethod(): Boolean = false
+
     override fun onCreate() {
         super.onCreate()
         Log.d("Whisper", "Key len=" + BuildConfig.OPENAI_API_KEY.length)

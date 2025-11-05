@@ -18,26 +18,26 @@ package dev.patrickgold.florisboard.app.settings.keyboard
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.Row
-import androidx.compose.material3.Checkbox
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Restore
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
-import androidx.compose.material3.SuggestionChip
-import androidx.compose.material3.SuggestionChipDefaults
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.FlorisPreferenceModel
@@ -51,21 +51,20 @@ import dev.patrickgold.florisboard.ime.onehanded.OneHandedMode
 import dev.patrickgold.florisboard.ime.smartbar.IncognitoDisplayMode
 import dev.patrickgold.florisboard.ime.text.key.KeyHintMode
 import dev.patrickgold.florisboard.ime.text.key.UtilityKeyAction
+import dev.patrickgold.florisboard.ime.text.keyboard.LcarsRuntime
+import dev.patrickgold.florisboard.ime.text.keyboard.LocalLcarsRuntime
 import dev.patrickgold.florisboard.lib.compose.FlorisScreen
-import dev.patrickgold.jetpref.datastore.model.PreferenceData
 import dev.patrickgold.jetpref.datastore.ui.DialogSliderPreference
 import dev.patrickgold.jetpref.datastore.ui.ExperimentalJetPrefDatastoreUi
 import dev.patrickgold.jetpref.datastore.ui.ListPreference
 import dev.patrickgold.jetpref.datastore.ui.Preference
 import dev.patrickgold.jetpref.datastore.ui.PreferenceGroup
-import dev.patrickgold.jetpref.datastore.ui.PreferenceUiScope
 import dev.patrickgold.jetpref.datastore.ui.SwitchPreference
 import dev.patrickgold.jetpref.datastore.model.observeAsState
-import dev.patrickgold.jetpref.material.ui.JetPrefListItem
 import kotlinx.coroutines.launch
 import org.florisboard.lib.compose.stringRes
 import java.util.Locale
-import kotlin.math.roundToInt
+import kotlin.math.floor
 
 @OptIn(ExperimentalJetPrefDatastoreUi::class)
 @Composable
@@ -185,57 +184,133 @@ fun KeyboardScreen() = FlorisScreen {
                 summary = stringRes(R.string.pref__keyboard__lcars_geometry_enabled__summary),
             )
             if (lcarsGeometryEnabled) {
-                PreferenceGroup(title = stringRes(R.string.pref__keyboard__lcars_geometry__label)) {
-                    LCARSValueSlider(
-                        preference = prefs.keyboard.lcarsDigitsHeightScale,
-                        enabledPref = prefs.keyboard.lcarsDigitsHeightEnabled,
-                        title = "Digits – Height scale",
-                        defaultValue = LcarsDefaults.DIGITS_HEIGHT,
-                        valueRange = 0.10f..2.00f,
-                        valueFormatter = { value -> String.format(Locale.US, "%.2f", value) },
-                    )
-                    LCARSValueSlider(
-                        preference = prefs.keyboard.lcarsDigitsPillRatio,
-                        enabledPref = prefs.keyboard.lcarsDigitsPillEnabled,
-                        title = "Digits – Pill ratio",
-                        defaultValue = LcarsDefaults.DIGITS_PILL,
-                        valueRange = 1.00f..3.00f,
-                        valueFormatter = { value -> String.format(Locale.US, "%.2f", value) },
-                    )
-                    LCARSValueSlider(
-                        preference = prefs.keyboard.lcarsOthersHeightScale,
-                        enabledPref = prefs.keyboard.lcarsOthersHeightEnabled,
-                        title = "Others – Height scale",
-                        defaultValue = LcarsDefaults.OTHERS_HEIGHT,
-                        valueRange = 0.10f..2.00f,
-                        valueFormatter = { value -> String.format(Locale.US, "%.2f", value) },
-                    )
-                    LCARSValueSlider(
-                        preference = prefs.keyboard.lcarsOthersPillRatio,
-                        enabledPref = prefs.keyboard.lcarsOthersPillEnabled,
-                        title = "Others – Pill ratio",
-                        defaultValue = LcarsDefaults.OTHERS_PILL,
-                        valueRange = 1.00f..3.00f,
-                        valueFormatter = { value -> String.format(Locale.US, "%.2f", value) },
-                    )
-                }
-                PreferenceGroup(title = stringRes(R.string.pref__keyboard__lcars_spacing__label)) {
-                    LCARSValueSlider(
-                        preference = prefs.keyboard.lcarsGapHorizontalDp,
-                        enabledPref = prefs.keyboard.lcarsAdvancedSpacingEnabled,
-                        title = "Horizontal gap",
-                        defaultValue = LcarsDefaults.ADV_SPACING_DP,
-                        valueRange = -8.0f..16.0f,
-                        valueFormatter = { value -> String.format(Locale.US, "%.2f dp", value) },
-                    )
-                    LCARSValueSlider(
-                        preference = prefs.keyboard.lcarsGapVerticalDp,
-                        enabledPref = prefs.keyboard.lcarsAdvancedSpacingEnabled,
-                        title = "Vertical gap",
-                        defaultValue = LcarsDefaults.ADV_SPACING_DP,
-                        valueRange = -4.0f..12.0f,
-                        valueFormatter = { value -> String.format(Locale.US, "%.2f dp", value) },
-                    )
+                val scope = rememberCoroutineScope()
+                val digitsHeight by prefs.keyboard.lcarsDigitsHeightScale.observeAsState()
+                val digitsPill by prefs.keyboard.lcarsDigitsPillRatio.observeAsState()
+                val lettersHeight by prefs.keyboard.lcarsOthersHeightScale.observeAsState()
+                val lettersPill by prefs.keyboard.lcarsOthersPillRatio.observeAsState()
+                val spacingHorizontal by prefs.keyboard.lcarsGapHorizontalDp.observeAsState()
+                val spacingVertical by prefs.keyboard.lcarsGapVerticalDp.observeAsState()
+
+                val persistedDigitsHeightEnabled by prefs.keyboard.lcarsDigitsHeightEnabled.observeAsState()
+                val persistedLettersHeightEnabled by prefs.keyboard.lcarsOthersHeightEnabled.observeAsState()
+                val persistedDigitsPillEnabled by prefs.keyboard.lcarsDigitsPillEnabled.observeAsState()
+                val persistedLettersPillEnabled by prefs.keyboard.lcarsOthersPillEnabled.observeAsState()
+                val persistedSpacingEnabled by prefs.keyboard.lcarsAdvancedSpacingEnabled.observeAsState()
+
+                var digitsHeightEnabled by rememberSaveable { mutableStateOf(persistedDigitsHeightEnabled) }
+                var lettersHeightEnabled by rememberSaveable { mutableStateOf(persistedLettersHeightEnabled) }
+                var digitsPillEnabled by rememberSaveable { mutableStateOf(persistedDigitsPillEnabled) }
+                var lettersPillEnabled by rememberSaveable { mutableStateOf(persistedLettersPillEnabled) }
+                var spacingEnabled by rememberSaveable { mutableStateOf(persistedSpacingEnabled) }
+
+                val digitsHeightRange = 0.10f..2.00f
+                val lettersHeightRange = 0.10f..2.00f
+                val pillRange = 1.00f..3.00f
+                val spacingRange = -20.0f..20.0f
+                val spacingValue = ((spacingHorizontal + spacingVertical) / 2.0f)
+                    .coerceIn(spacingRange.start, spacingRange.endInclusive)
+
+                val runtimeOverrides = LcarsRuntime(
+                    digitsHeight = if (digitsHeightEnabled) {
+                        digitsHeight.coerceIn(digitsHeightRange.start, digitsHeightRange.endInclusive)
+                    } else {
+                        1.0f
+                    },
+                    othersHeight = if (lettersHeightEnabled) {
+                        lettersHeight.coerceIn(lettersHeightRange.start, lettersHeightRange.endInclusive)
+                    } else {
+                        1.0f
+                    },
+                    digitsPill = if (digitsPillEnabled) {
+                        digitsPill.coerceIn(pillRange.start, pillRange.endInclusive)
+                    } else {
+                        1.6f
+                    },
+                    othersPill = if (lettersPillEnabled) {
+                        lettersPill.coerceIn(pillRange.start, pillRange.endInclusive)
+                    } else {
+                        1.6f
+                    },
+                    spacingDp = if (spacingEnabled) spacingValue else 8.0f,
+                )
+
+                CompositionLocalProvider(LocalLcarsRuntime provides runtimeOverrides) {
+                    PreferenceGroup(title = stringRes(R.string.pref__keyboard__lcars_geometry__label)) {
+                        Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+                        LabeledSliderRow(
+                            title = "Digits height",
+                            value = digitsHeight.coerceIn(digitsHeightRange.start, digitsHeightRange.endInclusive),
+                            onChange = { value ->
+                                val clamped = value.coerceIn(digitsHeightRange.start, digitsHeightRange.endInclusive)
+                                scope.launch { prefs.keyboard.lcarsDigitsHeightScale.set(clamped) }
+                            },
+                            valueRange = digitsHeightRange,
+                            enabled = digitsHeightEnabled,
+                            onEnabledChange = { digitsHeightEnabled = it },
+                            format = { value -> String.format(Locale.US, "%.2f", value) },
+                            resetTo = 1.0f,
+                        )
+                        LabeledSliderRow(
+                            title = "Letters height",
+                            value = lettersHeight.coerceIn(lettersHeightRange.start, lettersHeightRange.endInclusive),
+                            onChange = { value ->
+                                val clamped = value.coerceIn(lettersHeightRange.start, lettersHeightRange.endInclusive)
+                                scope.launch { prefs.keyboard.lcarsOthersHeightScale.set(clamped) }
+                            },
+                            valueRange = lettersHeightRange,
+                            enabled = lettersHeightEnabled,
+                            onEnabledChange = { lettersHeightEnabled = it },
+                            format = { value -> String.format(Locale.US, "%.2f", value) },
+                            resetTo = 1.0f,
+                        )
+                        LabeledSliderRow(
+                            title = "Digits pill ratio",
+                            value = digitsPill.coerceIn(pillRange.start, pillRange.endInclusive),
+                            onChange = { value ->
+                                val clamped = value.coerceIn(pillRange.start, pillRange.endInclusive)
+                                scope.launch { prefs.keyboard.lcarsDigitsPillRatio.set(clamped) }
+                            },
+                            valueRange = pillRange,
+                            enabled = digitsPillEnabled,
+                            onEnabledChange = { digitsPillEnabled = it },
+                            format = { value -> String.format(Locale.US, "%.2f", value) },
+                            resetTo = 1.6f,
+                        )
+                        LabeledSliderRow(
+                            title = "Letters pill ratio",
+                            value = lettersPill.coerceIn(pillRange.start, pillRange.endInclusive),
+                            onChange = { value ->
+                                val clamped = value.coerceIn(pillRange.start, pillRange.endInclusive)
+                                scope.launch { prefs.keyboard.lcarsOthersPillRatio.set(clamped) }
+                            },
+                            valueRange = pillRange,
+                            enabled = lettersPillEnabled,
+                            onEnabledChange = { lettersPillEnabled = it },
+                            format = { value -> String.format(Locale.US, "%.2f", value) },
+                            resetTo = 1.6f,
+                        )
+                    }
+                    }
+                    PreferenceGroup(title = stringRes(R.string.pref__keyboard__lcars_spacing__label)) {
+                        Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+                            LabeledSliderRow(
+                            title = "Advanced spacing (dp)",
+                            value = spacingValue,
+                            onChange = { value ->
+                                val clamped = value.coerceIn(spacingRange.start, spacingRange.endInclusive)
+                                scope.launch {
+                                    prefs.keyboard.lcarsGapHorizontalDp.set(clamped)
+                                    prefs.keyboard.lcarsGapVerticalDp.set(clamped)
+                                }
+                            },
+                            valueRange = spacingRange,
+                            enabled = spacingEnabled,
+                            onEnabledChange = { spacingEnabled = it },
+                            format = { value -> String.format(Locale.US, "%.1f dp", value) },
+                            resetTo = 8.0f,
+                        )
+                    }
                 }
             }
             DialogSliderPreference(
@@ -286,107 +361,38 @@ fun KeyboardScreen() = FlorisScreen {
 
 
 @Composable
-private fun PreferenceUiScope<FlorisPreferenceModel>.LCARSValueSlider(
-    preference: PreferenceData<Float>,
-    enabledPref: PreferenceData<Boolean>,
+private fun LabeledSliderRow(
     title: String,
-    defaultValue: Float,
+    value: Float,
+    onChange: (Float) -> Unit,
     valueRange: ClosedFloatingPointRange<Float>,
-    valueFormatter: (Float) -> String,
+    enabled: Boolean,
+    onEnabledChange: (Boolean) -> Unit,
+    format: (Float) -> String = { value -> String.format(Locale.US, "%.2f", value) },
+    step: Float? = null,
+    resetTo: Float? = null,
 ) {
-    val scope = rememberCoroutineScope()
-    val prefValue by preference.observeAsState()
-    val isEnabled by enabledPref.observeAsState()
-
-    fun clampAndRound(value: Float): Float {
-        val clamped = value.coerceIn(valueRange.start, valueRange.endInclusive)
-        return (clamped * 100f).roundToInt() / 100f
-    }
-
-    var sliderValue by rememberSaveable(prefValue) {
-        mutableFloatStateOf(clampAndRound(prefValue))
-    }
-
-    LaunchedEffect(prefValue) {
-        val rounded = clampAndRound(prefValue)
-        if (sliderValue != rounded) {
-            sliderValue = rounded
+    val onColor = MaterialTheme.colorScheme.onBackground
+    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        Text(title, color = onColor, modifier = Modifier.weight(1f))
+        Text(format(value), color = onColor, modifier = Modifier.padding(end = 8.dp))
+        Switch(checked = enabled, onCheckedChange = onEnabledChange)
+        if (resetTo != null) {
+            IconButton(onClick = { onEnabledChange(true); onChange(resetTo) }) {
+                Icon(Icons.Filled.Restore, contentDescription = "Reset")
+            }
         }
     }
-
-    val formattedValue = if (isEnabled) {
-        valueFormatter(sliderValue)
-    } else {
-        "${valueFormatter(defaultValue)} (default)"
-    }
-
-    Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.semantics { contentDescription = "LCARS $title $formattedValue" }
-        ) {
-            Checkbox(
-                checked = isEnabled,
-                onCheckedChange = { newIsEnabled ->
-                    scope.launch {
-                        enabledPref.set(newIsEnabled)
-                        if (!newIsEnabled) {
-                            preference.set(defaultValue)
-                        }
-                    }
-                }
-            )
-            Text(
-                text = title,
-                modifier = Modifier.weight(1f),
-                color = MaterialTheme.colorScheme.onBackground,
-            )
-            Text(
-                text = formattedValue,
-                color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.padding(start = 16.dp)
-            )
-        }
-        Slider(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
-            value = sliderValue,
-            onValueChange = { value ->
-                sliderValue = clampAndRound(value)
-            },
-            valueRange = valueRange,
-            steps = 0,
-            enabled = isEnabled,
-            onValueChangeFinished = {
-                scope.launch {
-                    preference.set(sliderValue)
-                }
-            },
-        )
-    }
-}
-
-@Composable
-private fun ValueChip(
-    text: String,
-    modifier: Modifier = Modifier,
-) {
-    SuggestionChip(
-        modifier = modifier,
-        onClick = {},
-        enabled = false,
-        shape = MaterialTheme.shapes.small,
-        colors = SuggestionChipDefaults.suggestionChipColors(
-            disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-            disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
-        ),
-        border = SuggestionChipDefaults.suggestionChipBorder(
-            enabled = false,
-        ),
-        label = {
-            Text(
-                text = text,
-                style = MaterialTheme.typography.labelLarge,
-            )
-        },
+    val rawSteps = step?.let {
+        val intervalCount = floor((valueRange.endInclusive - valueRange.start) / it).toInt() - 1
+        intervalCount.coerceAtLeast(0)
+    } ?: 0
+    Slider(
+        value = value,
+        onValueChange = onChange,
+        valueRange = valueRange,
+        enabled = enabled,
+        steps = rawSteps,
+        modifier = Modifier.fillMaxWidth()
     )
 }
