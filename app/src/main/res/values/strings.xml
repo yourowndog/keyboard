@@ -168,6 +168,10 @@
     <string name="pref__theme__theme_accent_color__label" comment="Label of accent color preference in Theme">
         Accent color (Material You themes)
     </string>
+    <string name="pref__theme__lcars_auto_label">Use LCARS by default</string>
+    <string name="pref__theme__lcars_auto_summary">Automatically switch to the bundled LCARS theme when it is available.</string>
+    <string name="pref__theme__share_logs_label">Share theme logs</string>
+    <string name="pref__theme__share_logs_summary">Export the theme discovery log for troubleshooting.</string>
     <string name="settings__theme_manager__title_manage" comment="Title of the theme manager screen for managing installed and custom themes">Manage installed themes</string>
     <string name="pref__theme__source_assets" comment="Label for the theme source field">FlorisBoard App Assets</string>
     <string name="pref__theme__source_internal" comment="Label for the theme source field">Internal Storage</string>
@@ -439,6 +443,13 @@
     <string name="pref__keyboard__landscape_input_ui_mode__label" comment="Preference value">Landscape fullscreen input</string>
     <string name="pref__keyboard__height_factor__label" comment="Preference title">Keyboard height</string>
     <string name="pref__keyboard__key_spacing__label" comment="Preference title">Key spacing</string>
+    <string name="pref__keyboard__lcars_geometry_enabled__label" comment="Preference title">Enable LCARS geometry controls</string>
+    <string name="pref__keyboard__lcars_geometry_enabled__summary" comment="Preference summary">Use LCARS-specific sliders to tune key height and pill ratios.</string>
+    <string name="pref__keyboard__lcars_geometry__label" comment="Preference group title">Key Geometry (LCARS)</string>
+    <string name="pref__keyboard__lcars_digits_height__label" comment="Preference title">Digits height</string>
+    <string name="pref__keyboard__lcars_digits_pill_ratio__label" comment="Preference title">Digits pill ratio</string>
+    <string name="pref__keyboard__lcars_others_height__label" comment="Preference title">Others height</string>
+    <string name="pref__keyboard__lcars_others_pill_ratio__label" comment="Preference title">Others pill ratio</string>
     <string name="pref__keyboard__bottom_offset__label" comment="Preference title">Bottom offset</string>
     <string name="pref__keyboard__group_keypress__label" comment="Preference group title">Key press</string>
     <string name="pref__keyboard__popup_enabled__label" comment="Preference title">Popup Visibility</string>
@@ -850,6 +861,11 @@
     <string name="ext__addon_management_box__managing_placeholder">Managing {extensions}</string>
     <string name="ext__addon_management_box__addon_manager_info">All tasks related to importing, exporting, creating, customizing, and removing extensions can be handled through the centralized addon manager.</string>
     <string name="ext__addon_management_box__go_to_page">Go to {ext_home_title}</string>
+    <string name="ext__theme_rescan_box_title">Theme pack maintenance</string>
+    <string name="ext__theme_rescan_box_description">Rescan bundled theme packs and refresh discovery diagnostics.</string>
+    <string name="ext__theme_rescan_action">Rescan theme packs</string>
+    <string name="ext__theme_rescan_result_success">Rescan complete: %1$d packs, %2$d themes.</string>
+    <string name="ext__theme_rescan_result_with_errors">Rescan complete: %1$d packs, %2$d themes (%3$d issues logged).</string>
     <string name="ext__home__info">You can download and install extensions from the FlorisBoard Addons Store or import any extension file you have downloaded from the internet.</string>
     <string name="ext__home__visit_store">Visit Addons Store</string>
     <string name="ext__home__manage_extensions">Manage installed extensions</string>
@@ -1144,4 +1160,10 @@
     <string name="whisper_log_saved">Whisper log ready to share</string>
     <string name="whisper_logs_export_success">Saved: Download/FlorisBoard/whisper-*.log</string>
     <string name="whisper_logs_export_failed">Export failed</string>
+    <string name="theme_logs_share_action">Share theme logs</string>
+    <string name="theme_logs_share_title">Share theme discovery log</string>
+    <string name="theme_logs_unavailable">No theme discovery logs available yet</string>
+    <string name="theme_logs_export_success">Saved: Download/FlorisBoard/theme-*.log</string>
+    <string name="theme_logs_saved_legacy">Theme logs ready to share</string>
+    <string name="theme_logs_export_failed">Export failed</string>
 </resources>

@@ -39,11 +39,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
+import dev.patrickgold.florisboard.diagnostics.ThemeLogger
 import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.appContext
 import dev.patrickgold.florisboard.extensionManager
 import dev.patrickgold.florisboard.ime.smartbar.CachedInlineSuggestionsChipStyleSet
+import dev.patrickgold.florisboard.lib.devtools.LogTopic
 import dev.patrickgold.florisboard.lib.devtools.flogInfo
 import dev.patrickgold.florisboard.lib.ext.ExtensionComponentName
 import dev.patrickgold.florisboard.lib.ext.ExtensionMeta
@@ -58,6 +60,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.florisboard.lib.kotlin.collectIn
@@ -80,6 +83,9 @@ class ThemeManager(context: Context) {
 
     private val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
 
+    private val lastDiscoveredThemesGuard = Mutex()
+    private var lastDiscoveredThemes: List<ThemeExtension> = emptyList()
+
     private val _indexedThemeConfigs = MutableStateFlow(mapOf<ExtensionComponentName, ThemeExtensionComponent>() to 0)
     val indexedThemeConfigs get() = _indexedThemeConfigs.asStateFlow()
     private val indexedThemeConfigVersion = AtomicInteger(0)
@@ -96,13 +102,33 @@ class ThemeManager(context: Context) {
     init {
         extensionManager.themes.observeForever { themeExtensions ->
             val version = indexedThemeConfigVersion.incrementAndGet()
+            scope.launch {
+                lastDiscoveredThemesGuard.withLock {
+                    lastDiscoveredThemes = themeExtensions
+                }
+            }
             _indexedThemeConfigs.value = buildMap {
                 for (themeExtension in themeExtensions) {
+                    ThemeLogger.log(appContext) {
+                        "Discovered theme extension ${themeExtension.meta.id} with ${themeExtension.themes.size} theme(s)"
+                    }
                     for (themeComponent in themeExtension.themes) {
                         put(ExtensionComponentName(themeExtension.meta.id, themeComponent.id), themeComponent)
                     }
                 }
             } to version
+            flogInfo(LogTopic.THEME_MANAGER) {
+                val discovered = themeExtensions.joinToString(prefix = "[", postfix = "]") { it.meta.id }
+                val activeName = runCatching { evaluateActiveThemeName() }.getOrNull()
+                val active = activeName?.formattedId() ?: "<unknown>"
+                "Theme Load Report: discovered=$discovered active=$active"
+            }
+            ThemeLogger.log(appContext) {
+                val discovered = themeExtensions.joinToString { "${it.meta.id}(${it.themes.size})" }
+                val prefsSnapshot = "day=${prefs.theme.dayThemeId.get().formattedId()} night=${prefs.theme.nightThemeId.get().formattedId()}"
+                "Theme index refresh → discovered=[$discovered] prefs=$prefsSnapshot"
+            }
+            maybeApplyLcarsDefault(themeExtensions)
         }
         indexedThemeConfigs.collectIn(scope) {
             updateActiveTheme { cachedThemeInfos.clear() }
@@ -117,6 +143,14 @@ class ThemeManager(context: Context) {
         ) {}.collectIn(scope) {
             updateActiveTheme()
         }
+        prefs.theme.autoSelectLcars.asFlow().collectIn(scope) { enabled ->
+            if (enabled) {
+                scope.launch {
+                    val themes = lastDiscoveredThemesGuard.withLock { lastDiscoveredThemes }
+                    maybeApplyLcarsDefault(themes)
+                }
+            }
+        }
     }
 
     /**
@@ -130,6 +164,7 @@ class ThemeManager(context: Context) {
             return@withLock
         }
         val activeName = evaluateActiveThemeName()
+        logActiveThemeSnapshot(activeName)
         val cachedInfo = cachedThemeInfos.find { it.name == activeName }
         if (cachedInfo != null) {
             _activeThemeInfo.value = cachedInfo
@@ -160,11 +195,17 @@ class ThemeManager(context: Context) {
                 val newInfo = ThemeInfo(activeName, themeConfig, newStylesheet, loadedDir, null)
                 cachedThemeInfos.add(newInfo)
                 _activeThemeInfo.value = newInfo
+                ThemeLogger.log(appContext) {
+                    "Loaded active theme ${newInfo.name.formattedId()} from ${themeExt.meta.id}"
+                }
             },
             onFailure = { cause ->
                 _activeThemeInfo.value = ThemeInfo.DEFAULT.copy(
                     loadFailure = LoadFailure(themeExt.meta, themeConfig, cause)
                 )
+                ThemeLogger.log(appContext) {
+                    "Failed to load ${themeExt.meta.id}/${themeConfig.id}: ${cause.message ?: cause::class.java.simpleName}"
+                }
             },
         )
     }
@@ -196,6 +237,67 @@ class ThemeManager(context: Context) {
                 }
             }
         }
+    }
+
+    private fun ExtensionComponentName.formattedId(): String {
+        return "${extensionId}/${componentId}"
+    }
+
+    private fun logActiveThemeSnapshot(activeName: ExtensionComponentName) {
+        ThemeLogger.log(appContext) {
+            val day = prefs.theme.dayThemeId.get().formattedId()
+            val night = prefs.theme.nightThemeId.get().formattedId()
+            val mode = prefs.theme.mode.get()
+            "Active theme resolved → ${activeName.formattedId()} (mode=$mode, day=$day, night=$night)"
+        }
+    }
+
+    private fun maybeApplyLcarsDefault(themeExtensions: List<ThemeExtension>) {
+        if (!prefs.theme.autoSelectLcars.get()) {
+            return
+        }
+        val lcarsExtension = themeExtensions.find { it.meta.id == LCARS_EXTENSION_ID } ?: run {
+            ThemeLogger.log(appContext) { "LCARS extension not found during auto-select" }
+            return
+        }
+        val targetNight = lcarsExtension.themes.find { it.id == LCARS_NIGHT_COMPONENT_ID }
+            ?: lcarsExtension.themes.firstOrNull { it.isNightTheme }
+            ?: lcarsExtension.themes.firstOrNull()
+        if (targetNight == null) {
+            ThemeLogger.log(appContext) { "LCARS auto-select skipped: no night theme component" }
+        } else {
+            val desiredNight = ExtensionComponentName(lcarsExtension.meta.id, targetNight.id)
+            val defaultNight = extCoreTheme("floris_night")
+            val currentNight = prefs.theme.nightThemeId.get()
+            if ((currentNight == defaultNight || currentNight.extensionId == lcarsExtension.meta.id) && currentNight != desiredNight) {
+                scope.launch {
+                    prefs.theme.nightThemeId.set(desiredNight)
+                }
+                ThemeLogger.log(appContext) { "Applied LCARS night theme ${desiredNight.formattedId()}" }
+            }
+        }
+
+        val targetDay = lcarsExtension.themes.find { it.id == LCARS_DAY_COMPONENT_ID }
+            ?: lcarsExtension.themes.firstOrNull { !it.isNightTheme }
+        if (targetDay != null) {
+            val desiredDay = ExtensionComponentName(lcarsExtension.meta.id, targetDay.id)
+            val defaultDay = extCoreTheme("floris_day")
+            val currentDay = prefs.theme.dayThemeId.get()
+            if ((currentDay == defaultDay || currentDay.extensionId == lcarsExtension.meta.id) && currentDay != desiredDay) {
+                scope.launch {
+                    prefs.theme.dayThemeId.set(desiredDay)
+                }
+                ThemeLogger.log(appContext) { "Applied LCARS day theme ${desiredDay.formattedId()}" }
+            }
+        } else {
+            ThemeLogger.log(appContext) { "LCARS auto-select skipped for day theme: no day component available" }
+        }
+    }
+
+    companion object {
+        private const val LCARS_EXTENSION_ID = "dev.yourowndog.lcars"
+        private const val LCARS_NIGHT_COMPONENT_ID = "lcars-dark"
+        private const val LCARS_DAY_COMPONENT_ID = "lcars-day"
     }
 
     /**
