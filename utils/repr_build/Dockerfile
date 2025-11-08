@@ -12,7 +12,7 @@ ARG RUST_TOOLCHAIN_VERSION
 
 ARG USER_NAME
 ARG USER_DIR="/home/${USER_NAME}"
-ARG REPO_NAME="florisboard"
+ARG REPO_NAME="omniboard"
 ARG REPO_DIR="${USER_DIR}/${REPO_NAME}"
 
 # Install dependencies and OpenJDK
