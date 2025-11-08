@@ -68,7 +68,7 @@ fun AboutScreen() = OmniScreen {
         ) {
             OmniCanvasIcon(
                 modifier = Modifier.requiredSize(64.dp),
-                iconId = R.mipmap.omni_app_icon,
+                iconId = R.drawable.omni_icon,
                 contentDescription = "OmniBoard app icon",
             )
             Text(

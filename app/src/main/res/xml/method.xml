@@ -9,7 +9,7 @@
     <!-- Add default system subtype so we can properly set the icon and label -->
     <subtype
         android:label="@string/omni_app_name"
-        android:icon="@mipmap/omni_app_icon"
+        android:icon="@drawable/omni_icon"
         android:imeSubtypeMode="keyboard"
         android:imeSubtypeExtraValue="AsciiCapable"
         android:isAsciiCapable="true"
