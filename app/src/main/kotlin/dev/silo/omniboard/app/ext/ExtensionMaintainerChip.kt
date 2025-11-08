@@ -32,7 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.silo.omniboard.lib.ext.ExtensionMaintainer
 import dev.silo.omniboard.lib.util.launchUrl
-import dev.silo.jetpref.material.ui.JetPrefAlertDialog
+import dev.patrickgold.jetpref.material.ui.JetPrefAlertDialog
 import org.omniboard.lib.compose.OmniChip
 
 @Composable

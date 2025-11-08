@@ -24,9 +24,9 @@ import dev.silo.omniboard.ime.smartbar.CandidatesDisplayMode
 import dev.silo.omniboard.ime.smartbar.ExtendedActionsPlacement
 import dev.silo.omniboard.ime.smartbar.SmartbarLayout
 import dev.silo.omniboard.lib.compose.OmniScreen
-import dev.silo.jetpref.datastore.ui.ListPreference
-import dev.silo.jetpref.datastore.ui.PreferenceGroup
-import dev.silo.jetpref.datastore.ui.SwitchPreference
+import dev.patrickgold.jetpref.datastore.ui.ListPreference
+import dev.patrickgold.jetpref.datastore.ui.PreferenceGroup
+import dev.patrickgold.jetpref.datastore.ui.SwitchPreference
 import org.omniboard.lib.compose.stringRes
 
 @Composable

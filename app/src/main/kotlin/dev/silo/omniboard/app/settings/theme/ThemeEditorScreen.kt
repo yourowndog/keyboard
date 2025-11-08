@@ -87,10 +87,10 @@ import dev.silo.omniboard.lib.compose.rememberPreviewFieldController
 import dev.silo.omniboard.lib.ext.ExtensionValidation
 import dev.silo.omniboard.lib.rememberValidationResult
 import dev.silo.omniboard.themeManager
-import dev.silo.jetpref.datastore.model.observeAsState
-import dev.silo.jetpref.material.ui.JetPrefAlertDialog
-import dev.silo.jetpref.material.ui.JetPrefListItem
-import dev.silo.jetpref.material.ui.JetPrefTextField
+import dev.patrickgold.jetpref.datastore.model.observeAsState
+import dev.patrickgold.jetpref.material.ui.JetPrefAlertDialog
+import dev.patrickgold.jetpref.material.ui.JetPrefListItem
+import dev.patrickgold.jetpref.material.ui.JetPrefTextField
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.omniboard.lib.android.showLongToast

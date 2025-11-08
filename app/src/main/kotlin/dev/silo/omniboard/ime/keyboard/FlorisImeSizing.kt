@@ -43,7 +43,7 @@ import dev.silo.omniboard.ime.text.keyboard.TextKeyboard
 import dev.silo.omniboard.keyboardManager
 import dev.silo.omniboard.lib.observeAsTransformingState
 import dev.silo.omniboard.lib.util.ViewUtils
-import dev.silo.jetpref.datastore.model.observeAsState
+import dev.patrickgold.jetpref.datastore.model.observeAsState
 import org.omniboard.lib.android.AndroidVersion
 import org.omniboard.lib.android.isOrientationLandscape
 

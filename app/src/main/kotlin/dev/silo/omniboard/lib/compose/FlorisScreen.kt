@@ -40,8 +40,8 @@ import androidx.compose.ui.platform.LocalContext
 import dev.silo.omniboard.app.OmniPreferenceModel
 import dev.silo.omniboard.app.OmniPreferenceStore
 import dev.silo.omniboard.app.LocalNavController
-import dev.silo.jetpref.datastore.ui.PreferenceLayout
-import dev.silo.jetpref.datastore.ui.PreferenceUiContent
+import dev.patrickgold.jetpref.datastore.ui.PreferenceLayout
+import dev.patrickgold.jetpref.datastore.ui.PreferenceUiContent
 import org.omniboard.lib.android.AndroidVersion
 import org.omniboard.lib.compose.OmniAppBar
 import org.omniboard.lib.compose.OmniIconButton

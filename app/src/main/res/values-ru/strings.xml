@@ -690,7 +690,7 @@
     <string name="ext__validation__enter_positive_number">Укажите положительное число (&gt;=0)</string>
     <string name="ext__validation__enter_percent_size">Укажите размер в процентах</string>
     <string name="ext__validation__enter_number_between_0_100">Укажите положительное число от 0 до 100</string>
-    <string name="ext__validation__hint_value_above_50_percent">Любое значение выше 50% будет работать так же, как и 50%, попробуйте уменьшить размер в процентах</string>
+    <string name="ext__validation__hint_value_above_50_percent" formatted="false">Любое значение выше 50% будет работать так же, как и 50%, попробуйте уменьшить размер в процентах</string>
     <string name="ext__update_box__internet_permission_hint">Так как это приложение не имеет доступа к Интернету, обновления для установленных расширений придётся проверять вручную.</string>
     <string name="ext__update_box__search_for_updates">Проверить обновления</string>
     <string name="ext__addon_management_box__managing_placeholder">Управление {extensions}</string>

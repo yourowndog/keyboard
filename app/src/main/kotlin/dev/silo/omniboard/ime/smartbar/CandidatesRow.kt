@@ -46,7 +46,7 @@ import dev.silo.omniboard.ime.theme.OmniImeUi
 import dev.silo.omniboard.keyboardManager
 import dev.silo.omniboard.nlpManager
 import dev.silo.omniboard.subtypeManager
-import dev.silo.jetpref.datastore.model.observeAsState
+import dev.patrickgold.jetpref.datastore.model.observeAsState
 import org.omniboard.lib.compose.conditional
 import org.omniboard.lib.compose.omniHorizontalScroll
 import org.omniboard.lib.snygg.SnyggSelector

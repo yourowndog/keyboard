@@ -91,7 +91,7 @@ import dev.silo.omniboard.ime.keyboard.OmniImeSizing
 import dev.silo.omniboard.ime.text.keyboard.TextKeyData
 import dev.silo.omniboard.ime.theme.OmniImeUi
 import dev.silo.omniboard.keyboardManager
-import dev.silo.jetpref.datastore.model.observeAsState
+import dev.patrickgold.jetpref.datastore.model.observeAsState
 import kotlinx.coroutines.launch
 import org.omniboard.lib.android.AndroidKeyguardManager
 import org.omniboard.lib.android.showShortToast

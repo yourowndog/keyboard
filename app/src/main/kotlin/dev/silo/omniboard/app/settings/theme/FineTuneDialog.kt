@@ -22,10 +22,10 @@ import androidx.compose.ui.unit.dp
 import dev.silo.omniboard.R
 import dev.silo.omniboard.app.OmniPreferenceStore
 import dev.silo.omniboard.app.enumDisplayEntriesOf
-import dev.silo.jetpref.datastore.ui.ListPreference
-import dev.silo.jetpref.datastore.ui.PreferenceLayout
-import dev.silo.jetpref.material.ui.ColorRepresentation
-import dev.silo.jetpref.material.ui.JetPrefAlertDialog
+import dev.patrickgold.jetpref.datastore.ui.ListPreference
+import dev.patrickgold.jetpref.datastore.ui.PreferenceLayout
+import dev.patrickgold.jetpref.material.ui.ColorRepresentation
+import dev.patrickgold.jetpref.material.ui.JetPrefAlertDialog
 import org.omniboard.lib.compose.stringRes
 
 private val FineTuneContentPadding = PaddingValues(horizontal = 8.dp)

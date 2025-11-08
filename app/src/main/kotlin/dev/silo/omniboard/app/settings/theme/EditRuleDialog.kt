@@ -87,10 +87,10 @@ import dev.silo.omniboard.keyboardManager
 import dev.silo.omniboard.lib.NATIVE_NULLPTR
 import dev.silo.omniboard.lib.compose.OmniHyperlinkText
 import dev.silo.omniboard.lib.util.InputMethodUtils
-import dev.silo.jetpref.material.ui.JetPrefAlertDialog
-import dev.silo.jetpref.material.ui.JetPrefDropdown
-import dev.silo.jetpref.material.ui.JetPrefTextField
-import dev.silo.jetpref.material.ui.JetPrefTextFieldDefaults
+import dev.patrickgold.jetpref.material.ui.JetPrefAlertDialog
+import dev.patrickgold.jetpref.material.ui.JetPrefDropdown
+import dev.patrickgold.jetpref.material.ui.JetPrefTextField
+import dev.patrickgold.jetpref.material.ui.JetPrefTextFieldDefaults
 import org.omniboard.lib.android.showShortToast
 import org.omniboard.lib.android.showShortToastSync
 import org.omniboard.lib.android.stringRes

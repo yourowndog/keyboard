@@ -63,7 +63,7 @@ import dev.silo.omniboard.ime.smartbar.quickaction.ToggleOverflowPanelAction
 import dev.silo.omniboard.ime.theme.OmniImeUi
 import dev.silo.omniboard.keyboardManager
 import dev.silo.omniboard.nlpManager
-import dev.silo.jetpref.datastore.model.observeAsState
+import dev.patrickgold.jetpref.datastore.model.observeAsState
 import kotlinx.coroutines.launch
 import org.omniboard.lib.android.AndroidVersion
 import org.omniboard.lib.compose.horizontalTween

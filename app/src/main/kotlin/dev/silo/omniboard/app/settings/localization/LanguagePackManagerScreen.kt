@@ -52,9 +52,9 @@ import dev.silo.omniboard.lib.compose.OmniScreen
 import dev.silo.omniboard.lib.ext.Extension
 import dev.silo.omniboard.lib.ext.ExtensionComponentName
 import dev.silo.omniboard.lib.observeAsNonNullState
-import dev.silo.jetpref.datastore.ui.ExperimentalJetPrefDatastoreUi
-import dev.silo.jetpref.datastore.ui.Preference
-import dev.silo.jetpref.material.ui.JetPrefListItem
+import dev.patrickgold.jetpref.datastore.ui.ExperimentalJetPrefDatastoreUi
+import dev.patrickgold.jetpref.datastore.ui.Preference
+import dev.patrickgold.jetpref.material.ui.JetPrefListItem
 import org.omniboard.lib.android.showLongToast
 import org.omniboard.lib.compose.OmniOutlinedBox
 import org.omniboard.lib.compose.OmniTextButton

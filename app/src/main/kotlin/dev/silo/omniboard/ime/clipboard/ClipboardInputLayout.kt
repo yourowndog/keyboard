@@ -105,7 +105,7 @@ import dev.silo.omniboard.ime.theme.OmniImeUi
 import dev.silo.omniboard.keyboardManager
 import dev.silo.omniboard.lib.observeAsTransformingState
 import dev.silo.omniboard.lib.util.NetworkUtils
-import dev.silo.jetpref.datastore.model.observeAsState
+import dev.patrickgold.jetpref.datastore.model.observeAsState
 import java.time.Instant
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

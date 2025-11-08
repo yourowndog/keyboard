@@ -59,9 +59,9 @@ import dev.silo.omniboard.lib.compose.OmniScreen
 import dev.silo.omniboard.lib.compose.Validation
 import dev.silo.omniboard.lib.rememberValidationResult
 import dev.silo.omniboard.lib.util.launchActivity
-import dev.silo.jetpref.material.ui.JetPrefAlertDialog
-import dev.silo.jetpref.material.ui.JetPrefListItem
-import dev.silo.jetpref.material.ui.JetPrefTextField
+import dev.patrickgold.jetpref.material.ui.JetPrefAlertDialog
+import dev.patrickgold.jetpref.material.ui.JetPrefListItem
+import dev.patrickgold.jetpref.material.ui.JetPrefTextField
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.omniboard.lib.android.showLongToast

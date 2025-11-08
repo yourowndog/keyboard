@@ -24,7 +24,7 @@ import androidx.compose.ui.Modifier
 import dev.silo.omniboard.app.LocalNavController
 import dev.silo.omniboard.app.Routes
 import dev.silo.omniboard.lib.ext.Extension
-import dev.silo.jetpref.material.ui.JetPrefListItem
+import dev.patrickgold.jetpref.material.ui.JetPrefListItem
 
 @Composable
 fun <T : Extension> ExtensionList(

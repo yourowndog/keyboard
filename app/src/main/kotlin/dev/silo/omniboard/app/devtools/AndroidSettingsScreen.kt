@@ -28,8 +28,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import dev.silo.omniboard.R
 import dev.silo.omniboard.lib.compose.OmniScreen
-import dev.silo.jetpref.datastore.ui.Preference
-import dev.silo.jetpref.material.ui.JetPrefAlertDialog
+import dev.patrickgold.jetpref.datastore.ui.Preference
+import dev.patrickgold.jetpref.material.ui.JetPrefAlertDialog
 import org.omniboard.lib.android.AndroidSettings
 import org.omniboard.lib.compose.stringRes
 

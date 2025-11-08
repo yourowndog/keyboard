@@ -17,7 +17,7 @@
 package dev.silo.omniboard.lib.ext
 
 import androidx.compose.runtime.saveable.Saver
-import dev.silo.jetpref.datastore.model.PreferenceSerializer
+import dev.patrickgold.jetpref.datastore.model.PreferenceSerializer
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.PrimitiveKind

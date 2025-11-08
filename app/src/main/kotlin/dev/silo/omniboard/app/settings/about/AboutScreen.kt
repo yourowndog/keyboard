@@ -43,7 +43,7 @@ import dev.silo.omniboard.app.Routes
 import dev.silo.omniboard.clipboardManager
 import dev.silo.omniboard.lib.compose.OmniScreen
 import dev.silo.omniboard.lib.util.launchUrl
-import dev.silo.jetpref.datastore.ui.Preference
+import dev.patrickgold.jetpref.datastore.ui.Preference
 import org.omniboard.lib.android.stringRes
 import org.omniboard.lib.compose.OmniCanvasIcon
 import org.omniboard.lib.compose.stringRes

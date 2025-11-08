@@ -39,8 +39,8 @@ import dev.silo.omniboard.app.LocalNavController
 import dev.silo.omniboard.app.Routes
 import dev.silo.omniboard.lib.compose.OmniScreen
 import dev.silo.omniboard.lib.util.InputMethodUtils
-import dev.silo.jetpref.datastore.model.observeAsState
-import dev.silo.jetpref.datastore.ui.Preference
+import dev.patrickgold.jetpref.datastore.model.observeAsState
+import dev.patrickgold.jetpref.datastore.ui.Preference
 import org.omniboard.lib.compose.OmniErrorCard
 import org.omniboard.lib.compose.OmniWarningCard
 import org.omniboard.lib.compose.stringRes

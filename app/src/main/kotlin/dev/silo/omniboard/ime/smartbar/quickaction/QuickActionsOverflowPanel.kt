@@ -34,7 +34,7 @@ import dev.silo.omniboard.app.OmniPreferenceStore
 import dev.silo.omniboard.ime.keyboard.OmniImeSizing
 import dev.silo.omniboard.ime.theme.OmniImeUi
 import dev.silo.omniboard.keyboardManager
-import dev.silo.jetpref.datastore.model.observeAsState
+import dev.patrickgold.jetpref.datastore.model.observeAsState
 import org.omniboard.lib.compose.stringRes
 import org.omniboard.lib.snygg.ui.SnyggBox
 import org.omniboard.lib.snygg.ui.SnyggButton

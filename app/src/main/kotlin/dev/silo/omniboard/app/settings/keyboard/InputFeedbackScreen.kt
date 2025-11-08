@@ -23,11 +23,11 @@ import dev.silo.omniboard.app.enumDisplayEntriesOf
 import dev.silo.omniboard.ime.input.HapticVibrationMode
 import dev.silo.omniboard.ime.input.InputFeedbackActivationMode
 import dev.silo.omniboard.lib.compose.OmniScreen
-import dev.silo.jetpref.datastore.ui.DialogSliderPreference
-import dev.silo.jetpref.datastore.ui.ExperimentalJetPrefDatastoreUi
-import dev.silo.jetpref.datastore.ui.ListPreference
-import dev.silo.jetpref.datastore.ui.PreferenceGroup
-import dev.silo.jetpref.datastore.ui.SwitchPreference
+import dev.patrickgold.jetpref.datastore.ui.DialogSliderPreference
+import dev.patrickgold.jetpref.datastore.ui.ExperimentalJetPrefDatastoreUi
+import dev.patrickgold.jetpref.datastore.ui.ListPreference
+import dev.patrickgold.jetpref.datastore.ui.PreferenceGroup
+import dev.patrickgold.jetpref.datastore.ui.SwitchPreference
 import org.omniboard.lib.android.systemVibratorOrNull
 import org.omniboard.lib.android.vibrate
 import org.omniboard.lib.compose.stringRes
