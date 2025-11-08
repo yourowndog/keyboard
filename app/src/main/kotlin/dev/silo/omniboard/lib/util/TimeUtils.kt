@@ -18,7 +18,7 @@ package dev.silo.omniboard.lib.util
 
 import android.icu.text.SimpleDateFormat
 import dev.silo.omniboard.lib.OmniLocale
-import dev.silo.jetpref.datastore.model.LocalTime
+import dev.patrickgold.jetpref.datastore.model.LocalTime
 import java.time.Instant
 import java.time.format.DateTimeFormatter
 

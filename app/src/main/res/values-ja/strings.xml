@@ -758,7 +758,7 @@
     <string name="ext__validation__enter_positive_number">正の数 (&gt;=0) を入力してください</string>
     <string name="ext__validation__enter_percent_size">パーセントサイズを入力してください</string>
     <string name="ext__validation__enter_number_between_0_100">0から100の間の正の数を入力してください</string>
-    <string name="ext__validation__hint_value_above_50_percent">50%を超える値は50%に設定した場合と同様に動作します。パーセントサイズを小さくすることを検討してください</string>
+    <string name="ext__validation__hint_value_above_50_percent" formatted="false">50%を超える値は50%に設定した場合と同様に動作します。パーセントサイズを小さくすることを検討してください</string>
     <string name="ext__update_box__internet_permission_hint">このアプリにはインターネットアクセス許可がないため、インストールされている拡張機能の更新は手動で確認する必要があります。</string>
     <string name="ext__update_box__search_for_updates">更新を確認</string>
     <string name="ext__addon_management_box__managing_placeholder">{extensions}を管理中</string>

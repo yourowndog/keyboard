@@ -39,7 +39,7 @@ import dev.silo.omniboard.ime.smartbar.quickaction.QuickActionsOverflowPanel
 import dev.silo.omniboard.ime.text.keyboard.TextKeyboardLayout
 import dev.silo.omniboard.ime.theme.OmniImeUi
 import dev.silo.omniboard.keyboardManager
-import dev.silo.jetpref.datastore.model.observeAsState
+import dev.patrickgold.jetpref.datastore.model.observeAsState
 import org.omniboard.lib.snygg.ui.SnyggIcon
 
 @Composable

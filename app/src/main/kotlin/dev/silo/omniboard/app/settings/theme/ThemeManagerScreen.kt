@@ -40,8 +40,8 @@ import dev.silo.omniboard.lib.compose.OmniScreen
 import dev.silo.omniboard.lib.ext.ExtensionComponentName
 import dev.silo.omniboard.lib.observeAsNonNullState
 import dev.silo.omniboard.themeManager
-import dev.silo.jetpref.datastore.model.observeAsState
-import dev.silo.jetpref.material.ui.JetPrefListItem
+import dev.patrickgold.jetpref.datastore.model.observeAsState
+import dev.patrickgold.jetpref.material.ui.JetPrefListItem
 import org.omniboard.lib.compose.OmniOutlinedBox
 import org.omniboard.lib.compose.defaultOmniOutlinedBox
 import org.omniboard.lib.compose.rippleClickable

@@ -18,7 +18,7 @@ package dev.silo.omniboard.ime.smartbar.quickaction
 
 import dev.silo.omniboard.ime.text.keyboard.TextKeyData
 import dev.silo.omniboard.lib.io.DefaultJsonConfig
-import dev.silo.jetpref.datastore.model.PreferenceSerializer
+import dev.patrickgold.jetpref.datastore.model.PreferenceSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule

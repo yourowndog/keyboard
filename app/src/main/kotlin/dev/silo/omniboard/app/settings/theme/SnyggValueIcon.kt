@@ -57,7 +57,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.silo.omniboard.app.OmniPreferenceStore
-import dev.silo.jetpref.datastore.model.observeAsState
+import dev.patrickgold.jetpref.datastore.model.observeAsState
 import org.omniboard.lib.snygg.value.SnyggCutCornerDpShapeValue
 import org.omniboard.lib.snygg.value.SnyggDefinedVarValue
 import org.omniboard.lib.snygg.value.SnyggDpSizeValue
@@ -66,7 +66,7 @@ import org.omniboard.lib.snygg.value.SnyggShapeValue
 import org.omniboard.lib.snygg.value.SnyggStaticColorValue
 import org.omniboard.lib.snygg.value.SnyggSpSizeValue
 import org.omniboard.lib.snygg.value.SnyggValue
-import dev.silo.jetpref.material.ui.checkeredBackground
+import dev.patrickgold.jetpref.material.ui.checkeredBackground
 import org.omniboard.lib.color.ColorMappings
 import org.omniboard.lib.color.getColor
 import org.omniboard.lib.snygg.value.SnyggContentScaleValue

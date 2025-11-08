@@ -782,7 +782,7 @@
     <string name="ext__validation__enter_positive_number">Zadejte prosím kladné číslo (&gt;=0)</string>
     <string name="ext__validation__enter_percent_size">Zadejte prosím velikost v procentech</string>
     <string name="ext__validation__enter_number_between_0_100">Zadejte prosím kladné číslo mezi 0 a 100</string>
-    <string name="ext__validation__hint_value_above_50_percent">Jakákoli hodnota nad 50 % se bude chovat, jako kdybyste nastavili 50 %, zvažte snížení velikosti v procentech</string>
+    <string name="ext__validation__hint_value_above_50_percent" formatted="false">Jakákoli hodnota nad 50 % se bude chovat, jako kdybyste nastavili 50 %, zvažte snížení velikosti v procentech</string>
     <string name="ext__update_box__internet_permission_hint">Jelikož tato aplikace nemá přístup k internetu, musíte aktualizace nainstalovaných rozšíření kontrolovat ručně.</string>
     <string name="ext__update_box__search_for_updates">Vyhledat aktualizace</string>
     <string name="ext__addon_management_box__managing_placeholder">Správa {extensions}</string>

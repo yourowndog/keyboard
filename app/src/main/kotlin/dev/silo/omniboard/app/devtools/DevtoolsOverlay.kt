@@ -52,7 +52,7 @@ import dev.silo.omniboard.lib.OmniLocale
 import dev.silo.omniboard.lib.observeAsNonNullState
 import dev.silo.omniboard.nlpManager
 import dev.silo.omniboard.themeManager
-import dev.silo.jetpref.datastore.model.observeAsState
+import dev.patrickgold.jetpref.datastore.model.observeAsState
 import java.text.SimpleDateFormat
 import java.util.*
 import org.omniboard.lib.android.AndroidVersion

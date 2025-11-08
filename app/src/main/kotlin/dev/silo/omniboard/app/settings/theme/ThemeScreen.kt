@@ -39,12 +39,12 @@ import dev.silo.omniboard.ime.theme.ThemeMode
 import dev.silo.omniboard.lib.compose.OmniScreen
 import dev.silo.omniboard.lib.ext.ExtensionComponentName
 import dev.silo.omniboard.themeManager
-import dev.silo.jetpref.datastore.model.observeAsState
-import dev.silo.jetpref.datastore.ui.ColorPickerPreference
-import dev.silo.jetpref.datastore.ui.ListPreference
-import dev.silo.jetpref.datastore.ui.LocalTimePickerPreference
-import dev.silo.jetpref.datastore.ui.Preference
-import dev.silo.jetpref.datastore.ui.isMaterialYou
+import dev.patrickgold.jetpref.datastore.model.observeAsState
+import dev.patrickgold.jetpref.datastore.ui.ColorPickerPreference
+import dev.patrickgold.jetpref.datastore.ui.ListPreference
+import dev.patrickgold.jetpref.datastore.ui.LocalTimePickerPreference
+import dev.patrickgold.jetpref.datastore.ui.Preference
+import dev.patrickgold.jetpref.datastore.ui.isMaterialYou
 import org.omniboard.lib.color.ColorMappings
 import org.omniboard.lib.compose.stringRes
 

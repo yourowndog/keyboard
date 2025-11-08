@@ -43,9 +43,9 @@ import dev.silo.omniboard.ime.text.gestures.SwipeAction
 import dev.silo.omniboard.ime.text.key.KeyHintMode
 import dev.silo.omniboard.ime.text.key.UtilityKeyAction
 import dev.silo.omniboard.ime.theme.ThemeMode
-import dev.silo.jetpref.datastore.ui.ListPreferenceEntry
-import dev.silo.jetpref.datastore.ui.listPrefEntries
-import dev.silo.jetpref.material.ui.ColorRepresentation
+import dev.patrickgold.jetpref.datastore.ui.ListPreferenceEntry
+import dev.patrickgold.jetpref.datastore.ui.listPrefEntries
+import dev.patrickgold.jetpref.material.ui.ColorRepresentation
 import org.omniboard.lib.compose.stringRes
 import org.omniboard.lib.kotlin.curlyFormat
 import kotlin.reflect.KClass

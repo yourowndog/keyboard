@@ -55,9 +55,9 @@ import dev.silo.omniboard.lib.devtools.flogError
 import dev.silo.omniboard.lib.ext.ExtensionManager
 import dev.silo.omniboard.lib.io.FileRegistry
 import dev.silo.omniboard.lib.io.ZipUtils
-import dev.silo.jetpref.datastore.runtime.AndroidAppDataStorage
-import dev.silo.jetpref.datastore.runtime.FileBasedStorage
-import dev.silo.jetpref.material.ui.JetPrefListItem
+import dev.patrickgold.jetpref.datastore.runtime.AndroidAppDataStorage
+import dev.patrickgold.jetpref.datastore.runtime.FileBasedStorage
+import dev.patrickgold.jetpref.material.ui.JetPrefListItem
 import kotlinx.coroutines.launch
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

@@ -55,10 +55,10 @@ import dev.silo.omniboard.lib.cache.CacheManager
 import dev.silo.omniboard.lib.compose.OmniScreen
 import dev.silo.omniboard.lib.ext.ExtensionManager
 import dev.silo.omniboard.lib.io.ZipUtils
-import dev.silo.jetpref.datastore.runtime.AndroidAppDataStorage
-import dev.silo.jetpref.datastore.runtime.FileBasedStorage
-import dev.silo.jetpref.datastore.runtime.ImportStrategy
-import dev.silo.jetpref.datastore.ui.Preference
+import dev.patrickgold.jetpref.datastore.runtime.AndroidAppDataStorage
+import dev.patrickgold.jetpref.datastore.runtime.FileBasedStorage
+import dev.patrickgold.jetpref.datastore.runtime.ImportStrategy
+import dev.patrickgold.jetpref.datastore.ui.Preference
 import java.io.FileNotFoundException
 import java.text.DateFormat
 import java.util.*

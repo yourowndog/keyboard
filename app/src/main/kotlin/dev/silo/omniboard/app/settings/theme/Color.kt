@@ -17,7 +17,7 @@
 package dev.silo.omniboard.app.settings.theme
 
 import androidx.compose.ui.graphics.Color
-import dev.silo.jetpref.datastore.model.PreferenceSerializer
+import dev.patrickgold.jetpref.datastore.model.PreferenceSerializer
 
 object ColorPreferenceSerializer : PreferenceSerializer<Color> {
     @OptIn(ExperimentalStdlibApi::class)

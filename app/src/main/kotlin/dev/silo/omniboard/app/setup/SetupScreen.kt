@@ -51,8 +51,8 @@ import dev.silo.omniboard.lib.compose.OmniScreenScope
 import dev.silo.omniboard.lib.util.InputMethodUtils
 import dev.silo.omniboard.lib.util.launchActivity
 import dev.silo.omniboard.lib.util.launchUrl
-import dev.silo.jetpref.datastore.model.observeAsState
-import dev.silo.jetpref.datastore.ui.PreferenceUiScope
+import dev.patrickgold.jetpref.datastore.model.observeAsState
+import dev.patrickgold.jetpref.datastore.ui.PreferenceUiScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

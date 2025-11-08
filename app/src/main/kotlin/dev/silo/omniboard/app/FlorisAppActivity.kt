@@ -53,8 +53,8 @@ import dev.silo.omniboard.lib.compose.LocalPreviewFieldController
 import dev.silo.omniboard.lib.compose.PreviewKeyboardField
 import dev.silo.omniboard.lib.compose.rememberPreviewFieldController
 import dev.silo.omniboard.lib.util.AppVersionUtils
-import dev.silo.jetpref.datastore.model.observeAsState
-import dev.silo.jetpref.datastore.ui.ProvideDefaultDialogPrefStrings
+import dev.patrickgold.jetpref.datastore.model.observeAsState
+import dev.patrickgold.jetpref.datastore.ui.ProvideDefaultDialogPrefStrings
 import org.omniboard.lib.android.AndroidVersion
 import org.omniboard.lib.android.hideAppIcon
 import org.omniboard.lib.android.showAppIcon

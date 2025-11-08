@@ -49,8 +49,8 @@ import dev.silo.omniboard.app.LocalNavController
 import dev.silo.omniboard.ime.core.DisplayLanguageNamesIn
 import dev.silo.omniboard.lib.OmniLocale
 import dev.silo.omniboard.lib.compose.OmniScreen
-import dev.silo.jetpref.datastore.model.observeAsState
-import dev.silo.jetpref.material.ui.JetPrefListItem
+import dev.patrickgold.jetpref.datastore.model.observeAsState
+import dev.patrickgold.jetpref.material.ui.JetPrefListItem
 import org.omniboard.lib.compose.omniScrollbar
 import org.omniboard.lib.compose.stringRes
 

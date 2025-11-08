@@ -49,9 +49,9 @@ import androidx.compose.ui.unit.dp
 import dev.silo.omniboard.R
 import dev.silo.omniboard.lib.cache.CacheManager
 import dev.silo.omniboard.lib.compose.OmniScreen
-import dev.silo.jetpref.datastore.ui.Preference
-import dev.silo.jetpref.material.ui.JetPrefAlertDialog
-import dev.silo.jetpref.material.ui.JetPrefTextField
+import dev.patrickgold.jetpref.datastore.ui.Preference
+import dev.patrickgold.jetpref.material.ui.JetPrefAlertDialog
+import dev.patrickgold.jetpref.material.ui.JetPrefTextField
 import java.io.File
 import java.util.*
 import org.omniboard.lib.android.query

@@ -80,9 +80,9 @@ import dev.silo.omniboard.lib.io.OmniRef
 import dev.silo.omniboard.lib.io.ZipUtils
 import dev.silo.omniboard.lib.rememberValidationResult
 import dev.silo.omniboard.themeManager
-import dev.silo.jetpref.datastore.ui.Preference
-import dev.silo.jetpref.material.ui.JetPrefAlertDialog
-import dev.silo.jetpref.material.ui.JetPrefTextField
+import dev.patrickgold.jetpref.datastore.ui.Preference
+import dev.patrickgold.jetpref.material.ui.JetPrefAlertDialog
+import dev.patrickgold.jetpref.material.ui.JetPrefTextField
 import java.util.*
 import org.omniboard.lib.compose.OmniButtonBar
 import org.omniboard.lib.compose.OmniIconButton

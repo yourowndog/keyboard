@@ -780,7 +780,7 @@
     <string name="ext__validation__enter_positive_number">Въведете положително число (&gt;=0)</string>
     <string name="ext__validation__enter_percent_size">Въведете размер в проценти</string>
     <string name="ext__validation__enter_number_between_0_100">Въведете положително число между 0 и 100</string>
-    <string name="ext__validation__hint_value_above_50_percent">Стойности над 50% ще бъдат приравнени на 50%, така че намалете стойността</string>
+    <string name="ext__validation__hint_value_above_50_percent" formatted="false">Стойности над 50% ще бъдат приравнени на 50%, така че намалете стойността</string>
     <string name="ext__update_box__internet_permission_hint">Понеже приложението няма достъп до интернет, проверката за обновяване на инсталираните разширения се извършва ръчно.</string>
     <string name="ext__update_box__search_for_updates">Проверка за обновяване</string>
     <string name="ext__addon_management_box__managing_placeholder">Управление на {extensions}</string>

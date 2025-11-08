@@ -27,7 +27,7 @@ import dev.silo.omniboard.app.LocalNavController
 import dev.silo.omniboard.app.Routes
 import dev.silo.omniboard.extensionManager
 import dev.silo.omniboard.lib.compose.OmniScreen
-import dev.silo.jetpref.datastore.ui.Preference
+import dev.patrickgold.jetpref.datastore.ui.Preference
 import org.omniboard.lib.compose.stringRes
 
 @Composable

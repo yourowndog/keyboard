@@ -30,7 +30,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import dev.silo.omniboard.app.AppTheme
 import dev.silo.omniboard.app.OmniPreferenceStore
-import dev.silo.jetpref.datastore.model.observeAsState
+import dev.patrickgold.jetpref.datastore.model.observeAsState
 import org.omniboard.lib.color.ColorMappings
 
 /*private val AmoledDarkColorPalette = darkColorScheme(

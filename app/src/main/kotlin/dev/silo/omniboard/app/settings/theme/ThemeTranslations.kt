@@ -20,7 +20,7 @@ import android.content.Context
 import dev.silo.omniboard.R
 import dev.silo.omniboard.ime.theme.OmniImeUi
 import dev.silo.omniboard.lib.UnicodeCtrlChar
-import dev.silo.jetpref.material.ui.ColorRepresentation
+import dev.patrickgold.jetpref.material.ui.ColorRepresentation
 import org.omniboard.lib.kotlin.simpleNameOrEnclosing
 import org.omniboard.lib.snygg.Snygg
 import org.omniboard.lib.snygg.SnyggElementRule

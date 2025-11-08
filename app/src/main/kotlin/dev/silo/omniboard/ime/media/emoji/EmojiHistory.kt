@@ -18,7 +18,7 @@ package dev.silo.omniboard.ime.media.emoji
 
 import dev.silo.omniboard.app.OmniPreferenceModel
 import dev.silo.omniboard.lib.devtools.flogError
-import dev.silo.jetpref.datastore.model.PreferenceSerializer
+import dev.patrickgold.jetpref.datastore.model.PreferenceSerializer
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.Serializable

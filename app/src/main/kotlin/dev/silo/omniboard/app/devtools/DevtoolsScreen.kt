@@ -31,10 +31,10 @@ import dev.silo.omniboard.ime.dictionary.OmniUserDictionaryDatabase
 import dev.silo.omniboard.ime.smartbar.quickaction.QuickActionArrangement
 import dev.silo.omniboard.lib.compose.OmniConfirmDeleteDialog
 import dev.silo.omniboard.lib.compose.OmniScreen
-import dev.silo.jetpref.datastore.model.observeAsState
-import dev.silo.jetpref.datastore.ui.Preference
-import dev.silo.jetpref.datastore.ui.PreferenceGroup
-import dev.silo.jetpref.datastore.ui.SwitchPreference
+import dev.patrickgold.jetpref.datastore.model.observeAsState
+import dev.patrickgold.jetpref.datastore.ui.Preference
+import dev.patrickgold.jetpref.datastore.ui.PreferenceGroup
+import dev.patrickgold.jetpref.datastore.ui.SwitchPreference
 import org.omniboard.lib.android.AndroidSettings
 import kotlinx.coroutines.launch
 import org.omniboard.lib.android.AndroidVersion

@@ -79,11 +79,11 @@ import dev.silo.omniboard.lib.compose.OmniScreen
 import dev.silo.omniboard.lib.ext.ExtensionComponentName
 import dev.silo.omniboard.lib.observeAsNonNullState
 import dev.silo.omniboard.subtypeManager
-import dev.silo.jetpref.datastore.model.observeAsState
-import dev.silo.jetpref.material.ui.JetPrefAlertDialog
-import dev.silo.jetpref.material.ui.JetPrefDropdown
-import dev.silo.jetpref.material.ui.JetPrefDropdownMenuDefaults
-import dev.silo.jetpref.material.ui.JetPrefListItem
+import dev.patrickgold.jetpref.datastore.model.observeAsState
+import dev.patrickgold.jetpref.material.ui.JetPrefAlertDialog
+import dev.patrickgold.jetpref.material.ui.JetPrefDropdown
+import dev.patrickgold.jetpref.material.ui.JetPrefDropdownMenuDefaults
+import dev.patrickgold.jetpref.material.ui.JetPrefListItem
 import org.omniboard.lib.compose.OmniButtonBar
 import org.omniboard.lib.compose.OmniDropdownLikeButton
 import org.omniboard.lib.compose.omniScrollbar

@@ -49,7 +49,7 @@ import androidx.compose.ui.unit.dp
 import dev.silo.omniboard.R
 import dev.silo.omniboard.app.OmniPreferenceStore
 import dev.silo.omniboard.app.apptheme.OmniAppTheme
-import dev.silo.jetpref.datastore.model.observeAsState
+import dev.patrickgold.jetpref.datastore.model.observeAsState
 import org.omniboard.lib.android.AndroidClipboardManager
 import org.omniboard.lib.android.AndroidVersion
 import org.omniboard.lib.android.stringRes

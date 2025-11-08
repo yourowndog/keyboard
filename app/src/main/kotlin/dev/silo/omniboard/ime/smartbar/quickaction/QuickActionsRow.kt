@@ -33,7 +33,7 @@ import dev.silo.omniboard.app.OmniPreferenceStore
 import dev.silo.omniboard.ime.smartbar.SmartbarLayout
 import dev.silo.omniboard.ime.text.keyboard.TextKeyData
 import dev.silo.omniboard.keyboardManager
-import dev.silo.jetpref.datastore.model.observeAsState
+import dev.patrickgold.jetpref.datastore.model.observeAsState
 import org.omniboard.lib.snygg.ui.SnyggRow
 
 internal val ToggleOverflowPanelAction = QuickAction.InsertKey(TextKeyData.TOGGLE_ACTIONS_OVERFLOW)

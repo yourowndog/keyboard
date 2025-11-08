@@ -33,7 +33,7 @@ import androidx.compose.ui.text.font.FontFamily
 import dev.silo.omniboard.R
 import dev.silo.omniboard.ime.core.DisplayLanguageNamesIn
 import dev.silo.omniboard.lib.compose.OmniScreen
-import dev.silo.jetpref.datastore.model.observeAsState
+import dev.patrickgold.jetpref.datastore.model.observeAsState
 import org.omniboard.lib.android.showLongToastSync
 import org.omniboard.lib.compose.OmniIconButton
 import org.omniboard.lib.compose.stringRes

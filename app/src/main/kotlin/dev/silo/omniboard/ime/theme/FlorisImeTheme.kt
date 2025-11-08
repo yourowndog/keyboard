@@ -30,7 +30,7 @@ import androidx.compose.ui.text.TextStyle
 import dev.silo.omniboard.app.OmniPreferenceStore
 import dev.silo.omniboard.keyboardManager
 import dev.silo.omniboard.themeManager
-import dev.silo.jetpref.datastore.model.observeAsState
+import dev.patrickgold.jetpref.datastore.model.observeAsState
 import org.omniboard.lib.snygg.ui.ProvideSnyggTheme
 import org.omniboard.lib.snygg.ui.rememberSnyggTheme
 

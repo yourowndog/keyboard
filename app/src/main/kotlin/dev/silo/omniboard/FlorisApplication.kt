@@ -42,7 +42,7 @@ import dev.silo.omniboard.lib.devtools.Flog
 import dev.silo.omniboard.lib.devtools.LogTopic
 import dev.silo.omniboard.lib.devtools.flogError
 import dev.silo.omniboard.lib.ext.ExtensionManager
-import dev.silo.jetpref.datastore.runtime.initAndroid
+import dev.patrickgold.jetpref.datastore.runtime.initAndroid
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

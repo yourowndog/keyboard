@@ -111,7 +111,7 @@ import dev.silo.omniboard.lib.observeAsTransformingState
 import dev.silo.omniboard.lib.util.ViewUtils
 import dev.silo.omniboard.lib.util.debugSummarize
 import dev.silo.omniboard.lib.util.launchActivity
-import dev.silo.jetpref.datastore.model.observeAsState
+import dev.patrickgold.jetpref.datastore.model.observeAsState
 import java.lang.ref.WeakReference
 import kotlinx.coroutines.flow.update
 import org.omniboard.lib.android.AndroidInternalR

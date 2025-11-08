@@ -84,7 +84,7 @@ import dev.silo.omniboard.lib.devtools.LogTopic
 import dev.silo.omniboard.lib.devtools.flogDebug
 import dev.silo.omniboard.lib.observeAsTransformingState
 import dev.silo.omniboard.lib.toIntOffset
-import dev.silo.jetpref.datastore.model.observeAsState
+import dev.patrickgold.jetpref.datastore.model.observeAsState
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.onFailure
 import kotlinx.coroutines.isActive
