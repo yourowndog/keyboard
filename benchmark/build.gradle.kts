@@ -20,7 +20,7 @@ plugins {
 }
 
 android {
-    namespace = "dev.patrickgold.florisboard.benchmark"
+    namespace = "dev.silo.omniboard.benchmark"
     compileSdk = 34
 
     compileOptions {

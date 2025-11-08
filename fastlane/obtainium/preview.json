@@ -1,7 +1,7 @@
 {
-  "id": "dev.patrickgold.florisboard.beta",
-  "url": "https://github.com/florisboard/florisboard",
-  "author": "florisboard",
-  "name": "FlorisBoard Preview",
+  "id": "dev.silo.omniboard.beta",
+  "url": "https://github.com/brokentooth-io/omniboard",
+  "author": "brokentooth.io",
+  "name": "OmniBoard Preview",
   "additionalSettings": "{\"includePrereleases\":true,\"fallbackToOlderReleases\":true,\"apkFilterRegEx\":\"preview\"}"
 }
