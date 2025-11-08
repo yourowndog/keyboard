@@ -1,7 +1,7 @@
 {
-  "id": "dev.patrickgold.florisboard",
-  "url": "https://github.com/florisboard/florisboard",
-  "author": "florisboard",
-  "name": "FlorisBoard Stable",
+  "id": "dev.silo.omniboard",
+  "url": "https://github.com/brokentooth-io/omniboard",
+  "author": "brokentooth.io",
+  "name": "OmniBoard Stable",
   "additionalSettings": "{\"includePrereleases\":false,\"fallbackToOlderReleases\":true,\"apkFilterRegEx\":\"stable\"}"
 }

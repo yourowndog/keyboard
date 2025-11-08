@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package dev.patrickgold.florisboard.benchmark
+package dev.silo.omniboard.benchmark
 
 import androidx.benchmark.macro.BaselineProfileMode
 import androidx.benchmark.macro.CompilationMode
@@ -72,15 +72,15 @@ abstract class AbstractStartupBenchmark(private val startupMode: StartupMode) {
     fun startupFullCompilation() = startup(CompilationMode.Full())
 
     private fun startup(compilationMode: CompilationMode) = benchmarkRule.measureRepeated(
-        packageName = "dev.patrickgold.florisboard",
+        packageName = "dev.silo.omniboard",
         metrics = listOf(StartupTimingMetric()),
         compilationMode = compilationMode,
         iterations = 10,
         startupMode = startupMode,
         setupBlock = {
             pressHome()
-            device.executeShellCommand("ime enable dev.patrickgold.florisboard/.FlorisImeService")
-            device.executeShellCommand("ime set dev.patrickgold.florisboard/.FlorisImeService")
+            device.executeShellCommand("ime enable dev.silo.omniboard/.OmniImeService")
+            device.executeShellCommand("ime set dev.silo.omniboard/.OmniImeService")
         }
     ) {
         startActivityAndWait()
