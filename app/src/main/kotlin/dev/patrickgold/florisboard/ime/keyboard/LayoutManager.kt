@@ -17,7 +17,6 @@
 package dev.patrickgold.florisboard.ime.keyboard
 
 import android.content.Context
-import android.view.inputmethod.EditorInfo
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.app.layoutbuilder.LayoutKey
 import dev.patrickgold.florisboard.app.layoutbuilder.LayoutKeyStyle
@@ -26,6 +25,7 @@ import dev.patrickgold.florisboard.app.layoutbuilder.LayoutRow
 import dev.patrickgold.florisboard.appContext
 import dev.patrickgold.florisboard.extensionManager
 import dev.patrickgold.florisboard.ime.core.Subtype
+import dev.patrickgold.florisboard.ime.editor.FlorisEditorInfo
 import dev.patrickgold.florisboard.ime.popup.PopupMapping
 import dev.patrickgold.florisboard.ime.popup.PopupMappingComponent
 import dev.patrickgold.florisboard.ime.text.key.KeyCode
@@ -461,7 +461,7 @@ class LayoutManager(context: Context) {
         pack: LayoutPack,
         keyboardMode: KeyboardMode,
         subtype: Subtype,
-        editorInfo: EditorInfo,
+        editorInfo: FlorisEditorInfo,
         state: KeyboardState,
     ): TextKeyboard {
         require(keyboardMode == KeyboardMode.CHARACTERS) {
