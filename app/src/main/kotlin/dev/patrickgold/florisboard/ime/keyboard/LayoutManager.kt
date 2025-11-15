@@ -461,8 +461,8 @@ class LayoutManager(context: Context) {
         pack: LayoutPack,
         keyboardMode: KeyboardMode,
         subtype: Subtype,
-        _editorInfo: EditorInfo,
-        _state: KeyboardState,
+        editorInfo: EditorInfo,
+        state: KeyboardState,
     ): TextKeyboard {
         require(keyboardMode == KeyboardMode.CHARACTERS) {
             "Layout packs are currently supported only for CHARACTER mode"
