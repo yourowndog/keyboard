@@ -28,7 +28,6 @@ import dev.patrickgold.florisboard.ime.core.Subtype
 import dev.patrickgold.florisboard.ime.editor.FlorisEditorInfo
 import dev.patrickgold.florisboard.ime.popup.PopupMapping
 import dev.patrickgold.florisboard.ime.popup.PopupMappingComponent
-import dev.patrickgold.florisboard.ime.text.key.KeyCode
 import dev.patrickgold.florisboard.ime.text.key.KeyType
 import dev.patrickgold.florisboard.ime.text.keyboard.TextKey
 import dev.patrickgold.florisboard.ime.text.keyboard.TextKeyData
@@ -114,6 +113,8 @@ class LayoutManager(context: Context) {
     private val popupMappingCacheGuard: Mutex = Mutex(locked = false)
     private val ioScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
+    private val internalKeyMap = TextKeyData.InternalKeys.associateBy { it.label.uppercase() }
+
     val debugLayoutComputationResultFlow = MutableStateFlow<DebugLayoutComputationResult?>(null)
 
     /**
@@ -180,10 +181,6 @@ class LayoutManager(context: Context) {
         }.await().getOrThrow()
     }
 
-    private fun resolveInternalKeyByLabel(label: String): TextKeyData? {
-        return TextKeyData.InternalKeys.firstOrNull { it.label.equals(label, ignoreCase = true) }
-    }
-
     private fun resolveLayoutPackTextKeyData(
         rawCode: String,
         rawLabel: String,
@@ -199,6 +196,18 @@ class LayoutManager(context: Context) {
             LayoutKeyStyle.SPECIAL_RIGHT -> KeyData.GROUP_RIGHT
             else -> KeyData.GROUP_DEFAULT
         }
+
+        val normalizedCode = trimmedCode.uppercase()
+        internalKeyMap[normalizedCode]?.let {
+            return it.copy(label = preferredLabel, groupId = groupId)
+        }
+        if (normalizedCode.startsWith("KEYCODE_")) {
+            val keycodeName = normalizedCode.removePrefix("KEYCODE_")
+            internalKeyMap[keycodeName]?.let {
+                return it.copy(label = preferredLabel, groupId = groupId)
+            }
+        }
+
         val codePointCount = trimmedCode.codePointCount(0, trimmedCode.length)
         if (codePointCount == 1) {
             val codePoint = trimmedCode.codePointAt(0)
@@ -209,68 +218,13 @@ class LayoutManager(context: Context) {
                 groupId = groupId,
             )
         }
-        resolveInternalKeyByLabel(trimmedCode)?.let { base ->
-            return base.copy(label = preferredLabel, groupId = groupId)
-        }
-        val normalized = trimmedCode.uppercase()
-        if (normalized.startsWith("KEYCODE_")) {
-            val suffix = normalized.removePrefix("KEYCODE_").lowercase()
-            resolveInternalKeyByLabel(suffix)?.let { base ->
-                return base.copy(label = preferredLabel, groupId = groupId)
-            }
-            when (suffix) {
-                "space" -> {
-                    return TextKeyData.SPACE.copy(label = preferredLabel, groupId = groupId)
-                }
-                "enter" -> {
-                    return TextKeyData(
-                        type = KeyType.ENTER_EDITING,
-                        code = KeyCode.ENTER,
-                        label = preferredLabel,
-                        groupId = KeyData.GROUP_ENTER,
-                    )
-                }
-                "delete" -> {
-                    return TextKeyData.DELETE.copy(label = preferredLabel, groupId = groupId)
-                }
-                "shift" -> {
-                    return TextKeyData.SHIFT.copy(label = preferredLabel, groupId = groupId)
-                }
-            }
-        }
-        when (normalized) {
-            "MODE_SYMBOLS" -> {
-                return TextKeyData.VIEW_SYMBOLS.copy(label = preferredLabel, groupId = groupId)
-            }
-            "MODE_SYMBOLS2" -> {
-                return TextKeyData.VIEW_SYMBOLS2.copy(label = preferredLabel, groupId = groupId)
-            }
-            "MODE_CHARACTERS" -> {
-                return TextKeyData.VIEW_CHARACTERS.copy(label = preferredLabel, groupId = groupId)
-            }
-            "MODE_NUMERIC_ADVANCED" -> {
-                return TextKeyData.VIEW_NUMERIC_ADVANCED.copy(label = preferredLabel, groupId = groupId)
-            }
-            "MODE_NUMERIC" -> {
-                return TextKeyData(
-                    type = KeyType.SYSTEM_GUI,
-                    code = KeyCode.VIEW_NUMERIC,
-                    label = preferredLabel,
-                    groupId = groupId,
-                )
-            }
-            "CTRL_MOD", "CTRL" -> {
-                return TextKeyData.CTRL.copy(label = preferredLabel, groupId = groupId)
-            }
-            "MENU_TOGGLE" -> {
-                return TextKeyData.TOGGLE_ACTIONS_OVERFLOW.copy(label = preferredLabel, groupId = groupId)
-            }
-        }
+
         trimmedCode.toIntOrNull()?.let { numericCode ->
             TextKeyData.getCodeInfoAsTextKeyData(numericCode)?.let { base ->
                 return base.copy(label = preferredLabel, groupId = groupId)
             }
         }
+
         return null
     }
 

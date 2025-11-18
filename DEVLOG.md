@@ -17,3 +17,7 @@
 ### 2025-11-18
 * **Task:** Patched the layout validator to accept a whitelist of special internal key codes (e.g., `KEYCODE_TAB`, `MODE_SYMBOLS`) in custom layouts.
 * **Files:** `[app/src/main/kotlin/dev/patrickgold/florisboard/app/layoutbuilder/LayoutValidation.kt]`
+
+### 2025-11-18
+* **Task:** Refactored the runtime layout engine to correctly map special key codes from user-defined layouts to their corresponding `TextKeyData` actions.
+* **Files:** `[app/src/main/kotlin/dev/patrickgold/florisboard/ime/keyboard/LayoutManager.kt]`
