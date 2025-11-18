@@ -5,6 +5,18 @@ import dev.patrickgold.florisboard.ime.text.keyboard.TextKeyData
 object LayoutValidation {
     private val validTextKeyDataLabels = TextKeyData.InternalKeys.map { it.label }.toSet()
 
+    // NEW: allow the same internal codes the built-in LCARS pack uses
+    private val allowedSpecialCodes = setOf(
+        "KEYCODE_TAB",
+        "KEYCODE_DELETE",
+        "KEYCODE_SHIFT",
+        "KEYCODE_ENTER",
+        "KEYCODE_SPACE",
+        "MODE_SYMBOLS",
+        "CTRL_MOD",
+        "MENU_TOGGLE"   // already used in lcars_hacker_en_us.json
+    )
+
     fun validatePack(pack: LayoutPack): List<String> {
         val errors = mutableListOf<String>()
         for ((index, row) in pack.rows.withIndex()) {
@@ -35,23 +47,18 @@ object LayoutValidation {
         val trimmed = code.trim()
         val codePointCount = trimmed.codePointCount(0, trimmed.length)
 
-        // 1. Check if it's a single character
-        if (codePointCount == 1) {
-            return true
-        }
+        // 1. Single character
+        if (codePointCount == 1) return true
 
-        // 2. Check if it's a predefined TextKeyData label
-        if (validTextKeyDataLabels.contains(trimmed)) {
-            return true
-        }
+        // 2. One of the predefined TextKeyData “internal” labels
+        if (validTextKeyDataLabels.contains(trimmed)) return true
 
-        // 3. Check if it's a raw KeyCode integer
+        // 3. One of our known special codes (KEYCODE_*, MODE_*, *_MOD, *_TOGGLE)
+        if (allowedSpecialCodes.contains(trimmed)) return true
+
+        // 4. Raw KeyCode integer
         val intCode = trimmed.toIntOrNull()
-        if (intCode != null) {
-            // For simplicity, we'll allow any integer for now.
-            // A more robust check would involve a map of KeyCode integer values.
-            return true
-        }
+        if (intCode != null) return true
 
         return false
     }

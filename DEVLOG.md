@@ -13,3 +13,7 @@
 ### 2025-11-11
 * **Task:** Fixed a new set of build errors. This included changing the visibility of a private property and refactoring `runCatching` blocks to simpler `try-catch` blocks to avoid type inference issues.
 * **Files:** `[app/src/main/kotlin/dev/patrickgold/florisboard/ime/text/keyboard/TextKeyData.kt]`, `[app/src/main/kotlin/dev/patrickgold/florisboard/app/layoutbuilder/LayoutBuilderScreen.kt]`
+
+### 2025-11-18
+* **Task:** Patched the layout validator to accept a whitelist of special internal key codes (e.g., `KEYCODE_TAB`, `MODE_SYMBOLS`) in custom layouts.
+* **Files:** `[app/src/main/kotlin/dev/patrickgold/florisboard/app/layoutbuilder/LayoutValidation.kt]`
