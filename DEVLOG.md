@@ -21,3 +21,7 @@
 ### 2025-11-18
 * **Task:** Refactored the runtime layout engine to correctly map special key codes from user-defined layouts to their corresponding `TextKeyData` actions.
 * **Files:** `[app/src/main/kotlin/dev/patrickgold/florisboard/ime/keyboard/LayoutManager.kt]`
+
+### 2025-11-18
+* **Task:** Introduced an alias map for internal key codes to ensure consistent resolution of special keys in custom layouts.
+* **Files:** `[app/src/main/kotlin/dev/patrickgold/florisboard/ime/keyboard/LayoutManager.kt]`

@@ -115,6 +115,25 @@ class LayoutManager(context: Context) {
 
     private val internalKeyMap = TextKeyData.InternalKeys.associateBy { it.label.uppercase() }
 
+    private val internalKeyAliases: Map<String, String> = mapOf(
+        "KEYCODE_TAB"           to "TAB",
+        "KEYCODE_ENTER"         to "ENTER",
+        "KEYCODE_SPACE"         to "SPACE",
+        "KEYCODE_DELETE"        to "DELETE",
+        "KEYCODE_SHIFT"         to "SHIFT",
+
+        "CTRL_MOD"              to "CTRL",
+        "CTRL"                  to "CTRL",
+
+        "MODE_SYMBOLS"          to "VIEW_SYMBOLS",
+        "MODE_SYMBOLS2"         to "VIEW_SYMBOLS2",
+        "MODE_CHARACTERS"       to "VIEW_CHARACTERS",
+        "MODE_NUMERIC"          to "VIEW_NUMERIC",
+        "MODE_NUMERIC_ADVANCED" to "VIEW_NUMERIC_ADVANCED",
+
+        "MENU_TOGGLE"           to "TOGGLE_ACTIONS_OVERFLOW"
+    )
+
     val debugLayoutComputationResultFlow = MutableStateFlow<DebugLayoutComputationResult?>(null)
 
     /**
@@ -186,10 +205,10 @@ class LayoutManager(context: Context) {
         rawLabel: String,
         style: LayoutKeyStyle,
     ): TextKeyData? {
-        if (rawCode.isBlank()) {
+        val trimmedCode = rawCode.trim()
+        if (trimmedCode.isBlank()) {
             return null
         }
-        val trimmedCode = rawCode.trim()
         val preferredLabel = rawLabel.ifEmpty { trimmedCode }
         val groupId = when (style) {
             LayoutKeyStyle.SPECIAL_LEFT -> KeyData.GROUP_LEFT
@@ -198,14 +217,9 @@ class LayoutManager(context: Context) {
         }
 
         val normalizedCode = trimmedCode.uppercase()
-        internalKeyMap[normalizedCode]?.let {
-            return it.copy(label = preferredLabel, groupId = groupId)
-        }
-        if (normalizedCode.startsWith("KEYCODE_")) {
-            val keycodeName = normalizedCode.removePrefix("KEYCODE_")
-            internalKeyMap[keycodeName]?.let {
-                return it.copy(label = preferredLabel, groupId = groupId)
-            }
+        val lookupKey = internalKeyAliases[normalizedCode] ?: normalizedCode
+        internalKeyMap[lookupKey]?.let { base ->
+            return base.copy(label = preferredLabel, groupId = groupId)
         }
 
         val codePointCount = trimmedCode.codePointCount(0, trimmedCode.length)
