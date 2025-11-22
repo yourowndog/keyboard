@@ -25,3 +25,11 @@
 ### 2025-11-18
 * **Task:** Introduced an alias map for internal key codes to ensure consistent resolution of special keys in custom layouts.
 * **Files:** `[app/src/main/kotlin/dev/patrickgold/florisboard/ime/keyboard/LayoutManager.kt]`
+
+### 2025-11-18
+* **Task:** Refactored `resolveLayoutPackTextKeyData` to correctly handle special keys like ENTER and TAB in custom layouts.
+* **Files:** `[app/src/main/kotlin/dev/patrickgold/florisboard/ime/keyboard/LayoutManager.kt]`
+
+### 2025-11-22
+* **Task:** Generated the `PROJECT_NEURAL_MAP.md` file, a comprehensive deep-context manual for the OmniBoard project, by analyzing the entire repository's structure, build configurations, and core feature implementations.
+* **Files:** `[PROJECT_NEURAL_MAP.md]`

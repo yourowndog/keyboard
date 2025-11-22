@@ -9,4 +9,7 @@
     <include
         domain="database"
         path="floris_user_dictionary"/>
+    <exclude
+        domain="file"
+        path="layouts/user/"/>
 </full-backup-content>
