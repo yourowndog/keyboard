@@ -127,16 +127,10 @@ class KeyboardManager(
     private var recorder: Recorder? = null
 
     private fun loadInitialLayout(): LayoutPack {
-        return runCatching {
-            val pack = layoutPackRepository.loadUserOrDefault()
-            if (LayoutValidation.validatePack(pack).isEmpty()) {
-                pack
-            } else {
-                layoutPackRepository.loadDefault()
-            }
-        }.getOrElse {
-            layoutPackRepository.loadDefault()
-        }
+        // Return a blank layout pack to force the KeyboardManager to use the
+        // original, extension-based layout loading logic by default. This bypasses
+        // the new, experimental LayoutPackRepository on startup.
+        return LayoutPack(id = "dev.florisboard.layoutpacks.empty", label = "Empty")
     }
 
     fun setLayout(newPack: LayoutPack): Result<Unit> {
