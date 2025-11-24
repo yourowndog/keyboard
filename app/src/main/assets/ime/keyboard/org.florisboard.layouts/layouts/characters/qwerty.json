@@ -12,6 +12,7 @@
     { "$": "auto_text_key", "code":  112, "label": "p" }
   ],
   [
+    { "$": "navigation", "code": -14, "label": "tab" },
     { "$": "auto_text_key", "code":   97, "label": "a" },
     { "$": "auto_text_key", "code":  115, "label": "s" },
     { "$": "auto_text_key", "code":  100, "label": "d" },

@@ -105,6 +105,8 @@ data class TextKeyData(
                 FORWARD_DELETE_WORD,
                 SHIFT,
                 CAPS_LOCK,
+                TAB,
+                ESCAPE,
                 ARROW_LEFT,
                 ARROW_RIGHT,
                 ARROW_UP,
@@ -237,6 +239,18 @@ data class TextKeyData(
             type = KeyType.MODIFIER,
             code = KeyCode.CAPS_LOCK,
             label = "caps_lock",
+        )
+        /** Predefined key data for [KeyCode.TAB] */
+        val TAB = TextKeyData(
+            type = KeyType.NAVIGATION,
+            code = KeyCode.TAB,
+            label = "tab",
+        )
+        /** Predefined key data for [KeyCode.ESCAPE] */
+        val ESCAPE = TextKeyData(
+            type = KeyType.FUNCTION,
+            code = KeyCode.ESCAPE,
+            label = "esc",
         )
 
         /** Predefined key data for [KeyCode.ARROW_LEFT] */
@@ -462,7 +476,7 @@ data class TextKeyData(
             label = "language_switch",
         )
 
-        /** Predefined key data for [KeyCode.IME_SHOW_UI] */
+        /** Predefined.key data for [KeyCode.IME_SHOW_UI] */
         val IME_SHOW_UI = TextKeyData(
             type = KeyType.FUNCTION,
             code = KeyCode.IME_SHOW_UI,

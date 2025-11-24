@@ -180,7 +180,7 @@ class KeyboardManager(
                 val result = WhisperClient.transcribe(audioFile)
                 result.onSuccess {
                     editorInstance.commitText(it)
-                    scope.launch { 
+                    scope.launch {
                         appContext.showShortToast("Transcription: $it")
                     }
                 }.onFailure {
@@ -659,6 +659,18 @@ class KeyboardManager(
             activeState.inputShiftState = InputShiftState.UNSHIFTED
         }
     }
+    private fun handleCtrlUp(data: KeyData) {
+        if (!data.isIntercepted()) {
+            if (activeState.isCtrlLocked) {
+                activeState.isCtrl = false
+                activeState.isCtrlLocked = false
+            } else if (activeState.isCtrl) {
+                activeState.isCtrlLocked = true
+            } else {
+                activeState.isCtrl = true
+            }
+        }
+    }
 
     /**
      * Handles a [KeyCode.CAPS_LOCK] event.
@@ -830,6 +842,7 @@ class KeyboardManager(
                 editorInstance.massSelection.begin()
             }
             KeyCode.SHIFT -> handleShiftDown(data)
+            KeyCode.CTRL -> { /* Do nothing */ }
         }
     }
 
@@ -903,6 +916,7 @@ class KeyboardManager(
             KeyCode.REDO -> editorInstance.performRedo()
             KeyCode.SETTINGS -> FlorisImeService.launchSettings()
             KeyCode.SHIFT -> handleShiftUp(data)
+            KeyCode.CTRL -> handleCtrlUp(data)
             KeyCode.SPACE -> handleSpace(data)
             KeyCode.SYSTEM_INPUT_METHOD_PICKER -> InputMethodUtils.showImePicker(appContext)
             KeyCode.SHOW_SUBTYPE_PICKER -> {
@@ -910,6 +924,10 @@ class KeyboardManager(
             }
             KeyCode.SYSTEM_PREV_INPUT_METHOD -> FlorisImeService.switchToPrevInputMethod()
             KeyCode.SYSTEM_NEXT_INPUT_METHOD -> FlorisImeService.switchToNextInputMethod()
+            KeyCode.TAB -> editorInstance.sendDownUpKeyEvent(KeyEvent.KEYCODE_TAB, 0)
+            KeyCode.ESCAPE -> {
+                editorInstance.sendDownUpKeyEvent(KeyEvent.KEYCODE_ESCAPE, 0)
+            }
             KeyCode.TOGGLE_SMARTBAR_VISIBILITY -> scope.launch {
                 prefs.smartbar.enabled.let { it.set(!it.get()) }
             }

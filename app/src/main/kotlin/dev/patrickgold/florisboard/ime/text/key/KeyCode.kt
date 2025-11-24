@@ -33,9 +33,8 @@ object KeyCode {
     const val PHONE_PAUSE =                   44 // ,
 
     const val SPACE =                         32
-    const val ESCAPE =                        27
+    const val ESCAPE =                       -15
     const val ENTER =                         10
-    const val TAB =                            9
 
     const val CTRL =                          -1
     const val CTRL_LOCK =                     -2
@@ -49,6 +48,7 @@ object KeyCode {
     const val FORWARD_DELETE_WORD =          -10
     const val SHIFT =                        -11
     const val CAPS_LOCK =                    -13
+    const val TAB =                          -14
 
     const val ARROW_LEFT =                   -21
     const val ARROW_RIGHT =                  -22

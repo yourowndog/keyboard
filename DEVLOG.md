@@ -33,3 +33,7 @@
 ### 2025-11-22
 * **Task:** Generated the `PROJECT_NEURAL_MAP.md` file, a comprehensive deep-context manual for the OmniBoard project, by analyzing the entire repository's structure, build configurations, and core feature implementations.
 * **Files:** `[PROJECT_NEURAL_MAP.md]`
+
+### 2025-11-23
+* **Task:** Fixed broken PATH variable in `source_env.sh` by replacing undefined `ANDROID_SDK_ROOT` with `ANDROID_HOME`.
+* **Files:** `source_env.sh`
