@@ -405,7 +405,14 @@ abstract class AbstractEditorInstance(context: Context) {
                 selectedText = "",
             )
             expectedContentQueue.push(newContent)
-            ic.commitText(text, 1)
+            // Run the Reflex check
+            val finalText = if (!text.contains(" ")) {
+                dev.patrickgold.florisboard.ime.nlp.SymSpellManager.fix(text)
+            } else { 
+                text 
+            }
+            // Then use finalText in the commit call
+            ic.commitText(finalText, 1)
             ic.setComposingRegion(newContent.composing)
         }
         ic.endBatchEdit()

@@ -48,63 +48,7 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
 
     override val providerId = ProviderId
 
-    private val qwertyAdjacencyMap = mapOf(
-        'q' to "wa",
-        'w' to "qase",
-        'e' to "wsdr",
-        'r' to "edft",
-        't' to "rfgy",
-        'y' to "tghu",
-        'u' to "yhji",
-        'i' to "ujko",
-        'o' to "iklp",
-        'p' to "ol",
-        'a' to "qwsz",
-        's' to "qwedzx",
-        'd' to "werfcx",
-        'f' to "ertgvc",
-        'g' to "rtyhvb",
-        'h' to "tyujnb",
-        'j' to "yuikmn",
-        'k' to "uiojlm",
-        'l' to "iopk",
-        'z' to "asx",
-        'x' to "zsdc",
-        'c' to "xdfv",
-        'v' to "cfgb",
-        'b' to "vghn",
-        'n' to "bhjm",
-        'm' to "njk"
-    )
-
     private fun String.isDigitsOnly(): Boolean = this.all { it.isDigit() }
-
-    private suspend fun fixAnyFatFinger(typo: String): String? {
-        for (i in typo.indices) {
-            val originalChar = typo[i]
-            val adjacentChars = qwertyAdjacencyMap[originalChar] ?: continue
-            for (adjacentChar in adjacentChars) {
-                val candidate = typo.substring(0, i) + adjacentChar + typo.substring(i + 1)
-                if (wordData.withLock { it.containsKey(candidate) }) {
-                    return candidate
-                }
-            }
-        }
-        return null
-    }
-
-    private suspend fun fixMissingLetter(typo: String): String? {
-        val vowels = "aeiou"
-        for (i in 0..typo.length) {
-            for (vowel in vowels) {
-                val candidate = typo.substring(0, i) + vowel + typo.substring(i)
-                if (wordData.withLock { it.containsKey(candidate) }) {
-                    return candidate
-                }
-            }
-        }
-        return null
-    }
 
     override suspend fun create() {
         // Here we initialize our provider, set up all things which are not language dependent.
@@ -165,32 +109,20 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         isPrivateSession: Boolean,
     ): List<SuggestionCandidate> {
         val currentWord = content.composingText.toString().trim().lowercase()
+        if (currentWord.isBlank()) return emptyList()
 
-        if (currentWord.isBlank() || currentWord.isDigitsOnly() || wordData.withLock { it.containsKey(currentWord) }) {
-            return emptyList()
-        }
-
-        val fatFingerFix = fixAnyFatFinger(currentWord)
-        if (fatFingerFix != null) {
-            return listOf(WordSuggestionCandidate(
-                text = fatFingerFix,
+        // DELEGATE TO NEW ENGINE
+        // This replaces the old loops with O(1) SymSpell lookups
+        val suggestions = dev.patrickgold.florisboard.ime.nlp.SymSpellManager.suggest(currentWord)
+        
+        return suggestions.map { word ->
+            WordSuggestionCandidate(
+                text = word,
                 secondaryText = null,
                 isEligibleForAutoCommit = true,
-                sourceProvider = this,
-            ))
+                sourceProvider = this
+            )
         }
-
-        val missingLetterFix = fixMissingLetter(currentWord)
-        if (missingLetterFix != null) {
-            return listOf(WordSuggestionCandidate(
-                text = missingLetterFix,
-                secondaryText = null,
-                isEligibleForAutoCommit = true,
-                sourceProvider = this,
-            ))
-        }
-
-        return emptyList()
     }
 
     override suspend fun notifySuggestionAccepted(subtype: Subtype, candidate: SuggestionCandidate) {
