@@ -24,6 +24,7 @@ import dev.patrickgold.florisboard.ime.nlp.SpellingProvider
 import dev.patrickgold.florisboard.ime.nlp.SpellingResult
 import dev.patrickgold.florisboard.ime.nlp.SuggestionCandidate
 import dev.patrickgold.florisboard.ime.nlp.SuggestionProvider
+import dev.patrickgold.florisboard.ime.nlp.WordSuggestionCandidate
 import dev.patrickgold.florisboard.lib.devtools.flogDebug
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -105,21 +106,27 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         allowPossiblyOffensive: Boolean,
         isPrivateSession: Boolean,
     ): List<SuggestionCandidate> {
-        return emptyList()
-        /*val word = content.composingText.ifBlank { "next" }
-        val suggestions = buildList {
-            for (n in 0 until maxCandidateCount) {
-                add(WordSuggestionCandidate(
-                    text = "$word$n",
-                    secondaryText = if (n % 2 == 1) "secondary" else null,
-                    confidence = 0.5,
-                    isEligibleForAutoCommit = false,//n == 0 && word.startsWith("auto"),
-                    // We set ourselves as the source provider so we can get notify events for our candidate
-                    sourceProvider = this@LatinLanguageProvider,
-                ))
-            }
+        val composingWord = content.composingText.toString().trim().lowercase()
+        if (composingWord.isBlank()) {
+            return emptyList()
         }
-        return suggestions*/
+
+        return wordData.withLock { wordData ->
+            val wordIsInDictionary = wordData.containsKey(composingWord)
+
+            wordData.keys
+                .filter { it.startsWith(composingWord) && it != composingWord }
+                .take(maxCandidateCount)
+                .mapIndexed { index, suggestionWord ->
+                    WordSuggestionCandidate(
+                        text = suggestionWord,
+                        secondaryText = "Latin",
+                        confidence = 1.0,
+                        isEligibleForAutoCommit = !wordIsInDictionary && index == 0,
+                        sourceProvider = this@LatinLanguageProvider,
+                    )
+                }.toList()
+        }
     }
 
     override suspend fun notifySuggestionAccepted(subtype: Subtype, candidate: SuggestionCandidate) {

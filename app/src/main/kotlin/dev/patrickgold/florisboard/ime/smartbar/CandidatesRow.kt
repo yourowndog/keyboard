@@ -117,11 +117,11 @@ fun CandidatesRow(modifier: Modifier = Modifier) {
                     candidate = candidate,
                     displayMode = displayMode,
                     onClick = {
-                        // Can't use candidate directly
+                        // Can'''t use candidate directly
                         keyboardManager.commitCandidate(candidates[n])
                     },
                     onLongPress = {
-                        // Can't use candidate directly
+                        // Can'''t use candidate directly
                         val candidateItem = candidates[n]
                         if (candidateItem.isEligibleForUserRemoval) {
                             nlpManager.removeSuggestion(subtypeManager.activeSubtype, candidateItem)
@@ -206,14 +206,6 @@ private fun CandidateItem(
                 selector = selector,
                 text = candidate.text.toString(),
             )
-            if (candidate.secondaryText != null) {
-                SnyggText(
-                    elementName = "$elementName-secondary-text",
-                    attributes = attributes,
-                    selector = selector,
-                    text = candidate.secondaryText!!.toString(),
-                )
-            }
         }
     }
 }
