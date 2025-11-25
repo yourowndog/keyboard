@@ -5,6 +5,7 @@
     { "code":   -7, "label": "delete", "type": "enter_editing" }
   ],
   [
+    { "$": "navigation", "code": -15, "label": "⎋" },
     { "code": -202, "label": "view_symbols", "type": "system_gui" },
     { "$": "variation_selector",
       "default":  { "code":   44, "label": ",", "groupId": 1 },
