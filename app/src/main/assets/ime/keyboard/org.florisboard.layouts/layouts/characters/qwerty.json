@@ -1,5 +1,6 @@
 [
   [
+    { "$": "navigation", "code": -15, "label": "⎋" },
     { "$": "auto_text_key", "code":  113, "label": "q" },
     { "$": "auto_text_key", "code":  119, "label": "w" },
     { "$": "auto_text_key", "code":  101, "label": "e" },
@@ -9,10 +10,11 @@
     { "$": "auto_text_key", "code":  117, "label": "u" },
     { "$": "auto_text_key", "code":  105, "label": "i" },
     { "$": "auto_text_key", "code":  111, "label": "o" },
-    { "$": "auto_text_key", "code":  112, "label": "p" }
+    { "$": "auto_text_key", "code":  112, "label": "p" },
+    { "$": "action", "code": -7, "grow": 0.1 }
   ],
   [
-    { "$": "navigation", "code": -14, "label": "tab" },
+    { "$": "navigation", "code": -14, "label": "⇥" },
     { "$": "auto_text_key", "code":   97, "label": "a" },
     { "$": "auto_text_key", "code":  115, "label": "s" },
     { "$": "auto_text_key", "code":  100, "label": "d" },
@@ -21,7 +23,8 @@
     { "$": "auto_text_key", "code":  104, "label": "h" },
     { "$": "auto_text_key", "code":  106, "label": "j" },
     { "$": "auto_text_key", "code":  107, "label": "k" },
-    { "$": "auto_text_key", "code":  108, "label": "l" }
+    { "$": "auto_text_key", "code":  108, "label": "l" },
+    { "$": "character", "code": 47, "label": "/" }
   ],
   [
     { "$": "auto_text_key", "code":  122, "label": "z" },
