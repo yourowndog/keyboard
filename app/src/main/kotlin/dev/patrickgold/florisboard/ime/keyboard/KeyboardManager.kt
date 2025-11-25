@@ -659,18 +659,6 @@ class KeyboardManager(
             activeState.inputShiftState = InputShiftState.UNSHIFTED
         }
     }
-    private fun handleCtrlUp(data: KeyData) {
-        if (!data.isIntercepted()) {
-            if (activeState.isCtrlLocked) {
-                activeState.isCtrl = false
-                activeState.isCtrlLocked = false
-            } else if (activeState.isCtrl) {
-                activeState.isCtrlLocked = true
-            } else {
-                activeState.isCtrl = true
-            }
-        }
-    }
 
     /**
      * Handles a [KeyCode.CAPS_LOCK] event.
@@ -842,7 +830,6 @@ class KeyboardManager(
                 editorInstance.massSelection.begin()
             }
             KeyCode.SHIFT -> handleShiftDown(data)
-            KeyCode.CTRL -> { /* Do nothing */ }
         }
     }
 
@@ -916,7 +903,6 @@ class KeyboardManager(
             KeyCode.REDO -> editorInstance.performRedo()
             KeyCode.SETTINGS -> FlorisImeService.launchSettings()
             KeyCode.SHIFT -> handleShiftUp(data)
-            KeyCode.CTRL -> handleCtrlUp(data)
             KeyCode.SPACE -> handleSpace(data)
             KeyCode.SYSTEM_INPUT_METHOD_PICKER -> InputMethodUtils.showImePicker(appContext)
             KeyCode.SHOW_SUBTYPE_PICKER -> {
