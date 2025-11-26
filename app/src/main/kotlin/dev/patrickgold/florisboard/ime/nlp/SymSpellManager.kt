@@ -1,13 +1,10 @@
 package dev.patrickgold.florisboard.ime.nlp
 
 import android.content.Context
-// FIX: Core logic is in 'impl'
 import com.darkrockstudios.symspellkt.impl.SymSpell
-
-// FIX: Configuration and Enums are in 'api' (NOT common)
-import com.darkrockstudios.symspellkt.api.SpellCheckSettings
-import com.darkrockstudios.symspellkt.api.Verbosity
-
+// verified location for v3.4.0
+import com.darkrockstudios.symspellkt.common.SpellCheckSettings 
+import com.darkrockstudios.symspellkt.common.Verbosity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -24,14 +21,14 @@ object SymSpellManager {
     fun init(context: Context, scope: CoroutineScope) {
         scope.launch(Dispatchers.IO) {
             try {
-                // FIX: Use 'maxEditDistance' (shorter name)
+                // LOGIC FIX: Use the Configuration Object Pattern
                 val settings = SpellCheckSettings(
                     maxEditDistance = MAX_EDIT_DISTANCE,
                     prefixLength = PREFIX_LENGTH,
                     countThreshold = 1
                 )
 
-                // FIX: Pass settings to the constructor
+                // Pass the config object to the constructor
                 val instance = SymSpell(spellCheckSettings = settings)
                 
                 // Seed dummy dictionary
@@ -39,7 +36,6 @@ object SymSpellManager {
                 dummyWords.forEach {
                     val parts = it.split(" ")
                     if (parts.size == 2) {
-                        // FIX: Ensure frequency is a Double
                         instance.createDictionaryEntry(parts[0], parts[1].toDouble())
                     }
                 }
@@ -59,7 +55,6 @@ object SymSpellManager {
         val instance = symSpell ?: return input
         if (input.length < 2) return input
 
-        // FIX: Verbosity.Top and Double cast
         val suggestions = instance.lookup(input, Verbosity.Top, MAX_EDIT_DISTANCE.toDouble())
         return suggestions.firstOrNull()?.term ?: input
     }
@@ -69,7 +64,6 @@ object SymSpellManager {
          if (!isReady) return emptyList()
          val instance = symSpell ?: return emptyList()
          
-         // FIX: Verbosity.Closest and Double cast
          val suggestions = instance.lookup(input, Verbosity.Closest, MAX_EDIT_DISTANCE.toDouble())
          return suggestions.map { it.term }
     }
