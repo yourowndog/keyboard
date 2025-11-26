@@ -21,12 +21,11 @@ object SymSpellManager {
     fun init(context: Context, scope: CoroutineScope) {
         scope.launch(Dispatchers.IO) {
             try {
-                // LOGIC FIX: Use the Configuration Object Pattern
-                // verified by Grok and Error Logs
+                // LOGIC FIX: Correct types based on error logs
                 val settings = SpellCheckSettings(
-                    maxEditDistance = MAX_EDIT_DISTANCE,
-                    prefixLength = PREFIX_LENGTH,
-                    countThreshold = 1.0
+                    maxEditDistance = MAX_EDIT_DISTANCE, // Keep as Int (Compiler accepted this)
+                    prefixLength = PREFIX_LENGTH,        // Keep as Int
+                    countThreshold = 1.0                 // ERROR FIX: Must be Double (1.0), not Long (1L)
                 )
 
                 // Pass the config object to the constructor
@@ -56,6 +55,7 @@ object SymSpellManager {
         if (input.length < 2) return input
 
         // Use Verbosity.Top
+        // Note: lookup() specifically DOES want a Double for distance, so we keep toDouble() here
         val suggestions = instance.lookup(input, Verbosity.Top, MAX_EDIT_DISTANCE.toDouble())
         return suggestions.firstOrNull()?.term ?: input
     }

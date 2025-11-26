@@ -77,3 +77,6 @@
 ### 2025-11-26
 * **Task:** Overwrote SymSpellManager.kt with updated logic using SpellCheckSettings.
 * **Files:** `app/src/main/kotlin/dev/patrickgold/florisboard/ime/nlp/SymSpellManager.kt`
+### 2025-11-26
+* **Task:** Updated SymSpellManager.kt with explicit type comments and verified parameter types for SpellCheckSettings.
+* **Files:** `app/src/main/kotlin/dev/patrickgold/florisboard/ime/nlp/SymSpellManager.kt`
