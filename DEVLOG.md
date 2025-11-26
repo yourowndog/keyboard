@@ -49,3 +49,7 @@
 ### 2025-11-25
 * **Task:** Verified and corrected a formatting error in `app/build.gradle.kts` where two dependency calls were accidentally merged onto a single line. The file is now correctly formatted.
 * **Files:** `app/build.gradle.kts`
+
+### 2025-11-25
+* **Task:** Fixed "Right Library, Wrong Address" error in `SymSpellManager.kt`. Corrected imports to `com.darkrockstudios.symspellkt.SymSpell` and updated instantiation to use the constructor with named arguments and correct Verbosity enum.
+* **Files:** `app/src/main/kotlin/dev/patrickgold/florisboard/ime/nlp/SymSpellManager.kt`

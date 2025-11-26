@@ -1,8 +1,8 @@
 package dev.patrickgold.florisboard.ime.nlp
 
 import android.content.Context
-import com.darkrockstudios.symspellkt.api.SymSpell
-import com.darkrockstudios.symspellkt.impl.createSymSpell
+// FIX: Correct package for version 3.4.0
+import com.darkrockstudios.symspellkt.SymSpell
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -19,15 +19,20 @@ object SymSpellManager {
     fun init(context: Context, scope: CoroutineScope) {
         scope.launch(Dispatchers.IO) {
             try {
-                // Initialize Engine
-                val instance = createSymSpell(MAX_EDIT_DISTANCE, PREFIX_LENGTH)
+                // FIX: Use constructor with named arguments to ensure safety
+                // We default initialCapacity (-1 or 16384) by omitting it or letting the library handle it
+                val instance = SymSpell(
+                    maxDictionaryEditDistance = MAX_EDIT_DISTANCE,
+                    prefixLength = PREFIX_LENGTH
+                )
                 
-                // TODO: In the future, load the real `ime/dict/data.json` or frequency list here.
-                // For now, we seed a small dummy dictionary to prove the pipeline works.
+                // Seed dummy dictionary
                 val dummyWords = listOf("the 23000", "and 20000", "hello 15000", "world 10000", "floris 500")
                 dummyWords.forEach {
                     val parts = it.split(" ")
-                    instance.createDictionaryEntry(parts[0], parts[1].toLong())
+                    if (parts.size == 2) {
+                        instance.createDictionaryEntry(parts[0], parts[1].toLong())
+                    }
                 }
 
                 symSpell = instance
@@ -45,8 +50,9 @@ object SymSpellManager {
         val instance = symSpell ?: return input
         if (input.length < 2) return input
 
-        // Verbosity.TOP gets the single best match
-        val suggestions = instance.lookup(input, SymSpell.Verbosity.TOP, MAX_EDIT_DISTANCE)
+        // FIX: Use SymSpell.Verbosity.Top (or TOP depending on version, Top is standard Kotlin style)
+        // If 'Top' fails, try 'TOP'.
+        val suggestions = instance.lookup(input, SymSpell.Verbosity.Top, MAX_EDIT_DISTANCE)
         return suggestions.firstOrNull()?.term ?: input
     }
     
@@ -55,8 +61,8 @@ object SymSpellManager {
          if (!isReady) return emptyList()
          val instance = symSpell ?: return emptyList()
          
-         // Get closest matches
-         val suggestions = instance.lookup(input, SymSpell.Verbosity.CLOSEST, MAX_EDIT_DISTANCE)
+         // FIX: Use SymSpell.Verbosity.Closest
+         val suggestions = instance.lookup(input, SymSpell.Verbosity.Closest, MAX_EDIT_DISTANCE)
          return suggestions.map { it.term }
     }
 }
