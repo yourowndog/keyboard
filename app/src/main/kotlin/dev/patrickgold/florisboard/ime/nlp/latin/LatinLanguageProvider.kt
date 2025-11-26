@@ -114,7 +114,7 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         // DELEGATE TO NEW ENGINE
         // This replaces the old loops with O(1) SymSpell lookups
         val suggestions = dev.patrickgold.florisboard.ime.nlp.SymSpellManager.suggest(currentWord)
-        
+
         return suggestions.map { word ->
             WordSuggestionCandidate(
                 text = word,
