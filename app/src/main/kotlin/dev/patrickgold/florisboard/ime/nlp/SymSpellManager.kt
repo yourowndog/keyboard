@@ -2,9 +2,9 @@ package dev.patrickgold.florisboard.ime.nlp
 
 import android.content.Context
 import com.darkrockstudios.symspellkt.impl.SymSpell
-// verified location for v3.4.0
 import com.darkrockstudios.symspellkt.common.SpellCheckSettings 
 import com.darkrockstudios.symspellkt.common.Verbosity
+
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -22,10 +22,11 @@ object SymSpellManager {
         scope.launch(Dispatchers.IO) {
             try {
                 // LOGIC FIX: Use the Configuration Object Pattern
+                // verified by Grok and Error Logs
                 val settings = SpellCheckSettings(
                     maxEditDistance = MAX_EDIT_DISTANCE,
                     prefixLength = PREFIX_LENGTH,
-                    countThreshold = 1
+                    countThreshold = 1.0
                 )
 
                 // Pass the config object to the constructor
@@ -49,21 +50,21 @@ object SymSpellManager {
         }
     }
 
-    // Fast Autocorrect (Reflexes)
     fun fix(input: String): String {
         if (!isReady) return input
         val instance = symSpell ?: return input
         if (input.length < 2) return input
 
+        // Use Verbosity.Top
         val suggestions = instance.lookup(input, Verbosity.Top, MAX_EDIT_DISTANCE.toDouble())
         return suggestions.firstOrNull()?.term ?: input
     }
     
-    // Suggestion List (Smartbar)
     fun suggest(input: String): List<String> {
          if (!isReady) return emptyList()
          val instance = symSpell ?: return emptyList()
          
+         // Use Verbosity.Closest
          val suggestions = instance.lookup(input, Verbosity.Closest, MAX_EDIT_DISTANCE.toDouble())
          return suggestions.map { it.term }
     }

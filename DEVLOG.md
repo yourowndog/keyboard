@@ -73,3 +73,7 @@
 ### 2025-11-25
 * **Task:** Finalized `SymSpellManager.kt` API compatibility for v3.4.0 by switching `SpellCheckSettings` and `Verbosity` imports to the `common` package (overriding previous `api` guess) and using the `SpellCheckSettings` configuration object pattern for instantiation.
 * **Files:** `app/src/main/kotlin/dev/patrickgold/florisboard/ime/nlp/SymSpellManager.kt`
+
+### 2025-11-26
+* **Task:** Overwrote SymSpellManager.kt with updated logic using SpellCheckSettings.
+* **Files:** `app/src/main/kotlin/dev/patrickgold/florisboard/ime/nlp/SymSpellManager.kt`
