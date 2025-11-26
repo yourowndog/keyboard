@@ -57,3 +57,7 @@
 ### 2025-11-25
 * **Task:** Fixed SymSpellKt API mismatch by using positional arguments in the constructor, importing `Verbosity` from `api`, and casting parameters to `Double` to satisfy strict type requirements.
 * **Files:** `app/src/main/kotlin/dev/patrickgold/florisboard/ime/nlp/SymSpellManager.kt`
+
+### 2025-11-25
+* **Task:** Resolved SymSpellKt v3.4.0 constructor mismatch by implementing the `SpellCheckSettings` configuration object pattern. Instantiated `SymSpell` with a `SpellCheckSettings` object instead of positional arguments, and maintained strict `Double` type casting for API compliance.
+* **Files:** `app/src/main/kotlin/dev/patrickgold/florisboard/ime/nlp/SymSpellManager.kt`
