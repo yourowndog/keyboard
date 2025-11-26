@@ -53,3 +53,7 @@
 ### 2025-11-25
 * **Task:** Fixed "Package Import Error" in `SymSpellManager.kt` for v3.4.0 compatibility. Updated import to `com.darkrockstudios.symspellkt.impl.SymSpell` and updated instantiation to use the constructor with named arguments (including `countThreshold`).
 * **Files:** `app/src/main/kotlin/dev/patrickgold/florisboard/ime/nlp/SymSpellManager.kt`
+
+### 2025-11-25
+* **Task:** Fixed SymSpellKt API mismatch by using positional arguments in the constructor, importing `Verbosity` from `api`, and casting parameters to `Double` to satisfy strict type requirements.
+* **Files:** `app/src/main/kotlin/dev/patrickgold/florisboard/ime/nlp/SymSpellManager.kt`
