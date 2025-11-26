@@ -1,8 +1,8 @@
 package dev.patrickgold.florisboard.ime.nlp
 
 import android.content.Context
-// FIX: Correct package for version 3.4.0
-import com.darkrockstudios.symspellkt.SymSpell
+// FIX: The class is located in the 'impl' package in v3.4.0
+import com.darkrockstudios.symspellkt.impl.SymSpell
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -19,11 +19,12 @@ object SymSpellManager {
     fun init(context: Context, scope: CoroutineScope) {
         scope.launch(Dispatchers.IO) {
             try {
-                // FIX: Use constructor with named arguments to ensure safety
-                // We default initialCapacity (-1 or 16384) by omitting it or letting the library handle it
+                // FIX: Use the constructor directly instead of the missing createSymSpell factory
+                // We pass named arguments for safety
                 val instance = SymSpell(
                     maxDictionaryEditDistance = MAX_EDIT_DISTANCE,
-                    prefixLength = PREFIX_LENGTH
+                    prefixLength = PREFIX_LENGTH,
+                    countThreshold = 1
                 )
                 
                 // Seed dummy dictionary
@@ -50,8 +51,7 @@ object SymSpellManager {
         val instance = symSpell ?: return input
         if (input.length < 2) return input
 
-        // FIX: Use SymSpell.Verbosity.Top (or TOP depending on version, Top is standard Kotlin style)
-        // If 'Top' fails, try 'TOP'.
+        // FIX: Use SymSpell.Verbosity.Top (Note the PascalCase 'Top')
         val suggestions = instance.lookup(input, SymSpell.Verbosity.Top, MAX_EDIT_DISTANCE)
         return suggestions.firstOrNull()?.term ?: input
     }

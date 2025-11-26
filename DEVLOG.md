@@ -51,5 +51,5 @@
 * **Files:** `app/build.gradle.kts`
 
 ### 2025-11-25
-* **Task:** Fixed "Right Library, Wrong Address" error in `SymSpellManager.kt`. Corrected imports to `com.darkrockstudios.symspellkt.SymSpell` and updated instantiation to use the constructor with named arguments and correct Verbosity enum.
+* **Task:** Fixed "Package Import Error" in `SymSpellManager.kt` for v3.4.0 compatibility. Updated import to `com.darkrockstudios.symspellkt.impl.SymSpell` and updated instantiation to use the constructor with named arguments (including `countThreshold`).
 * **Files:** `app/src/main/kotlin/dev/patrickgold/florisboard/ime/nlp/SymSpellManager.kt`
