@@ -213,9 +213,15 @@ dependencies {
     implementation(libs.androidx.profileinstaller)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.runtime)
-    implementation(libs.symspell)
-    implementation(libs.cache4k)    implementation(libs.kotlin.reflect)
+    // REFLEXES (SymSpell) - Hardcoded to bypass catalog error
+    implementation("com.darkrockstudios:SymSpellKt-android:3.4.0")
+
+    // BRAINS (MediaPipe) - Hardcoded to bypass catalog error
+    implementation("com.google.mediapipe:tasks-genai:0.10.14")
+    implementation(libs.cache4k)
+    implementation(libs.kotlin.reflect)
     implementation(libs.kotlinx.coroutines)
+
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.mikepenz.aboutlibraries.core)
     implementation(libs.mikepenz.aboutlibraries.compose)
