@@ -21,11 +21,11 @@ object SymSpellManager {
     fun init(context: Context, scope: CoroutineScope) {
         scope.launch(Dispatchers.IO) {
             try {
-                // LOGIC FIX: Correct types based on error logs
+                // LOGIC FIX: Exact types per compiler error log
                 val settings = SpellCheckSettings(
-                    maxEditDistance = MAX_EDIT_DISTANCE, // Keep as Int (Compiler accepted this)
-                    prefixLength = PREFIX_LENGTH,        // Keep as Int
-                    countThreshold = 1.0                 // ERROR FIX: Must be Double (1.0), not Long (1L)
+                    maxEditDistance = MAX_EDIT_DISTANCE.toDouble(), // FIX: Compiler requested Double
+                    prefixLength = PREFIX_LENGTH,                   // Compiler is happy with Int here
+                    countThreshold = 1L                             // FIX: Compiler requested Long
                 )
 
                 // Pass the config object to the constructor
@@ -36,6 +36,8 @@ object SymSpellManager {
                 dummyWords.forEach {
                     val parts = it.split(" ")
                     if (parts.size == 2) {
+                        // Note: frequency usually matches the countThreshold type, but let's stick to Double 
+                        // for now as that's standard for the dictionary entry method.
                         instance.createDictionaryEntry(parts[0], parts[1].toDouble())
                     }
                 }
@@ -55,7 +57,7 @@ object SymSpellManager {
         if (input.length < 2) return input
 
         // Use Verbosity.Top
-        // Note: lookup() specifically DOES want a Double for distance, so we keep toDouble() here
+        // We know from previous logs that lookup() definitely wants Double for distance
         val suggestions = instance.lookup(input, Verbosity.Top, MAX_EDIT_DISTANCE.toDouble())
         return suggestions.firstOrNull()?.term ?: input
     }
