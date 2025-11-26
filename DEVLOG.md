@@ -65,3 +65,7 @@
 ### 2025-11-25
 * **Task:** Added fallback imports for `SpellCheckSettings` and `Verbosity` (from both `common` and root packages) to `SymSpellManager.kt` to definitively resolve lingering import issues, while maintaining the configuration object pattern.
 * **Files:** `app/src/main/kotlin/dev/patrickgold/florisboard/ime/nlp/SymSpellManager.kt`
+
+### 2025-11-25
+* **Task:** Fixed SymSpellKt v3.4.0 API mismatch by correctly importing `SpellCheckSettings` and `Verbosity` from the `api` package (not `common` or root), using the simplified `maxEditDistance` parameter name, and maintaining type safety.
+* **Files:** `app/src/main/kotlin/dev/patrickgold/florisboard/ime/nlp/SymSpellManager.kt`
