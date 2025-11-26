@@ -45,3 +45,7 @@
 ### 2025-11-25
 * **Task:** Hardcoded SymSpellKt and MediaPipe dependencies in `app/build.gradle.kts` to resolve Gradle Kotlin DSL syntax error and bypass Version Catalog resolution issues.
 * **Files:** `app/build.gradle.kts`
+
+### 2025-11-25
+* **Task:** Verified and corrected a formatting error in `app/build.gradle.kts` where two dependency calls were accidentally merged onto a single line. The file is now correctly formatted.
+* **Files:** `app/build.gradle.kts`
