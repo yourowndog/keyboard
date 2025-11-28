@@ -6,12 +6,10 @@ UNIGRAM_FILE = os.path.join(DICT_DIR, "frequency_dictionary_en.txt")
 BIGRAM_FILE = os.path.join(DICT_DIR, "frequency_bigram_en.txt")
 
 # Config
-MIN_FREQ = 50
-# Only allow standard English letters and apostrophes. 
-# Rejects numbers, symbols, and accented characters.
-VALID_CHARS = re.compile(r"^[a-z']+$") 
-# For bigrams: "word1 word2". Both must be valid.
-VALID_BIGRAM = re.compile(r"^[a-z']+( [a-z']+)+$") 
+# "Platinum List" Strategy
+# 1. Keep ALL words with apostrophes (Contractions).
+# 2. Keep only the Top 15,000 Alpha-only words.
+TOP_N_LIMIT = 15000
 
 def clean_and_convert(filepath, is_bigram=False):
     if not os.path.exists(filepath):
@@ -21,52 +19,68 @@ def clean_and_convert(filepath, is_bigram=False):
     print(f"Processing {filepath}...")
     temp_path = filepath + ".tmp"
     
-    kept = 0
-    dropped_freq = 0
-    dropped_chars = 0
+    all_entries = []
     
-    with open(filepath, 'r', encoding='utf-8') as infile, open(temp_path, 'w', encoding='utf-8') as outfile:
+    # 1. Read ALL entries into memory
+    with open(filepath, 'r', encoding='utf-8') as infile:
         for line in infile:
             line = line.strip()
             if not line: continue
             
-            # Split frequency (last element)
-            # Handle both Space and Tab separation robustly.
-            # text = all parts except last, joined by space (to preserve bigram structure if any)
-            # freq = last part
             parts = line.split()
-            if len(parts) < 2:
-                continue
+            if len(parts) < 2: continue
 
             try:
                 freq_str = parts[-1]
                 freq = int(freq_str)
                 text = " ".join(parts[:-1])
+                all_entries.append((text, freq))
             except ValueError:
-                continue # Skip malformed lines
-
-            # Filter 1: Frequency
-            if freq < MIN_FREQ:
-                dropped_freq += 1
                 continue
 
-            # Filter 2: Characters
-            # Ensure text is treated as lowercase for the regex check
-            text_check = text.lower()
+    # 2. Sort by Frequency (Descending)
+    # This ensures the "Top N" are actually the most frequent.
+    all_entries.sort(key=lambda x: x[1], reverse=True)
+
+    kept_entries = []
+    alpha_count = 0
+    
+    for text, freq in all_entries:
+        # Rule 1: Keep ALL Contractions (words with apostrophe)
+        if "'" in text:
+            kept_entries.append((text, freq))
+            continue
             
-            pattern = VALID_BIGRAM if is_bigram else VALID_CHARS
-            if not pattern.match(text_check):
-                dropped_chars += 1
-                continue
+        # Rule 2: Limit Alpha-only words to TOP_N_LIMIT
+        # We assume the list is sorted, so the first 15k alpha words we see are the top 15k.
+        if is_bigram:
+             # Bigrams logic: Keep if it looks like "word word" (alpha/apostrophe only)
+             # We don't strictly apply the 15k limit to bigrams yet unless requested, 
+             # but let's keep them if they are reasonably frequent?
+             # User instruction was specific to "Dictionary" (Unigrams). 
+             # Let's pass bigrams through with a basic check for now to avoid nuking context.
+             if all(part.replace("'", "").isalpha() for part in text.split()):
+                 kept_entries.append((text, freq))
+        else:
+            # Unigrams logic
+            if text.isalpha():
+                if alpha_count < TOP_N_LIMIT:
+                    kept_entries.append((text, freq))
+                    alpha_count += 1
+            # If not alpha and no apostrophe (e.g. numbers), drop it.
 
-            # Write: "text\tfreq" (SymSpell Format)
+    print(f"Kept {len(kept_entries)} entries. (Alpha limit: {TOP_N_LIMIT})")
+
+    # 3. Write back
+    with open(temp_path, 'w', encoding='utf-8') as outfile:
+        for text, freq in kept_entries:
             outfile.write(f"{text}\t{freq}\n")
-            kept += 1
 
-    # Overwrite original
     os.replace(temp_path, filepath)
-    print(f"Done. Kept: {kept}. Dropped (Low Freq): {dropped_freq}. Dropped (Bad Chars): {dropped_chars}.")
 
 if __name__ == "__main__":
     clean_and_convert(UNIGRAM_FILE, is_bigram=False)
-    clean_and_convert(BIGRAM_FILE, is_bigram=True)
+    # clean_and_convert(BIGRAM_FILE, is_bigram=True) # Optional: Skip bigrams processing to preserve them? 
+    # Actually, user didn't ask to nuke bigrams, but bigrams are useless if unigrams are missing.
+    # But for now, let's leave bigrams ALONE as they were already filtered > 50 freq.
+    # Only processing UNIGRAMS for the "Platinum List".

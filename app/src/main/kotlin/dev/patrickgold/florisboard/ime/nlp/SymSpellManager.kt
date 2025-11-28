@@ -84,7 +84,7 @@ object SymSpellManager {
     fun fix(input: String): String {
         if (!isReady) return input
         val instance = symSpell ?: return input
-        if (input.length < 2) return input
+        // Removed length check to allow single-letter corrections (e.g. i -> I)
 
         // Reflexes: Fast correction
         val normalized = input.lowercase()
