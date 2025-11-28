@@ -67,10 +67,6 @@
 * **Files:** `app/src/main/kotlin/dev/patrickgold/florisboard/ime/nlp/SymSpellManager.kt`
 
 ### 2025-11-25
-* **Task:** Fixed SymSpellKt v3.4.0 API mismatch by correctly importing `SpellCheckSettings` and `Verbosity` from the `api` package (not `common` or root), using the simplified `maxEditDistance` parameter name, and maintaining type safety.
-* **Files:** `app/src/main/kotlin/dev/patrickgold/florisboard/ime/nlp/SymSpellManager.kt`
-
-### 2025-11-25
 * **Task:** Finalized `SymSpellManager.kt` API compatibility for v3.4.0 by switching `SpellCheckSettings` and `Verbosity` imports to the `common` package (overriding previous `api` guess) and using the `SpellCheckSettings` configuration object pattern for instantiation.
 * **Files:** `app/src/main/kotlin/dev/patrickgold/florisboard/ime/nlp/SymSpellManager.kt`
 
@@ -88,3 +84,7 @@
 ### 2025-11-26
 * **Task:** Replaced frequency dictionary with 'ScriptSmith/topwords' (Project Gutenberg) corpus to support contractions (don't, you'll, etc).
 * **Files:** `[app/src/main/assets/ime/dict/frequency_dictionary_en.txt]`
+
+### 2025-11-28
+* **Task:** Verified that the autocorrect frequency dictionary now includes contractions (words with apostrophes).
+* **Files:** `app/src/main/assets/ime/dict/frequency_dictionary_en.txt`
