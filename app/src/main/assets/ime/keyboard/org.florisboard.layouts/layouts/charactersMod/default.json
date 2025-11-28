@@ -2,7 +2,7 @@
   [
     { "code":  -11, "label": "shift", "type": "modifier" },
     { "code":    0, "type": "placeholder" },
-    { "$": "character", "code": 47, "label": "/" }
+    { "code": 47, "label": "/" }
   ],
   [
     { "$": "navigation", "code": -15, "label": "⎋" },
@@ -14,6 +14,6 @@
     },
     { "code":   32, "label": "space" },
     { "code":   46, "label": ".", "groupId": 2 },
-    { "code":   10, "label": "enter", "groupId": 3, "type": "enter_editing" }
+    { "code":   10, "label": "ENT", "groupId": 3, "type": "enter_editing" }
   ]
 ]

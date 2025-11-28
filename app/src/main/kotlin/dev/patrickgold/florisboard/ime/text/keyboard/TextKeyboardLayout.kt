@@ -1,3 +1,4 @@
+
 /*
  * Copyright (C) 2021-2025 The FlorisBoard Contributors
  *
@@ -366,11 +367,15 @@ private fun TextKeyButton(
             )
         }
         key.foregroundImageVector?.let { imageVector ->
-            SnyggIcon(
-                modifier = Modifier.align(Alignment.Center),
-                imageVector = imageVector,
-                contentDescription = null,
-            )
+            if (key.computedData.code == KeyCode.ENTER && key.label != "enter") {
+                // don't render vector
+            } else {
+                SnyggIcon(
+                    modifier = Modifier.align(Alignment.Center),
+                    imageVector = imageVector,
+                    contentDescription = null,
+                )
+            }
         }
     }
     if (debugShowTouchBoundaries) {

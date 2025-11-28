@@ -84,3 +84,7 @@
 ### 2025-11-26
 * **Task:** Updated SymSpellManager.kt again to match compiler requests: maxEditDistance as Double, countThreshold as Long.
 * **Files:** `app/src/main/kotlin/dev/patrickgold/florisboard/ime/nlp/SymSpellManager.kt`
+
+### 2025-11-26
+* **Task:** Replaced frequency dictionary with 'ScriptSmith/topwords' (Project Gutenberg) corpus to support contractions (don't, you'll, etc).
+* **Files:** `[app/src/main/assets/ime/dict/frequency_dictionary_en.txt]`

@@ -149,6 +149,9 @@ class TextKey(override val data: AbstractKeyData) : Key(data) {
                     else -> 0.0f
                 }
             }
+            /*
+            ##### AGENT LOOK HERE AGENT READ ME IMPORTANT!!!! DANGER!!! NOTE!!!! THIS LOGIC ALLOWS YOU TO ADJUST SPECIFIC KEY WIDTHS THIS IS VERY USEFUL FOR CUSTOMIZATION#############
+            */
             flayWidthFactor = when (keyboardMode) {
                 KeyboardMode.NUMERIC,
                 KeyboardMode.PHONE,
@@ -159,12 +162,8 @@ class TextKey(override val data: AbstractKeyData) : Key(data) {
                     else -> 1.56f
                 }
                 else -> when (computed.code) {
-                    KeyCode.SHIFT,
-                    KeyCode.DELETE -> 1.56f
                     KeyCode.VIEW_CHARACTERS,
-                    KeyCode.VIEW_SYMBOLS,
-                    KeyCode.VIEW_SYMBOLS2,
-                    KeyCode.ENTER -> 1.56f
+                    KeyCode.VIEW_SYMBOLS2 -> 1.56f
                     else -> 1.00f
                 }
             }
@@ -229,6 +228,10 @@ class TextKey(override val data: AbstractKeyData) : Key(data) {
         label = evaluator.computeLabel(computedData)
         hintedLabel = null
         foregroundImageVector = evaluator.computeImageVector(computedData)
+
+        if (computedData.code == KeyCode.ENTER) {
+            foregroundImageVector = null
+        }
 
         val data = computedData
         if (data.type == KeyType.NUMERIC && evaluator.keyboard.mode == KeyboardMode.PHONE) {

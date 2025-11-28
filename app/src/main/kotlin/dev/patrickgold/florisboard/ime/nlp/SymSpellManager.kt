@@ -24,6 +24,24 @@ object SymSpellManager {
     private const val DICT_ASSET_PATH = "ime/dict/frequency_dictionary_en.txt"
     private const val BIGRAM_ASSET_PATH = "ime/dict/frequency_bigram_en.txt"
     private val USER_OVERRIDES = listOf("kiry" to Double.MAX_VALUE)
+    private val PROPER_OVERRIDES = setOf(
+        "kiry", "kiry's",
+        "sam", "sam's",
+        "elijah", "elijah's",
+        "dad", "dad's",
+        "mom", "mom's",
+        "violet", "violet's",
+        "levi", "levi's",
+        "pepa", "pepa's",
+        "mike", "mike's",
+        "tom", "tom's",
+        "tony", "tony's",
+        "ellie", "ellie's",
+        "otis", "otis's",
+        "rupert", "rupert's",
+        "dan", "dan's",
+        "tim", "tim's",
+    )
 
     fun init(context: Context, scope: CoroutineScope) {
         scope.launch(Dispatchers.IO) {
@@ -40,17 +58,9 @@ object SymSpellManager {
                 // Constructor order is (SpellCheckSettings, StringDistance, DictionaryHolder)
                 val instance = SymSpell(settings, DamerauLevenshteinDistance(), holder)
 
-                // 3. Load Real Dictionary from Assets (unigram + bigram). Normalize spacing to the tab-delimited format
-                // expected by SymSpell loaders.
-                val unigramBytes = context.assets.open(DICT_ASSET_PATH)
-                    .bufferedReader()
-                    .useLines { normalizeForSymSpell(it) }
-                val bigramBytes = context.assets.open(BIGRAM_ASSET_PATH)
-                    .bufferedReader()
-                    .useLines { normalizeForSymSpell(it) }
-
-                holder.loadUnigramTxtFile(unigramBytes)
-                holder.loadBigramTxtFile(bigramBytes)
+                // 3. Load Real Dictionary from Assets (unigram + bigram)
+                holder.loadUnigramTxtFile(context.assets.open(DICT_ASSET_PATH).use { it.readBytes() })
+                holder.loadBigramTxtFile(context.assets.open(BIGRAM_ASSET_PATH).use { it.readBytes() })
 
                 // Inject must-win personal words until we wire user dictionary
                 USER_OVERRIDES.forEach { (word, freq) -> instance.createDictionaryEntry(word, freq) }
@@ -112,6 +122,12 @@ object SymSpellManager {
 
     private fun applyCasingPattern(original: String, suggestion: String): String {
         if (original.isEmpty()) return suggestion
+        if (original.length == 1 && original.equals("i", ignoreCase = true) && suggestion.equals("i", ignoreCase = true)) {
+            return "I"
+        }
+        if (suggestion.lowercase() in PROPER_OVERRIDES) {
+            return suggestion.replaceFirstChar { it.titlecase() }
+        }
         val isAllUpper = original.all { it.isUpperCase() }
         if (isAllUpper) return suggestion.uppercase()
 
@@ -125,19 +141,4 @@ object SymSpellManager {
         return suggestion
     }
 
-    private fun normalizeForSymSpell(lines: Sequence<String>): ByteArray {
-        val sb = StringBuilder()
-        lines.forEach { raw ->
-            val trimmed = raw.trim()
-            if (trimmed.isEmpty()) return@forEach
-            val cleaned = trimmed.trimStart { it == '\uFEFF' || it.isWhitespace() }
-            val sep = cleaned.lastIndexOf(' ')
-            if (sep <= 0 || sep == cleaned.lastIndex) return@forEach
-            sb.append(cleaned, 0, sep)
-            sb.append('\t')
-            sb.append(cleaned.substring(sep + 1))
-            sb.append('\n')
-        }
-        return sb.toString().toByteArray()
-    }
 }
