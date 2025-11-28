@@ -78,6 +78,7 @@ fun SetupScreen() = FlorisScreen {
     val isFlorisBoardEnabled by InputMethodUtils.observeIsFlorisboardEnabled(foregroundOnly = true)
     val isFlorisBoardSelected by InputMethodUtils.observeIsFlorisboardSelected(foregroundOnly = true)
     val hasNotificationPermission by prefs.internal.notificationPermissionState.observeAsState()
+    val hasMicPermission by prefs.internal.micPermissionState.observeAsState()
 
     val requestNotification =
         rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -89,6 +90,16 @@ fun SetupScreen() = FlorisScreen {
                 }
             }
         }
+    val requestMic =
+        rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            scope.launch {
+                if (isGranted) {
+                    prefs.internal.micPermissionState.set(MicPermissionState.GRANTED)
+                } else {
+                    prefs.internal.micPermissionState.set(MicPermissionState.DENIED)
+                }
+            }
+        }
 
     content(
         isFlorisBoardEnabled,
@@ -96,7 +107,9 @@ fun SetupScreen() = FlorisScreen {
         context,
         navController,
         requestNotification,
+        requestMic,
         hasNotificationPermission,
+        hasMicPermission,
         scope,
     )
 }
@@ -108,7 +121,9 @@ private fun FlorisScreenScope.content(
     context: Context,
     navController: NavController,
     requestNotification: ManagedActivityResultLauncher<String, Boolean>,
+    requestMic: ManagedActivityResultLauncher<String, Boolean>,
     hasNotificationPermission: NotificationPermissionState,
+    hasMicPermission: MicPermissionState,
     scope: CoroutineScope,
 ) {
 
@@ -117,18 +132,20 @@ private fun FlorisScreenScope.content(
             !isFlorisBoardEnabled -> Steps.EnableIme.id
             !isFlorisBoardSelected -> Steps.SelectIme.id
             hasNotificationPermission == NotificationPermissionState.NOT_SET && AndroidVersion.ATLEAST_API33_T -> Steps.SelectNotification.id
+            hasMicPermission == MicPermissionState.NOT_SET -> Steps.GrantMicPermission.id
             else -> Steps.FinishUp.id
         }
         FlorisStepState.new(init = initStep)
     }
 
     content {
-        LaunchedEffect(isFlorisBoardEnabled, isFlorisBoardSelected, hasNotificationPermission) {
+        LaunchedEffect(isFlorisBoardEnabled, isFlorisBoardSelected, hasNotificationPermission, hasMicPermission) {
             stepState.setCurrentAuto(
                 when {
                     !isFlorisBoardEnabled -> Steps.EnableIme.id
                     !isFlorisBoardSelected -> Steps.SelectIme.id
                     hasNotificationPermission == NotificationPermissionState.NOT_SET && AndroidVersion.ATLEAST_API33_T -> Steps.SelectNotification.id
+                    hasMicPermission == MicPermissionState.NOT_SET -> Steps.GrantMicPermission.id
                     else -> Steps.FinishUp.id
                 }
             )
@@ -165,7 +182,7 @@ private fun FlorisScreenScope.content(
                 Spacer(modifier = Modifier.height(16.dp))
             },
             steps = steps(
-                context, navController, requestNotification, scope
+                context, navController, requestNotification, requestMic, scope
             ),
             footer = {
                 footer(context)
@@ -200,6 +217,7 @@ private fun PreferenceUiScope<FlorisPreferenceModel>.steps(
     context: Context,
     navController: NavController,
     requestNotification: ManagedActivityResultLauncher<String, Boolean>,
+    requestMic: ManagedActivityResultLauncher<String, Boolean>,
     scope: CoroutineScope,
 ): List<FlorisStep> {
 
@@ -234,6 +252,15 @@ private fun PreferenceUiScope<FlorisPreferenceModel>.steps(
             }
         } else null,
         FlorisStep(
+            id = Steps.GrantMicPermission.id,
+            title = stringRes(R.string.setup__grant_mic_permission__title),
+        ) {
+            StepText(stringRes(R.string.setup__grant_mic_permission__description))
+            StepButton(label = stringRes(R.string.setup__grant_mic_permission__btn)) {
+                requestMic.launch(android.Manifest.permission.RECORD_AUDIO)
+            }
+        },
+        FlorisStep(
             id = Steps.FinishUp.id,
             title = stringRes(R.string.setup__finish_up__title),
         ) {
@@ -255,5 +282,6 @@ private sealed class Steps(val id: Int) {
     data object EnableIme : Steps(id = 1)
     data object SelectIme : Steps(id = 2)
     data object SelectNotification : Steps(id = 3)
-    data object FinishUp : Steps(id = 4)
+    data object GrantMicPermission : Steps(id = 4)
+    data object FinishUp : Steps(id = 5)
 }

@@ -23,6 +23,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import dev.patrickgold.florisboard.app.settings.theme.ColorPreferenceSerializer
 import dev.patrickgold.florisboard.app.settings.theme.DisplayKbdAfterDialogs
 import dev.patrickgold.florisboard.app.settings.theme.SnyggLevel
+import dev.patrickgold.florisboard.app.setup.MicPermissionState
 import dev.patrickgold.florisboard.app.setup.NotificationPermissionState
 import dev.patrickgold.florisboard.ime.clipboard.CLIPBOARD_HISTORY_NUM_GRID_COLUMNS_AUTO
 import dev.patrickgold.florisboard.ime.clipboard.ClipboardSyncBehavior
@@ -468,6 +469,10 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
         val notificationPermissionState = enum(
             key = "internal__notification_permission_state",
             default = NotificationPermissionState.NOT_SET,
+        )
+        val micPermissionState = enum(
+            key = "internal__mic_permission_state",
+            default = MicPermissionState.NOT_SET,
         )
     }
 
