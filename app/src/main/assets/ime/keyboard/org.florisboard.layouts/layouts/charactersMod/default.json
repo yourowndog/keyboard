@@ -2,7 +2,7 @@
   [
     { "code":  -11, "label": "shift", "type": "modifier" },
     { "code":    0, "type": "placeholder" },
-    { "code":   -7, "label": "delete", "type": "enter_editing" }
+    { "$": "character", "code": 47, "label": "/" }
   ],
   [
     { "$": "navigation", "code": -15, "label": "⎋" },

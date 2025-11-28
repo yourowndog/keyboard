@@ -406,11 +406,10 @@ abstract class AbstractEditorInstance(context: Context) {
             )
             expectedContentQueue.push(newContent)
             // Run the Reflex check
-            val finalText = if (!text.contains(" ")) {
-                dev.patrickgold.florisboard.ime.nlp.SymSpellManager.fix(text)
-            } else { 
-                text 
-            }
+            val stripped = text.trimEnd()
+            val trailing = text.removePrefix(stripped)
+            val corrected = dev.patrickgold.florisboard.ime.nlp.SymSpellManager.fix(stripped)
+            val finalText = corrected + trailing
             // Then use finalText in the commit call
             ic.commitText(finalText, 1)
             ic.setComposingRegion(newContent.composing)

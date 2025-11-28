@@ -23,7 +23,7 @@
     { "$": "auto_text_key", "code":  106, "label": "j" },
     { "$": "auto_text_key", "code":  107, "label": "k" },
     { "$": "auto_text_key", "code":  108, "label": "l" },
-    { "$": "character", "code": 47, "label": "/" }
+    { "code": -7, "label": "delete", "type": "enter_editing" }
   ],
   [
     { "$": "auto_text_key", "code":  122, "label": "z" },

@@ -108,18 +108,20 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         allowPossiblyOffensive: Boolean,
         isPrivateSession: Boolean,
     ): List<SuggestionCandidate> {
-        val currentWord = content.composingText.toString().trim().lowercase()
-        if (currentWord.isBlank()) return emptyList()
+        val currentWordRaw = content.composingText.toString().trim()
+        if (currentWordRaw.isBlank()) return emptyList()
 
         // DELEGATE TO NEW ENGINE
-        // This replaces the old loops with O(1) SymSpell lookups
-        val suggestions = dev.patrickgold.florisboard.ime.nlp.SymSpellManager.suggest(currentWord)
+        // Preserve casing for display/commit; lowercase is handled inside the manager for lookup.
+        val suggestions = dev.patrickgold.florisboard.ime.nlp.SymSpellManager.suggest(currentWordRaw)
+        val upperCount = currentWordRaw.count { it.isUpperCase() }
 
         return suggestions.map { word ->
             WordSuggestionCandidate(
                 text = word,
                 secondaryText = null,
-                isEligibleForAutoCommit = true,
+                // Avoid auto-commit on uppercase-heavy tokens (acronyms/proper nouns)
+                isEligibleForAutoCommit = upperCount < 2,
                 sourceProvider = this
             )
         }
