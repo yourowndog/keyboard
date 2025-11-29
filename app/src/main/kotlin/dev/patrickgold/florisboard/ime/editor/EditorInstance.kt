@@ -342,6 +342,10 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
      */
     fun deleteBackwards(unit: OperationUnit): Boolean {
         val content = activeContent
+        // iOS-style undo: if the last commit auto-corrected, a single backspace restores the original word.
+        if (unit == OperationUnit.CHARACTERS && tryRevertLastAutoCorrect()) {
+            return true
+        }
         if (unit == OperationUnit.CHARACTERS) {
             if (phantomSpace.isActive && content.currentWord.isValid && prefs.glide.immediateBackspaceDeletesWord.get()) {
                 return deleteBackwards(OperationUnit.WORDS)
@@ -546,6 +550,35 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         autoSpace.setInactive()
         phantomSpace.setInactive()
         massSelection.reset()
+    }
+
+    private fun tryRevertLastAutoCorrect(): Boolean {
+        val state = autoCorrectUndoState ?: return false
+        val content = activeContent
+        if (content.selection.isSelectionMode) return false
+        val corrected = state.correctedText
+        val before = content.textBeforeSelection
+        if (!before.endsWith(corrected)) return false
+        val ic = currentInputConnection() ?: return false
+        val newTextBefore = before.dropLast(corrected.length) + state.originalText
+        val newSelection = EditorRange.cursor(newTextBefore.length)
+        runBlocking {
+            ic.beginBatchEdit()
+            ic.finishComposingText()
+            ic.deleteSurroundingText(corrected.length, 0)
+            ic.commitText(state.originalText, 1)
+            ic.endBatchEdit()
+            expectedContentQueue.push(
+                content.generateCopy(
+                    selection = newSelection,
+                    textBeforeSelection = newTextBefore,
+                    textAfterSelection = content.textAfterSelection,
+                    selectedText = "",
+                )
+            )
+        }
+        autoCorrectUndoState = null
+        return true
     }
 
     private fun PhantomSpaceState.determine(text: String, forceActive: Boolean = false): Boolean {

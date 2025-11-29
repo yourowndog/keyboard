@@ -9,7 +9,6 @@ import com.darkrockstudios.symspellkt.impl.SymSpell
 import com.darkrockstudios.symspellkt.impl.InMemoryDictionaryHolder
 import com.darkrockstudios.symspellkt.common.SpellCheckSettings
 import com.darkrockstudios.symspellkt.common.Verbosity
-
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -24,6 +23,31 @@ object SymSpellManager {
     private const val DICT_ASSET_PATH = "ime/dict/frequency_dictionary_en.txt"
     private const val BIGRAM_ASSET_PATH = "ime/dict/frequency_bigram_en.txt"
     private val USER_OVERRIDES = listOf("kiry" to Double.MAX_VALUE)
+    // Prefer common contractions before running SymSpell so "im" maps to "I'm" instead of "pm".
+    private val CONTRACTION_SHORTCUTS = mapOf(
+        "im" to "I'm",
+        "ive" to "I've",
+        "id" to "I'd",
+        "ill" to "I'll",
+        "dont" to "don't",
+        "cant" to "can't",
+        "wont" to "won't",
+        "isnt" to "isn't",
+        "arent" to "aren't",
+        "doesnt" to "doesn't",
+        "didnt" to "didn't",
+        "wasnt" to "wasn't",
+        "werent" to "weren't",
+        "youre" to "you're",
+        "theyre" to "they're",
+        "were" to "we're",
+        "lets" to "let's",
+        "thats" to "that's",
+        "whos" to "who's",
+        "whats" to "what's",
+        "wheres" to "where's",
+        "theres" to "there's",
+    )
     private val PROPER_OVERRIDES = setOf(
         "kiry", "kiry's",
         "sam", "sam's",
@@ -84,12 +108,26 @@ object SymSpellManager {
     fun fix(input: String): String {
         if (!isReady) return input
         val instance = symSpell ?: return input
-        // Removed length check to allow single-letter corrections (e.g. i -> I)
+        // Handle single-letter inputs explicitly to avoid over-correcting every keystroke.
+        // Do not auto-capitalize lone "i"; keep exactly what the user typed.
+        if (input.length == 1) return input
+
+        // Fast-path for contractions so missing apostrophes don't divert to unrelated words.
+        CONTRACTION_SHORTCUTS[input.lowercase()]?.let { contraction ->
+            return applyCasingPattern(input, contraction)
+        }
 
         // Reflexes: Fast correction
         val normalized = input.lowercase()
+        val normalizedNoApos = normalized.replace("'", "")
         val suggestions = instance.lookup(normalized, Verbosity.Top, MAX_EDIT_DISTANCE.toDouble())
-        val suggestion = suggestions.firstOrNull()?.term ?: return input
+
+        // Prefer candidates that only differ by a missing apostrophe (treat apostrophes as zero-cost).
+        val suggestion = suggestions.minByOrNull { candidate ->
+            val candidateNorm = candidate.term.lowercase().replace("'", "")
+            val apostropheBonus = if (candidate.term.contains('\'') && candidateNorm == normalizedNoApos) -1 else 0
+            candidate.distance + apostropheBonus
+        }?.term ?: return input
 
         // Heuristic: if the user typed multiple uppercase letters (likely an acronym/proper noun)
         // and the suggestion doesn't match the same lowercase letters, keep the original.
@@ -105,18 +143,30 @@ object SymSpellManager {
          if (!isReady) return emptyList()
          val instance = symSpell ?: return emptyList()
 
+         if (input.length == 1) {
+             // Mirror the fix() behavior: keep exactly what the user typed.
+             return listOf(input)
+         }
+
          val normalized = input.lowercase()
+         val normalizedNoApos = normalized.replace("'", "")
          val upperCount = input.count { it.isUpperCase() }
          val suggestions = instance.lookup(normalized, Verbosity.Closest, MAX_EDIT_DISTANCE.toDouble())
-         val mapped = suggestions.mapNotNull { candidate ->
-             val term = candidate.term
-             if (upperCount >= 2 && term.lowercase() != normalized) {
-                 // Skip suggestions that would mangle acronyms/proper nouns
-                 null
-             } else {
-                 applyCasingPattern(input, term)
+         val mapped = suggestions
+             .sortedBy { candidate ->
+                 val candidateNorm = candidate.term.lowercase().replace("'", "")
+                 val apostropheBonus = if (candidate.term.contains('\'') && candidateNorm == normalizedNoApos) -1 else 0
+                 candidate.distance + apostropheBonus
              }
-         }
+             .mapNotNull { candidate ->
+                 val term = candidate.term
+                 if (upperCount >= 2 && term.lowercase() != normalized) {
+                     // Skip suggestions that would mangle acronyms/proper nouns
+                     null
+                 } else {
+                     applyCasingPattern(input, term)
+                 }
+             }
          return if (mapped.isNotEmpty()) mapped else listOf(input)
     }
 

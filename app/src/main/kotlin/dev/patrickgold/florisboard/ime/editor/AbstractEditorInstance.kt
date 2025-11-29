@@ -92,10 +92,11 @@ abstract class AbstractEditorInstance(context: Context) {
         private set(v) {
             _activeContentFlow.value = v
         }
-    private val expectedContentQueue = ExpectedContentQueue()
+    protected val expectedContentQueue = ExpectedContentQueue()
     private val _lastCommitPosition = LastCommitPosition()
     val lastCommitPosition
         get() = LastCommitPosition(_lastCommitPosition)
+    protected var autoCorrectUndoState: AutoCorrectUndoState? = null
 
     fun expectedContent(): EditorContent? {
         return runBlocking { expectedContentQueue.peekNewestOrNull() }
@@ -224,6 +225,7 @@ abstract class AbstractEditorInstance(context: Context) {
         activeContent = EditorContent.Unspecified
         runBlocking { expectedContentQueue.clear() }
         _lastCommitPosition.reset()
+        autoCorrectUndoState = null
     }
 
     private suspend fun generateContent(
@@ -263,7 +265,7 @@ abstract class AbstractEditorInstance(context: Context) {
         return EditorContent(text, offset, localSelection, localComposing, localCurrentWord)
     }
 
-    private suspend fun EditorContent.generateCopy(
+    protected suspend fun EditorContent.generateCopy(
         editorInfo: FlorisEditorInfo = activeInfo,
         selection: EditorRange = this.selection,
         textBeforeSelection: CharSequence = this.textBeforeSelection,
@@ -395,21 +397,29 @@ abstract class AbstractEditorInstance(context: Context) {
         if (activeInfo.isRawInputEditor) {
             ic.commitText(text, 1)
         } else runBlocking {
-            val newSelection = EditorRange.cursor(selection.start + text.length)
-            val newContent = content.generateCopy(
-                selection = newSelection,
-                textBeforeSelection = buildString {
-                    append(content.textBeforeSelection)
-                    append(text)
-                },
-                selectedText = "",
-            )
-            expectedContentQueue.push(newContent)
             // Run the Reflex check
             val stripped = text.trimEnd()
             val trailing = text.removePrefix(stripped)
             val corrected = dev.patrickgold.florisboard.ime.nlp.SymSpellManager.fix(stripped)
             val finalText = corrected + trailing
+            val newSelection = EditorRange.cursor(selection.start + finalText.length)
+            val newContent = content.generateCopy(
+                selection = newSelection,
+                textBeforeSelection = buildString {
+                    append(content.textBeforeSelection)
+                    append(finalText)
+                },
+                selectedText = "",
+            )
+            expectedContentQueue.push(newContent)
+            autoCorrectUndoState = if (corrected != stripped) {
+                AutoCorrectUndoState(
+                    correctedText = finalText,
+                    originalText = stripped + trailing,
+                )
+            } else {
+                null
+            }
             // Then use finalText in the commit call
             ic.commitText(finalText, 1)
             ic.setComposingRegion(newContent.composing)
@@ -667,7 +677,7 @@ abstract class AbstractEditorInstance(context: Context) {
         return true
     }
 
-    private class ExpectedContentQueue {
+    protected class ExpectedContentQueue {
         private val list = guardedByLock { mutableListOf<EditorContent>() }
 
         suspend fun popUntilOrNull(predicate: (EditorContent) -> Boolean): EditorContent? {
@@ -735,4 +745,9 @@ abstract class AbstractEditorInstance(context: Context) {
             }
         }
     }
+
+    data class AutoCorrectUndoState(
+        val correctedText: String,
+        val originalText: String,
+    )
 }

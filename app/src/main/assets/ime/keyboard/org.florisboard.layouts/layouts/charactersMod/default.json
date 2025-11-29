@@ -13,7 +13,6 @@
       "uri":      { "code":   47, "label": "/", "groupId": 1 }
     },
     { "code":   32, "label": "space" },
-    { "code":   46, "label": ".", "groupId": 2 },
-    { "code":   10, "label": "ENT", "groupId": 3, "type": "enter_editing" }
+    { "code":   46, "label": ".", "groupId": 2 }
   ]
 ]

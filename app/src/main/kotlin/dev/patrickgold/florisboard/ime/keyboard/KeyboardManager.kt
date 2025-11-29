@@ -18,7 +18,6 @@ package dev.patrickgold.florisboard.ime.keyboard
 
 import android.content.Context
 import android.os.Build
-import android.util.Log
 import dev.patrickgold.florisboard.app.layoutbuilder.LayoutPack
 import dev.patrickgold.florisboard.app.layoutbuilder.LayoutPackRepository
 import dev.patrickgold.florisboard.app.layoutbuilder.LayoutValidation
@@ -976,8 +975,6 @@ class KeyboardManager(
             }
         }
     }
-
-
 
     override fun onInputKeyCancel(data: KeyData) {
         when (data.code) {

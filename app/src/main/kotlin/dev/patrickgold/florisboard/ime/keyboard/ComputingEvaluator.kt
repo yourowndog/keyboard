@@ -10,7 +10,7 @@
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * See the License for the a specific language governing permissions and
  * limitations under the License.
  */
 
@@ -171,6 +171,12 @@ fun ComputingEvaluator.computeLabel(data: KeyData): String? {
             KeyCode.KESHIDA -> {
                 evaluator.context()?.getString(R.string.key__view_keshida)
             }
+            // THIS IS HOW YOU CHANGE THE LABEL OF THESE SPECIAL KEYS! GOOD FOR CUSTOMIZATION!!!!
+            // The rendering logic for a key first checks for an `ImageVector` (icon). If the icon
+            // is null, it then checks for a `String` label. By making computeImageVector() return
+            // null for the ENTER key and providing the label here, we force a text render.
+            // The label itself is sourced from the `label` property in the JSON layout file.
+            KeyCode.ENTER -> data.label as? String
             else -> null
         }
     }
@@ -179,6 +185,22 @@ fun ComputingEvaluator.computeLabel(data: KeyData): String? {
 fun ComputingEvaluator.computeImageVector(data: KeyData): ImageVector? {
     val evaluator = this
     return when (data.code) {
+        // THIS IS HOW YOU CHANGE THE LABEL OF THESE SPECIAL KEYS! GOOD FOR CUSTOMIZATION!!!!
+        // To restore the dynamic icon for the ENTER key, delete the `KeyCode.ENTER -> data.label`
+        // line from the `computeLabel` function above, and then uncomment the entire
+        // `KeyCode.ENTER` block below.
+        //
+        // KeyCode.ENTER -> {
+        //     when (evaluator.editorInfo.imeOptions.action) {
+        //         ImeOptions.Action.DONE -> Icons.Default.Done
+        //         ImeOptions.Action.GO -> Icons.AutoMirrored.Filled.ArrowRightAlt
+        //         ImeOptions.Action.NEXT -> Icons.AutoMirrored.Filled.ArrowRightAlt
+        //         ImeOptions.Action.PREVIOUS -> Icons.AutoMirrored.Filled.ArrowRightAlt
+        //         ImeOptions.Action.SEARCH -> Icons.Default.Search
+        //         ImeOptions.Action.SEND -> Icons.AutoMirrored.Filled.Send
+        //         else -> Icons.AutoMirrored.Filled.KeyboardReturn
+        //     }
+        // }
         KeyCode.ARROW_LEFT -> {
             Icons.AutoMirrored.Filled.KeyboardArrowLeft
         }
@@ -216,24 +238,6 @@ fun ComputingEvaluator.computeImageVector(data: KeyData): ImageVector? {
         }
         KeyCode.DELETE -> {
             Icons.AutoMirrored.Outlined.Backspace
-        }
-        KeyCode.ENTER -> {
-            val imeOptions = evaluator.editorInfo.imeOptions
-            val inputAttributes = evaluator.editorInfo.inputAttributes
-            if (imeOptions.flagNoEnterAction || inputAttributes.flagTextMultiLine) {
-                Icons.AutoMirrored.Filled.KeyboardReturn
-            } else {
-                when (imeOptions.action) {
-                    ImeOptions.Action.DONE -> Icons.Default.Done
-                    ImeOptions.Action.GO -> Icons.AutoMirrored.Filled.ArrowRightAlt
-                    ImeOptions.Action.NEXT -> Icons.AutoMirrored.Filled.ArrowRightAlt
-                    ImeOptions.Action.NONE -> Icons.AutoMirrored.Filled.KeyboardReturn
-                    ImeOptions.Action.PREVIOUS -> Icons.AutoMirrored.Filled.ArrowRightAlt
-                    ImeOptions.Action.SEARCH -> Icons.Default.Search
-                    ImeOptions.Action.SEND -> Icons.AutoMirrored.Filled.Send
-                    ImeOptions.Action.UNSPECIFIED -> Icons.AutoMirrored.Filled.KeyboardReturn
-                }
-            }
         }
         KeyCode.FORWARD_DELETE -> {
             Icons.AutoMirrored.Default.ForwardDelete

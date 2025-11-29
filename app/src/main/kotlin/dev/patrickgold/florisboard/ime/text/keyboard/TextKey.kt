@@ -149,9 +149,6 @@ class TextKey(override val data: AbstractKeyData) : Key(data) {
                     else -> 0.0f
                 }
             }
-            /*
-            ##### AGENT LOOK HERE AGENT READ ME IMPORTANT!!!! DANGER!!! NOTE!!!! THIS LOGIC ALLOWS YOU TO ADJUST SPECIFIC KEY WIDTHS THIS IS VERY USEFUL FOR CUSTOMIZATION#############
-            */
             flayWidthFactor = when (keyboardMode) {
                 KeyboardMode.NUMERIC,
                 KeyboardMode.PHONE,
@@ -229,6 +226,10 @@ class TextKey(override val data: AbstractKeyData) : Key(data) {
         hintedLabel = null
         foregroundImageVector = evaluator.computeImageVector(computedData)
 
+        // THIS IS HOW YOU CHANGE THE LABEL OF THESE SPECIAL KEYS! GOOD FOR CUSTOMIZATION!!!!
+        // This block is a key part of the text-label rendering for the Enter key.
+        // It manually sets the icon to null, which forces the renderer to
+        // fall back to the text label provided by `computeLabel` in ComputingEvaluator.kt.
         if (computedData.code == KeyCode.ENTER) {
             foregroundImageVector = null
         }

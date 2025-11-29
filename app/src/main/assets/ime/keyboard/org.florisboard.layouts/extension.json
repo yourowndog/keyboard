@@ -344,7 +344,8 @@
         "id": "qwerty",
         "label": "QWERTY",
         "authors": [ "patrickgold" ],
-        "direction": "ltr"
+        "direction": "ltr",
+        "modifier": "org.florisboard.layouts:qwerty_default"
       },
       {
         "id": "qwertz",
@@ -490,6 +491,12 @@
       {
         "id": "default",
         "label": "Default character modifier layout",
+        "authors": [ "patrickgold" ],
+        "direction": "ltr"
+      },
+      {
+        "id": "qwerty_default",
+        "label": "QWERTY default character modifier layout",
         "authors": [ "patrickgold" ],
         "direction": "ltr"
       },
@@ -710,6 +717,7 @@
         "label": "Warang Citi",
         "authors": [ "Singkiring57" ],
         "direction": "ltr"
+
       },
       {
         "id": "western_arabic",
