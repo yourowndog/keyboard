@@ -1,18 +1,21 @@
+
 [
   [
-    { "code":  -11, "label": "shift", "type": "modifier" },
-    { "code":    0, "type": "placeholder" },
-    { "code": 47, "label": "/" }
+    { "$": "text_key", "code": -11, "label": "shift", "type": "modifier" },
+    { "$": "text_key", "code": 0, "type": "placeholder" },
+    { "$": "text_key", "code": -7, "label": "delete", "type": "enter_editing" }
   ],
   [
-    { "$": "navigation", "code": -15, "label": "⎋" },
-    { "code": -202, "label": "view_symbols", "type": "system_gui" },
+    { "$": "text_key", "code": -202, "label": "view_symbols", "type": "system_gui" },
     { "$": "variation_selector",
-      "default":  { "code":   44, "label": ",", "groupId": 1 },
-      "email":    { "code":   64, "label": "@", "groupId": 1 },
-      "uri":      { "code":   47, "label": "/", "groupId": 1 }
+      "default": { "code": 44, "label": ",", "groupId": 1 },
+      "email":   { "code": 64, "label": "@", "groupId": 1 },
+      "uri":     { "code": 47, "label": "/", "groupId": 1 }
     },
-    { "code":   32, "label": "space" },
-    { "code":   46, "label": ".", "groupId": 2 }
+    { "$": "text_key", "code": -227, "label": "language_switch", "type": "system_gui" },
+    { "$": "text_key", "code": -212, "label": "ime_ui_mode_media", "type": "system_gui" },
+    { "$": "text_key", "code": 32, "label": "space" },
+    { "$": "text_key", "code": 46, "label": ".", "groupId": 2 },
+    { "$": "text_key", "code": 10, "label": "enter", "groupId": 3, "type": "enter_editing" }
   ]
 ]
