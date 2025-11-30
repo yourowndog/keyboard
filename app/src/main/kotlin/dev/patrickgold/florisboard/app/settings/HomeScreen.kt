@@ -186,7 +186,7 @@ fun HomeScreen() = FlorisScreen {
                         val fallback = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, packageUri)
                             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                         runCatching { context.startActivity(fallback) }
-                            .onFailure { Toast.makeText(context, R.string.action__not_available, Toast.LENGTH_SHORT).show() }
+                            .onFailure { Toast.makeText(context, "Not available", Toast.LENGTH_SHORT).show() }
                     }
             },
         )

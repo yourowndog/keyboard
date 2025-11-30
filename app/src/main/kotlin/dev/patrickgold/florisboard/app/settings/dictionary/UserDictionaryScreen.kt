@@ -194,7 +194,9 @@ fun UserDictionaryScreen(type: UserDictionaryType) = FlorisScreen {
                 Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
             runCatching {
                 context.contentResolver.takePersistableUriPermission(uri, flags)
-                prefs.dictionary.userDictionaryVaultUri.set(uri.toString())
+                scope.launch {
+                    prefs.dictionary.userDictionaryVaultUri.set(uri.toString())
+                }
                 context.showLongToastSync("Vault set. Auto-import will use this folder.")
             }.onFailure {
                 context.showLongToastSync("Failed to set vault: ${it.localizedMessage}")
