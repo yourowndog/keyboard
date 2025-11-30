@@ -159,9 +159,6 @@ fun ComputingEvaluator.computeLabel(data: KeyData): String? {
             KeyCode.VIEW_PHONE2 -> {
                 evaluator.context()?.getString(R.string.key__view_phone2)
             }
-            KeyCode.VIEW_SYMBOLS -> {
-                evaluator.context()?.getString(R.string.key__view_symbols)
-            }
             KeyCode.VIEW_SYMBOLS2 -> {
                 evaluator.context()?.getString(R.string.key__view_symbols2)
             }
@@ -177,6 +174,7 @@ fun ComputingEvaluator.computeLabel(data: KeyData): String? {
             // null for the ENTER key and providing the label here, we force a text render.
             // The label itself is sourced from the `label` property in the JSON layout file.
             KeyCode.ENTER -> data.label as? String
+            KeyCode.VIEW_SYMBOLS -> data.label as? String
             else -> null
         }
     }

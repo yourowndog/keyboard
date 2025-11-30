@@ -1,4 +1,5 @@
-lol	100000
+chungus	100000
+doin'	100000
 ok	1500000
 to	2150000
 it	1840000
@@ -360,7 +361,6 @@ true	1400000
 beautiful	1290000
 haven	1030000
 taking	1450000
-mrs	1180000
 myself	1090000
 death	1570000
 pay	1380000
@@ -506,7 +506,6 @@ company	1570000
 truth	1270000
 moment	1290000
 news	1420000
-huh	650000
 send	1320000
 full	1390000
 dinner	1190000
@@ -600,7 +599,6 @@ touch	1220000
 words	1420000
 seem	1270000
 beat	1330000
-ain	510000
 rather	1480000
 possible	1480000
 less	1510000
@@ -846,7 +844,6 @@ darling	920000
 church	1500000
 calls	1340000
 art	1480000
-fly	1280000
 colonel	1160000
 america	1370000
 rich	1330000
@@ -862,7 +859,6 @@ goodbye	980000
 standing	1340000
 park	1430000
 dress	1230000
-wow	760000
 difference	1320000
 hundred	1330000
 lying	1220000
@@ -1215,7 +1211,6 @@ military	1530000
 search	1350000
 bridge	1410000
 excellent	1260000
-cry	1060000
 magic	1260000
 lock	1190000
 kitchen	1160000
@@ -1355,7 +1350,6 @@ skin	1300000
 empty	1230000
 victim	1220000
 lines	1440000
-dry	1320000
 washington	1340000
 teeth	1210000
 correct	1270000
@@ -1430,7 +1424,6 @@ bright	1210000
 ideas	1340000
 whom	1450000
 belong	1210000
-sky	1200000
 gotten	1030000
 airport	1360000
 ordered	1390000
@@ -1473,7 +1466,6 @@ indeed	1260000
 agreed	1380000
 students	1560000
 silly	960000
-doc	730000
 idiot	850000
 onto	1350000
 commander	1340000
@@ -1667,7 +1659,6 @@ brings	1210000
 adam	1160000
 lower	1450000
 discovered	1410000
-pal	820000
 grew	1390000
 streets	1310000
 mayor	1320000
@@ -1713,7 +1704,6 @@ sports	1420000
 funeral	1230000
 prepare	1220000
 members	1580000
-ooh	540000
 storm	1300000
 laid	1330000
 officers	1390000
@@ -2184,7 +2174,6 @@ smoking	1140000
 majesty	880000
 hunt	1150000
 marie	1130000
-peg	880000
 prize	1280000
 wing	1380000
 invite	1030000
@@ -2312,7 +2301,6 @@ silent	1190000
 surface	1420000
 quality	1400000
 provide	1470000
-aye	720000
 hits	1320000
 remove	1260000
 someday	880000
@@ -2508,7 +2496,6 @@ jesse	1010000
 latest	1270000
 bruce	1150000
 salt	1230000
-gee	630000
 grateful	970000
 beast	1030000
 pot	1100000
@@ -2664,7 +2651,6 @@ status	1430000
 panic	1060000
 bars	1230000
 actress	1340000
-spy	1130000
 warrant	1100000
 fifteen	1250000
 hong	1220000
@@ -2675,7 +2661,6 @@ entered	1430000
 influence	1420000
 smooth	1210000
 officially	1390000
-thy	970000
 guide	1230000
 jordan	1130000
 fever	1130000
@@ -2964,7 +2949,6 @@ sounded	1040000
 soda	1000000
 staring	880000
 scratch	1040000
-shy	1060000
 trigger	1130000
 matches	1380000
 earned	1400000
@@ -3388,7 +3372,6 @@ bend	1070000
 engagement	1190000
 assumed	1320000
 buildings	1450000
-mum	810000
 canada	1370000
 zack	840000
 lawrence	1150000
@@ -3441,7 +3424,6 @@ greek	1300000
 brooklyn	1130000
 compared	1370000
 wasted	970000
-hug	870000
 whistle	1030000
 aircraft	1480000
 executive	1360000
@@ -3733,7 +3715,6 @@ covers	1360000
 massive	1300000
 relations	1340000
 answering	1010000
-meg	880000
 accent	1120000
 sends	1170000
 manhattan	1110000
@@ -3884,7 +3865,6 @@ connie	880000
 meets	1300000
 bits	1170000
 salary	1170000
-mon	860000
 debate	1300000
 chill	860000
 blues	1210000
@@ -4064,13 +4044,11 @@ retreat	1220000
 fraud	1170000
 gig	1080000
 airplane	1100000
-rub	850000
 monsters	1110000
 scenes	1330000
 understanding	1300000
 regarding	1320000
 narrator	1140000
-bro	590000
 heavens	950000
 alliance	1250000
 gloria	970000
@@ -4101,7 +4079,6 @@ breasts	990000
 ballet	1140000
 jefferson	1100000
 bothering	750000
-jen	790000
 conclusion	1240000
 philosophy	1330000
 rage	1060000
@@ -4245,7 +4222,6 @@ efforts	1390000
 requested	1240000
 reservation	1090000
 depth	1280000
-lad	850000
 filling	1140000
 focused	1320000
 constantly	1220000
@@ -4277,7 +4253,6 @@ shadows	1000000
 snakes	1090000
 cemetery	1220000
 felicity	750000
-gal	850000
 images	1310000
 household	1430000
 clouds	1100000
@@ -4319,7 +4294,6 @@ samples	1210000
 drum	1230000
 nerves	1020000
 ruby	960000
-pee	700000
 breast	1180000
 dock	1110000
 infection	1200000
@@ -4362,7 +4336,6 @@ adams	1140000
 bump	920000
 twisted	1030000
 banana	1020000
-yep	310000
 benjamin	1110000
 discussing	1120000
 thompson	1130000
@@ -4413,7 +4386,6 @@ skinny	830000
 niece	1100000
 curtain	1040000
 standards	1340000
-bum	770000
 booked	1030000
 chaos	1110000
 sector	1360000
@@ -4681,7 +4653,6 @@ attending	1260000
 reed	1060000
 pencil	1000000
 engineering	1340000
-pam	870000
 stabbed	1030000
 anonymous	1120000
 posted	1250000
@@ -4844,7 +4815,6 @@ global	1320000
 disturb	880000
 senses	1070000
 calendar	1210000
-bra	890000
 fiction	1350000
 denver	1090000
 cocaine	1090000
@@ -4931,7 +4901,6 @@ replacement	1300000
 apology	1050000
 shares	1280000
 represents	1310000
-nap	780000
 occupied	1370000
 embassy	1110000
 paperwork	900000
@@ -5204,7 +5173,6 @@ creepy	800000
 customs	1190000
 stella	910000
 teenager	1130000
-rug	840000
 tore	990000
 slice	970000
 forehead	1030000
@@ -5226,7 +5194,6 @@ syndrome	1200000
 cousins	1070000
 cape	990000
 wandering	1020000
-leo	250000
 envy	890000
 spill	970000
 nicely	860000
@@ -5236,7 +5203,6 @@ fortunate	990000
 madness	970000
 feast	1140000
 expedition	1280000
-aim	640000
 anyhow	630000
 noted	1430000
 meter	1200000
@@ -5324,7 +5290,6 @@ intact	1160000
 risks	1140000
 remained	1490000
 channels	1280000
-amy	250000
 mole	980000
 julian	1040000
 consistent	1240000
@@ -5359,7 +5324,6 @@ joel	1000000
 rivers	1300000
 tarzan	850000
 clearance	1090000
-cal	810000
 lease	1160000
 gratitude	1000000
 artillery	1270000
@@ -5490,7 +5454,6 @@ bathing	1000000
 wig	920000
 theirs	970000
 louie	840000
-boo	720000
 balcony	1010000
 melt	1010000
 preserve	1210000
@@ -5517,7 +5480,6 @@ stepping	1040000
 suggests	1300000
 examination	1220000
 sunny	970000
-fry	910000
 favors	990000
 honorable	1010000
 explosives	1090000
@@ -5632,7 +5594,6 @@ eternity	920000
 debts	1110000
 stack	1110000
 involves	1270000
-til	880000
 camping	1100000
 dental	1100000
 incoming	1100000
@@ -5786,7 +5747,6 @@ marketing	1270000
 poems	1270000
 dispatch	990000
 specialist	1200000
-wee	850000
 associated	1440000
 topic	1180000
 noises	960000
@@ -6402,7 +6362,6 @@ hawkeye	780000
 pension	1110000
 dexter	900000
 delight	1000000
-tim	250000
 bees	1040000
 liberal	1260000
 operated	1430000
@@ -6438,7 +6397,6 @@ gypsy	890000
 preparation	1240000
 ribbon	1070000
 mint	1020000
-woo	880000
 shovel	870000
 hyde	990000
 greece	1170000
@@ -6677,7 +6635,6 @@ sights	1080000
 accusing	1040000
 recorder	1040000
 kirby	950000
-med	840000
 metro	1100000
 camps	1240000
 messy	830000
@@ -6767,10 +6724,8 @@ allowance	990000
 discount	1050000
 backstage	1000000
 sanctuary	1120000
-mug	820000
 discharged	1100000
 jerusalem	1130000
-jin	800000
 comparison	1240000
 mirrors	1070000
 tutor	1070000
@@ -7019,7 +6974,6 @@ disappears	1030000
 dragons	1030000
 narcotics	950000
 starve	840000
-val	650000
 destroyer	1190000
 imaginary	1060000
 blunt	980000
@@ -7215,7 +7169,6 @@ amazed	920000
 hush	700000
 flock	980000
 tasted	850000
-kim	250000
 asset	1120000
 shack	860000
 morale	1060000
@@ -7319,7 +7272,6 @@ devils	890000
 resolved	1170000
 mafia	960000
 humiliation	960000
-vet	830000
 beaver	940000
 jingle	910000
 vagina	910000
@@ -7350,7 +7302,6 @@ resigned	1320000
 stripped	1130000
 infinite	1150000
 simpler	1090000
-mia	850000
 dusty	850000
 sherlock	880000
 observer	1110000
@@ -7383,7 +7334,6 @@ hastings	1000000
 directing	1160000
 manor	1160000
 thesis	1160000
-dom	890000
 neighbours	1080000
 transit	1210000
 fuller	940000
@@ -7430,7 +7380,6 @@ ban	1210000
 consequence	1210000
 heller	800000
 behold	800000
-rep	880000
 photographer	1180000
 luckily	760000
 gale	910000
@@ -7505,7 +7454,6 @@ download	1160000
 gerald	1010000
 christians	1110000
 panicked	870000
-col	830000
 sane	830000
 monthly	1230000
 particles	1220000
@@ -7521,7 +7469,6 @@ trek	950000
 likewise	1100000
 formerly	1390000
 sacrifices	1050000
-hog	870000
 aiming	1060000
 tease	810000
 maryland	1180000
@@ -7585,7 +7532,6 @@ donation	1100000
 scenery	1050000
 slug	880000
 clinical	1230000
-ugh	410000
 sadly	910000
 souvenir	910000
 conductor	1200000
@@ -7594,7 +7540,6 @@ repeated	1260000
 athletes	1190000
 literary	1330000
 etc	1300000
-bon	790000
 mildred	820000
 inspire	1030000
 awaiting	1050000
@@ -7668,7 +7613,6 @@ cruiser	1150000
 filter	1150000
 lookout	930000
 werewolf	930000
-gob	490000
 careless	870000
 poland	1230000
 viewers	1240000
@@ -7694,7 +7638,6 @@ lava	1090000
 fraternity	1110000
 communications	1260000
 cassie	840000
-fay	840000
 peas	900000
 symphony	1070000
 operative	1130000
@@ -7941,7 +7884,6 @@ arrows	1060000
 playboy	920000
 accomplice	920000
 underworld	1030000
-rag	850000
 wrath	970000
 polo	1040000
 kneel	790000
@@ -7981,7 +7923,6 @@ prank	950000
 flour	1100000
 cunning	940000
 punching	940000
-sew	770000
 crusade	980000
 foam	1030000
 blades	1080000
@@ -8000,7 +7941,6 @@ maintained	1340000
 eagles	990000
 dumping	950000
 centers	1280000
-ann	250000
 melting	1070000
 wagons	1080000
 ignorance	1010000
@@ -8202,7 +8142,6 @@ thailand	1110000
 molecular	1190000
 assholes	450000
 influenced	1350000
-yea	640000
 nobel	1050000
 motives	1050000
 omaha	1010000
@@ -8241,7 +8180,6 @@ patricia	970000
 prizes	1140000
 gideon	830000
 elevated	1220000
-hum	810000
 boiled	1030000
 necessity	1120000
 laptop	1000000
@@ -8446,7 +8384,6 @@ assemble	1020000
 convertible	1010000
 cruelty	1010000
 baking	970000
-cha	870000
 amnesia	930000
 revealing	1140000
 vacant	1140000
@@ -8595,7 +8532,6 @@ consolation	920000
 cautious	970000
 generosity	970000
 gauge	1240000
-sis	550000
 sweetest	680000
 hostess	910000
 noticing	890000
@@ -8606,7 +8542,6 @@ burton	1020000
 disney	1140000
 coordinate	1140000
 coca	840000
-ops	840000
 firmly	1110000
 decorations	1100000
 deliberate	1070000
@@ -8615,12 +8550,10 @@ impose	1070000
 pickle	790000
 revelation	1090000
 postpone	880000
-pea	880000
 burglary	930000
 starters	930000
 seduce	950000
 cooks	900000
-yah	600000
 holden	960000
 operates	1330000
 notch	970000
@@ -8656,7 +8589,6 @@ signatures	1060000
 diversion	1010000
 lucia	910000
 turtles	1030000
-yup	410000
 mechanics	1170000
 performer	1170000
 platinum	1170000
@@ -8733,7 +8665,6 @@ triad	940000
 berries	1000000
 tavern	1000000
 roar	850000
-doe	810000
 buzzing	810000
 tripped	810000
 shaken	960000
@@ -8744,7 +8675,6 @@ psychological	1200000
 idol	1070000
 birdie	740000
 obscure	1110000
-bam	580000
 executives	1130000
 sovereign	1130000
 synthetic	1130000
@@ -8799,7 +8729,6 @@ hartford	990000
 agony	880000
 biscuit	880000
 abnormal	1030000
-sip	720000
 recess	920000
 tornado	1110000
 expired	1120000
@@ -9071,7 +9000,6 @@ buddhist	1120000
 balanced	1120000
 riots	1120000
 treatments	1120000
-ark	830000
 internship	980000
 borrowing	1000000
 empress	1000000
@@ -9105,7 +9033,6 @@ competitors	1180000
 separately	1180000
 stables	980000
 stepfather	980000
-gps	1060000
 limbs	1060000
 julio	880000
 stalling	840000
@@ -9188,7 +9115,6 @@ renting	930000
 recordings	1300000
 infamous	1140000
 raven	940000
-gen	800000
 restraining	900000
 courier	910000
 plum	890000
@@ -9251,7 +9177,6 @@ obstacle	1040000
 belongings	950000
 outbreak	1220000
 swollen	910000
-mop	780000
 boobs	530000
 theodore	1030000
 pictured	1030000
@@ -9271,7 +9196,6 @@ shines	850000
 dandy	750000
 flattering	820000
 revolver	1000000
-nam	880000
 assign	1010000
 margin	1210000
 limp	840000
@@ -9307,7 +9231,6 @@ rehearsals	990000
 seniors	1080000
 mink	830000
 duel	1090000
-nat	850000
 baptist	1100000
 capsule	1040000
 afterward	1130000
@@ -9396,7 +9319,6 @@ clutch	1040000
 rhymes	940000
 skipping	890000
 alligator	850000
-pep	850000
 damon	900000
 brute	900000
 import	1120000
@@ -9455,7 +9377,6 @@ vineyard	970000
 handicap	980000
 leverage	980000
 smoothly	980000
-vic	250000
 jacks	860000
 scales	1160000
 grenades	1010000
@@ -9556,7 +9477,6 @@ drilling	1070000
 mortar	1070000
 ribbons	930000
 caretaker	1030000
-hen	880000
 conquest	1190000
 structural	1210000
 oakland	1080000
@@ -9592,7 +9512,6 @@ quadrant	950000
 renaissance	1090000
 fleeing	1090000
 whitey	480000
-ust	800000
 offender	960000
 rewrite	960000
 organizing	1160000
@@ -9720,7 +9639,6 @@ dilemma	970000
 jaws	970000
 costing	1020000
 flute	1090000
-aha	510000
 completion	1280000
 sideways	940000
 mutiny	1000000
@@ -9739,7 +9657,6 @@ ungrateful	680000
 piggy	700000
 cooperative	1110000
 promptly	1110000
-ivy	830000
 inappropriate	1060000
 deported	1070000
 stuffing	850000
@@ -9825,7 +9742,6 @@ midway	1050000
 payback	760000
 particle	1180000
 overlook	900000
-tex	790000
 arkansas	1110000
 recognizes	1110000
 alumni	1190000
@@ -9889,7 +9805,6 @@ specimens	1170000
 commodore	780000
 heist	850000
 handler	920000
-gay	100000
 compact	1200000
 clive	940000
 invincible	870000
@@ -9947,7 +9862,6 @@ limousine	900000
 obstruction	990000
 preach	990000
 bandages	820000
-yin	820000
 outline	1080000
 wrestler	1160000
 dane	850000
@@ -10107,7 +10021,6 @@ cedar	950000
 intrusion	950000
 mute	950000
 provoke	950000
-yay	500000
 fairies	920000
 parenting	920000
 booking	1000000
@@ -10241,15 +10154,12 @@ beaumont	920000
 paso	920000
 obligated	920000
 upstate	920000
-lew	830000
 embedded	1140000
 muslims	1130000
 vancouver	1130000
 skunk	800000
-paw	820000
 refugee	1080000
 detection	1160000
-bun	860000
 chord	1110000
 feminist	1110000
 lowered	1110000
@@ -10289,7 +10199,6 @@ ares	810000
 saucer	880000
 agreeing	1030000
 faults	1030000
-keg	770000
 licking	770000
 jerks	660000
 streams	1190000
@@ -10299,7 +10208,6 @@ illusions	940000
 raises	1080000
 nobility	1160000
 adjusted	1110000
-jab	780000
 precautions	930000
 mitzvah	760000
 conflicts	1210000
@@ -10315,7 +10223,6 @@ deliveries	1000000
 vested	1000000
 concepts	1240000
 slash	950000
-eta	880000
 allergies	880000
 vine	1020000
 absorbed	1200000
@@ -10380,7 +10287,6 @@ handshake	820000
 trespassing	820000
 spence	840000
 fireman	840000
-orb	870000
 maternity	930000
 meadow	970000
 moth	970000
@@ -10406,7 +10312,6 @@ clarity	1010000
 outdoors	1010000
 sorted	1010000
 monstrous	940000
-tit	770000
 bugging	630000
 gaze	910000
 collections	1260000
@@ -10475,11 +10380,9 @@ marjorie	830000
 expectations	1140000
 goldfish	810000
 scrolls	950000
-che	840000
 wits	840000
 monitored	1050000
 vaccine	1050000
-pry	670000
 revolt	1170000
 sully	710000
 enable	1200000
@@ -10614,7 +10517,6 @@ kite	940000
 swung	940000
 proposals	1190000
 grieving	850000
-pup	770000
 funniest	820000
 noodle	820000
 celeste	730000
@@ -10689,7 +10591,6 @@ albuquerque	890000
 becker	890000
 salty	890000
 entertaining	1060000
-reg	680000
 idiotic	680000
 humility	910000
 reflexes	910000
@@ -10737,7 +10638,6 @@ derived	1360000
 generators	1090000
 resisted	1090000
 villains	1090000
-sin	250000
 wacky	760000
 rotate	1020000
 titanic	880000
@@ -10745,7 +10645,6 @@ amused	880000
 heartless	720000
 mattered	780000
 mainstream	1260000
-fez	680000
 teachings	1180000
 distinctly	1030000
 coco	640000
@@ -10800,7 +10699,6 @@ borough	1280000
 horseback	1030000
 dora	840000
 hugging	810000
-mil	810000
 sardines	760000
 animated	1270000
 territories	1270000
@@ -10818,7 +10716,6 @@ vending	950000
 thereafter	1260000
 engineered	1100000
 escorted	1100000
-jug	850000
 stocking	850000
 immortality	990000
 partridge	730000
@@ -10862,7 +10759,6 @@ dispatched	1110000
 nightingale	810000
 memorize	800000
 mutt	660000
-kat	820000
 delusional	820000
 dammit	430000
 brew	870000
@@ -10964,7 +10860,6 @@ hopping	890000
 stuffy	690000
 sigh	720000
 strand	1020000
-tam	820000
 dissolved	1220000
 enclosed	1140000
 maternal	1140000
@@ -11001,7 +10896,6 @@ grover	840000
 sykes	840000
 patio	840000
 satin	840000
-tai	780000
 invalid	1050000
 sums	1050000
 squeezed	900000
@@ -11014,7 +10908,6 @@ bartlett	870000
 startled	870000
 unimportant	870000
 franz	1040000
-nay	720000
 barks	740000
 citizenship	1190000
 estates	1190000
@@ -11086,7 +10979,6 @@ emerald	840000
 labeled	1150000
 blames	950000
 squirrels	950000
-tad	580000
 plugs	960000
 vibrations	960000
 prevail	940000
@@ -11149,7 +11041,6 @@ quo	990000
 cornered	890000
 prohibited	1180000
 plunge	900000
-yum	630000
 costly	1090000
 hitter	1090000
 risen	1090000
@@ -11208,13 +11099,11 @@ scanners	900000
 gage	840000
 ceremonial	1150000
 mina	800000
-mal	800000
 rumble	800000
 export	1190000
 socialist	1190000
 ballerina	880000
 doorman	730000
-sly	810000
 carey	1000000
 dealings	1000000
 seizures	1000000
@@ -11337,7 +11226,6 @@ garland	900000
 barlow	880000
 frantic	880000
 hysteria	880000
-vin	740000
 wailing	740000
 juror	820000
 panther	820000
@@ -11424,7 +11312,6 @@ modesty	1000000
 emerging	1190000
 licked	640000
 stewardess	720000
-lug	810000
 reap	810000
 experimental	1260000
 boxers	940000
@@ -11497,7 +11384,6 @@ conservative	1280000
 lacked	1160000
 slimy	720000
 radiant	890000
-vie	890000
 raided	1050000
 bamboo	1050000
 recycling	1050000
@@ -11741,7 +11627,6 @@ continents	1060000
 recurring	1180000
 arteries	990000
 sellers	990000
-tee	870000
 lagoon	1020000
 renal	1020000
 virtues	1020000
@@ -11761,7 +11646,6 @@ tailed	1100000
 nudity	970000
 pulitzer	940000
 rations	940000
-tod	760000
 clarke	1050000
 amuse	780000
 burma	1030000
@@ -11874,7 +11758,6 @@ franks	910000
 horrors	910000
 mart	920000
 publicist	920000
-pow	670000
 interpreted	1200000
 protests	1200000
 muffled	700000
@@ -12026,7 +11909,6 @@ elevation	1260000
 vary	1260000
 intentional	1030000
 vicar	1030000
-dew	850000
 toured	1270000
 diagnostic	1050000
 penetration	1050000
@@ -12140,7 +12022,6 @@ postman	770000
 faulty	970000
 taco	680000
 intervene	1040000
-cub	850000
 goggles	850000
 paramedic	850000
 norse	1000000
@@ -12198,7 +12079,6 @@ activist	1210000
 fetus	970000
 provocative	970000
 coached	1200000
-mph	1200000
 persecution	1120000
 selective	1120000
 unloading	930000
@@ -12350,7 +12230,6 @@ termination	1050000
 stomp	730000
 gill	930000
 hemorrhage	930000
-nip	650000
 billings	810000
 gadget	770000
 enlist	970000
@@ -12468,7 +12347,6 @@ bondage	920000
 internally	1060000
 rowing	1060000
 towed	1060000
-jam	240000
 trolley	1010000
 safari	830000
 lassie	690000
@@ -12480,7 +12358,6 @@ articulate	930000
 retribution	930000
 malls	1030000
 attracting	1110000
-amp	890000
 burner	890000
 heartbroken	890000
 prima	890000
@@ -12686,7 +12563,6 @@ pediatric	940000
 histories	1080000
 lightweight	1080000
 raphael	890000
-apt	890000
 inflation	1130000
 affiliated	1260000
 advisors	1030000
@@ -12832,7 +12708,6 @@ spoons	820000
 anti	1420000
 florist	740000
 homesick	740000
-jog	740000
 sentencing	990000
 mustang	600000
 triggers	970000
@@ -12879,7 +12754,6 @@ grandparents	1050000
 intensely	980000
 sightings	980000
 stabilized	980000
-nan	800000
 yorkshire	1130000
 purchasing	1130000
 stems	1130000
@@ -12908,7 +12782,6 @@ streetcar	1020000
 martian	880000
 bloodstream	880000
 insomnia	880000
-pip	710000
 allergy	890000
 perpetrator	890000
 swimsuit	820000
@@ -12954,7 +12827,6 @@ wildest	730000
 crumbs	710000
 holed	830000
 shameful	830000
-sow	830000
 cinch	580000
 slob	580000
 platforms	1250000
@@ -13079,7 +12951,6 @@ locomotive	1210000
 sicilian	910000
 grotesque	910000
 hideout	910000
-bop	840000
 brow	840000
 eternally	840000
 exiled	1130000
@@ -13095,7 +12966,6 @@ treasurer	1060000
 stashed	670000
 bribes	950000
 flaps	950000
-ava	790000
 sweaters	790000
 advisory	1110000
 galleries	1110000
@@ -13109,7 +12979,6 @@ rejoin	1010000
 residual	1010000
 eerie	860000
 intestines	870000
-lax	870000
 nicotine	870000
 sinful	870000
 salem	1020000
@@ -13132,7 +13001,6 @@ discourage	980000
 floated	980000
 specialize	980000
 trainee	980000
-jed	740000
 friendships	960000
 orient	900000
 stairway	900000
@@ -13214,7 +13082,6 @@ twenties	980000
 collapsing	960000
 expel	960000
 imaginative	960000
-duh	530000
 clot	840000
 pinpoint	840000
 ahem	340000
@@ -13239,7 +13106,6 @@ hype	880000
 drills	950000
 tacky	680000
 volatile	1030000
-moi	800000
 furs	890000
 momentarily	890000
 notebooks	890000
@@ -13302,7 +13168,6 @@ rowan	860000
 feeble	860000
 inquire	860000
 shadowy	860000
-una	860000
 ciao	460000
 keel	1010000
 bungalow	870000
@@ -13334,7 +13199,6 @@ operatives	990000
 barnaby	720000
 grumpy	720000
 truthfully	720000
-jun	890000
 rhino	770000
 analogy	1030000
 reconcile	1030000
@@ -13362,7 +13226,6 @@ nucleus	1140000
 reopened	1140000
 hooray	410000
 filipino	1020000
-lbs	1020000
 tibetan	1020000
 simulate	1020000
 chamberlain	960000
@@ -13511,7 +13374,6 @@ gays	900000
 muster	900000
 hue	930000
 geniuses	740000
-sod	810000
 sera	720000
 hallowed	720000
 finder	850000
@@ -13556,7 +13418,6 @@ rump	920000
 brushes	920000
 camels	920000
 widower	920000
-woe	710000
 nicknamed	1210000
 sciences	1210000
 hatchet	780000
@@ -13704,7 +13565,6 @@ glover	870000
 fourteenth	1040000
 steamer	1040000
 sahara	910000
-bbs	910000
 orion	910000
 bitterness	910000
 colossal	910000
@@ -13719,7 +13579,6 @@ issuing	1100000
 preserving	1100000
 turbine	1100000
 cherokee	1000000
-tnt	1000000
 bursts	1000000
 medicines	1000000
 persecuted	1000000
@@ -13844,7 +13703,6 @@ mindless	820000
 specs	740000
 attain	1080000
 statutory	1080000
-mic	850000
 stag	850000
 lebanese	990000
 abrupt	990000
@@ -13936,7 +13794,6 @@ grandchild	860000
 delicacy	900000
 rook	900000
 missus	510000
-cot	750000
 crispy	700000
 riff	990000
 smug	680000
@@ -13994,7 +13851,6 @@ agreeable	840000
 wisely	840000
 organisms	1160000
 closets	720000
-goo	720000
 rocker	940000
 sprouts	810000
 projector	950000
@@ -14044,7 +13900,6 @@ demographic	1090000
 dayton	960000
 ballast	960000
 moat	960000
-eel	880000
 tedious	880000
 cantonese	910000
 swarm	910000
@@ -14406,7 +14261,6 @@ negatives	910000
 poised	910000
 sax	910000
 seriousness	910000
-hud	850000
 guesses	850000
 stockade	850000
 buildup	940000
@@ -14487,7 +14341,6 @@ defiance	950000
 goddamned	420000
 disbanded	1220000
 varies	1220000
-jig	780000
 chassis	1160000
 aided	1160000
 sectors	1160000
@@ -14554,7 +14407,6 @@ smiley	690000
 ecstatic	870000
 spiked	870000
 quarterly	1040000
-rem	820000
 hearsay	820000
 solace	820000
 slamming	790000
@@ -14750,7 +14602,6 @@ enacted	1150000
 blossoms	870000
 negotiator	870000
 scarred	870000
-hag	750000
 musketeers	770000
 martinis	530000
 bloc	1000000
@@ -14890,7 +14741,6 @@ untouched	960000
 painkillers	750000
 pantry	750000
 pelican	750000
-fig	890000
 almonds	850000
 disorderly	850000
 sauna	850000
@@ -14919,7 +14769,6 @@ sprained	790000
 squealing	630000
 siamese	810000
 fireball	810000
-vat	810000
 booming	950000
 ethic	950000
 hades	780000
@@ -15009,7 +14858,6 @@ nauseous	540000
 communism	1070000
 caged	770000
 fuzz	720000
-lit	250000
 desserts	860000
 forgives	860000
 squadrons	1140000
@@ -15110,7 +14958,6 @@ diplomats	1000000
 nautical	1000000
 pressured	1000000
 whaling	1000000
-tao	860000
 meanings	1110000
 paired	1110000
 moans	670000
@@ -15183,7 +15030,6 @@ dutchman	760000
 lark	760000
 ferret	760000
 ointment	760000
-rec	760000
 disputes	1160000
 sudan	1020000
 raiding	1020000
@@ -15273,12 +15119,9 @@ developers	1190000
 secular	1190000
 unc	940000
 seeming	940000
-wan	710000
 fuses	890000
 abundant	1140000
 banter	820000
-ora	610000
-ole	610000
 carburetor	910000
 conspired	910000
 discard	910000
@@ -15324,7 +15167,6 @@ madge	730000
 gasp	730000
 turnip	730000
 longtime	1160000
-hex	840000
 katharine	840000
 downside	840000
 turkeys	840000
@@ -15389,7 +15231,6 @@ reload	810000
 slander	850000
 vibrating	850000
 vinny	690000
-cox	690000
 encourages	1100000
 inscribed	1100000
 sparked	1100000
@@ -15447,7 +15288,6 @@ preserves	1030000
 reactive	1030000
 deity	1140000
 lucid	840000
-mag	770000
 shoplifting	770000
 rundown	790000
 talisman	790000
@@ -15549,7 +15389,6 @@ participant	1110000
 blindfold	720000
 granger	780000
 napalm	770000
-mow	620000
 camper	790000
 deserts	970000
 digestive	970000
@@ -15683,7 +15522,6 @@ reelection	1090000
 resumed	1240000
 mavis	710000
 incidentally	910000
-lac	740000
 deposed	1100000
 inherent	1100000
 resembling	1100000
@@ -15738,7 +15576,6 @@ expire	950000
 spectator	950000
 sunken	950000
 vaults	950000
-pox	770000
 springtime	770000
 uplink	770000
 addictive	870000
@@ -15758,7 +15595,6 @@ prowess	1000000
 withdrawing	1000000
 commend	700000
 buttercup	600000
-bel	850000
 bellevue	850000
 buoy	850000
 decadent	850000
@@ -16211,7 +16047,6 @@ discrepancy	930000
 relays	930000
 spinner	930000
 textile	1120000
-dat	820000
 tweed	820000
 daggers	820000
 homicides	820000
@@ -16221,7 +16056,6 @@ salisbury	980000
 innate	980000
 contributions	1290000
 dads	610000
-nag	610000
 picky	610000
 mead	870000
 provocation	870000
@@ -16283,7 +16117,6 @@ scriptures	1000000
 overcoat	750000
 keats	770000
 blisters	770000
-ell	670000
 affinity	1070000
 routinely	1070000
 jesuit	990000
@@ -16522,7 +16355,6 @@ revise	920000
 speciality	920000
 campfire	790000
 trampled	790000
-alf	810000
 kilo	710000
 overhaul	1110000
 westward	1110000
@@ -16699,9 +16531,7 @@ subscribe	910000
 untimely	910000
 freshen	540000
 chaser	770000
-zak	720000
 subtitled	950000
-poo	620000
 aspiring	1010000
 fated	1010000
 improves	1010000
@@ -16857,7 +16687,6 @@ clipper	800000
 crushes	800000
 giver	800000
 turnstiles	800000
-zap	550000
 debated	1100000
 eighteenth	1100000
 proprietary	1100000
@@ -16879,8 +16708,6 @@ wedlock	830000
 chez	670000
 saddest	670000
 anew	900000
-twa	870000
-voc	870000
 furnish	870000
 classify	1000000
 realms	1000000
@@ -17188,7 +17015,6 @@ occupies	1130000
 callers	900000
 repaid	900000
 warmest	900000
-tux	440000
 tonsils	700000
 accredited	1170000
 modes	1170000
@@ -17205,7 +17031,6 @@ brisk	820000
 unfriendly	820000
 giddy	640000
 beulah	690000
-rut	690000
 gemini	890000
 conveyor	890000
 nonexistent	890000
@@ -17295,7 +17120,6 @@ landfall	1050000
 linguistics	1050000
 outspoken	1050000
 cycling	1110000
-rpm	1110000
 beret	850000
 cutbacks	850000
 gloom	780000
@@ -17423,7 +17247,6 @@ kremlin	830000
 insightful	830000
 lifetimes	830000
 pears	830000
-shi	830000
 stitched	830000
 veritable	830000
 invoked	1020000
@@ -17471,9 +17294,7 @@ calculations	1090000
 investigations	1160000
 strolling	750000
 nightgown	600000
-dow	870000
 timeless	870000
-coy	640000
 slop	620000
 knighted	1050000
 outreach	1050000
@@ -17498,7 +17319,6 @@ abbreviated	1150000
 constituted	1150000
 paperback	1060000
 manufacturing	1290000
-moo	580000
 sighing	580000
 collage	920000
 inflatable	920000
@@ -17511,10 +17331,8 @@ alcoholics	800000
 impound	650000
 mercer	550000
 saviour	770000
-dex	670000
 chimps	710000
 uninvited	710000
-yak	710000
 multi	1340000
 brewer	860000
 broth	860000
@@ -17698,14 +17516,12 @@ anchorage	920000
 burlesque	920000
 kites	920000
 grits	660000
-hup	330000
 wanker	560000
 crumb	620000
 totem	860000
 hanoi	860000
 approves	860000
 tryout	860000
-hoi	640000
 crammed	780000
 leaky	780000
 tact	780000
@@ -17753,7 +17569,6 @@ miserably	790000
 drab	880000
 jubilee	880000
 labyrinth	880000
-ode	880000
 rewriting	880000
 rewrote	880000
 basing	900000
@@ -17814,7 +17629,6 @@ predatory	950000
 recorders	950000
 variant	1230000
 libre	800000
-roe	800000
 feline	840000
 grazed	840000
 opposites	840000
@@ -17849,14 +17663,12 @@ bonsai	810000
 longs	810000
 woodpecker	810000
 portia	670000
-err	670000
 judgmental	670000
 jihad	890000
 sonnet	890000
 swapping	890000
 wield	890000
 strangler	560000
-kip	600000
 absorption	1100000
 halted	1100000
 omitted	1100000
@@ -17916,7 +17728,6 @@ trusty	690000
 fruitcake	570000
 indonesia	1110000
 bowden	770000
-sim	770000
 cannibal	770000
 clogged	770000
 papaya	770000
@@ -17929,7 +17740,6 @@ sheen	820000
 autopilot	800000
 chloroform	800000
 tigger	620000
-jag	620000
 lumpy	620000
 squeaking	620000
 orgasms	680000
@@ -18388,7 +18198,6 @@ brats	660000
 prying	660000
 frigate	1070000
 incidence	1070000
-dev	850000
 bookshop	850000
 perky	620000
 abomination	740000
@@ -18413,11 +18222,9 @@ boasting	910000
 clothed	910000
 quirky	910000
 wannabe	710000
-boa	700000
 crowbar	700000
 hangman	700000
 toil	780000
-bah	570000
 photographers	1030000
 drafting	1020000
 symphonic	1020000
@@ -18426,7 +18233,6 @@ eggplant	750000
 parading	750000
 urinate	750000
 premiered	1240000
-dar	690000
 dildo	690000
 fingernail	690000
 greased	690000
@@ -18579,11 +18385,9 @@ bordering	1060000
 labelled	1060000
 syntax	1060000
 deduct	750000
-tat	750000
 recreated	990000
 mardi	780000
 plummer	780000
-bot	780000
 chestnuts	780000
 foresee	780000
 garnet	780000
@@ -18660,7 +18464,6 @@ aggregate	1160000
 sided	1160000
 aquarius	730000
 kodiak	730000
-fro	730000
 switchboard	730000
 checkbook	510000
 backers	890000
@@ -18685,7 +18488,6 @@ flashlights	740000
 pips	740000
 slugger	740000
 spasm	740000
-dud	700000
 hairstyle	880000
 blooms	880000
 unsettled	880000
@@ -18719,7 +18521,6 @@ taxation	1090000
 vocational	1090000
 brighten	670000
 binder	850000
-fad	850000
 graze	850000
 rebuttal	850000
 strides	850000
@@ -18943,7 +18744,6 @@ kingpin	760000
 waxing	760000
 guinevere	650000
 pubs	1040000
-foo	730000
 patronizing	730000
 poise	730000
 insignificant	940000
@@ -18953,7 +18753,6 @@ inflated	950000
 suggestive	950000
 updating	950000
 walkers	950000
-std	860000
 drunkenness	860000
 unruly	860000
 auctioned	940000
@@ -18993,7 +18792,6 @@ insistent	810000
 memos	810000
 mistaking	810000
 dawned	740000
-tot	740000
 algeria	980000
 hurdles	980000
 lettering	980000
@@ -19115,7 +18913,6 @@ kappa	740000
 vichy	860000
 infestation	860000
 quarrels	860000
-adm	770000
 oedipus	770000
 gallop	770000
 spotter	770000
@@ -19248,8 +19045,6 @@ dropout	800000
 gagged	800000
 monotonous	800000
 shah	800000
-yam	800000
-xxx	890000
 catapult	890000
 intrusive	890000
 jargon	890000
@@ -19406,8 +19201,6 @@ golfers	910000
 heartland	910000
 islamic	1180000
 genres	1180000
-ssh	800000
-oar	800000
 baggy	760000
 blot	760000
 delicately	760000
@@ -19996,7 +19789,6 @@ scripted	1000000
 surveying	1000000
 collie	710000
 thaddeus	710000
-pew	710000
 cuter	530000
 leno	810000
 flagpole	810000
@@ -20049,7 +19841,6 @@ trimming	840000
 perm	720000
 booing	720000
 conniving	720000
-pus	720000
 songwriters	1010000
 headstrong	750000
 ulterior	750000
@@ -20120,7 +19911,6 @@ detach	830000
 grueling	830000
 recluse	830000
 rectory	890000
-pfc	890000
 dispensed	890000
 impart	890000
 keyword	890000
@@ -20228,7 +20018,6 @@ sloping	980000
 telecast	980000
 wounding	980000
 baptism	1050000
-tum	600000
 brimstone	620000
 cuddly	620000
 captained	1090000
@@ -20717,7 +20506,6 @@ publicized	1040000
 dazzle	700000
 tickling	700000
 watcher	700000
-hep	520000
 nordic	970000
 appellate	970000
 fostered	970000
@@ -20766,7 +20554,6 @@ mitigating	830000
 nieces	830000
 grossing	1050000
 mainline	1050000
-nix	560000
 implicit	990000
 roc	990000
 branching	990000
@@ -20776,10 +20563,8 @@ renounced	990000
 celibate	790000
 clutching	790000
 cleaves	720000
-hoe	720000
 regrettable	720000
 rouse	720000
-sup	720000
 vamp	720000
 wither	720000
 bashed	660000
@@ -20843,7 +20628,6 @@ mails	920000
 ballgame	690000
 haircuts	690000
 swordfish	690000
-hem	750000
 abductions	750000
 bustle	750000
 gaping	750000
@@ -20984,7 +20768,6 @@ coefficient	1070000
 interfaces	1070000
 refurbished	1070000
 specialised	1070000
-arf	770000
 bookkeeping	770000
 jeeps	770000
 nefarious	770000
@@ -21260,8 +21043,6 @@ decadence	830000
 overdrive	830000
 pastries	830000
 tosses	830000
-ado	570000
-sob	570000
 iguana	750000
 bastille	750000
 immaculate	750000
@@ -21442,7 +21223,6 @@ coronado	770000
 merle	770000
 bungee	770000
 fawn	770000
-jib	770000
 mediocrity	770000
 sterilized	770000
 backpacking	800000
@@ -21569,7 +21349,6 @@ loudest	780000
 meditating	780000
 rant	780000
 stools	780000
-rah	630000
 spotless	630000
 yanked	630000
 ruckus	570000
@@ -21620,7 +21399,6 @@ complicity	890000
 consular	890000
 invoking	890000
 mares	890000
-oft	890000
 reorganize	890000
 amalgamated	1070000
 attested	1070000
@@ -21659,7 +21437,6 @@ idyllic	870000
 lures	870000
 modestly	870000
 nestled	870000
-nil	870000
 prodigious	870000
 protege	870000
 scouted	870000
@@ -21817,7 +21594,6 @@ inquired	820000
 liqueur	820000
 thefts	820000
 workmanship	820000
-pap	600000
 constrained	980000
 domes	980000
 magnate	980000
@@ -22002,7 +21778,6 @@ rousing	840000
 springer	510000
 bobsled	680000
 buzzed	680000
-gar	680000
 replacements	1000000
 assemblies	1040000
 categorized	1040000
@@ -22022,7 +21797,6 @@ cirrhosis	830000
 heaps	830000
 menial	830000
 orthopedic	830000
-phi	690000
 brodie	780000
 lacy	780000
 woolf	780000
@@ -22176,7 +21950,6 @@ fluently	870000
 spares	870000
 symbiotic	870000
 transpired	870000
-lea	880000
 abnormally	880000
 amphibian	880000
 contours	880000
@@ -22184,7 +21957,6 @@ devoting	880000
 escalation	880000
 handguns	880000
 muted	880000
-osi	860000
 deco	860000
 leveling	860000
 reestablish	860000
@@ -22357,7 +22129,6 @@ bakers	810000
 concocted	810000
 insecticide	810000
 justifiable	810000
-kan	810000
 mystics	810000
 serpents	810000
 chesapeake	940000
@@ -22391,12 +22162,10 @@ readership	970000
 dreadfully	590000
 unguarded	740000
 reproduction	1100000
-ese	680000
 gusto	680000
 travesty	680000
 twirling	680000
 cirque	710000
-sag	710000
 devonshire	800000
 nous	800000
 kylie	800000
@@ -22486,7 +22255,6 @@ unscathed	880000
 brits	560000
 perk	560000
 parakeet	630000
-ami	730000
 emeralds	730000
 shoddy	730000
 tormenting	730000
@@ -22614,7 +22382,6 @@ clots	770000
 confuses	770000
 connoisseur	770000
 irate	770000
-lib	770000
 marooned	770000
 streaking	770000
 disagreement	1070000
@@ -22729,7 +22496,6 @@ cleanest	750000
 compels	750000
 disqualify	750000
 incognito	750000
-lat	750000
 tellers	750000
 heroism	980000
 caterers	600000
@@ -22761,7 +22527,6 @@ personified	870000
 tooling	870000
 dearborn	780000
 ephraim	780000
-ged	780000
 boarder	780000
 castrated	780000
 derail	780000
@@ -22827,7 +22592,6 @@ incessant	830000
 mistresses	830000
 plunging	830000
 prospecting	830000
-ers	680000
 emporium	680000
 wail	680000
 riga	900000
@@ -22982,7 +22746,6 @@ quarreling	710000
 roadhouse	710000
 spiteful	710000
 barth	730000
-cob	730000
 whirling	730000
 zest	730000
 papua	960000
@@ -23013,7 +22776,6 @@ truffles	700000
 bitty	490000
 tantrum	670000
 bianco	670000
-rad	670000
 ruskin	790000
 anxieties	790000
 knoll	790000
@@ -23087,7 +22849,6 @@ encompassed	1010000
 saxophonist	1010000
 terminates	1010000
 polynesian	840000
-sig	840000
 ablaze	840000
 beached	840000
 doubtless	840000
@@ -23097,7 +22858,6 @@ pertains	840000
 prides	840000
 upstart	840000
 vindicated	840000
-pug	630000
 wiles	630000
 anomalous	880000
 discern	880000
@@ -23109,7 +22869,6 @@ workstation	880000
 soggy	640000
 stomped	640000
 vermouth	640000
-abs	620000
 firecracker	620000
 sexier	620000
 bovine	830000
@@ -23132,7 +22891,6 @@ arraigned	740000
 gingerbread	740000
 pumpkins	740000
 teeming	740000
-pic	770000
 palisades	770000
 texan	770000
 cloves	770000
@@ -23148,7 +22906,6 @@ empower	890000
 gait	890000
 mimics	890000
 paragraphs	890000
-ply	890000
 regularity	890000
 seamless	890000
 serfs	890000
@@ -23366,7 +23123,6 @@ ethereal	850000
 melanoma	850000
 recreating	850000
 straddling	850000
-mam	440000
 botswana	860000
 congregate	860000
 covertly	860000
@@ -23519,7 +23275,6 @@ despondent	800000
 dressings	800000
 evaporate	800000
 fullness	800000
-nee	800000
 slur	800000
 tether	800000
 traceable	800000
@@ -23622,7 +23377,6 @@ pursues	950000
 solvents	950000
 thrived	950000
 unifying	950000
-zee	590000
 charlatan	660000
 pining	660000
 schoolyard	660000
@@ -23727,7 +23481,6 @@ ladle	690000
 hither	620000
 galilee	820000
 handel	820000
-lev	820000
 abundantly	820000
 addictions	820000
 brash	820000
@@ -23737,7 +23490,6 @@ outage	820000
 ramming	820000
 stockpile	820000
 watercolors	820000
-zig	820000
 punchy	630000
 arrays	1000000
 attaining	1000000
@@ -23790,7 +23542,6 @@ anaesthetic	810000
 cloths	810000
 lopsided	810000
 riverbed	810000
-tau	810000
 tremors	810000
 foxtrot	600000
 tacoma	890000
@@ -23800,7 +23551,6 @@ assuring	890000
 beset	890000
 enrich	890000
 figurehead	890000
-ire	890000
 subsided	890000
 icelandic	970000
 adjunct	970000
@@ -23903,7 +23653,6 @@ revolved	940000
 sine	940000
 treble	940000
 typeface	940000
-lst	980000
 artisans	980000
 contended	980000
 directorial	980000
@@ -24005,7 +23754,6 @@ cynic	590000
 cabernet	760000
 scorpio	760000
 clump	760000
-cog	760000
 alerting	840000
 braided	840000
 carrion	840000
@@ -24180,7 +23928,6 @@ peso	890000
 suitably	890000
 upholding	890000
 certificates	1050000
-lcd	1000000
 alternately	1000000
 championed	1000000
 constants	1000000
@@ -24191,7 +23938,6 @@ aztecs	790000
 bittersweet	790000
 cams	790000
 dueling	790000
-jus	790000
 keeled	790000
 notifying	790000
 succulent	790000
@@ -24265,10 +24011,8 @@ sensuous	770000
 wishbone	770000
 cherie	650000
 bequeath	650000
-pax	650000
 penises	650000
 tweet	650000
-tbs	940000
 acquires	940000
 allegorical	940000
 appellation	940000
@@ -24420,7 +24164,6 @@ wallaby	750000
 anxiously	720000
 bobbing	720000
 boyish	720000
-lye	720000
 picker	720000
 rationalize	720000
 renegotiate	720000
@@ -24546,7 +24289,6 @@ zigzag	780000
 tapeworm	690000
 contusions	530000
 manchurian	710000
-sld	710000
 fellatio	710000
 gaff	710000
 innocently	710000
@@ -24560,12 +24302,10 @@ sandstorm	650000
 cesspool	550000
 coleslaw	550000
 washout	670000
-ach	670000
 clipboard	670000
 dawning	670000
 packers	670000
 pickpocket	670000
-wok	670000
 alcoholism	1020000
 horst	770000
 magellan	770000
@@ -24667,9 +24407,7 @@ reprint	940000
 southerly	940000
 trademarks	940000
 tributes	940000
-cad	590000
 naps	590000
-ddt	890000
 alchemy	890000
 austere	890000
 brainchild	890000
@@ -24721,7 +24459,6 @@ molars	840000
 responders	840000
 unimpressed	840000
 bartholomew	820000
-ump	820000
 debtors	820000
 deductive	820000
 disembark	820000
@@ -24940,7 +24677,6 @@ abominable	700000
 bracken	700000
 shakers	700000
 babbitt	680000
-gam	680000
 midas	680000
 chewy	680000
 krypton	680000
@@ -25284,7 +25020,6 @@ vocalists	990000
 mandrake	560000
 thermos	560000
 nippon	860000
-wac	860000
 ambivalent	860000
 compendium	860000
 entitlement	860000
@@ -25401,7 +25136,6 @@ somber	820000
 sumptuous	820000
 talkie	820000
 vane	820000
-tay	810000
 blower	810000
 caveat	810000
 courtesan	810000
@@ -25583,7 +25317,6 @@ styx	720000
 finders	720000
 garnish	720000
 geriatric	720000
-oat	720000
 ruff	720000
 shoves	720000
 storybook	720000
@@ -25656,7 +25389,6 @@ synapses	850000
 ultrasonic	850000
 vibrato	850000
 leaded	750000
-ptt	750000
 appraised	750000
 debauchery	750000
 feint	750000
@@ -25686,6 +25418,7 @@ dandruff	630000
 medea	710000
 civility	710000
 doctored	710000
+lol	100000
 kiry	100000
 domini	650000
 assemblyman	650000
@@ -25721,7 +25454,6 @@ emigrating	870000
 ethylene	870000
 maximizing	870000
 meteorites	870000
-msg	870000
 rigorously	870000
 untenable	870000
 hospitalized	1000000
@@ -25812,7 +25544,6 @@ tuner	880000
 bloodlines	790000
 confining	790000
 domicile	790000
-fen	790000
 hangings	790000
 knockdown	790000
 molestation	790000
@@ -25893,7 +25624,6 @@ sprinkling	770000
 squall	770000
 stifled	770000
 righteousness	890000
-fib	520000
 gulp	580000
 loafers	580000
 mollie	640000
@@ -25929,7 +25659,6 @@ demonstrating	1070000
 accursed	670000
 gushing	670000
 provolone	470000
-doa	690000
 tania	690000
 balm	690000
 blemish	690000
@@ -26131,7 +25860,6 @@ textured	870000
 tunis	810000
 averse	810000
 cooperates	810000
-dal	810000
 dens	810000
 effeminate	810000
 inbreeding	810000
@@ -26191,7 +25919,6 @@ sump	820000
 uprooted	820000
 goofing	540000
 cantor	790000
-lyn	790000
 adulterous	790000
 bedridden	790000
 chandeliers	790000
@@ -26377,7 +26104,6 @@ sizzling	600000
 philistine	580000
 brainy	580000
 dolce	580000
-frs	970000
 denoting	970000
 dynastic	970000
 elliptic	970000
@@ -26417,7 +26143,6 @@ indecision	740000
 stewed	740000
 stragglers	740000
 cully	540000
-dab	540000
 cooped	460000
 frolic	610000
 kurdish	940000
@@ -26448,7 +26173,6 @@ soured	840000
 spinners	840000
 stiffer	840000
 votive	840000
-yaw	840000
 bloodhound	570000
 lifesaver	520000
 spender	500000
@@ -26660,7 +26384,6 @@ encircling	880000
 formulating	880000
 lessened	880000
 locates	880000
-mol	880000
 precepts	880000
 simulating	880000
 sparingly	880000
@@ -26776,7 +26499,6 @@ cougars	700000
 shorthanded	700000
 silences	700000
 tinkering	700000
-cts	830000
 asexual	830000
 booms	830000
 conspirator	830000
@@ -26867,7 +26589,6 @@ remover	650000
 revs	650000
 slaving	650000
 spouting	650000
-tel	650000
 reeks	500000
 cayenne	620000
 haggis	620000
@@ -26936,7 +26657,6 @@ sympathizer	790000
 trackers	790000
 racecourse	860000
 subjugated	860000
-aug	860000
 rana	860000
 seminole	860000
 unitarian	860000
@@ -27181,7 +26901,6 @@ unmasked	810000
 urethra	810000
 magnetism	890000
 moorish	820000
-soc	820000
 sabine	820000
 beheading	820000
 beleaguered	820000
@@ -27491,7 +27210,6 @@ sunflowers	700000
 moonraker	590000
 brest	870000
 israelis	870000
-nco	870000
 archbishops	870000
 ascendancy	870000
 banknote	870000
@@ -27617,7 +27335,6 @@ luminosity	920000
 moderated	920000
 portmanteau	920000
 avarice	690000
-bib	690000
 firmament	690000
 foaming	690000
 hoarse	690000
@@ -27657,7 +27374,6 @@ levitate	720000
 outbid	720000
 pizzeria	720000
 lander	830000
-geo	830000
 aborigines	830000
 astrologers	830000
 autonomic	830000
@@ -27691,7 +27407,6 @@ borrower	890000
 brackish	890000
 decays	890000
 discourses	890000
-eds	890000
 egalitarian	890000
 elaborately	890000
 folio	890000
@@ -27761,7 +27476,6 @@ pomegranate	790000
 repulse	790000
 telekinetic	790000
 unknowns	790000
-wap	780000
 norwegians	780000
 backfires	780000
 boycotting	780000
@@ -27852,7 +27566,6 @@ quiver	700000
 repaint	700000
 repossessed	700000
 sprockets	700000
-tut	550000
 testy	550000
 baseless	750000
 counseled	750000
@@ -27988,7 +27701,6 @@ swath	800000
 wildflowers	800000
 crybaby	480000
 baddest	490000
-lar	510000
 excavate	810000
 hewn	810000
 goths	810000
@@ -28026,7 +27738,6 @@ mermaids	720000
 reaping	720000
 saltpeter	720000
 submerge	720000
-uni	720000
 nutcracker	610000
 cates	640000
 heaving	640000
@@ -28179,7 +27890,6 @@ goodyear	780000
 volta	780000
 eagerness	780000
 elegantly	780000
-eon	780000
 fabricating	780000
 incapacity	780000
 ingrained	780000
@@ -28205,7 +27915,6 @@ watermark	770000
 cheeseburger	590000
 draco	700000
 dodgy	700000
-emu	700000
 fords	700000
 livid	700000
 menthol	700000
@@ -28237,7 +27946,6 @@ druggist	670000
 laughable	670000
 mystified	670000
 simian	670000
-jud	630000
 philistines	630000
 braves	630000
 hippodrome	630000
@@ -28333,7 +28041,6 @@ shareholders	1090000
 bunkhouse	580000
 cuddling	580000
 wallowing	580000
-coo	610000
 bronzes	860000
 austrians	860000
 artisan	860000
@@ -28417,7 +28124,6 @@ wort	720000
 complication	920000
 cuckoos	800000
 addis	800000
-cdr	800000
 descartes	800000
 polaris	800000
 pomeranian	800000
@@ -28546,10 +28252,8 @@ gaucho	650000
 muskrat	650000
 modification	1130000
 modifications	1150000
-dsr	630000
 inductee	880000
 bhutan	880000
-spl	880000
 animate	880000
 caches	880000
 catalyzed	880000
@@ -28698,7 +28402,6 @@ pandas	740000
 pickers	740000
 torments	740000
 untapped	740000
-sds	890000
 biopic	890000
 constructor	890000
 fandom	890000
@@ -28733,7 +28436,6 @@ skeet	660000
 tacks	660000
 varna	660000
 tanked	540000
-rom	250000
 prude	460000
 marshland	850000
 seamlessly	850000
@@ -28875,7 +28577,6 @@ coordinating	1000000
 neurological	1000000
 technological	1150000
 argos	790000
-gan	790000
 nils	790000
 enforcers	790000
 flattening	790000
@@ -29025,7 +28726,6 @@ pandemonium	610000
 teacup	610000
 teletype	610000
 twas	450000
-flo	430000
 cosine	830000
 aden	830000
 aqueducts	830000
@@ -29124,7 +28824,6 @@ teardrop	750000
 workspace	750000
 nightshade	660000
 crusts	660000
-fey	660000
 scooping	660000
 scoping	660000
 unseemly	660000
@@ -29213,7 +28912,6 @@ entrees	600000
 mothballs	600000
 whosoever	600000
 manifestation	1020000
-dsp	890000
 slovenian	890000
 agonist	890000
 alignments	890000
@@ -29263,7 +28961,6 @@ webbing	850000
 iniquity	650000
 poacher	650000
 trillions	650000
-wag	650000
 litigator	630000
 overkill	630000
 correctional	880000
@@ -29274,7 +28971,6 @@ spector	770000
 chaff	770000
 cranks	770000
 despot	770000
-dit	770000
 earnestly	770000
 encrypt	770000
 endow	770000
@@ -29338,8 +29034,6 @@ ploughed	780000
 purifying	780000
 reneged	780000
 symbiosis	780000
-wry	780000
-zag	780000
 grovel	480000
 tamer	670000
 hoyle	670000
@@ -29452,7 +29146,6 @@ epsom	810000
 pyrenees	810000
 overruns	810000
 chiba	810000
-ids	810000
 anticipates	810000
 artistes	810000
 attainable	810000
@@ -29585,7 +29278,6 @@ hounding	550000
 junket	550000
 ladylike	550000
 risotto	550000
-esc	830000
 guernsey	830000
 pretoria	830000
 antebellum	830000
@@ -30062,7 +29754,6 @@ reusable	870000
 sawmills	870000
 stupa	870000
 hispaniola	730000
-sop	730000
 apricots	730000
 dais	730000
 elated	730000
@@ -30197,10 +29888,8 @@ seaplanes	840000
 steamboats	840000
 stele	840000
 sulphide	840000
-syn	840000
 trawlers	840000
 woollen	840000
-yip	460000
 refreshments	810000
 coppers	540000
 handout	540000
@@ -30325,7 +30014,6 @@ jughead	600000
 chamomile	600000
 cherub	600000
 cleverest	600000
-cur	600000
 festering	600000
 showgirls	600000
 morn	530000
@@ -30361,7 +30049,6 @@ gargantuan	690000
 griddle	690000
 tumbler	690000
 yearbooks	690000
-nea	850000
 plateaus	850000
 triplet	850000
 berwick	850000
@@ -30449,7 +30136,6 @@ claps	650000
 gazed	650000
 nakedness	650000
 liberator	680000
-fam	680000
 vesuvius	680000
 chipmunks	680000
 chiseled	680000
@@ -30482,10 +30168,7 @@ revives	810000
 symbolises	810000
 telegraphy	810000
 voids	810000
-fcs	860000
 indochina	860000
-nus	860000
-rcd	860000
 annotations	860000
 antioxidant	860000
 bisected	860000
@@ -30587,7 +30270,6 @@ hawaiians	720000
 embers	720000
 needlework	720000
 odorless	720000
-ova	720000
 realign	720000
 regrouping	720000
 slurred	720000
@@ -30664,7 +30346,6 @@ coasting	700000
 enquire	700000
 frankness	700000
 jumble	700000
-jot	560000
 leprechauns	560000
 delft	750000
 whitechapel	750000
@@ -30768,7 +30449,6 @@ tactician	770000
 gizmo	400000
 lilo	410000
 substantially	1170000
-cai	690000
 koran	690000
 cryonics	690000
 drumsticks	690000
@@ -30903,12 +30583,9 @@ soir	590000
 vacuuming	590000
 michelangelo	820000
 dorky	500000
-oaf	500000
 suntan	500000
 thresholds	850000
 tithe	850000
-csc	850000
-ecu	850000
 kitchener	850000
 accolade	850000
 allotments	850000
@@ -30940,7 +30617,6 @@ tuners	850000
 winemaking	850000
 windward	800000
 burundi	800000
-eth	800000
 aficionados	800000
 ascribe	800000
 chaparral	800000
@@ -31048,14 +30724,12 @@ transients	720000
 constituency	1290000
 scoundrels	550000
 gush	560000
-baa	490000
 twat	440000
 messrs	710000
 breathable	710000
 excitedly	710000
 guilder	710000
 hubris	710000
-imp	710000
 inoculated	710000
 joules	710000
 monopolize	710000
@@ -31132,7 +30806,6 @@ zing	460000
 sandman	320000
 scientifically	960000
 coolie	630000
-eau	630000
 laundered	630000
 thongs	630000
 hygienist	580000
@@ -31146,11 +30819,8 @@ reassign	610000
 availability	1180000
 extraordinarily	930000
 confucian	830000
-dlr	830000
 guelph	830000
-mcg	830000
 manx	830000
-sla	830000
 apportioned	830000
 borrowings	830000
 championing	830000
@@ -31190,7 +30860,6 @@ prearranged	690000
 remorseful	690000
 texting	690000
 weevils	690000
-ara	740000
 deuteronomy	740000
 aggrieved	740000
 bigoted	740000
@@ -31306,7 +30975,6 @@ pumice	770000
 retaking	770000
 seaborne	770000
 suppresses	770000
-yod	590000
 blinks	590000
 coughed	590000
 hokey	590000
@@ -31328,10 +30996,8 @@ underhand	680000
 celts	780000
 mather	780000
 moro	780000
-pst	780000
 androgynous	780000
 arrayed	780000
-asp	780000
 bests	780000
 biweekly	780000
 cataract	780000
@@ -31357,9 +31023,7 @@ resurface	780000
 rote	780000
 samplers	780000
 wrest	780000
-adv	840000
 meath	840000
-otc	840000
 transvaal	840000
 benchmarks	840000
 campaigners	840000
@@ -31514,9 +31178,7 @@ shorn	710000
 tusk	710000
 workday	710000
 calvinist	810000
-dui	810000
 lakeland	810000
-ssp	810000
 absorber	810000
 abstracted	810000
 anthracite	810000
@@ -31563,7 +31225,6 @@ iota	630000
 waistline	630000
 bijou	370000
 hanks	440000
-eff	700000
 basilar	700000
 crooner	700000
 easel	700000
@@ -31572,7 +31233,6 @@ euphemisms	700000
 jaguars	700000
 knell	700000
 livable	700000
-lob	700000
 malted	700000
 overrides	700000
 sickened	700000
@@ -31603,7 +31263,6 @@ brickwork	820000
 ceding	820000
 cilia	820000
 discerned	820000
-div	820000
 elongation	820000
 embarks	820000
 firebox	820000
@@ -31792,7 +31451,6 @@ yearling	710000
 cruciform	830000
 albanians	830000
 flinders	830000
-ppd	830000
 roms	830000
 airfoil	830000
 ascents	830000
@@ -32021,7 +31679,6 @@ actionable	700000
 choppy	700000
 concussions	700000
 farthing	700000
-lux	700000
 pentameter	700000
 physicality	700000
 pythons	700000
@@ -32103,7 +31760,6 @@ fuchsia	620000
 hurtling	620000
 laryngitis	620000
 seance	620000
-veg	620000
 ramble	570000
 sirloin	570000
 blacking	600000
@@ -32174,11 +31830,8 @@ underscores	740000
 epinephrine	450000
 sultanate	820000
 andean	820000
-cst	820000
 cochin	820000
 hamiltonian	820000
-pct	820000
-prs	820000
 admixture	820000
 antimony	820000
 archiving	820000
@@ -32242,7 +31895,6 @@ overactive	640000
 rickets	640000
 shamelessly	640000
 shrug	640000
-ame	750000
 adventists	750000
 calumet	750000
 goshen	750000
@@ -32325,7 +31977,6 @@ stockpiles	760000
 studious	760000
 umlaut	760000
 wheelers	760000
-mab	580000
 reinforcement	1010000
 unconventional	1010000
 unappealing	670000
@@ -32403,7 +32054,6 @@ wagging	610000
 activator	780000
 prussians	780000
 uzbek	780000
-ala	780000
 alleviating	780000
 allying	780000
 alumnae	780000
@@ -32413,7 +32063,6 @@ caloric	780000
 commutes	780000
 cybernetics	780000
 diarist	780000
-dir	780000
 fragrances	780000
 gravestones	780000
 hobbyist	780000
@@ -32611,7 +32260,6 @@ trellis	680000
 yucca	680000
 guzzler	410000
 airings	810000
-dup	810000
 eurasia	810000
 justinian	810000
 leninist	810000
@@ -32724,7 +32372,6 @@ galore	530000
 winked	530000
 lube	540000
 whisked	710000
-eam	710000
 maidenhead	710000
 tosca	710000
 bobcats	710000
@@ -32880,7 +32527,6 @@ snags	690000
 squats	690000
 swagger	690000
 unhinged	690000
-fin	250000
 thoroughfare	970000
 layaway	400000
 dossiers	660000
@@ -32944,7 +32590,6 @@ acadia	780000
 frescos	780000
 freemasonry	780000
 moselle	780000
-pbx	780000
 abounded	780000
 bookmakers	780000
 deans	780000
@@ -33080,7 +32725,6 @@ turncoat	680000
 vicarious	680000
 whisker	680000
 refutation	800000
-asb	800000
 assyrians	800000
 clarendon	800000
 iranians	800000
@@ -33242,7 +32886,6 @@ heartthrob	630000
 hummus	630000
 romancing	630000
 repercussions	900000
-cgs	740000
 sakai	740000
 senegalese	740000
 thule	740000
@@ -33296,7 +32939,6 @@ woefully	700000
 wrangler	700000
 intermediate	1200000
 cayuga	750000
-ess	750000
 minoan	750000
 nanking	750000
 ballooning	750000
@@ -33324,7 +32966,6 @@ viscount	750000
 dissed	570000
 lamppost	570000
 skulking	570000
-bim	660000
 juggernaut	660000
 aloe	660000
 bluesman	660000
@@ -33488,16 +33129,13 @@ clovers	580000
 dregs	580000
 vamps	580000
 schilling	530000
-gab	530000
 presto	530000
 hairbrush	520000
-ifs	520000
 mustangs	520000
 merman	540000
 cannibalism	890000
 weirdos	470000
 croissants	550000
-gat	550000
 logarithms	780000
 marimba	780000
 anatolian	780000
@@ -33542,7 +33180,6 @@ sympathized	780000
 turmeric	780000
 vegetated	780000
 vesicle	780000
-gib	640000
 sennett	640000
 buttock	640000
 droop	640000
@@ -33564,7 +33201,6 @@ bearskin	610000
 stringy	610000
 associations	1190000
 comintern	790000
-faq	790000
 polynesia	790000
 zoroastrian	790000
 academician	790000
@@ -33641,7 +33277,6 @@ desiccated	670000
 doting	670000
 gloriously	670000
 joists	670000
-obi	670000
 oleic	670000
 pleats	670000
 predestined	670000
@@ -33770,14 +33405,12 @@ strainer	660000
 surfboards	660000
 surrogates	660000
 dreading	530000
-nab	530000
 bursitis	600000
 crone	600000
 summerhouse	600000
 trotter	600000
 asylums	740000
 presupposes	740000
-tss	740000
 admonition	740000
 carbolic	740000
 chested	740000
@@ -34035,7 +33668,6 @@ valuing	770000
 wingtips	770000
 pontius	640000
 belittling	640000
-ewe	640000
 gravest	640000
 longhorn	640000
 mimes	640000
@@ -34050,7 +33682,6 @@ softener	590000
 temptress	590000
 woodsman	590000
 vulnerability	990000
-vac	610000
 feelers	610000
 freestone	610000
 headlock	610000
@@ -34077,7 +33708,6 @@ grammarian	780000
 tracery	780000
 clough	780000
 edda	780000
-fac	780000
 frederik	780000
 huguenot	780000
 iliad	780000
@@ -34166,8 +33796,6 @@ mothering	600000
 rehash	600000
 scullery	600000
 tugging	600000
-zed	450000
-zit	450000
 birdcage	580000
 cooing	580000
 tinfoil	580000
@@ -34335,11 +33963,8 @@ jiffy	370000
 anatomic	740000
 hussars	740000
 offload	740000
-ahs	740000
-ait	740000
 aeneas	740000
 atchison	740000
-pye	740000
 shoshone	740000
 vulgate	740000
 wynne	740000
@@ -34486,7 +34111,6 @@ betrayer	610000
 jaunt	610000
 scalded	610000
 sherpa	640000
-bal	640000
 dripped	640000
 gratified	640000
 mauling	640000
@@ -34497,12 +34121,10 @@ thermals	640000
 micrometer	760000
 aleutian	760000
 berne	760000
-cit	760000
 djibouti	760000
 honduran	760000
 loran	760000
 needham	760000
-tng	760000
 abuts	760000
 ameliorate	760000
 bottlenecks	760000
@@ -34559,7 +34181,6 @@ eulogies	660000
 leathers	660000
 lemmings	660000
 mashing	660000
-mor	660000
 peacemaker	660000
 personable	660000
 pianoforte	660000
@@ -34618,7 +34239,6 @@ marketer	770000
 melamine	770000
 monarchists	770000
 motet	770000
-mpg	770000
 occultist	770000
 ophthalmic	770000
 persevered	770000
@@ -34781,7 +34401,6 @@ hunched	650000
 pretension	650000
 shirk	650000
 torturous	650000
-vox	650000
 searchers	690000
 abyssinia	690000
 alleyways	690000
@@ -34852,7 +34471,6 @@ stoning	730000
 subdivide	730000
 supine	730000
 warplanes	730000
-yds	730000
 smattering	680000
 pythagoras	680000
 spicer	680000
@@ -34894,12 +34512,10 @@ wets	610000
 middleweight	950000
 torts	740000
 bayard	740000
-esq	740000
 fermi	740000
 marxists	740000
 pythagorean	740000
 steen	740000
-tsp	740000
 analgesics	740000
 borehole	740000
 certifies	740000
@@ -34910,7 +34526,6 @@ debunked	740000
 delves	740000
 deviating	740000
 disassembly	740000
-exp	740000
 furred	740000
 gestational	740000
 geysers	740000
@@ -35050,7 +34665,6 @@ waded	660000
 waiving	660000
 dissing	550000
 goggle	550000
-ola	550000
 snarl	550000
 cockeyed	370000
 whimpers	370000
@@ -35161,7 +34775,6 @@ levity	600000
 matchbox	600000
 tidbits	600000
 continuation	1130000
-taj	400000
 inflammation	1030000
 inflammatory	1040000
 supermarkets	1020000
@@ -35218,7 +34831,6 @@ fatten	570000
 hacksaw	570000
 lilacs	570000
 mitten	570000
-sou	570000
 yuppies	570000
 accelerant	540000
 antigravity	540000
@@ -35365,7 +34977,6 @@ invariable	720000
 kava	720000
 leafed	720000
 liens	720000
-ohm	720000
 omniscience	720000
 outsource	720000
 plotter	720000
@@ -35440,7 +35051,6 @@ ainu	730000
 demeter	730000
 glenwood	730000
 pericles	730000
-qed	730000
 sanger	730000
 adverbial	730000
 angiography	730000
@@ -35514,11 +35124,9 @@ splintering	660000
 stiffen	660000
 wanderers	660000
 engravers	740000
-apr	740000
 doria	740000
 olympians	740000
 pentecost	740000
-saa	740000
 scythian	740000
 amnesiac	740000
 atlases	740000
@@ -35591,7 +35199,6 @@ mantelpiece	600000
 smokehouse	600000
 callbacks	630000
 guardrail	630000
-ilk	630000
 internist	630000
 slaver	630000
 sombrero	630000
@@ -35711,7 +35318,6 @@ buzzers	620000
 carjacking	620000
 cartwheel	620000
 heckler	620000
-jai	620000
 moccasins	620000
 proms	620000
 recuse	620000
@@ -35745,7 +35351,6 @@ bordello	610000
 bothersome	610000
 coattails	610000
 flatware	610000
-fps	610000
 freshest	610000
 gusting	610000
 headfirst	610000
@@ -35968,7 +35573,6 @@ curlers	600000
 epaulets	600000
 erogenous	600000
 gored	600000
-pon	600000
 reattach	600000
 rewiring	600000
 beelzebub	500000
@@ -36097,14 +35701,10 @@ scapegoats	650000
 sealer	650000
 unoriginal	650000
 upstaged	650000
-lox	450000
 basilicas	740000
 gaits	740000
 housings	740000
 milepost	740000
-cli	740000
-esd	740000
-lsc	740000
 mennonites	740000
 plainfield	740000
 abstentions	740000
@@ -36180,7 +35780,6 @@ unrated	740000
 venerate	740000
 violas	740000
 vociferous	740000
-bod	480000
 hairspray	480000
 mongoloid	540000
 caxton	620000
@@ -36365,7 +35964,6 @@ raconteur	680000
 scrambles	680000
 verbose	680000
 viscera	680000
-bab	700000
 dene	700000
 montpelier	700000
 adjudicator	700000
@@ -36438,7 +36036,6 @@ undeserved	670000
 technicality	790000
 pongo	270000
 synching	710000
-mib	710000
 phoenicians	710000
 samara	710000
 attenuate	710000
@@ -36508,7 +36105,6 @@ afrikaner	720000
 boas	720000
 carmelite	720000
 eugenia	720000
-fip	720000
 silurian	720000
 zionists	720000
 afterburner	720000
@@ -36555,7 +36151,6 @@ undoubted	720000
 unpalatable	720000
 warrantless	720000
 wingless	720000
-kab	420000
 alexia	540000
 hovel	540000
 subcommittee	910000
@@ -36752,7 +36347,6 @@ georgette	610000
 nostradamus	610000
 anchorwoman	610000
 foamy	610000
-fob	610000
 overcharged	610000
 prods	610000
 shaming	610000
@@ -36809,7 +36403,6 @@ rewinding	620000
 romantics	620000
 shallots	620000
 unfunny	620000
-gnu	460000
 mensa	600000
 boneless	600000
 bowline	600000
@@ -36862,7 +36455,6 @@ evert	690000
 hafiz	690000
 hasidim	690000
 mandi	690000
-ort	690000
 antagonized	690000
 bamboos	690000
 beekeepers	690000
@@ -36974,7 +36566,6 @@ perversions	570000
 softest	570000
 wussy	570000
 deteriorating	980000
-dob	660000
 socratic	660000
 gasworks	660000
 peremptory	660000
@@ -37017,7 +36608,6 @@ fecundity	710000
 plantains	710000
 berbers	710000
 canaanite	710000
-gre	710000
 jacksonian	710000
 magyars	710000
 milanese	710000
@@ -37108,7 +36698,6 @@ thunderclap	510000
 calving	720000
 aguinaldo	720000
 alexandrian	720000
-bcd	720000
 boardman	720000
 neckar	720000
 nicol	720000
@@ -37331,16 +36920,13 @@ spiel	550000
 voyeur	550000
 scumbags	330000
 dongs	480000
-fie	480000
 futon	480000
 highball	480000
 legwork	480000
 crowing	590000
-ade	590000
 delphine	590000
 engorged	590000
 gutting	590000
-mos	590000
 surest	590000
 venal	590000
 ethiopians	680000
@@ -37475,7 +37061,6 @@ wattles	690000
 yachtsman	690000
 constipated	440000
 halberd	660000
-ber	660000
 afflicting	660000
 beaux	660000
 carloads	660000
@@ -37499,7 +37084,6 @@ tinned	660000
 vegans	660000
 windswept	660000
 zeitgeist	660000
-imu	700000
 lucan	700000
 sabin	700000
 tanzanian	700000
@@ -37653,7 +37237,6 @@ unleavened	710000
 vaulter	710000
 vedic	710000
 vintages	710000
-wye	710000
 cartwheels	530000
 smudged	530000
 distally	640000
@@ -37727,7 +37310,6 @@ decomposition	1030000
 circumcision	950000
 duplicitous	620000
 supermodels	620000
-elt	620000
 uriel	620000
 appraise	620000
 artichokes	620000
@@ -37780,7 +37362,6 @@ waggle	550000
 intellectually	900000
 chablis	520000
 huskies	520000
-sao	520000
 scone	520000
 assignation	610000
 bendy	610000
@@ -37804,7 +37385,6 @@ wheelie	610000
 playpen	470000
 unfreeze	470000
 compatibility	1060000
-dib	310000
 fags	340000
 goner	340000
 baguette	590000
@@ -37951,7 +37531,6 @@ swirled	660000
 throngs	660000
 tinplate	660000
 unionize	660000
-yap	350000
 exterminator	590000
 sanhedrin	690000
 inveterate	690000
@@ -38003,7 +37582,6 @@ effectors	650000
 personify	650000
 warding	650000
 bourbons	650000
-bur	650000
 chloral	650000
 coder	650000
 coroners	650000
@@ -38031,7 +37609,6 @@ uncommitted	650000
 unwinding	650000
 weds	650000
 scientology	920000
-cpo	700000
 calif	700000
 chaldean	700000
 irishmen	700000
@@ -38202,7 +37779,6 @@ luxe	620000
 nesters	620000
 nihilist	620000
 ragtag	620000
-rel	620000
 rightness	620000
 splashdown	620000
 throttles	620000
@@ -38292,7 +37868,6 @@ seared	600000
 slandering	600000
 superimpose	600000
 tiaras	600000
-uta	600000
 subterranean	940000
 clucking	490000
 bagman	490000
@@ -38387,7 +37962,6 @@ ducting	660000
 expander	660000
 idolizes	660000
 interfaced	660000
-lek	660000
 masterfully	660000
 missteps	660000
 mistrusted	660000
@@ -38413,7 +37987,6 @@ enlarges	680000
 hajj	680000
 overhauling	680000
 campeche	680000
-hts	680000
 illuminati	680000
 airdrop	680000
 alternators	680000
@@ -38572,7 +38145,6 @@ reminisced	690000
 repulsing	690000
 repurchased	690000
 resisters	690000
-ret	690000
 riffing	690000
 saris	690000
 shoemakers	690000
@@ -38589,7 +38161,6 @@ varietals	690000
 interactions	1170000
 betwixt	590000
 fogging	590000
-maw	590000
 bobs	590000
 charlatans	590000
 creaky	590000
@@ -38733,7 +38304,6 @@ clicker	530000
 embezzler	530000
 bosun	450000
 unmistakable	840000
-hap	410000
 distributors	1010000
 copernican	610000
 ably	610000
@@ -38777,9 +38347,7 @@ exhilarating	760000
 winging	470000
 hairpiece	540000
 jitterbug	540000
-ree	540000
 screamers	540000
-sty	540000
 administrators	1090000
 precipitation	1130000
 cappy	430000
@@ -38823,7 +38391,6 @@ substitution	1050000
 institutional	1100000
 displease	520000
 medicate	520000
-abu	250000
 blustery	590000
 bonito	590000
 wobbling	590000
@@ -38985,7 +38552,6 @@ digitize	650000
 disavow	650000
 disharmony	650000
 dovetail	650000
-eke	650000
 fatalistic	650000
 fescue	650000
 hesitantly	650000
@@ -39010,7 +38576,6 @@ shaper	650000
 spearing	650000
 striven	650000
 suppressant	650000
-uke	650000
 weeklong	650000
 jalopy	450000
 ratty	450000
@@ -39029,7 +38594,6 @@ djinn	680000
 downplaying	680000
 hafnium	680000
 unprocessed	680000
-lcm	680000
 aftershocks	680000
 backplane	680000
 bandmaster	680000
@@ -39270,7 +38834,6 @@ womanly	610000
 wordy	610000
 worshiper	610000
 gaggle	510000
-mew	510000
 buffing	540000
 gnawed	540000
 ouzo	540000
@@ -39444,7 +39007,6 @@ poignancy	660000
 profanities	660000
 proteges	660000
 prudently	660000
-pur	660000
 purveyors	660000
 refusals	660000
 retrovirus	660000
@@ -39509,7 +39071,6 @@ libelous	650000
 mobbing	650000
 orthopedics	650000
 paean	650000
-pia	650000
 prophetess	650000
 rebuttals	650000
 restrains	650000
@@ -39540,7 +39101,6 @@ kerman	670000
 muscovite	670000
 newgate	670000
 oban	670000
-ula	670000
 abyssal	670000
 adduced	670000
 agora	670000
@@ -39623,7 +39183,6 @@ verso	670000
 wharfs	670000
 servos	640000
 endymion	640000
-pis	640000
 alimentary	640000
 anterograde	640000
 avaricious	640000
@@ -39640,7 +39199,6 @@ drawl	640000
 elementals	640000
 emus	640000
 envelops	640000
-fem	640000
 headcount	640000
 hedged	640000
 herringbone	640000
@@ -39669,7 +39227,6 @@ chiselled	580000
 contrite	580000
 dominus	580000
 fizzy	580000
-fop	580000
 gearshift	580000
 gonad	580000
 landau	580000
@@ -39856,7 +39413,6 @@ unnecessarily	840000
 contemporaries	1110000
 overturns	590000
 dobbins	590000
-swa	590000
 bluebells	590000
 comeuppance	590000
 crisper	590000
@@ -39884,7 +39440,6 @@ appendicitis	790000
 incorporating	1130000
 unsuccessfully	1160000
 sniveling	380000
-bub	310000
 fathead	450000
 hankering	450000
 nosey	450000
@@ -40000,7 +39555,6 @@ appeasing	640000
 beveled	640000
 calibrating	640000
 clasping	640000
-cru	640000
 demagogue	640000
 demoralize	640000
 denigrating	640000
@@ -40041,11 +39595,9 @@ abrogate	660000
 honeycombs	660000
 iconoclast	660000
 predispose	660000
-agr	660000
 augustan	660000
 crts	660000
 coulomb	660000
-dpt	660000
 esau	660000
 kampuchea	660000
 moline	660000
@@ -40148,7 +39700,6 @@ grazer	540000
 heckle	540000
 hungover	540000
 whittling	540000
-abc	250000
 cosmology	970000
 accentuates	630000
 colons	630000
@@ -40208,7 +39759,6 @@ coffer	620000
 redrew	620000
 snowboards	620000
 phoenicia	620000
-slt	620000
 blurts	620000
 catacomb	620000
 centavo	620000
@@ -40384,7 +39934,6 @@ gratify	590000
 handspring	590000
 inseminated	590000
 medico	590000
-nit	590000
 nixed	590000
 novena	590000
 paralyzes	590000
@@ -40800,7 +40349,6 @@ mounties	550000
 braggart	550000
 compunction	550000
 cribbage	550000
-cud	550000
 furrier	550000
 handshakes	550000
 marigolds	550000
@@ -40808,7 +40356,6 @@ singe	550000
 polaroids	420000
 fagin	600000
 farris	600000
-tty	600000
 azalea	600000
 bratty	600000
 clenching	600000
@@ -40834,7 +40381,6 @@ children's	1300000
 father's	1300000
 lait	560000
 tailspin	560000
-kob	560000
 befalls	560000
 bluntness	560000
 buffets	560000
@@ -40876,7 +40422,6 @@ untreatable	590000
 warder	590000
 thunderstorms	950000
 anthropology	1060000
-ufo	250000
 masturbating	700000
 assassinations	910000
 sayonara	300000
@@ -40895,7 +40440,6 @@ bedsheets	550000
 candlelit	550000
 dandelions	550000
 dowdy	550000
-pah	550000
 parfait	550000
 peacemakers	550000
 refreshes	550000
@@ -41143,7 +40687,6 @@ prepackaged	620000
 revellers	620000
 steadiness	620000
 wellhead	620000
-crl	620000
 corvus	620000
 dari	620000
 nisei	620000
@@ -41590,7 +41133,6 @@ topspin	620000
 corbet	620000
 daystar	620000
 lenten	620000
-mfd	620000
 tyrolean	620000
 academe	620000
 admonishing	620000
@@ -41662,7 +41204,6 @@ ashen	560000
 aspersions	560000
 churns	560000
 cloche	560000
-dey	560000
 emasculated	560000
 fisticuffs	560000
 forethought	560000
@@ -41685,7 +41226,6 @@ doty	610000
 lorimer	610000
 nigerians	610000
 rheingold	610000
-sch	610000
 blowhole	610000
 briquettes	610000
 cert	610000
@@ -41770,7 +41310,6 @@ flouting	600000
 garnets	600000
 hamstrung	600000
 haulers	600000
-inf	600000
 jibes	600000
 lugger	600000
 missal	600000
@@ -41823,7 +41362,6 @@ drover	590000
 hackneyed	590000
 indefinable	590000
 juggles	590000
-jut	590000
 locators	590000
 luminal	590000
 marshaling	590000
@@ -41936,7 +41474,6 @@ beefy	510000
 cower	510000
 loners	510000
 orthotics	510000
-pos	510000
 sendoff	510000
 squibs	510000
 tippet	510000
@@ -42003,11 +41540,8 @@ plumed	620000
 actu	620000
 argonaut	620000
 biograph	620000
-iud	620000
-nae	620000
 polynesians	620000
 snicket	620000
-waf	620000
 wapping	620000
 abaca	620000
 abseiling	620000
@@ -42054,7 +41588,6 @@ insinuates	620000
 intraparty	620000
 knighthoods	620000
 leat	620000
-leu	620000
 liaising	620000
 liquidators	620000
 malting	620000
@@ -42227,7 +41760,6 @@ incorporates	1130000
 dally	400000
 floozy	400000
 bibby	600000
-iva	600000
 kivu	600000
 adversities	600000
 balladeer	600000
@@ -42249,7 +41781,6 @@ hardliner	600000
 hatchets	600000
 hauntingly	600000
 hereinafter	600000
-hob	600000
 hydrolytic	600000
 immunized	600000
 juxtapose	600000
@@ -42495,7 +42026,6 @@ ultimatums	490000
 intergalactic	790000
 expenditures	1000000
 bleeped	560000
-obs	560000
 backhanded	560000
 barbells	560000
 centerboard	560000
@@ -42558,7 +42088,6 @@ acquirer	610000
 acquittals	610000
 admonitions	610000
 agitprop	610000
-amt	610000
 annotating	610000
 atoned	610000
 barre	610000
@@ -42584,7 +42113,6 @@ drivable	610000
 dualities	610000
 dupes	610000
 edutainment	610000
-emf	610000
 extralegal	610000
 exurban	610000
 fatwas	610000
@@ -42653,7 +42181,6 @@ zookeeper	610000
 zoophilia	610000
 atheism	910000
 grasshoppers	790000
-hic	550000
 jewishness	550000
 armoire	550000
 balsamic	550000
@@ -42665,7 +42192,6 @@ cummerbund	550000
 curdled	550000
 gallops	550000
 gentlewoman	550000
-hew	550000
 keenest	550000
 mealy	550000
 mutineer	550000
@@ -42822,7 +42348,6 @@ vaporizing	590000
 whiskered	590000
 worldliness	590000
 hurray	280000
-cig	520000
 duvet	520000
 entrancing	520000
 geraniums	520000
@@ -42852,8 +42377,6 @@ collaborators	1030000
 inauguration	1050000
 sissies	430000
 wank	430000
-wiz	430000
-clo	580000
 englanders	580000
 aborigine	580000
 allayed	580000
@@ -42953,7 +42476,6 @@ legalities	570000
 meekness	570000
 moonlighted	570000
 mothball	570000
-nar	570000
 photophobia	570000
 prelims	570000
 proximally	570000
@@ -43058,7 +42580,6 @@ piggies	450000
 rewire	450000
 rusk	450000
 omicron	460000
-tiu	460000
 sexism	850000
 accreditation	1070000
 phonies	410000
@@ -43265,7 +42786,6 @@ gudgeon	590000
 liveliest	590000
 mushrooming	590000
 papules	590000
-pau	590000
 remunerated	590000
 stevedore	590000
 stowing	590000
@@ -43527,7 +43047,6 @@ metamorphosis	850000
 sportsmanship	850000
 bowser	390000
 groveling	390000
-hel	390000
 moxie	390000
 crabapple	470000
 ritzy	470000
@@ -43652,7 +43171,6 @@ jogged	540000
 keepsakes	540000
 ladybird	540000
 lusted	540000
-nub	540000
 reanimation	540000
 roomier	540000
 sanitize	540000
@@ -43670,7 +43188,6 @@ distrusts	590000
 gravid	590000
 nicknaming	590000
 waterspouts	590000
-gos	590000
 missourians	590000
 silvester	590000
 vanda	590000
@@ -43952,7 +43469,6 @@ woodruff	400000
 functionality	1120000
 unscrewed	530000
 fauntleroy	530000
-aga	530000
 blackball	530000
 challah	530000
 costumer	530000
@@ -43983,7 +43499,6 @@ game's	1180000
 party's	1180000
 dears	280000
 crucifying	480000
-doh	480000
 flagon	480000
 valentines	480000
 bandicoot	560000
@@ -44066,7 +43581,6 @@ jests	520000
 leis	520000
 pneumonic	520000
 poring	520000
-ros	520000
 shoplifters	520000
 stampeding	520000
 swallower	520000
@@ -44192,7 +43706,6 @@ toggles	540000
 unwinds	540000
 wadding	540000
 wisps	540000
-wpm	540000
 year's	1170000
 neurosurgery	750000
 consumerism	820000
@@ -44293,7 +43806,6 @@ resize	580000
 restates	580000
 restating	580000
 retributive	580000
-ria	580000
 rigueur	580000
 roundish	580000
 ruffs	580000
@@ -44814,7 +44326,6 @@ dabs	450000
 funnies	450000
 jerkin	450000
 ratatouille	450000
-yom	450000
 bedspread	430000
 peepers	430000
 apprenticeship	1040000
@@ -44855,7 +44366,6 @@ canty	560000
 cayuse	560000
 floridian	560000
 gilberts	560000
-iou	560000
 nidal	560000
 alginate	560000
 amorality	560000
@@ -45256,7 +44766,6 @@ insecurities	740000
 subconsciously	740000
 delicatessen	710000
 allemande	520000
-alp	520000
 aneroid	520000
 calomel	520000
 clime	520000
@@ -45434,7 +44943,6 @@ arrhythmic	550000
 autoerotic	550000
 availing	550000
 avulsion	550000
-awl	550000
 babu	550000
 balaclava	550000
 bittern	550000
@@ -45680,7 +45188,6 @@ shacked	360000
 declarations	940000
 thermodynamics	940000
 baubles	500000
-bps	500000
 chuppah	500000
 comforters	500000
 cuticles	500000
@@ -45738,7 +45245,6 @@ stenographer	700000
 hesperus	520000
 masai	520000
 moslems	520000
-tup	520000
 aqualung	520000
 asthmatics	520000
 blandness	520000
@@ -45809,7 +45315,6 @@ guarneri	550000
 keach	550000
 mitty	550000
 norths	550000
-pdq	550000
 sella	550000
 tartuffe	550000
 whitsun	550000
@@ -45874,7 +45379,6 @@ heterodoxy	550000
 hibernates	550000
 idealizing	550000
 idolizing	550000
-ile	550000
 immunoassay	550000
 impassive	550000
 interweave	550000
@@ -46101,7 +45605,6 @@ protease	480000
 sociopaths	480000
 trots	480000
 unspeakably	480000
-vex	480000
 chunking	530000
 currying	530000
 refinishing	530000
@@ -46120,7 +45623,6 @@ doorkeeper	530000
 drooped	530000
 ejectors	530000
 entryways	530000
-ext	530000
 flaunts	530000
 flounders	530000
 fumigant	530000
@@ -46128,7 +45630,6 @@ gamely	530000
 groat	530000
 igloos	530000
 infarcts	530000
-jat	530000
 kneeled	530000
 liveable	530000
 lurched	530000
@@ -46457,7 +45958,6 @@ accustom	500000
 bodegas	500000
 chatters	500000
 cornrows	500000
-dak	500000
 drippings	500000
 epiglottis	500000
 expedience	500000
@@ -46621,7 +46121,6 @@ wife's	1080000
 fragmentation	980000
 disproportionate	910000
 prerequisite	910000
-ore	250000
 applejack	380000
 cera	380000
 nipper	380000
@@ -46735,7 +46234,6 @@ clambered	510000
 commingling	510000
 contortion	510000
 desensitize	510000
-els	510000
 epiphanies	510000
 erasures	510000
 flashcards	510000
@@ -46769,7 +46267,6 @@ hapsburg	390000
 beefs	390000
 gawking	390000
 mutts	390000
-yow	390000
 troublemakers	670000
 articulation	960000
 concentrates	960000
@@ -47335,7 +46832,6 @@ dishonoring	500000
 firebomb	500000
 foxglove	500000
 imputations	500000
-kos	500000
 lampshades	500000
 objet	500000
 pounces	500000
@@ -47631,7 +47127,6 @@ menthe	440000
 mooned	440000
 overman	440000
 redial	440000
-sot	440000
 stammers	440000
 surveil	440000
 unzipped	440000
@@ -47777,8 +47272,6 @@ reamed	470000
 reseeding	470000
 sightless	470000
 slipshod	470000
-taw	470000
-vim	470000
 abbreviations	900000
 confrontational	860000
 interplanetary	860000
@@ -47846,7 +47339,6 @@ tortellini	450000
 anesthetize	430000
 divot	430000
 praline	430000
-pvt	430000
 ephesian	400000
 duce	400000
 grandad	400000
@@ -47879,7 +47371,6 @@ cherenkov	510000
 collen	510000
 eurocentric	510000
 gres	510000
-kyd	510000
 mohammedan	510000
 occident	510000
 pontiacs	510000
@@ -48159,7 +47650,6 @@ teems	500000
 totter	500000
 undershoot	500000
 chapstick	440000
-ail	440000
 brouhaha	440000
 flatulent	440000
 lasses	440000
@@ -48169,7 +47659,6 @@ counterintelligence	800000
 inappropriately	800000
 grandmothers	710000
 jim's	1020000
-m's	1020000
 tv's	1020000
 aren't	1020000
 college's	1020000
@@ -48206,7 +47695,6 @@ wagged	470000
 whooshing	470000
 sporadically	980000
 shakespearean	780000
-caw	400000
 amuck	370000
 coons	370000
 goofed	370000
@@ -48243,7 +47731,6 @@ crudest	490000
 custards	490000
 hoaxer	490000
 nectarines	490000
-opp	490000
 paseo	490000
 poinsettia	490000
 sabbat	490000
@@ -48322,7 +47809,6 @@ chickadee	430000
 envying	430000
 hemming	430000
 menage	430000
-neg	430000
 spitter	430000
 xeroxed	430000
 abruptness	480000
@@ -48476,7 +47962,6 @@ gooseneck	500000
 greatcoat	500000
 guidons	500000
 heartworm	500000
-hod	500000
 hogshead	500000
 housebound	500000
 hyacinths	500000
@@ -48581,7 +48066,6 @@ senorita	330000
 necessitated	980000
 coeducational	980000
 peacekeeping	980000
-yuh	450000
 babbles	450000
 beeline	450000
 brainpower	450000
@@ -48699,7 +48183,6 @@ britain's	1000000
 george's	1000000
 india's	1000000
 london's	1000000
-p's	1000000
 smith's	1000000
 boy's	1000000
 car's	1000000
@@ -48860,7 +48343,6 @@ iffy	360000
 vroom	310000
 japan's	990000
 peter's	990000
-r's	990000
 daughter's	990000
 girl's	990000
 o'clock	990000
@@ -48896,7 +48378,6 @@ whiles	470000
 lanai	450000
 romeos	450000
 bespeak	450000
-fas	450000
 flickered	450000
 gird	450000
 hyphenate	450000
@@ -49042,7 +48523,6 @@ weekenders	490000
 woodcutting	490000
 reconfigured	870000
 trigonometry	810000
-gyp	340000
 messer	340000
 fingerprinting	800000
 resettlement	920000
@@ -49107,7 +48587,6 @@ deceivers	440000
 depilatory	440000
 fizzing	440000
 frisbees	440000
-kif	440000
 millenniums	440000
 overfed	440000
 papas	440000
@@ -49119,7 +48598,6 @@ zesty	440000
 completeness	890000
 inspirations	890000
 christies	480000
-dbl	480000
 zebedee	480000
 aerobically	480000
 afterimage	480000
@@ -49561,7 +49039,6 @@ cuddled	410000
 digress	410000
 puce	410000
 unbuckled	410000
-ems	320000
 enquirer	320000
 disseminated	900000
 receivership	900000
@@ -49746,7 +49223,6 @@ undisciplined	740000
 pigheaded	320000
 oceanographic	810000
 polyurethane	810000
-tue	460000
 addicting	460000
 backboards	460000
 batching	460000
@@ -49887,7 +49363,6 @@ alexanders	450000
 amortize	450000
 ayatollahs	450000
 barrelhouse	450000
-bes	450000
 burnouts	450000
 charcoals	450000
 cheesecakes	450000
@@ -49995,7 +49470,6 @@ icepick	470000
 inventively	470000
 knockabout	470000
 kopeks	470000
-kph	470000
 learnable	470000
 lettuces	470000
 mackerels	470000
@@ -50233,7 +49707,6 @@ wishy	460000
 wretchedly	460000
 bushwhack	410000
 drippy	410000
-fum	410000
 mangles	410000
 pinking	410000
 quitted	410000
@@ -50293,7 +49766,6 @@ bonhomie	450000
 bookkeepers	450000
 carpools	450000
 cuing	450000
-cwm	450000
 dimmest	450000
 edematous	450000
 elan	450000
@@ -50355,7 +49827,6 @@ interdiction	870000
 microprocessors	870000
 regenerative	870000
 unfavourable	870000
-nob	370000
 poolroom	370000
 bloodsucker	370000
 brunettes	370000
@@ -50697,7 +50168,6 @@ pleasantest	450000
 pricier	450000
 promenading	450000
 prudery	450000
-pul	450000
 ranker	450000
 reprove	450000
 resend	450000
@@ -51220,7 +50690,6 @@ when's	900000
 where'll	900000
 winner's	900000
 homeboys	320000
-neb	320000
 cartographer	840000
 counterattacks	840000
 observatories	840000
@@ -51376,7 +50845,6 @@ spooking	380000
 wahine	380000
 entomologist	700000
 crackpots	390000
-eek	390000
 helpings	390000
 horseflesh	390000
 miscounted	390000
@@ -51428,7 +50896,6 @@ variola	430000
 weekender	430000
 whispery	430000
 pudge	400000
-app	400000
 bawd	400000
 doff	400000
 doodled	400000
@@ -51464,7 +50931,6 @@ thoroughfares	870000
 africa's	890000
 andrew's	890000
 christ's	890000
-d's	890000
 ford's	890000
 miller's	890000
 nba's	890000
@@ -51788,7 +51254,6 @@ iceboat	430000
 incubi	430000
 jodhpur	430000
 knifing	430000
-kop	430000
 mainsails	430000
 metastable	430000
 overstock	430000
@@ -51821,7 +51286,6 @@ physiologist	820000
 transcendence	820000
 astonishingly	740000
 unquestioned	740000
-bbc	1390000
 categorization	870000
 correspondingly	870000
 discontinuation	870000
@@ -52254,7 +51718,6 @@ buntline	380000
 dater	380000
 neutralizing	790000
 nullification	790000
-dvd	1360000
 byronic	420000
 volkswagens	420000
 asst	420000
@@ -52457,7 +51920,6 @@ gm's	850000
 harper's	850000
 hill's	850000
 kennedy's	850000
-l's	850000
 macy's	850000
 mark's	850000
 mccarthy's	850000
@@ -52568,7 +52030,6 @@ melpomene	420000
 acquiescent	420000
 adjudge	420000
 aggrandize	420000
-amu	420000
 annuls	420000
 apartness	420000
 arbitrates	420000
@@ -52767,7 +52228,6 @@ fantastically	650000
 unadulterated	650000
 immeasurable	690000
 invigorating	690000
-nfl	1330000
 heigh	350000
 wickiup	350000
 entanglements	740000
@@ -52920,7 +52380,6 @@ curs	390000
 derma	390000
 entomb	390000
 gowned	390000
-irk	390000
 juicers	390000
 lazing	390000
 oddballs	390000
@@ -53327,7 +52786,6 @@ blackens	400000
 bleary	400000
 blueprinted	400000
 bobsledders	400000
-boe	400000
 brownouts	400000
 budgie	400000
 bulldogging	400000
@@ -53386,7 +52844,6 @@ wantonness	400000
 wends	400000
 whited	400000
 windowsills	400000
-wot	400000
 yellowy	400000
 zealousness	400000
 googled	300000
@@ -53572,7 +53029,6 @@ wallower	390000
 waspish	390000
 weeper	390000
 witchery	390000
-yob	390000
 yuccas	390000
 nephrology	600000
 appropriateness	790000
@@ -53989,7 +53445,6 @@ carrousel	320000
 blab	280000
 scuttlebutt	280000
 ncaa	1260000
-ave	200000
 disciplining	670000
 harmoniously	720000
 meaningfully	720000
@@ -54081,7 +53536,6 @@ nixon's	790000
 plato's	790000
 reagan's	790000
 robert's	790000
-s's	790000
 thomas's	790000
 turkey's	790000
 un's	790000
@@ -54555,7 +54009,6 @@ weaselly	330000
 reconsidering	630000
 conversationalist	580000
 doozy	270000
-mit	250000
 unbutton	250000
 petrology	610000
 statism	610000
@@ -54584,7 +54037,6 @@ hallucinogens	650000
 ichthyologist	650000
 readjustment	650000
 handicapping	690000
-boh	280000
 jiggy	280000
 disconnection	730000
 disinfection	730000
@@ -54835,7 +54287,6 @@ twits	300000
 whooped	300000
 chris	1210000
 costco	1210000
-mtv	1210000
 bloodstained	620000
 congresswoman	620000
 eyeballing	280000
@@ -55090,7 +54541,6 @@ gayer	310000
 meddler	310000
 aromatherapy	610000
 unprincipled	610000
-erk	270000
 isbn	1190000
 lawrence's	750000
 angel's	750000
@@ -55363,8 +54813,6 @@ undersoil	370000
 veritably	370000
 wakens	370000
 zappers	370000
-oos	370000
-wus	370000
 allurements	370000
 avoidances	370000
 badland	370000
@@ -55539,7 +54987,6 @@ impracticable	710000
 inaccessibility	710000
 nonsectarian	710000
 outnumbering	710000
-cpl	280000
 tingles	280000
 lordy	150000
 embarrassingly	660000
@@ -55656,7 +55103,6 @@ rhymer	360000
 ringtails	360000
 ripest	360000
 roofers	360000
-sav	360000
 speediest	360000
 striation	360000
 synchs	360000
@@ -55674,7 +55120,6 @@ saltine	320000
 infantilism	560000
 overreaction	610000
 espn	1160000
-phd	1160000
 relegation	1160000
 thoughtfully	620000
 arena's	730000
@@ -55887,7 +55332,6 @@ untranslated	720000
 vaporization	720000
 gordon	1150000
 kevin	1150000
-ltd	1150000
 pittsburgh	1150000
 gameplay	1150000
 fibular	330000
@@ -56269,12 +55713,7 @@ rigel	320000
 peddles	320000
 saunter	320000
 taters	280000
-cbc	1130000
-fcc	1130000
-gdp	1130000
-mvp	1130000
 ucla	1130000
-wwf	1130000
 disturbingly	620000
 overcharging	620000
 primping	270000
@@ -56383,8 +55822,6 @@ superchargers	680000
 andy	1120000
 afc	1120000
 alex	1120000
-bmw	1120000
-cds	1120000
 microsoft	1120000
 queensland	1120000
 rna	1120000
@@ -56925,10 +56362,7 @@ psychosexual	630000
 recriminations	630000
 scatological	630000
 supernaturally	630000
-cnn	1100000
-bbq	1100000
 mitchell	1100000
-nsw	1100000
 rico	1100000
 eponymous	1100000
 bearcat	320000
@@ -57005,7 +56439,6 @@ o'hagan	690000
 o'riordan	690000
 pitt's	690000
 portland's	690000
-q's	690000
 rachel's	690000
 ruth's	690000
 senate's	690000
@@ -57053,7 +56486,6 @@ hbo	1090000
 macdonald	1090000
 mccartney	1090000
 youtube	1090000
-khz	1090000
 boyo	270000
 everyplace	270000
 swizzle	270000
@@ -57129,7 +56561,6 @@ complainers	330000
 crating	330000
 deadheads	330000
 diuresis	330000
-eld	330000
 enslaver	330000
 fiances	330000
 fleecy	330000
@@ -57308,7 +56739,6 @@ usaf	1080000
 premiership	1080000
 timeline	1080000
 recognizance	540000
-aaa	250000
 conked	250000
 daiquiris	250000
 stickle	250000
@@ -57477,7 +56907,6 @@ pradesh	1070000
 raymond	1070000
 wwii	1070000
 wallace	1070000
-xml	1070000
 teleconference	580000
 artificiality	630000
 extrapolating	630000
@@ -58063,9 +57492,6 @@ kerala	1040000
 lucas	1040000
 marcus	1040000
 mcgill	1040000
-nfc	1040000
-nhs	1040000
-prc	1040000
 portsmouth	1040000
 powell	1040000
 preston	1040000
@@ -58347,11 +57773,9 @@ mckay	1030000
 mclean	1030000
 miguel	1030000
 mumbai	1030000
-nyc	1030000
 nathan	1030000
 obama	1030000
 orlando	1030000
-rpg	1030000
 reynolds	1030000
 sas	1030000
 vladimir	1030000
@@ -58449,7 +57873,6 @@ myspace	1020000
 nottingham	1020000
 paulo	1020000
 rachel	1020000
-ssr	1020000
 southampton	1020000
 winston	1020000
 zhang	1020000
@@ -58788,10 +58211,7 @@ adrian	1010000
 augustus	1010000
 barnes	1010000
 bedford	1010000
-fdp	1010000
 idf	1010000
-kgb	1010000
-mcc	1010000
 michel	1010000
 newman	1010000
 reid	1010000
@@ -58917,7 +58337,6 @@ individualists	590000
 misperception	590000
 obstetricians	590000
 substantiation	590000
-ind	300000
 skeezix	300000
 betoken	300000
 bloats	300000
@@ -58943,9 +58362,6 @@ englishwoman	550000
 extortionist	550000
 norwich	1000000
 raaf	1000000
-bmg	1000000
-btw	1000000
-ctv	1000000
 crawford	1000000
 derek	1000000
 edwin	1000000
@@ -58960,9 +58376,6 @@ mcgee	1000000
 mckinley	1000000
 ngos	1000000
 norton	1000000
-pcs	1000000
-sql	1000000
-svp	1000000
 wei	1000000
 xbox	1000000
 eighteens	1000000
@@ -59154,7 +58567,6 @@ radiologists	620000
 sportscasters	620000
 terminologies	620000
 unconditioned	620000
-nrl	990000
 heraldic	990000
 ahmad	990000
 ahmed	990000
@@ -59163,7 +58575,6 @@ baden	990000
 bergen	990000
 bolton	990000
 boris	990000
-css	990000
 clara	990000
 clyde	990000
 constantine	990000
@@ -59362,7 +58773,6 @@ underappreciated	590000
 unobtrusively	590000
 afros	300000
 gruyere	300000
-ods	300000
 terrie	300000
 appreciator	300000
 beveling	300000
@@ -59558,7 +58968,6 @@ azerbaijan	980000
 beverly	980000
 brady	980000
 cio	980000
-cpc	980000
 carlton	980000
 casey	980000
 conrad	980000
@@ -59577,7 +58986,6 @@ jenkins	980000
 jessica	980000
 karnataka	980000
 kosovo	980000
-lsd	980000
 lindsay	980000
 mpeg	980000
 mri	980000
@@ -59586,19 +58994,15 @@ mccormick	980000
 mcgrath	980000
 meyer	980000
 montenegro	980000
-npr	980000
 pba	980000
 patterson	980000
 percy	980000
 phillip	980000
-sbs	980000
-sms	980000
 shane	980000
 shannon	980000
 simpsons	980000
 slovak	980000
 sutton	980000
-tcp	980000
 trevor	980000
 warwick	980000
 wimbledon	980000
@@ -59741,7 +59145,6 @@ carlisle	970000
 dubai	970000
 erik	970000
 gcse	970000
-ghz	970000
 gui	970000
 garcia	970000
 georg	970000
@@ -59768,21 +59171,17 @@ nec	970000
 nassau	970000
 nicolas	970000
 nigel	970000
-pdf	970000
-psp	970000
 philippe	970000
 phillies	970000
 pratt	970000
 quinn	970000
 rko	970000
-rms	970000
 rafael	970000
 randolph	970000
 ricky	970000
 roberto	970000
 roma	970000
 ronnie	970000
-spd	970000
 serbs	970000
 seymour	970000
 sinclair	970000
@@ -60016,14 +59415,12 @@ bryant	960000
 burlington	960000
 cgi	960000
 csa	960000
-csx	960000
 clayton	960000
 daniels	960000
 dawson	960000
 doyle	960000
 fitzgerald	960000
 francesco	960000
-gwr	960000
 gaza	960000
 griffith	960000
 hancock	960000
@@ -60457,8 +59854,6 @@ bangalore	950000
 barrett	950000
 blackpool	950000
 brooke	950000
-cbn	950000
-cdc	950000
 cannes	950000
 chatham	950000
 clifford	950000
@@ -60467,7 +59862,6 @@ darren	950000
 dartmouth	950000
 dorset	950000
 everton	950000
-gdr	950000
 gop	950000
 humphrey	950000
 hyderabad	950000
@@ -60482,7 +59876,6 @@ livingston	950000
 lopez	950000
 lorraine	950000
 luftwaffe	950000
-mrt	950000
 mansfield	950000
 marty	950000
 marvin	950000
@@ -60493,8 +59886,6 @@ mcqueen	950000
 natalie	950000
 northampton	950000
 omar	950000
-pdp	950000
-ppp	950000
 schmidt	950000
 sophie	950000
 stefan	950000
@@ -60606,7 +59997,6 @@ atari	940000
 bsa	940000
 bosnian	940000
 busch	940000
-ccc	940000
 cnbc	940000
 cpi	940000
 cpus	940000
@@ -60616,8 +60006,6 @@ christina	940000
 clifton	940000
 conan	940000
 conway	940000
-dns	940000
-dsm	940000
 dso	940000
 esa	940000
 elisabeth	940000
@@ -60645,7 +60033,6 @@ karachi	940000
 kerr	940000
 kolkata	940000
 kuala	940000
-lps	940000
 leinster	940000
 msnbc	940000
 mackenzie	940000
@@ -60657,15 +60044,12 @@ miranda	940000
 nina	940000
 nissan	940000
 owens	940000
-plc	940000
 payne	940000
 porsche	940000
-rss	940000
 robbie	940000
 rockefeller	940000
 royce	940000
 rupert	940000
-snp	940000
 stratford	940000
 stuttgart	940000
 taliban	940000
@@ -60945,8 +60329,6 @@ mckinney	930000
 mcmillan	930000
 myanmar	930000
 naia	930000
-nbl	930000
-ngc	930000
 nsa	930000
 nypd	930000
 neville	930000
@@ -61107,14 +60489,11 @@ washcloths	280000
 whiffed	280000
 zigged	280000
 higgins	920000
-jfk	920000
 kramer	920000
 tagline	920000
 airbus	920000
 archibald	920000
 ashton	920000
-bnp	920000
-bsd	920000
 bentley	920000
 bert	920000
 buckingham	920000
@@ -61129,7 +60508,6 @@ ernie	920000
 fairfield	920000
 forrest	920000
 freddie	920000
-gpl	920000
 gil	920000
 heidelberg	920000
 hubbard	920000
@@ -61159,7 +60537,6 @@ shrewsbury	920000
 silesian	920000
 smithsonian	920000
 stephanie	920000
-tds	920000
 tobago	920000
 toulouse	920000
 voip	920000
@@ -61426,7 +60803,6 @@ alvin	910000
 amherst	910000
 angelo	910000
 astros	910000
-bmt	910000
 bahrain	910000
 bern	910000
 bihar	910000
@@ -61450,7 +60826,6 @@ evelyn	910000
 feb	910000
 foley	910000
 fremantle	910000
-gmt	910000
 gamespot	910000
 gavin	910000
 geelong	910000
@@ -61469,7 +60844,6 @@ laurie	910000
 leyte	910000
 locke	910000
 lumpur	910000
-msn	910000
 mccabe	910000
 mcclure	910000
 mccormack	910000
@@ -61483,21 +60857,17 @@ middleton	910000
 mitsubishi	910000
 motown	910000
 nasdaq	910000
-nmr	910000
-npc	910000
 namibia	910000
 nicholson	910000
 nikolai	910000
 orissa	910000
 osborne	910000
-psv	910000
 pietro	910000
 rcmp	910000
 rotc	910000
 ramsey	910000
 rhineland	910000
 rutgers	910000
-slr	910000
 saddam	910000
 snyder	910000
 stockton	910000
@@ -61573,7 +60943,6 @@ blunderer	280000
 chuff	280000
 cotes	280000
 creaked	280000
-doz	280000
 embezzlers	280000
 excremental	280000
 forasmuch	280000
@@ -61832,7 +61201,6 @@ bernardino	900000
 bollywood	900000
 brendan	900000
 byrd	900000
-cns	900000
 cpa	900000
 carrie	900000
 celtics	900000
@@ -61841,7 +61209,6 @@ cheltenham	900000
 cooke	900000
 costello	900000
 cyril	900000
-ddr	900000
 darlington	900000
 dekalb	900000
 dewey	900000
@@ -61852,7 +61219,6 @@ elias	900000
 ella	900000
 elton	900000
 emil	900000
-gmc	900000
 gallagher	900000
 godfrey	900000
 greenville	900000
@@ -61871,7 +61237,6 @@ laurent	900000
 luigi	900000
 luton	900000
 luzon	900000
-mtr	900000
 maclean	900000
 mainz	900000
 marino	900000
@@ -61886,27 +61251,22 @@ oswald	900000
 otis	900000
 oxfordshire	900000
 pri	900000
-pvc	900000
 paterson	900000
 philips	900000
 rsa	900000
-rtl	900000
 reyes	900000
 rudolph	900000
 rwanda	900000
 scsi	900000
-snl	900000
 salzburg	900000
 sarajevo	900000
 schleswig	900000
 schwartz	900000
-sgt	900000
 shelby	900000
 stamford	900000
 stanton	900000
 stevie	900000
 swindon	900000
-tlc	900000
 theresa	900000
 vicente	900000
 watkins	900000
@@ -61931,7 +61291,6 @@ officership	900000
 outcrops	900000
 oxidative	900000
 phoneme	900000
-ppm	900000
 premiers	900000
 railcars	900000
 rebranding	900000
@@ -62162,10 +61521,7 @@ incandescence	510000
 moisturizing	510000
 noncommittal	510000
 benton	890000
-ccd	890000
 yuri	890000
-adp	890000
-ams	890000
 apis	890000
 anatolia	890000
 audi	890000
@@ -62180,14 +61536,10 @@ briggs	890000
 brigham	890000
 brunei	890000
 burnett	890000
-caa	890000
-cfb	890000
-crt	890000
 calder	890000
 caledonia	890000
 carleton	890000
 carthage	890000
-drm	890000
 daly	890000
 dion	890000
 dreamworks	890000
@@ -62196,11 +61548,9 @@ eliza	890000
 erich	890000
 ethan	890000
 evan	890000
-fte	890000
 fedex	890000
 flynn	890000
 garry	890000
-gus	890000
 gwen	890000
 hayden	890000
 heinz	890000
@@ -62209,7 +61559,6 @@ hitchcock	890000
 humboldt	890000
 hutchinson	890000
 iaea	890000
-icu	890000
 joachim	890000
 keller	890000
 kendall	890000
@@ -62217,7 +61566,6 @@ klaus	890000
 lapd	890000
 lucius	890000
 lyndon	890000
-msc	890000
 malone	890000
 manson	890000
 marathi	890000
@@ -62235,8 +61583,6 @@ moran	890000
 nero	890000
 nolan	890000
 olsen	890000
-pcb	890000
-pcc	890000
 pamela	890000
 patton	890000
 poole	890000
@@ -62245,7 +61591,6 @@ putnam	890000
 quentin	890000
 rfid	890000
 risc	890000
-rts	890000
 ramsay	890000
 reginald	890000
 rhys	890000
@@ -62253,7 +61598,6 @@ severn	890000
 sinai	890000
 staten	890000
 stephenson	890000
-ttc	890000
 tipperary	890000
 titus	890000
 townsend	890000
@@ -62274,7 +61618,6 @@ centralised	890000
 codec	890000
 conjectured	890000
 diameters	890000
-edu	890000
 francophone	890000
 fricative	890000
 hander	890000
@@ -62562,8 +61905,6 @@ colbert	880000
 maximilian	880000
 sanchez	880000
 sherwood	880000
-apg	880000
-aps	880000
 ascap	880000
 akbar	880000
 alain	880000
@@ -62576,10 +61917,6 @@ bathurst	880000
 bonn	880000
 bragg	880000
 brenda	880000
-ccp	880000
-cfa	880000
-cma	880000
-crc	880000
 christi	880000
 claudia	880000
 cody	880000
@@ -62587,12 +61924,9 @@ colchester	880000
 courtney	880000
 croats	880000
 croix	880000
-dma	880000
-dsl	880000
 denny	880000
 drummond	880000
 dunedin	880000
-eec	880000
 enrique	880000
 farrell	880000
 felipe	880000
@@ -62608,17 +61942,12 @@ hillary	880000
 howell	880000
 hume	880000
 hutton	880000
-ipc	880000
-itc	880000
 israelites	880000
 italia	880000
-jsa	880000
 jiang	880000
 joanna	880000
-kde	880000
 kahn	880000
 kelley	880000
-lil	880000
 lombardy	880000
 loyola	880000
 lydia	880000
@@ -62628,9 +61957,6 @@ marlborough	880000
 mcallister	880000
 mccullough	880000
 moines	880000
-nac	880000
-nra	880000
-nrc	880000
 nyse	880000
 nate	880000
 navarre	880000
@@ -62638,7 +61964,6 @@ olga	880000
 oman	880000
 packard	880000
 prescott	880000
-qpr	880000
 rpgs	880000
 reggie	880000
 regis	880000
@@ -62651,15 +61976,12 @@ simone	880000
 soyuz	880000
 steiner	880000
 susquehanna	880000
-tac	880000
 tito	880000
 tuscany	880000
 tyson	880000
-vfa	880000
 ventura	880000
 verona	880000
 viktor	880000
-wwi	880000
 walters	880000
 wehrmacht	880000
 westfield	880000
@@ -62672,7 +61994,6 @@ alcohols	880000
 aquaculture	880000
 axons	880000
 besieging	880000
-bhp	880000
 bicameral	880000
 blackish	880000
 conifer	880000
@@ -63042,18 +62363,12 @@ ratbag	250000
 realer	250000
 snooped	250000
 tuffet	250000
-ely	870000
 lehigh	870000
-png	870000
 phelps	870000
 sudbury	870000
 sweeney	870000
 estimator	870000
 termini	870000
-aau	870000
-aif	870000
-abe	870000
-ada	870000
 ames	870000
 andersen	870000
 audrey	870000
@@ -63063,9 +62378,7 @@ bayern	870000
 benito	870000
 burnley	870000
 cdma	870000
-cmg	870000
 cmos	870000
-csp	870000
 cary	870000
 cindy	870000
 cypriot	870000
@@ -63073,10 +62386,8 @@ decca	870000
 dickson	870000
 duran	870000
 elgin	870000
-fao	870000
 fargo	870000
 fianna	870000
-gpu	870000
 gaston	870000
 godzilla	870000
 goodwin	870000
@@ -63089,19 +62400,12 @@ hezbollah	870000
 hilbert	870000
 holloway	870000
 houghton	870000
-hui	870000
-idw	870000
-ifa	870000
-ifk	870000
 inuit	870000
 ismail	870000
 jpeg	870000
-kbe	870000
 kara	870000
 kildare	870000
-lng	870000
 lagos	870000
-len	870000
 lennox	870000
 lenny	870000
 lindsey	870000
@@ -63124,7 +62428,6 @@ morley	870000
 mortimer	870000
 murdoch	870000
 ncos	870000
-nsf	870000
 neumann	870000
 nikki	870000
 nokia	870000
@@ -63132,14 +62435,11 @@ nora	870000
 novgorod	870000
 ogden	870000
 olaf	870000
-paz	870000
 pensacola	870000
 perez	870000
 rossi	870000
 rothschild	870000
 rowland	870000
-sbc	870000
-smu	870000
 sachs	870000
 saharan	870000
 salford	870000
@@ -63153,10 +62453,8 @@ stargate	870000
 stockport	870000
 sundance	870000
 syriac	870000
-tcu	870000
 tobias	870000
 tolkien	870000
-ucl	870000
 usac	870000
 usmc	870000
 valerie	870000
@@ -63388,8 +62686,6 @@ cummings	860000
 mcdonough	860000
 motorola	860000
 syllabic	860000
-aec	860000
-arp	860000
 albans	860000
 alejandro	860000
 alfredo	860000
@@ -63397,7 +62693,6 @@ alicia	860000
 alsace	860000
 andrei	860000
 augsburg	860000
-bmc	860000
 baylor	860000
 bella	860000
 bernardo	860000
@@ -63407,11 +62702,6 @@ bloomfield	860000
 braun	860000
 bromwich	860000
 byzantines	860000
-cbi	860000
-cca	860000
-cfr	860000
-cnc	860000
-csf	860000
 calhoun	860000
 carla	860000
 cheney	860000
@@ -63430,13 +62720,10 @@ eastwood	860000
 emanuel	860000
 emilio	860000
 fema	860000
-ftc	860000
 fleetwood	860000
 freddy	860000
 frederic	860000
 fremont	860000
-gcb	860000
-gcc	860000
 gardiner	860000
 gaulle	860000
 gillespie	860000
@@ -63461,19 +62748,16 @@ javier	860000
 jessie	860000
 joaquin	860000
 judd	860000
-klm	860000
 katz	860000
 kaufman	860000
 kazan	860000
 knicks	860000
 kwazulu	860000
-ldp	860000
 lange	860000
 lara	860000
 lausanne	860000
 leiden	860000
 levine	860000
-mhc	860000
 mlas	860000
 mackay	860000
 maratha	860000
@@ -63492,18 +62776,13 @@ nicola	860000
 olson	860000
 ortiz	860000
 orton	860000
-pda	860000
 peta	860000
 padua	860000
 palo	860000
-rsc	860000
 radcliffe	860000
 ramos	860000
 robson	860000
-sfr	860000
-soe	860000
 sheppard	860000
-shu	860000
 tbilisi	860000
 theodor	860000
 toni	860000
@@ -63512,7 +62791,6 @@ ulrich	860000
 uppsala	860000
 vargas	860000
 warrington	860000
-wes	860000
 westchester	860000
 wharton	860000
 wilkins	860000
@@ -63520,7 +62798,6 @@ willem	860000
 wrexham	860000
 yamaha	860000
 yong	860000
-zoe	860000
 automata	860000
 basaltic	860000
 consistory	860000
@@ -63784,7 +63061,6 @@ conviviality	510000
 interrogatories	510000
 rationalizations	510000
 vegetarianism	820000
-cda	850000
 comcast	850000
 dunbar	850000
 fiona	850000
@@ -63798,7 +63074,6 @@ alessandro	850000
 alta	850000
 alton	850000
 aziz	850000
-bmp	850000
 barrie	850000
 bernhard	850000
 bianca	850000
@@ -63807,17 +63082,12 @@ bradshaw	850000
 bratislava	850000
 buena	850000
 cbbc	850000
-ccs	850000
-cic	850000
 calvert	850000
 camille	850000
 carlson	850000
 cecilia	850000
 concordia	850000
 cumbria	850000
-dci	850000
-drc	850000
-dst	850000
 daimler	850000
 damien	850000
 davey	850000
@@ -63827,13 +63097,10 @@ diaz	850000
 dietrich	850000
 dino	850000
 dorchester	850000
-eur	850000
 edmond	850000
 eduard	850000
 eileen	850000
 eritrea	850000
-fbs	850000
-fsa	850000
 fairchild	850000
 falkland	850000
 fijian	850000
@@ -63856,11 +63123,8 @@ henrietta	850000
 hernandez	850000
 huntsville	850000
 icbm	850000
-ifc	850000
-ils	850000
 iberia	850000
 ithaca	850000
-iwo	850000
 jammu	850000
 jedi	850000
 josiah	850000
@@ -63873,9 +63137,7 @@ lena	850000
 lillian	850000
 luca	850000
 lucknow	850000
-mbc	850000
 mpaa	850000
-mpp	850000
 macon	850000
 mahabharata	850000
 malabar	850000
@@ -63889,12 +63151,9 @@ michele	850000
 middletown	850000
 mindanao	850000
 ntsb	850000
-osu	850000
 oceania	850000
 orkney	850000
 orson	850000
-pcm	850000
-pcp	850000
 paige	850000
 patti	850000
 pendleton	850000
@@ -63902,7 +63161,6 @@ peoria	850000
 pomerania	850000
 potsdam	850000
 quran	850000
-rcn	850000
 reilly	850000
 remington	850000
 ripley	850000
@@ -63914,11 +63172,7 @@ rosenberg	850000
 rosie	850000
 ruiz	850000
 rutland	850000
-scc	850000
-src	850000
-ssc	850000
 sssi	850000
-sst	850000
 sarawak	850000
 shankar	850000
 sharpe	850000
@@ -63932,8 +63186,6 @@ tallinn	850000
 terence	850000
 torquay	850000
 trondheim	850000
-uav	850000
-vga	850000
 vaughn	850000
 veracruz	850000
 wcbs	850000
@@ -63969,7 +63221,6 @@ metrical	850000
 ordinated	850000
 plaintext	850000
 polemical	850000
-ppg	850000
 printmaking	850000
 purchasers	850000
 resonator	850000
@@ -64087,10 +63338,7 @@ multitudinous	510000
 ratiocination	510000
 thankfulness	510000
 unrelentingly	510000
-bfa	840000
 burnham	840000
-dpp	840000
-kfc	840000
 leyland	840000
 mcarthur	840000
 shepard	840000
@@ -64116,10 +63364,6 @@ bhutto	840000
 bingham	840000
 brabant	840000
 bridget	840000
-cac	840000
-cfs	840000
-csr	840000
-cvs	840000
 carly	840000
 champlain	840000
 cheryl	840000
@@ -64127,15 +63371,11 @@ claudio	840000
 clemens	840000
 corbett	840000
 darpa	840000
-dbe	840000
-dmc	840000
-dts	840000
 danielle	840000
 darryl	840000
 deng	840000
 doherty	840000
 durban	840000
-esl	840000
 earle	840000
 edna	840000
 ellington	840000
@@ -64145,8 +63385,6 @@ epstein	840000
 erwin	840000
 euler	840000
 eurobasket	840000
-fdr	840000
-fsu	840000
 federalist	840000
 federico	840000
 fernandez	840000
@@ -64168,11 +63406,6 @@ hodges	840000
 horne	840000
 huey	840000
 hyundai	840000
-iau	840000
-ics	840000
-ihl	840000
-ipl	840000
-itn	840000
 ignacio	840000
 jakob	840000
 janice	840000
@@ -64190,9 +63423,7 @@ libby	840000
 lille	840000
 loire	840000
 luciano	840000
-mdc	840000
 mdma	840000
-mts	840000
 macpherson	840000
 mahmud	840000
 maldives	840000
@@ -64212,17 +63443,11 @@ montrose	840000
 moravia	840000
 moravian	840000
 moshe	840000
-ncr	840000
-nps	840000
-oas	840000
 osborn	840000
-pds	840000
-pnc	840000
 pavel	840000
 planck	840000
 pliny	840000
 putin	840000
-rac	840000
 ravi	840000
 riemann	840000
 rockwell	840000
@@ -64230,7 +63455,6 @@ rosen	840000
 rotherham	840000
 rowe	840000
 sars	840000
-sgi	840000
 sncf	840000
 suvs	840000
 sabah	840000
@@ -64242,16 +63466,11 @@ spielberg	840000
 stacy	840000
 stefano	840000
 superboy	840000
-tfw	840000
-tsa	840000
-tvs	840000
 theo	840000
 torre	840000
 trafalgar	840000
-upi	840000
 upton	840000
 vauxhall	840000
-vfb	840000
 vojvodina	840000
 walden	840000
 wiley	840000
@@ -64616,15 +63835,11 @@ hobbs	830000
 ignatius	830000
 kaye	830000
 lyman	830000
-sdk	830000
 sampson	830000
 yves	830000
 motorsports	830000
 predefined	830000
 workpiece	830000
-aia	830000
-amx	830000
-ats	830000
 agatha	830000
 angie	830000
 aquino	830000
@@ -64634,19 +63849,11 @@ barclay	830000
 betsy	830000
 blaine	830000
 bromley	830000
-cfo	830000
-cng	830000
-cnr	830000
-cnt	830000
-cta	830000
-ctc	830000
 calabria	830000
 caleb	830000
 caledonian	830000
 crockett	830000
 cybertron	830000
-dac	830000
-dcc	830000
 dalmatia	830000
 darrell	830000
 douglass	830000
@@ -64658,7 +63865,6 @@ erskine	830000
 ftse	830000
 falklands	830000
 fitzroy	830000
-gta	830000
 giacomo	830000
 gina	830000
 gladys	830000
@@ -64667,7 +63873,6 @@ grafton	830000
 grumman	830000
 guadalajara	830000
 guillermo	830000
-hpv	830000
 hagen	830000
 hampstead	830000
 harmon	830000
@@ -64675,10 +63880,7 @@ heathrow	830000
 hewlett	830000
 hilda	830000
 hines	830000
-ija	830000
-ina	830000
 iptv	830000
-irl	830000
 isaf	830000
 ingram	830000
 islamist	830000
@@ -64687,7 +63889,6 @@ katy	830000
 kimball	830000
 kingsley	830000
 konrad	830000
-lpg	830000
 lswr	830000
 laguardia	830000
 lazio	830000
@@ -64696,7 +63897,6 @@ lorentz	830000
 lublin	830000
 lyle	830000
 lynne	830000
-mdr	830000
 maitland	830000
 manfred	830000
 mannheim	830000
@@ -64706,7 +63906,6 @@ mathews	830000
 mchale	830000
 mckinnon	830000
 mclachlan	830000
-mev	830000
 meade	830000
 megan	830000
 melrose	830000
@@ -64720,7 +63919,6 @@ montagu	830000
 monterrey	830000
 nafta	830000
 nlcs	830000
-nlp	830000
 norad	830000
 nagoya	830000
 nantes	830000
@@ -64728,21 +63926,15 @@ nasser	830000
 natasha	830000
 novak	830000
 opel	830000
-pkk	830000
 posix	830000
-psd	830000
-ptc	830000
 paddington	830000
 palmerston	830000
 philipp	830000
 quezon	830000
-rok	830000
 ringo	830000
 rockford	830000
 rodrigo	830000
 rollins	830000
-ssl	830000
-swp	830000
 saab	830000
 salvatore	830000
 sargent	830000
@@ -64752,7 +63944,6 @@ shenandoah	830000
 sligo	830000
 somme	830000
 sonoma	830000
-thc	830000
 tajikistan	830000
 tatars	830000
 thom	830000
@@ -64760,11 +63951,7 @@ townshend	830000
 tracey	830000
 travancore	830000
 trudeau	830000
-uaw	830000
-udf	830000
-upc	830000
 usfl	830000
-uso	830000
 uruguayan	830000
 verizon	830000
 wnbc	830000
@@ -64802,8 +63989,6 @@ heathland	830000
 hexadecimal	830000
 homeport	830000
 injective	830000
-kda	830000
-kwh	830000
 librettist	830000
 licensees	830000
 lichens	830000
@@ -64818,7 +64003,6 @@ practicable	830000
 predicates	830000
 riverine	830000
 robustness	830000
-seq	830000
 simulcasts	830000
 symposia	830000
 tripartite	830000
@@ -64830,7 +64014,6 @@ viewable	830000
 wildfires	830000
 woodcut	830000
 emasculating	420000
-oof	100000
 cuttle	260000
 irides	260000
 thew	260000
@@ -65137,8 +64320,6 @@ followup	820000
 issuer	820000
 pinfall	820000
 understory	820000
-aeg	820000
-arl	820000
 albrecht	820000
 aleppo	820000
 alexei	820000
@@ -65161,9 +64342,6 @@ christoph	820000
 connacht	820000
 copeland	820000
 cordelia	820000
-dps	820000
-dsc	820000
-dss	820000
 daley	820000
 deccan	820000
 dempsey	820000
@@ -65178,8 +64356,6 @@ dunlop	820000
 elbe	820000
 ericsson	820000
 ernesto	820000
-ffa	820000
-fta	820000
 faber	820000
 fenton	820000
 fontana	820000
@@ -65187,8 +64363,6 @@ fordham	820000
 forster	820000
 frazier	820000
 frisian	820000
-gec	820000
-grc	820000
 gaines	820000
 gallipoli	820000
 hampden	820000
@@ -65201,12 +64375,8 @@ herrera	820000
 hess	820000
 horatio	820000
 huxley	820000
-ias	820000
-icp	820000
 imsa	820000
-ips	820000
 isdn	820000
-itt	820000
 iain	820000
 indira	820000
 islington	820000
@@ -65214,7 +64384,6 @@ jrotc	820000
 jena	820000
 kawasaki	820000
 kazakh	820000
-kew	820000
 kurds	820000
 laredo	820000
 larson	820000
@@ -65226,7 +64395,6 @@ lovecraft	820000
 lubbock	820000
 lucien	820000
 ludlow	820000
-msf	820000
 mabel	820000
 maguire	820000
 mandela	820000
@@ -65254,13 +64422,10 @@ peshawar	820000
 petra	820000
 platte	820000
 purana	820000
-rds	820000
-rsl	820000
 ramayana	820000
 rankin	820000
 raoul	820000
 ravenna	820000
-ric	820000
 richelieu	820000
 robocop	820000
 smtp	820000
@@ -65276,8 +64441,6 @@ southwark	820000
 stacey	820000
 suriname	820000
 sven	820000
-tfs	820000
-ttl	820000
 tanya	820000
 torino	820000
 toulon	820000
@@ -65409,7 +64572,6 @@ augustinian	810000
 brentwood	810000
 dortmund	810000
 hamid	810000
-lcc	810000
 ptsd	810000
 rolf	810000
 villiers	810000
@@ -65419,7 +64581,6 @@ factorial	810000
 memorably	810000
 plotline	810000
 aachen	810000
-adi	810000
 agra	810000
 aldershot	810000
 anastasia	810000
@@ -65428,13 +64589,11 @@ anson	810000
 antigua	810000
 appleton	810000
 aquitaine	810000
-ari	810000
 astra	810000
 asus	810000
 austen	810000
 australasia	810000
 avignon	810000
-ayr	810000
 boac	810000
 batavia	810000
 beale	810000
@@ -65450,8 +64609,6 @@ brody	810000
 bryn	810000
 buren	810000
 buxton	810000
-cie	810000
-csl	810000
 caen	810000
 caine	810000
 carmichael	810000
@@ -65468,7 +64625,6 @@ corsica	810000
 covington	810000
 cristina	810000
 custer	810000
-dmz	810000
 dahl	810000
 dakar	810000
 danville	810000
@@ -65476,8 +64632,6 @@ dawkins	810000
 delphi	810000
 downey	810000
 dreyfus	810000
-emt	810000
-epp	810000
 egan	810000
 falkirk	810000
 fallon	810000
@@ -65491,9 +64645,7 @@ fran	810000
 fukuoka	810000
 fulbright	810000
 fullerton	810000
-gce	810000
 gcses	810000
-gte	810000
 gaddafi	810000
 gaia	810000
 gateshead	810000
@@ -65533,8 +64685,6 @@ kathryn	810000
 kellogg	810000
 kilmarnock	810000
 kimberly	810000
-lbc	810000
-lga	810000
 lakshmi	810000
 lambeth	810000
 larkin	810000
@@ -65542,7 +64692,6 @@ lewes	810000
 limburg	810000
 londonderry	810000
 lorne	810000
-mcp	810000
 madurai	810000
 magdalena	810000
 maidstone	810000
@@ -65568,13 +64717,9 @@ nikita	810000
 nikola	810000
 niles	810000
 nunavut	810000
-ocs	810000
 osman	810000
-pbl	810000
 pcbs	810000
 pdas	810000
-pnp	810000
-psl	810000
 palau	810000
 palin	810000
 parnell	810000
@@ -65582,16 +64727,11 @@ polygram	810000
 puebla	810000
 purcell	810000
 quicktime	810000
-rbc	810000
-rcs	810000
-rfa	810000
-rpf	810000
 redmond	810000
 rene	810000
 reuters	810000
 rockingham	810000
 roswell	810000
-ssa	810000
 saginaw	810000
 salazar	810000
 salerno	810000
@@ -65600,7 +64740,6 @@ scooby	810000
 selby	810000
 sigmund	810000
 subaru	810000
-tcs	810000
 tamworth	810000
 tanaka	810000
 tobin	810000
@@ -65608,10 +64747,6 @@ trotsky	810000
 tulane	810000
 uconn	810000
 urls	810000
-usf	810000
-usp	810000
-vax	810000
-vms	810000
 vasco	810000
 veneto	810000
 vicksburg	810000
@@ -65637,7 +64772,6 @@ dismissals	810000
 durations	810000
 encodings	810000
 escapement	810000
-exe	810000
 extirpated	810000
 fanzines	810000
 ferrying	810000
@@ -65651,7 +64785,6 @@ haploid	810000
 homesteads	810000
 homogeneity	810000
 inking	810000
-kun	810000
 lampooned	810000
 landless	810000
 laserdisc	810000
@@ -65987,14 +65120,10 @@ lichfield	800000
 nellie	800000
 rosenthal	800000
 schumann	800000
-tdi	800000
 wilfrid	800000
 feedstock	800000
-adr	800000
-aig	800000
 algol	800000
 apec	800000
-asd	800000
 atpase	800000
 adirondack	800000
 aleksandr	800000
@@ -66003,7 +65132,6 @@ anhalt	800000
 arjuna	800000
 ashby	800000
 aylesbury	800000
-bpa	800000
 bangladeshi	800000
 barron	800000
 bellamy	800000
@@ -66015,9 +65143,6 @@ bloch	800000
 brampton	800000
 brandt	800000
 brownsville	800000
-cea	800000
-cfc	800000
-clr	800000
 cuny	800000
 carlyle	800000
 cartesian	800000
@@ -66029,8 +65154,6 @@ clancy	800000
 clemente	800000
 colby	800000
 cramer	800000
-dms	800000
-dmt	800000
 derwent	800000
 dhabi	800000
 digimon	800000
@@ -66053,8 +65176,6 @@ finley	800000
 firefox	800000
 fitzpatrick	800000
 furness	800000
-gba	800000
-gpo	800000
 gatwick	800000
 genoese	800000
 graz	800000
@@ -66071,7 +65192,6 @@ herzog	800000
 hester	800000
 hiram	800000
 hirsch	800000
-icl	800000
 ingrid	800000
 isabelle	800000
 jacobson	800000
@@ -66080,7 +65200,6 @@ joanne	800000
 johansson	800000
 johnstown	800000
 joplin	800000
-kbs	800000
 kandahar	800000
 karel	800000
 kassel	800000
@@ -66089,7 +65208,6 @@ kettering	800000
 khyber	800000
 kirsten	800000
 kyrgyzstan	800000
-lma	800000
 lakewood	800000
 lamont	800000
 landis	800000
@@ -66100,8 +65218,6 @@ lockhart	800000
 loeb	800000
 lyme	800000
 mbbs	800000
-mmp	800000
-mpa	800000
 magdeburg	800000
 mahler	800000
 mahmoud	800000
@@ -66125,7 +65241,6 @@ mosley	800000
 motherwell	800000
 mueller	800000
 npcs	800000
-ntt	800000
 natalia	800000
 newell	800000
 nilsson	800000
@@ -66133,8 +65248,6 @@ oahu	800000
 oates	800000
 oberlin	800000
 openoffice	800000
-pki	800000
-psu	800000
 penrith	800000
 pentium	800000
 pepsico	800000
@@ -66152,7 +65265,6 @@ roberta	800000
 roderick	800000
 ruhr	800000
 sparc	800000
-ssn	800000
 sabrina	800000
 santander	800000
 schuster	800000
@@ -66176,16 +65288,12 @@ travers	800000
 turku	800000
 turnbull	800000
 ucsd	800000
-udi	800000
 uscg	800000
 usns	800000
 uxbridge	800000
-vcr	800000
-vpn	800000
 vincennes	800000
 vittorio	800000
 vodafone	800000
-wmd	800000
 walford	800000
 wallachia	800000
 waltham	800000
@@ -66199,7 +65307,6 @@ worthington	800000
 xhtml	800000
 yoko	800000
 zelda	800000
-zia	800000
 adsorption	800000
 affixes	800000
 agro	800000
@@ -66208,7 +65315,6 @@ analytics	800000
 annotation	800000
 aryl	800000
 assemblages	800000
-avg	800000
 barque	800000
 benefice	800000
 biofuels	800000
@@ -66312,7 +65418,6 @@ blisses	250000
 camay	250000
 goliaths	250000
 hulu	250000
-mhz	250000
 misshapes	250000
 pollocks	250000
 scorpios	250000
@@ -66710,11 +65815,9 @@ sunlamp	230000
 whisperers	230000
 yelped	230000
 ballarat	790000
-cme	790000
 jaffa	790000
 keenan	790000
 nepali	790000
-sda	790000
 scripps	790000
 arca	790000
 albright	790000
@@ -66738,10 +65841,7 @@ brescia	790000
 budd	790000
 burkina	790000
 cbse	790000
-cci	790000
 cnet	790000
-cpp	790000
-cwa	790000
 callahan	790000
 catania	790000
 chet	790000
@@ -66750,7 +65850,6 @@ clovis	790000
 coates	790000
 coimbra	790000
 crichton	790000
-dtm	790000
 daryl	790000
 debra	790000
 delaney	790000
@@ -66759,8 +65858,6 @@ devlin	790000
 dirac	790000
 dmitri	790000
 dunfermline	790000
-ecg	790000
-eea	790000
 ecuadorian	790000
 edmonds	790000
 eindhoven	790000
@@ -66780,8 +65877,6 @@ fontaine	790000
 forrester	790000
 francesca	790000
 francois	790000
-gbp	790000
-gnp	790000
 gprs	790000
 gamespy	790000
 geraldine	790000
@@ -66794,7 +65889,6 @@ grenoble	790000
 grosvenor	790000
 guevara	790000
 gustavo	790000
-htc	790000
 hvdc	790000
 haines	790000
 hannover	790000
@@ -66809,19 +65903,15 @@ hobson	790000
 horowitz	790000
 humphreys	790000
 huston	790000
-img	790000
-imo	790000
 illawarra	790000
 iraqis	790000
 ivor	790000
-jma	790000
 janata	790000
 jens	790000
 jiangsu	790000
 jody	790000
 johanna	790000
 jonny	790000
-ktm	790000
 karim	790000
 keene	790000
 kenyon	790000
@@ -66840,8 +65930,6 @@ linus	790000
 lockwood	790000
 longford	790000
 lourdes	790000
-mcs	790000
-mst	790000
 maastricht	790000
 macintyre	790000
 mackinnon	790000
@@ -66877,9 +65965,6 @@ morecambe	790000
 motorsport	790000
 muppet	790000
 naca	790000
-nca	790000
-nda	790000
-npa	790000
 nagano	790000
 nagpur	790000
 nair	790000
@@ -66893,7 +65978,6 @@ offaly	790000
 oleg	790000
 ollie	790000
 ortega	790000
-ppi	790000
 paxton	790000
 paypal	790000
 pennington	790000
@@ -66901,7 +65985,6 @@ penzance	790000
 percival	790000
 powerbook	790000
 powys	790000
-rpc	790000
 rasmussen	790000
 regan	790000
 reims	790000
@@ -66909,10 +65992,7 @@ rensselaer	790000
 ribbentrop	790000
 rizal	790000
 rocco	790000
-sdl	790000
-slc	790000
 sram	790000
-sse	790000
 stol	790000
 swapo	790000
 sanderson	790000
@@ -66932,8 +66012,6 @@ staunton	790000
 stephan	790000
 sumter	790000
 susie	790000
-tls	790000
-trw	790000
 tacitus	790000
 tahoe	790000
 tasman	790000
@@ -66953,10 +66031,6 @@ vida	790000
 vidal	790000
 visconti	790000
 vistula	790000
-wma	790000
-wor	790000
-wsu	790000
-wtc	790000
 wadsworth	790000
 waikato	790000
 washburn	790000
@@ -67108,7 +66182,6 @@ counterterrorist	460000
 antonia	780000
 baum	780000
 belleville	780000
-cpm	780000
 cornelia	780000
 creighton	780000
 davison	780000
@@ -67118,7 +66191,6 @@ kuhn	780000
 leyton	780000
 lombardi	780000
 martina	780000
-stp	780000
 sephardic	780000
 strickland	780000
 usps	780000
@@ -67128,8 +66200,6 @@ issuers	780000
 kickoffs	780000
 touchscreen	780000
 wavelet	780000
-afm	780000
-ags	780000
 assr	780000
 abingdon	780000
 abkhazia	780000
@@ -67139,9 +66209,6 @@ angolan	780000
 armando	780000
 ashcroft	780000
 atherton	780000
-bds	780000
-bpm	780000
-brm	780000
 barkley	780000
 bessarabia	780000
 bigelow	780000
@@ -67151,8 +66218,6 @@ breda	780000
 bronson	780000
 bruges	780000
 butterfield	780000
-cdt	780000
-cmu	780000
 cabrera	780000
 cagliari	780000
 cali	780000
@@ -67170,7 +66235,6 @@ concorde	780000
 connors	780000
 coppola	780000
 cuthbert	780000
-dnc	780000
 dalhousie	780000
 dawes	780000
 delano	780000
@@ -67186,15 +66250,11 @@ dundalk	780000
 duquesne	780000
 dutton	780000
 eastbourne	780000
-fba	780000
-fci	780000
 fdic	780000
 farnham	780000
 fatima	780000
 fenway	780000
 freetown	780000
-gdi	780000
-gru	780000
 gamepro	780000
 gershwin	780000
 gilchrist	780000
@@ -67214,8 +66274,6 @@ howie	780000
 hoyt	780000
 hunan	780000
 icbms	780000
-icj	780000
-ima	780000
 issn	780000
 igbo	780000
 iona	780000
@@ -67232,7 +66290,6 @@ kitts	780000
 klux	780000
 kristen	780000
 kristin	780000
-ltp	780000
 lego	780000
 lesotho	780000
 liao	780000
@@ -67243,10 +66300,6 @@ loudoun	780000
 lucie	780000
 luisa	780000
 lycoming	780000
-mbs	780000
-mms	780000
-mpr	780000
-mwe	780000
 macdougall	780000
 macedon	780000
 mangalore	780000
@@ -67270,9 +66323,7 @@ monticello	780000
 montoya	780000
 moseley	780000
 myles	780000
-nep	780000
 njsiaa	780000
-nrg	780000
 nrhp	780000
 natwest	780000
 neill	780000
@@ -67283,15 +66334,10 @@ ojibwe	780000
 oldenburg	780000
 oppenheimer	780000
 ozzy	780000
-pkp	780000
-psg	780000
 passaic	780000
 patna	780000
 priestley	780000
-pty	780000
-rpo	780000
 rsfsr	780000
-rta	780000
 ramakrishna	780000
 raul	780000
 rennes	780000
@@ -67303,12 +66349,7 @@ rommel	780000
 rowley	780000
 rubinstein	780000
 rwandan	780000
-sdi	780000
 sdlp	780000
-slp	780000
-sme	780000
-srs	780000
-srt	780000
 sackville	780000
 schofield	780000
 schuyler	780000
@@ -67327,9 +66368,6 @@ starbucks	780000
 steinberg	780000
 stratton	780000
 swanson	780000
-tca	780000
-tcm	780000
-tfg	780000
 tecumseh	780000
 terri	780000
 thierry	780000
@@ -67338,10 +66376,6 @@ tirana	780000
 trujillo	780000
 twickenham	780000
 uavs	780000
-udc	780000
-ufa	780000
-usm	780000
-ulm	780000
 valera	780000
 valladolid	780000
 verne	780000
@@ -67402,7 +66436,6 @@ herbicide	780000
 ibises	780000
 kingfishers	780000
 laminar	780000
-mai	780000
 mandir	780000
 minelayer	780000
 mitotic	780000
@@ -67721,12 +66754,10 @@ sensationalism	700000
 bloodsuckers	400000
 aiken	770000
 algonquian	770000
-cva	770000
 karin	770000
 severus	770000
 berates	770000
 apcs	770000
-apd	770000
 ababa	770000
 abbasid	770000
 acadian	770000
@@ -67759,11 +66790,6 @@ borges	770000
 braddock	770000
 brandeis	770000
 brno	770000
-cga	770000
-clp	770000
-cso	770000
-cto	770000
-cvt	770000
 callaghan	770000
 carrick	770000
 cartagena	770000
@@ -67779,9 +66805,6 @@ corcoran	770000
 coulthard	770000
 curzon	770000
 dbms	770000
-dmk	770000
-dsb	770000
-dvr	770000
 dani	770000
 davao	770000
 dimitri	770000
@@ -67806,10 +66829,8 @@ etienne	770000
 eustace	770000
 euston	770000
 evanston	770000
-flp	770000
 fpga	770000
 florian	770000
-glc	770000
 georgians	770000
 germania	770000
 gigi	770000
@@ -67836,8 +66857,6 @@ huber	770000
 ifpi	770000
 iloilo	770000
 israelite	770000
-jsc	770000
-jvc	770000
 jacobi	770000
 jaffna	770000
 janis	770000
@@ -67853,10 +66872,7 @@ kissinger	770000
 klamath	770000
 kobayashi	770000
 kruger	770000
-lca	770000
 lcms	770000
-lcs	770000
-lra	770000
 landon	770000
 landry	770000
 laplace	770000
@@ -67868,11 +66884,8 @@ lerner	770000
 lexus	770000
 lhasa	770000
 livermore	770000
-lon	770000
 loomis	770000
 loretta	770000
-msi	770000
-mvs	770000
 mackinac	770000
 maddox	770000
 mahayana	770000
@@ -67901,7 +66914,6 @@ mosul	770000
 mulroney	770000
 murat	770000
 muriel	770000
-nfb	770000
 njcaa	770000
 ntfs	770000
 nader	770000
@@ -67912,15 +66924,11 @@ netware	770000
 netscape	770000
 niels	770000
 northfield	770000
-ocr	770000
 oldfield	770000
 oliveira	770000
 olmsted	770000
 ozark	770000
-pfg	770000
 pflp	770000
-pth	770000
-pvr	770000
 pahlavi	770000
 parrish	770000
 peirce	770000
@@ -67928,10 +66936,6 @@ perak	770000
 pershing	770000
 phnom	770000
 pyotr	770000
-rcp	770000
-rmc	770000
-rnc	770000
-rpi	770000
 rabin	770000
 racine	770000
 ramones	770000
@@ -67942,11 +66946,8 @@ robby	770000
 rojas	770000
 rowling	770000
 ruben	770000
-sfa	770000
 sfio	770000
-sga	770000
 slrs	770000
-sra	770000
 saba	770000
 samar	770000
 sato	770000
@@ -67967,7 +66968,6 @@ streisand	770000
 suharto	770000
 suleiman	770000
 sutcliffe	770000
-syd	770000
 takahashi	770000
 tamar	770000
 tamils	770000
@@ -67985,7 +66985,6 @@ tripura	770000
 tuscaloosa	770000
 unep	770000
 uscgc	770000
-uup	770000
 umayyad	770000
 vmware	770000
 vader	770000
@@ -68049,7 +67048,6 @@ indium	770000
 inelastic	770000
 installer	770000
 judoka	770000
-kev	770000
 lossy	770000
 lyricists	770000
 margrave	770000
@@ -68461,11 +67459,9 @@ verse's	480000
 violin's	480000
 gcvo	760000
 guadeloupe	760000
-hdz	760000
 oran	760000
 pickens	760000
 sandhurst	760000
-tuc	760000
 whittier	760000
 derisively	760000
 shrikes	760000
@@ -68503,8 +67499,6 @@ brando	760000
 brookfield	760000
 buchan	760000
 buckner	760000
-cmb	760000
-csd	760000
 cale	760000
 capri	760000
 carling	760000
@@ -68520,9 +67514,6 @@ dravidian	760000
 dumbarton	760000
 durango	760000
 dwyer	760000
-eda	760000
-eod	760000
-epg	760000
 elgar	760000
 ellesmere	760000
 enid	760000
@@ -68542,9 +67533,7 @@ frye	760000
 fuchs	760000
 fukushima	760000
 fyodor	760000
-gbe	760000
 gpus	760000
-grp	760000
 gabe	760000
 galois	760000
 gaylord	760000
@@ -68560,8 +67549,6 @@ gretchen	760000
 guerra	760000
 gustavus	760000
 gwalior	760000
-hcl	760000
-hhs	760000
 hainan	760000
 hakka	760000
 haldane	760000
@@ -68581,11 +67568,6 @@ hobbes	760000
 holyoke	760000
 horsham	760000
 hyatt	760000
-ibs	760000
-ied	760000
-ifl	760000
-iga	760000
-ipp	760000
 iggy	760000
 illyrian	760000
 immanuel	760000
@@ -68596,9 +67578,6 @@ jetblue	760000
 jethro	760000
 juliana	760000
 juliette	760000
-kgo	760000
-kia	760000
-kjv	760000
 kearny	760000
 keegan	760000
 kelsey	760000
@@ -68620,10 +67599,7 @@ lodi	760000
 louth	760000
 lovell	760000
 lucca	760000
-mhs	760000
 mosfet	760000
-mpv	760000
-mvc	760000
 mackey	760000
 marburg	760000
 martino	760000
@@ -68650,10 +67626,7 @@ muhammed	760000
 multan	760000
 myer	760000
 myra	760000
-nfp	760000
 njpw	760000
-nox	760000
-npd	760000
 nauru	760000
 nicosia	760000
 niki	760000
@@ -68662,9 +67635,6 @@ novell	760000
 nunn	760000
 ovas	760000
 olav	760000
-pma	760000
-pmr	760000
-ptv	760000
 pauli	760000
 payton	760000
 peloponnese	760000
@@ -68674,8 +67644,6 @@ pinkerton	760000
 poitiers	760000
 pyle	760000
 qantas	760000
-rcm	760000
-rfu	760000
 radiohead	760000
 ralf	760000
 raman	760000
@@ -68691,10 +67659,7 @@ romagna	760000
 romansh	760000
 roxbury	760000
 sacd	760000
-sbb	760000
-sbi	760000
 sgml	760000
-smp	760000
 sncc	760000
 sadie	760000
 salvadoran	760000
@@ -68715,7 +67680,6 @@ sulawesi	760000
 supremes	760000
 susannah	760000
 sybil	760000
-tpa	760000
 talladega	760000
 tartu	760000
 tatum	760000
@@ -68830,7 +67794,6 @@ polymeric	760000
 princeps	760000
 prosody	760000
 pterosaurs	760000
-pts	760000
 purine	760000
 realtime	760000
 redacted	760000
@@ -68880,7 +67843,6 @@ hellishly	230000
 hobnobs	230000
 honkers	230000
 jackknives	230000
-mog	230000
 niggard	230000
 overanalyze	230000
 pabulum	230000
@@ -68947,7 +67909,6 @@ unconvincingly	470000
 dmus	750000
 enron	750000
 macaulay	750000
-pmc	750000
 sturm	750000
 tunbridge	750000
 biogenesis	750000
@@ -68972,8 +67933,6 @@ atwood	750000
 ayers	750000
 ayutthaya	750000
 azeri	750000
-bbb	750000
-bma	750000
 balmain	750000
 bamberg	750000
 banach	750000
@@ -68987,9 +67946,7 @@ blum	750000
 bowes	750000
 broome	750000
 burnaby	750000
-ccr	750000
 csis	750000
-cvc	750000
 cadiz	750000
 caithness	750000
 caitlin	750000
@@ -69004,9 +67961,7 @@ cowley	750000
 cunard	750000
 cusack	750000
 cypriots	750000
-dll	750000
 dprk	750000
-dtc	750000
 dario	750000
 dobbs	750000
 donahue	750000
@@ -69018,10 +67973,6 @@ dunlap	750000
 durand	750000
 egerton	750000
 ephesus	750000
-fck	750000
-fdi	750000
-fsh	750000
-fwd	750000
 farr	750000
 felicia	750000
 fermanagh	750000
@@ -69032,7 +67983,6 @@ fleischer	750000
 franck	750000
 fredericton	750000
 fribourg	750000
-ghg	750000
 garza	750000
 gaspar	750000
 gayle	750000
@@ -69055,16 +68005,11 @@ hokkaido	750000
 horus	750000
 hutchison	750000
 hyman	750000
-icm	750000
-icr	750000
-ifr	750000
-imt	750000
 ibiza	750000
 irina	750000
 irma	750000
 isaacs	750000
 isidore	750000
-jal	750000
 jana	750000
 jansen	750000
 jeanette	750000
@@ -69073,7 +68018,6 @@ jiangxi	750000
 joni	750000
 judea	750000
 judson	750000
-ksc	750000
 kanpur	750000
 katowice	750000
 kenton	750000
@@ -69086,9 +68030,6 @@ koenig	750000
 kofi	750000
 kubrick	750000
 kuwaiti	750000
-lci	750000
-lcl	750000
-lrc	750000
 lagrangian	750000
 lamborghini	750000
 langer	750000
@@ -69100,9 +68041,6 @@ littleton	750000
 lonnie	750000
 lufthansa	750000
 lynette	750000
-mna	750000
-mtu	750000
-mvd	750000
 macdill	750000
 majorca	750000
 mallorca	750000
@@ -69121,7 +68059,6 @@ moriarty	750000
 morristown	750000
 mountbatten	750000
 murcia	750000
-nfs	750000
 nlrb	750000
 neale	750000
 nijmegen	750000
@@ -69129,9 +68066,6 @@ ofsted	750000
 oriya	750000
 oshawa	750000
 ouse	750000
-pfi	750000
-pna	750000
-pns	750000
 padilla	750000
 panasonic	750000
 paulus	750000
@@ -69149,7 +68083,6 @@ powerpoint	750000
 pritchard	750000
 provo	750000
 putney	750000
-rsi	750000
 rabaul	750000
 ralston	750000
 raritan	750000
@@ -69167,8 +68100,6 @@ ronan	750000
 roscommon	750000
 rostov	750000
 sctv	750000
-sls	750000
-smg	750000
 spla	750000
 ssris	750000
 sandusky	750000
@@ -69192,8 +68123,6 @@ stevenage	750000
 studebaker	750000
 stuyvesant	750000
 styria	750000
-thq	750000
-toc	750000
 taranto	750000
 tashkent	750000
 theobald	750000
@@ -69213,7 +68142,6 @@ unrwa	750000
 umberto	750000
 unicron	750000
 vlsi	750000
-vma	750000
 vtol	750000
 varanasi	750000
 vedanta	750000
@@ -69260,7 +68188,6 @@ comparably	750000
 countably	750000
 crappie	750000
 criticality	750000
-deg	750000
 deregulated	750000
 discursive	750000
 disjunction	750000
@@ -69733,9 +68660,7 @@ activision	740000
 biscayne	740000
 danforth	740000
 dardanelles	740000
-hss	740000
 kongo	740000
-mtc	740000
 plovdiv	740000
 quigley	740000
 wallingford	740000
@@ -69746,10 +68671,6 @@ hitmen	740000
 unbuilt	740000
 uvular	740000
 velodrome	740000
-abm	740000
-aef	740000
-agc	740000
-apm	740000
 abramoff	740000
 activex	740000
 addington	740000
@@ -69765,7 +68686,6 @@ aretha	740000
 arian	740000
 arran	740000
 asquith	740000
-bms	740000
 baez	740000
 beatrix	740000
 benetton	740000
@@ -69780,14 +68700,7 @@ boleyn	740000
 brecon	740000
 brenner	740000
 bundestag	740000
-cbp	740000
-ccg	740000
-cep	740000
-cne	740000
 cnrs	740000
-cpb	740000
-csv	740000
-cws	740000
 caltech	740000
 canaveral	740000
 capua	740000
@@ -69804,8 +68717,6 @@ connery	740000
 conroy	740000
 copley	740000
 cuomo	740000
-dme	740000
-dsa	740000
 dachau	740000
 dagenham	740000
 danbury	740000
@@ -69816,14 +68727,10 @@ desai	740000
 dieppe	740000
 dijon	740000
 driscoll	740000
-edi	740000
-esb	740000
 eberhard	740000
 elvira	740000
 englewood	740000
 ewart	740000
-fca	740000
-frc	740000
 fairmont	740000
 fannie	740000
 frick	740000
@@ -69838,8 +68745,6 @@ gravesend	740000
 greeley	740000
 griswold	740000
 guardia	740000
-hdd	740000
-hse	740000
 huac	740000
 heinlein	740000
 heisenberg	740000
@@ -69850,17 +68755,13 @@ hofmann	740000
 holbrook	740000
 hulme	740000
 iana	740000
-iep	740000
-imc	740000
 inglewood	740000
 isfahan	740000
 istria	740000
-jvm	740000
 jazeera	740000
 jeannie	740000
 jewell	740000
 joliet	740000
-kke	740000
 kaohsiung	740000
 karelia	740000
 kasparov	740000
@@ -69877,10 +68778,6 @@ kootenay	740000
 krause	740000
 kristina	740000
 kurtz	740000
-lsa	740000
-lsi	740000
-lsm	740000
-ltv	740000
 lakeview	740000
 lanark	740000
 lemans	740000
@@ -69896,10 +68793,7 @@ lorna	740000
 lutz	740000
 lynchburg	740000
 lytton	740000
-mcd	740000
 mdot	740000
-mds	740000
-mmr	740000
 maas	740000
 macy	740000
 maia	740000
@@ -69922,24 +68816,20 @@ mcnaughton	740000
 menachem	740000
 menon	740000
 millie	740000
-mme	740000
 montreux	740000
 montserrat	740000
 moresby	740000
 mullins	740000
 murdock	740000
-nci	740000
 namur	740000
 naylor	740000
 negev	740000
 nikolaus	740000
 nimitz	740000
 niven	740000
-oca	740000
 olin	740000
 orville	740000
 ossetia	740000
-pde	740000
 pdpa	740000
 paget	740000
 paley	740000
@@ -69950,26 +68840,16 @@ pixar	740000
 plano	740000
 pocahontas	740000
 pushkin	740000
-pvp	740000
-qos	740000
 queenstown	740000
-rda	740000
-rmi	740000
-rsm	740000
 rainey	740000
 redgrave	740000
 rhondda	740000
 riccardo	740000
 rosetta	740000
 rostock	740000
-sfc	740000
-sfx	740000
-sgc	740000
 simd	740000
 smpte	740000
 smrt	740000
-spf	740000
-ssm	740000
 sakhalin	740000
 sandoval	740000
 sartre	740000
@@ -69996,5 +68876,4 @@ treviso	740000
 tupolev	740000
 tuskegee	740000
 tuttle	740000
-udr	740000
 usba	740000

@@ -5,7 +5,7 @@
   ],
   [
     { "$": "navigation", "code": -15, "label": "⎋" },
-    { "code": -202, "label": "view_symbols", "type": "system_gui" },
+    { "code": -202, "label": "⚛", "type": "system_gui" },
     { "$": "variation_selector",
       "default":  { "code":   44, "label": ",", "groupId": 1 },
       "email":    { "code":   64, "label": "@", "groupId": 1 },

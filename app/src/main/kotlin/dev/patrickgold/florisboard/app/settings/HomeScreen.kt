@@ -176,9 +176,9 @@ fun HomeScreen() = FlorisScreen {
             icon = Icons.Default.Delete,
             title = stringRes(R.string.settings__home__uninstall),
             onClick = {
-                // Launch the system uninstall flow for this package; fall back to app details if unavailable.
+                // Launch the system uninstall flow for this package
                 val packageUri = Uri.fromParts("package", context.packageName, null)
-                val intent = Intent(Intent.ACTION_DELETE, packageUri).apply {
+                val intent = Intent(Intent.ACTION_UNINSTALL_PACKAGE, packageUri).apply {
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 }
                 runCatching { context.startActivity(intent) }

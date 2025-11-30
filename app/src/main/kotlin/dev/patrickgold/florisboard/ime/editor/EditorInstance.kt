@@ -558,14 +558,23 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         if (content.selection.isSelectionMode) return false
         val corrected = state.correctedText
         val before = content.textBeforeSelection
-        if (!before.endsWith(corrected)) return false
+        val correctedTrimmed = corrected.trimEnd()
+        val effectiveCorrected = when {
+            before.endsWith(corrected) -> corrected
+            correctedTrimmed.isNotEmpty() && before.endsWith(correctedTrimmed) -> correctedTrimmed
+            else -> return false
+        }
+        val trimmedLen = effectiveCorrected.length
+        if (trimmedLen <= 0) {
+            return false
+        }
         val ic = currentInputConnection() ?: return false
-        val newTextBefore = before.dropLast(corrected.length) + state.originalText
+        val newTextBefore = before.dropLast(trimmedLen) + state.originalText
         val newSelection = EditorRange.cursor(newTextBefore.length)
         runBlocking {
             ic.beginBatchEdit()
             ic.finishComposingText()
-            ic.deleteSurroundingText(corrected.length, 0)
+            ic.deleteSurroundingText(trimmedLen, 0)
             ic.commitText(state.originalText, 1)
             ic.endBatchEdit()
             expectedContentQueue.push(

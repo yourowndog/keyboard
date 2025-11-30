@@ -26,7 +26,8 @@ object SymSpellManager {
     private const val PREFIX_LENGTH = 7
     private const val DICT_ASSET_PATH = "ime/dict/frequency_dictionary_en.txt"
     private const val BIGRAM_ASSET_PATH = "ime/dict/frequency_bigram_en.txt"
-    private const val BIGRAM_WEIGHT = 1.1
+    private const val BIGRAM_WEIGHT = 1.5
+    private const val BIGRAM_NO_HIT_PENALTY = 0.2
     private val USER_OVERRIDES = listOf("kiry" to Double.MAX_VALUE)
     // Prefer common contractions before running SymSpell so "im" maps to "I'm" instead of "pm".
     private val CONTRACTION_SHORTCUTS = mapOf(
@@ -52,6 +53,10 @@ object SymSpellManager {
         "whats" to "what's",
         "wheres" to "where's",
         "theres" to "there's",
+        "well" to "we'll",
+        "hell" to "he'll",
+        "shell" to "she'll",
+        "its" to "it's",
     )
     private val PROPER_OVERRIDES = setOf(
         "kiry", "kiry's",
@@ -78,6 +83,8 @@ object SymSpellManager {
     // Bigram bonus tables for reranking suggestions.
     private val bigramCounts = mutableMapOf<String, MutableMap<String, Int>>()
     private val bigramMaxByPrev = mutableMapOf<String, Int>()
+
+    private data class BigramScore(val bonus: Double, val hasHit: Boolean)
 
     fun init(context: Context, scope: CoroutineScope) {
         scope.launch(Dispatchers.IO) {
@@ -150,12 +157,15 @@ object SymSpellManager {
         }
     }
 
-    private fun bigramBonus(prev: String, cand: String): Double {
-        val row = bigramCounts[prev] ?: return 0.0
-        val freq = row[cand] ?: return 0.0
-        val maxFreq = max(1, bigramMaxByPrev[prev] ?: 1)
+    private fun bigramBonus(prev: String?, cand: String?): BigramScore {
+        val p = prev ?: return BigramScore(0.0, false)
+        val c = cand ?: return BigramScore(0.0, false)
+        val row = bigramCounts[p] ?: return BigramScore(0.0, false)
+        val freq = row[c] ?: return BigramScore(0.0, false)
+        val maxFreq = max(1, bigramMaxByPrev[p] ?: 1)
         // Normalized log freq in [0,1] range-ish
-        return ln(freq + 1.0) / ln(maxFreq + 1.0)
+        val bonus = ln(freq + 1.0) / ln(maxFreq + 1.0)
+        return BigramScore(bonus, true)
     }
 
     fun markNextAsUserRejected() {
@@ -188,8 +198,10 @@ object SymSpellManager {
         val suggestion = suggestions.minByOrNull { candidate ->
             val candidateNorm = candidate.term.lowercase().replace("'", "")
             val apostropheBonus = if (candidate.term.contains('\'') && candidateNorm == normalizedNoApos) -1 else 0
-            val bigramBoost = if (prev != null) -BIGRAM_WEIGHT * bigramBonus(prev, candidate.term.lowercase()) else 0.0
-            candidate.distance + apostropheBonus + bigramBoost
+            val bigram = bigramBonus(prev, candidate.term.lowercase())
+            val bigramBoost = -BIGRAM_WEIGHT * bigram.bonus
+            val noHitPenalty = if (prev != null && !bigram.hasHit) BIGRAM_NO_HIT_PENALTY else 0.0
+            candidate.distance + apostropheBonus + bigramBoost + noHitPenalty
         }?.term ?: return input
 
         // Heuristic: if the user typed multiple uppercase letters (likely an acronym/proper noun)
@@ -211,28 +223,36 @@ object SymSpellManager {
              return listOf(input)
          }
 
-         val normalized = input.lowercase()
-         val normalizedNoApos = normalized.replace("'", "")
-         val upperCount = input.count { it.isUpperCase() }
-         val suggestions = instance.lookup(normalized, Verbosity.Closest, MAX_EDIT_DISTANCE.toDouble())
+        val normalized = input.lowercase()
+        val normalizedNoApos = normalized.replace("'", "")
+        val upperCount = input.count { it.isUpperCase() }
+        val suggestions = instance.lookup(normalized, Verbosity.Closest, MAX_EDIT_DISTANCE.toDouble())
         val prev = previousWord?.lowercase()
-         val mapped = suggestions
-             .sortedBy { candidate ->
-                 val candidateNorm = candidate.term.lowercase().replace("'", "")
-                 val apostropheBonus = if (candidate.term.contains('\'') && candidateNorm == normalizedNoApos) -1 else 0
-                val bigramBoost = if (prev != null) -BIGRAM_WEIGHT * bigramBonus(prev, candidate.term.lowercase()) else 0.0
-                 candidate.distance + apostropheBonus + bigramBoost
-             }
-             .mapNotNull { candidate ->
-                 val term = candidate.term
-                 if (upperCount >= 2 && term.lowercase() != normalized) {
-                     // Skip suggestions that would mangle acronyms/proper nouns
-                     null
-                 } else {
-                     applyCasingPattern(input, term)
-                 }
-             }
-         return if (mapped.isNotEmpty()) mapped else listOf(input)
+        val contractionTop = CONTRACTION_SHORTCUTS[normalized]?.let { applyCasingPattern(input, it) }
+        val mapped = suggestions
+            .sortedBy { candidate ->
+                val candLower = candidate.term.lowercase()
+                val candidateNorm = candLower.replace("'", "")
+                val apostropheBonus = if (candidate.term.contains('\'') && candidateNorm == normalizedNoApos) -1 else 0
+                val bigram = bigramBonus(prev, candLower)
+                val bigramBoost = -BIGRAM_WEIGHT * bigram.bonus
+                val noHitPenalty = if (prev != null && !bigram.hasHit) BIGRAM_NO_HIT_PENALTY else 0.0
+                candidate.distance + apostropheBonus + bigramBoost + noHitPenalty
+            }
+            .mapNotNull { candidate ->
+                val term = candidate.term
+                if (upperCount >= 2 && term.lowercase() != normalized) {
+                    // Skip suggestions that would mangle acronyms/proper nouns
+                    null
+                } else {
+                    applyCasingPattern(input, term)
+                }
+            }
+        val withContraction = buildList {
+            if (contractionTop != null && contractionTop !in mapped) add(contractionTop)
+            addAll(mapped)
+        }
+        return if (withContraction.isNotEmpty()) withContraction else listOf(input)
     }
 
     private fun applyCasingPattern(original: String, suggestion: String): String {
