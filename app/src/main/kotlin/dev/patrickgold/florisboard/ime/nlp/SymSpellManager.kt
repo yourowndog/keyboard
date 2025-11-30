@@ -83,6 +83,7 @@ object SymSpellManager {
     // Bigram bonus tables for reranking suggestions.
     private val bigramCounts = mutableMapOf<String, MutableMap<String, Int>>()
     private val bigramMaxByPrev = mutableMapOf<String, Int>()
+    private val bigramTopFollowers = mutableMapOf<String, List<String>>() // sorted by freq desc
 
     private data class BigramScore(val bonus: Double, val hasHit: Boolean)
 
@@ -148,6 +149,15 @@ object SymSpellManager {
                     }
                 }
             }
+            // Build top followers list for quick "next word" predictions
+            bigramTopFollowers.clear()
+            for ((prev, followers) in bigramCounts) {
+                val top = followers.entries
+                    .sortedByDescending { it.value }
+                    .take(5)
+                    .map { it.key }
+                bigramTopFollowers[prev] = top
+            }
             android.util.Log.i(
                 "SymSpellManager",
                 "Loaded bigram table for reranking with ${bigramCounts.size} first-words"
@@ -155,6 +165,11 @@ object SymSpellManager {
         } catch (e: Exception) {
             android.util.Log.w("SymSpellManager", "Failed to load bigram table for reranking", e)
         }
+    }
+
+    fun nextWordPredictions(prev: String?, max: Int = 3): List<String> {
+        if (prev == null) return emptyList()
+        return bigramTopFollowers[prev.lowercase()]?.take(max) ?: emptyList()
     }
 
     private fun bigramBonus(prev: String?, cand: String?): BigramScore {
@@ -249,8 +264,13 @@ object SymSpellManager {
                 }
             }
         val withContraction = buildList {
-            if (contractionTop != null && contractionTop !in mapped) add(contractionTop)
-            addAll(mapped)
+            if (mapped.isNotEmpty()) {
+                add(mapped.first())
+                if (contractionTop != null && contractionTop !in mapped) add(contractionTop)
+                addAll(mapped.drop(1))
+            } else {
+                if (contractionTop != null) add(contractionTop)
+            }
         }
         return if (withContraction.isNotEmpty()) withContraction else listOf(input)
     }

@@ -106,11 +106,26 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         isPrivateSession: Boolean,
     ): List<SuggestionCandidate> {
         val currentWordRaw = content.composingText.toString().trim()
+        val previousWord = lastWordBefore(content.textBeforeSelection)
+        // If there is no composing text yet (or just one char), surface next-word bigram predictions.
+        if (currentWordRaw.isBlank() || currentWordRaw.length == 1) {
+            val nextWords = dev.patrickgold.florisboard.ime.nlp.SymSpellManager.nextWordPredictions(previousWord)
+            if (nextWords.isNotEmpty()) {
+                val upperCount = currentWordRaw.count { it.isUpperCase() }
+                return nextWords.map { word ->
+                    WordSuggestionCandidate(
+                        text = applyCasingFromContext(word, upperCount),
+                        secondaryText = null,
+                        isEligibleForAutoCommit = false,
+                        sourceProvider = this
+                    )
+                }
+            }
+        }
         if (currentWordRaw.isBlank()) return emptyList()
 
         // DELEGATE TO NEW ENGINE
         // Preserve casing for display/commit; lowercase is handled inside the manager for lookup.
-        val previousWord = lastWordBefore(content.textBeforeSelection)
         val suggestions = dev.patrickgold.florisboard.ime.nlp.SymSpellManager.suggest(
             input = currentWordRaw,
             previousWord = previousWord,
@@ -160,5 +175,13 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         val trimmed = text.trimEnd()
         val match = Regex("([A-Za-z']+)[^A-Za-z']*$").find(trimmed) ?: return null
         return match.groupValues.getOrNull(1)
+    }
+
+    private fun applyCasingFromContext(word: String, upperCount: Int): String {
+        return when {
+            upperCount >= 2 -> word.uppercase()
+            upperCount == 1 -> word.replaceFirstChar { it.titlecase() }
+            else -> word
+        }
     }
 }
