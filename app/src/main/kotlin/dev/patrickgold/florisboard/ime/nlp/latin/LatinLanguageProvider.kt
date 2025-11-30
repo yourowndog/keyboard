@@ -73,10 +73,7 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
 
         wordData.withLock { wordData ->
             if (wordData.isEmpty()) {
-                // Here we use readText() because the test dictionary is a json dictionary
-                val rawData = appContext.assets.readText("ime/dict/data.json")
-                val jsonData = Json.decodeFromString(wordDataSerializer, rawData)
-                wordData.putAll(jsonData)
+                // No-op: legacy test dictionary removed; SymSpell handles suggestions/corrections.
             }
         }
     }
