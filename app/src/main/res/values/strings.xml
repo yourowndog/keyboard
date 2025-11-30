@@ -120,6 +120,7 @@
     <string name="settings__home__title" comment="Title of the Home screen">Welcome to {app_name}</string>
     <string name="settings__home__ime_not_enabled" comment="Error message shown in Home fragment when OmniBoard is not enabled in the system">OmniBoard is not enabled in the system and thus won\'t be available as an input method in the input picker. Click here to resolve this issue.</string>
     <string name="settings__home__ime_not_selected" comment="Warning message shown in Home fragment when OmniBoard is not selected as the default keyboard">OmniBoard is not selected as the default input method. Click here to resolve this issue.</string>
+    <string name="settings__home__uninstall">Uninstall App</string>
 
     <string name="settings__localization__title" comment="Title of languages and Layout screen">Languages &amp; Layouts</string>
     <string name="settings__localization__display_language_names_in__label" comment="Label of Display language names in preference">Display language names in</string>
@@ -1166,5 +1167,4 @@
     <string name="layout_builder__toast_export_failed">Could not export the layout pack</string>
     <string name="layout_builder__toast_apply_success">Applied layout pack to the IME</string>
     <string name="layout_builder__toast_apply_failed">Validation failed. Layout not applied.</string>
-
 </resources>

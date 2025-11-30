@@ -110,7 +110,11 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
 
         // DELEGATE TO NEW ENGINE
         // Preserve casing for display/commit; lowercase is handled inside the manager for lookup.
-        val suggestions = dev.patrickgold.florisboard.ime.nlp.SymSpellManager.suggest(currentWordRaw)
+        val previousWord = lastWordBefore(content.textBeforeSelection)
+        val suggestions = dev.patrickgold.florisboard.ime.nlp.SymSpellManager.suggest(
+            input = currentWordRaw,
+            previousWord = previousWord,
+        )
         val upperCount = currentWordRaw.count { it.isUpperCase() }
 
         return suggestions.map { word ->
@@ -149,5 +153,12 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
     override suspend fun destroy() {
         // Here we have the chance to de-allocate memory and finish our work. However this might never be called if
         // the app process is killed (which will most likely always be the case).
+    }
+
+    private fun lastWordBefore(text: String): String? {
+        if (text.isBlank()) return null
+        val trimmed = text.trimEnd()
+        val match = Regex("([A-Za-z']+)[^A-Za-z']*$").find(trimmed) ?: return null
+        return match.groupValues.getOrNull(1)
     }
 }

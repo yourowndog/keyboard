@@ -17,6 +17,8 @@
 package dev.patrickgold.florisboard.ime.dictionary
 
 import android.content.Context
+import android.net.Uri
+import androidx.documentfile.provider.DocumentFile
 import androidx.room.Room
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.ime.nlp.SuggestionCandidate
@@ -154,6 +156,7 @@ class DictionaryManager private constructor(context: Context) {
                 FlorisUserDictionaryDatabase::class.java,
                 FlorisUserDictionaryDatabase.DB_FILE_NAME
             ).allowMainThreadQueries().build()
+            maybeImportFromVault(context)
         }
         if (systemUserDictionaryDatabase == null && prefs.dictionary.enableSystemUserDictionary.get()) {
             systemUserDictionaryDatabase = SystemUserDictionaryDatabase(context)
@@ -169,5 +172,48 @@ class DictionaryManager private constructor(context: Context) {
         if (systemUserDictionaryDatabase != null) {
             systemUserDictionaryDatabase = null
         }
+    }
+
+    // --- Vault backup/restore helpers ---------------------------------------------------------
+
+    private fun vaultUri(): Uri? {
+        val uriStr = prefs.dictionary.userDictionaryVaultUri.get()
+        return uriStr.takeIf { it.isNotBlank() }?.let { runCatching { Uri.parse(it) }.getOrNull() }
+    }
+
+    private fun resolveVaultFile(context: Context, createIfMissing: Boolean): DocumentFile? {
+        val treeUri = vaultUri() ?: return null
+        val tree = DocumentFile.fromTreeUri(context, treeUri) ?: return null
+        val fileName = "user_dict.txt"
+        val existing = tree.findFile(fileName)
+        if (existing != null && existing.isFile) return existing
+        return if (createIfMissing) tree.createFile("text/plain", fileName) else null
+    }
+
+    fun exportUserDictionaryToVault(): Boolean {
+        val context = applicationContext.get() ?: return false
+        val db = florisUserDictionaryDatabase ?: return false
+        val target = resolveVaultFile(context, createIfMissing = true) ?: return false
+        return runCatching {
+            db.exportCombinedList(context, target.uri)
+            true
+        }.getOrElse { false }
+    }
+
+    fun importUserDictionaryFromVault(): Boolean {
+        val context = applicationContext.get() ?: return false
+        val db = florisUserDictionaryDatabase ?: return false
+        val target = resolveVaultFile(context, createIfMissing = false) ?: return false
+        return runCatching {
+            db.importCombinedList(context, target.uri)
+            true
+        }.getOrElse { false }
+    }
+
+    private fun maybeImportFromVault(context: Context) {
+        val db = florisUserDictionaryDatabase ?: return
+        val dao = db.userDictionaryDao()
+        if (dao.queryAll().isNotEmpty()) return
+        importUserDictionaryFromVault()
     }
 }

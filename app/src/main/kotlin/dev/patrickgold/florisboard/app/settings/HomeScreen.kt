@@ -1,3 +1,4 @@
+
 /*
  * Copyright (C) 2021-2025 The FlorisBoard Contributors
  *
@@ -16,9 +17,14 @@
 
 package dev.patrickgold.florisboard.app.settings
 
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
+import android.widget.Toast
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Assignment
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Extension
 import androidx.compose.material.icons.filled.Gesture
 import androidx.compose.material.icons.filled.Language
@@ -165,6 +171,24 @@ fun HomeScreen() = FlorisScreen {
             icon = Icons.Outlined.Info,
             title = stringRes(R.string.about__title),
             onClick = { navController.navigate(Routes.Settings.About) },
+        )
+        Preference(
+            icon = Icons.Default.Delete,
+            title = stringRes(R.string.settings__home__uninstall),
+            onClick = {
+                // Launch the system uninstall flow for this package; fall back to app details if unavailable.
+                val packageUri = Uri.fromParts("package", context.packageName, null)
+                val intent = Intent(Intent.ACTION_DELETE, packageUri).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+                runCatching { context.startActivity(intent) }
+                    .onFailure {
+                        val fallback = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, packageUri)
+                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        runCatching { context.startActivity(fallback) }
+                            .onFailure { Toast.makeText(context, R.string.action__not_available, Toast.LENGTH_SHORT).show() }
+                    }
+            },
         )
     }
 }

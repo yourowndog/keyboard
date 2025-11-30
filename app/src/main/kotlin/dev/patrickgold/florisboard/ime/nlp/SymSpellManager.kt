@@ -9,9 +9,13 @@ import com.darkrockstudios.symspellkt.impl.SymSpell
 import com.darkrockstudios.symspellkt.impl.InMemoryDictionaryHolder
 import com.darkrockstudios.symspellkt.common.SpellCheckSettings
 import com.darkrockstudios.symspellkt.common.Verbosity
+import java.io.BufferedReader
+import java.io.InputStreamReader
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlin.math.ln
+import kotlin.math.max
 
 object SymSpellManager {
     private var symSpell: SymSpell? = null
@@ -22,6 +26,7 @@ object SymSpellManager {
     private const val PREFIX_LENGTH = 7
     private const val DICT_ASSET_PATH = "ime/dict/frequency_dictionary_en.txt"
     private const val BIGRAM_ASSET_PATH = "ime/dict/frequency_bigram_en.txt"
+    private const val BIGRAM_WEIGHT = 1.1
     private val USER_OVERRIDES = listOf("kiry" to Double.MAX_VALUE)
     // Prefer common contractions before running SymSpell so "im" maps to "I'm" instead of "pm".
     private val CONTRACTION_SHORTCUTS = mapOf(
@@ -67,6 +72,13 @@ object SymSpellManager {
         "tim", "tim's",
     )
 
+    // Tracks whether the last autocorrect was rejected; if so, skip autocorrect once.
+    @Volatile private var skipNextAutocorrect = false
+
+    // Bigram bonus tables for reranking suggestions.
+    private val bigramCounts = mutableMapOf<String, MutableMap<String, Int>>()
+    private val bigramMaxByPrev = mutableMapOf<String, Int>()
+
     fun init(context: Context, scope: CoroutineScope) {
         scope.launch(Dispatchers.IO) {
             try {
@@ -85,6 +97,7 @@ object SymSpellManager {
                 // 3. Load Real Dictionary from Assets (unigram + bigram)
                 holder.loadUnigramTxtFile(context.assets.open(DICT_ASSET_PATH).use { it.readBytes() })
                 holder.loadBigramTxtFile(context.assets.open(BIGRAM_ASSET_PATH).use { it.readBytes() })
+                loadBigramTable(context)
 
                 // Inject must-win personal words until we wire user dictionary
                 USER_OVERRIDES.forEach { (word, freq) -> instance.createDictionaryEntry(word, freq) }
@@ -105,8 +118,56 @@ object SymSpellManager {
         }
     }
 
-    fun fix(input: String): String {
+    private fun loadBigramTable(context: Context) {
+        bigramCounts.clear()
+        bigramMaxByPrev.clear()
+        try {
+            val reader = BufferedReader(InputStreamReader(context.assets.open(BIGRAM_ASSET_PATH)))
+            reader.useLines { lines ->
+                lines.forEach { line ->
+                    val parts = line.split('\t')
+                    if (parts.size != 2) return@forEach
+                    val pair = parts[0]
+                    val freq = parts[1].toIntOrNull() ?: return@forEach
+                    val spaceIdx = pair.indexOf(' ')
+                    if (spaceIdx <= 0) return@forEach
+                    val w1 = pair.substring(0, spaceIdx).lowercase()
+                    val w2 = pair.substring(spaceIdx + 1).lowercase()
+                    val row = bigramCounts.getOrPut(w1) { mutableMapOf() }
+                    row[w2] = freq
+                    val currentMax = bigramMaxByPrev[w1] ?: 0
+                    if (freq > currentMax) {
+                        bigramMaxByPrev[w1] = freq
+                    }
+                }
+            }
+            android.util.Log.i(
+                "SymSpellManager",
+                "Loaded bigram table for reranking with ${bigramCounts.size} first-words"
+            )
+        } catch (e: Exception) {
+            android.util.Log.w("SymSpellManager", "Failed to load bigram table for reranking", e)
+        }
+    }
+
+    private fun bigramBonus(prev: String, cand: String): Double {
+        val row = bigramCounts[prev] ?: return 0.0
+        val freq = row[cand] ?: return 0.0
+        val maxFreq = max(1, bigramMaxByPrev[prev] ?: 1)
+        // Normalized log freq in [0,1] range-ish
+        return ln(freq + 1.0) / ln(maxFreq + 1.0)
+    }
+
+    fun markNextAsUserRejected() {
+        skipNextAutocorrect = true
+    }
+
+    fun fix(input: String, previousWord: String? = null): String {
         if (!isReady) return input
+        if (skipNextAutocorrect) {
+            skipNextAutocorrect = false
+            return input
+        }
         val instance = symSpell ?: return input
         // Handle single-letter inputs explicitly to avoid over-correcting every keystroke.
         // Do not auto-capitalize lone "i"; keep exactly what the user typed.
@@ -121,12 +182,14 @@ object SymSpellManager {
         val normalized = input.lowercase()
         val normalizedNoApos = normalized.replace("'", "")
         val suggestions = instance.lookup(normalized, Verbosity.Top, MAX_EDIT_DISTANCE.toDouble())
+        val prev = previousWord?.lowercase()
 
         // Prefer candidates that only differ by a missing apostrophe (treat apostrophes as zero-cost).
         val suggestion = suggestions.minByOrNull { candidate ->
             val candidateNorm = candidate.term.lowercase().replace("'", "")
             val apostropheBonus = if (candidate.term.contains('\'') && candidateNorm == normalizedNoApos) -1 else 0
-            candidate.distance + apostropheBonus
+            val bigramBoost = if (prev != null) -BIGRAM_WEIGHT * bigramBonus(prev, candidate.term.lowercase()) else 0.0
+            candidate.distance + apostropheBonus + bigramBoost
         }?.term ?: return input
 
         // Heuristic: if the user typed multiple uppercase letters (likely an acronym/proper noun)
@@ -139,7 +202,7 @@ object SymSpellManager {
         return applyCasingPattern(input, suggestion)
     }
 
-    fun suggest(input: String): List<String> {
+    fun suggest(input: String, previousWord: String? = null): List<String> {
          if (!isReady) return emptyList()
          val instance = symSpell ?: return emptyList()
 
@@ -152,11 +215,13 @@ object SymSpellManager {
          val normalizedNoApos = normalized.replace("'", "")
          val upperCount = input.count { it.isUpperCase() }
          val suggestions = instance.lookup(normalized, Verbosity.Closest, MAX_EDIT_DISTANCE.toDouble())
+        val prev = previousWord?.lowercase()
          val mapped = suggestions
              .sortedBy { candidate ->
                  val candidateNorm = candidate.term.lowercase().replace("'", "")
                  val apostropheBonus = if (candidate.term.contains('\'') && candidateNorm == normalizedNoApos) -1 else 0
-                 candidate.distance + apostropheBonus
+                val bigramBoost = if (prev != null) -BIGRAM_WEIGHT * bigramBonus(prev, candidate.term.lowercase()) else 0.0
+                 candidate.distance + apostropheBonus + bigramBoost
              }
              .mapNotNull { candidate ->
                  val term = candidate.term

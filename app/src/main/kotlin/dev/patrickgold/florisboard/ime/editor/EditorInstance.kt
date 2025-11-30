@@ -577,6 +577,8 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
                 )
             )
         }
+        // Mark that the user rejected the last autocorrect so the next commit of the same token won't be re-corrected.
+        dev.patrickgold.florisboard.ime.nlp.SymSpellManager.markNextAsUserRejected()
         autoCorrectUndoState = null
         return true
     }

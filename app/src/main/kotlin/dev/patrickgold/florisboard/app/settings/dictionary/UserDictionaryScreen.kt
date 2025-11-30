@@ -45,8 +45,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
+import android.content.Intent
 import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.LocalNavController
+import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.app.settings.theme.DialogProperty
 import dev.patrickgold.florisboard.ime.dictionary.DictionaryManager
 import dev.patrickgold.florisboard.ime.dictionary.FREQUENCY_MAX
@@ -91,6 +93,7 @@ fun UserDictionaryScreen(type: UserDictionaryType) = FlorisScreen {
 
     val navController = LocalNavController.current
     val context = LocalContext.current
+    val prefs by FlorisPreferenceStore
     val dictionaryManager = DictionaryManager.default()
     val scope = rememberCoroutineScope()
 
@@ -182,6 +185,23 @@ fun UserDictionaryScreen(type: UserDictionaryType) = FlorisScreen {
         },
     )
 
+    val pickVaultFolder = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocumentTree(),
+        onResult = { uri ->
+            if (uri == null) return@rememberLauncherForActivityResult
+            val flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or
+                Intent.FLAG_GRANT_WRITE_URI_PERMISSION or
+                Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
+            runCatching {
+                context.contentResolver.takePersistableUriPermission(uri, flags)
+                prefs.dictionary.userDictionaryVaultUri.set(uri.toString())
+                context.showLongToastSync("Vault set. Auto-import will use this folder.")
+            }.onFailure {
+                context.showLongToastSync("Failed to set vault: ${it.localizedMessage}")
+            }
+        },
+    )
+
     navigationIcon {
         FlorisIconButton(
             onClick = {
@@ -224,6 +244,38 @@ fun UserDictionaryScreen(type: UserDictionaryType) = FlorisScreen {
                 },
                 text = { Text(text = stringRes(R.string.action__export)) },
             )
+            if (type == UserDictionaryType.FLORIS) {
+                DropdownMenuItem(
+                    onClick = {
+                        pickVaultFolder.launch(null)
+                        expanded = false
+                    },
+                    text = { Text(text = "Set vault folder (SAF)") },
+                )
+                DropdownMenuItem(
+                    onClick = {
+                        val ok = dictionaryManager.exportUserDictionaryToVault()
+                        context.showLongToastSync(
+                            if (ok) "Exported to vault" else "Export failed (set folder first?)"
+                        )
+                        expanded = false
+                    },
+                    text = { Text(text = "Export to vault") },
+                )
+                DropdownMenuItem(
+                    onClick = {
+                        val ok = dictionaryManager.importUserDictionaryFromVault()
+                        if (ok) {
+                            buildUi()
+                            context.showLongToastSync("Imported from vault")
+                        } else {
+                            context.showLongToastSync("Import failed (file missing?)")
+                        }
+                        expanded = false
+                    },
+                    text = { Text(text = "Import from vault") },
+                )
+            }
             if (type == UserDictionaryType.SYSTEM) {
                 DropdownMenuItem(
                     onClick = {

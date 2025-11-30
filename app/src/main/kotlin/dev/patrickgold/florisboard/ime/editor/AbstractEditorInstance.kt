@@ -400,7 +400,11 @@ abstract class AbstractEditorInstance(context: Context) {
             // Run the Reflex check
             val stripped = text.trimEnd()
             val trailing = text.removePrefix(stripped)
-            val corrected = dev.patrickgold.florisboard.ime.nlp.SymSpellManager.fix(stripped)
+            val prevWord = lastWordBefore(content.textBeforeSelection)
+            val corrected = dev.patrickgold.florisboard.ime.nlp.SymSpellManager.fix(
+                input = stripped,
+                previousWord = prevWord,
+            )
             val finalText = corrected + trailing
             val newSelection = EditorRange.cursor(selection.start + finalText.length)
             val newContent = content.generateCopy(
@@ -426,6 +430,13 @@ abstract class AbstractEditorInstance(context: Context) {
         }
         ic.endBatchEdit()
         return true
+    }
+
+    private fun lastWordBefore(text: String): String? {
+        if (text.isBlank()) return null
+        val trimmed = text.trimEnd()
+        val match = Regex("([A-Za-z']+)[^A-Za-z']*$").find(trimmed) ?: return null
+        return match.groupValues.getOrNull(1)
     }
 
     open fun finalizeComposingText(text: String): Boolean {

@@ -224,6 +224,10 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "suggestion__enable_floris_user_dictionary",
             default = true,
         )
+        val userDictionaryVaultUri = string(
+            key = "dictionary__user_dictionary_vault_uri",
+            default = "",
+        )
     }
 
     val emoji = Emoji()
