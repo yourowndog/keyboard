@@ -601,7 +601,7 @@ abstract class AbstractEditorInstance(context: Context) {
         shift: Boolean = false,
     ): Int {
         var metaState = 0
-        if (ctrl) {
+        if (ctrl || keyboardManager.activeState.isCtrlPressed) {
             metaState = metaState or KeyEvent.META_CTRL_ON or KeyEvent.META_CTRL_LEFT_ON
         }
         if (alt) {
@@ -733,6 +733,8 @@ abstract class AbstractEditorInstance(context: Context) {
         fun reset() {
             pos = -1
         }
+
+
 
         fun handleCommit(selection: EditorRange) {
             if (selection.isValid) {

@@ -462,6 +462,7 @@ class KeyboardManager(
      */
     fun handleArrow(code: Int, count: Int = 1) = editorInstance.apply {
         val isShiftPressed = activeState.isManualSelectionMode || inputEventDispatcher.isPressed(KeyCode.SHIFT)
+        val isCtrlPressed = inputEventDispatcher.isPressed(KeyCode.CTRL)
         val content = activeContent
         val selection = content.selection
         when (code) {
@@ -470,56 +471,56 @@ class KeyboardManager(
                     activeState.isManualSelectionModeStart = true
                     activeState.isManualSelectionModeEnd = false
                 }
-                sendDownUpKeyEvent(KeyEvent.KEYCODE_DPAD_LEFT, meta(shift = isShiftPressed), count)
+                sendDownUpKeyEvent(KeyEvent.KEYCODE_DPAD_LEFT, meta(shift = isShiftPressed, ctrl = isCtrlPressed), count)
             }
             KeyCode.ARROW_RIGHT -> {
                 if (!selection.isSelectionMode && activeState.isManualSelectionMode) {
                     activeState.isManualSelectionModeStart = false
                     activeState.isManualSelectionModeEnd = true
                 }
-                sendDownUpKeyEvent(KeyEvent.KEYCODE_DPAD_RIGHT, meta(shift = isShiftPressed), count)
+                sendDownUpKeyEvent(KeyEvent.KEYCODE_DPAD_RIGHT, meta(shift = isShiftPressed, ctrl = isCtrlPressed), count)
             }
             KeyCode.ARROW_UP -> {
                 if (!selection.isSelectionMode && activeState.isManualSelectionMode) {
                     activeState.isManualSelectionModeStart = true
                     activeState.isManualSelectionModeEnd = false
                 }
-                sendDownUpKeyEvent(KeyEvent.KEYCODE_DPAD_UP, meta(shift = isShiftPressed), count)
+                sendDownUpKeyEvent(KeyEvent.KEYCODE_DPAD_UP, meta(shift = isShiftPressed, ctrl = isCtrlPressed), count)
             }
             KeyCode.ARROW_DOWN -> {
                 if (!selection.isSelectionMode && activeState.isManualSelectionMode) {
                     activeState.isManualSelectionModeStart = false
                     activeState.isManualSelectionModeEnd = true
                 }
-                sendDownUpKeyEvent(KeyEvent.KEYCODE_DPAD_DOWN, meta(shift = isShiftPressed), count)
+                sendDownUpKeyEvent(KeyEvent.KEYCODE_DPAD_DOWN, meta(shift = isShiftPressed, ctrl = isCtrlPressed), count)
             }
             KeyCode.MOVE_START_OF_PAGE -> {
                 if (!selection.isSelectionMode && activeState.isManualSelectionMode) {
                     activeState.isManualSelectionModeStart = true
                     activeState.isManualSelectionModeEnd = false
                 }
-                sendDownUpKeyEvent(KeyEvent.KEYCODE_DPAD_UP, meta(alt = true, shift = isShiftPressed), count)
+                sendDownUpKeyEvent(KeyEvent.KEYCODE_DPAD_UP, meta(alt = true, shift = isShiftPressed, ctrl = isCtrlPressed), count)
             }
             KeyCode.MOVE_END_OF_PAGE -> {
                 if (!selection.isSelectionMode && activeState.isManualSelectionMode) {
                     activeState.isManualSelectionModeStart = false
                     activeState.isManualSelectionModeEnd = true
                 }
-                sendDownUpKeyEvent(KeyEvent.KEYCODE_DPAD_DOWN, meta(alt = true, shift = isShiftPressed), count)
+                sendDownUpKeyEvent(KeyEvent.KEYCODE_DPAD_DOWN, meta(alt = true, shift = isShiftPressed, ctrl = isCtrlPressed), count)
             }
             KeyCode.MOVE_START_OF_LINE -> {
                 if (!selection.isSelectionMode && activeState.isManualSelectionMode) {
                     activeState.isManualSelectionModeStart = true
                     activeState.isManualSelectionModeEnd = false
                 }
-                sendDownUpKeyEvent(KeyEvent.KEYCODE_DPAD_LEFT, meta(alt = true, shift = isShiftPressed), count)
+                sendDownUpKeyEvent(KeyEvent.KEYCODE_DPAD_LEFT, meta(alt = true, shift = isShiftPressed, ctrl = isCtrlPressed), count)
             }
             KeyCode.MOVE_END_OF_LINE -> {
                 if (!selection.isSelectionMode && activeState.isManualSelectionMode) {
                     activeState.isManualSelectionModeStart = false
                     activeState.isManualSelectionModeEnd = true
                 }
-                sendDownUpKeyEvent(KeyEvent.KEYCODE_DPAD_RIGHT, meta(alt = true, shift = isShiftPressed), count)
+                sendDownUpKeyEvent(KeyEvent.KEYCODE_DPAD_RIGHT, meta(alt = true, shift = isShiftPressed, ctrl = isCtrlPressed), count)
             }
         }
     }
@@ -671,6 +672,27 @@ class KeyboardManager(
      */
     private fun handleShiftCancel() {
         activeState.inputShiftState = InputShiftState.UNSHIFTED
+    }
+
+    /**
+     * Handles a [KeyCode.CTRL] down event.
+     */
+    private fun handleCtrlDown(data: KeyData) {
+        activeState.isCtrlPressed = true
+    }
+
+    /**
+     * Handles a [KeyCode.CTRL] up event.
+     */
+    private fun handleCtrlUp(data: KeyData) {
+        activeState.isCtrlPressed = false
+    }
+
+    /**
+     * Handles a [KeyCode.CTRL] cancel event.
+     */
+    private fun handleCtrlCancel() {
+        activeState.isCtrlPressed = false
     }
 
     /**
@@ -829,6 +851,7 @@ class KeyboardManager(
                 editorInstance.massSelection.begin()
             }
             KeyCode.SHIFT -> handleShiftDown(data)
+            KeyCode.CTRL -> handleCtrlDown(data)
         }
     }
 
@@ -902,6 +925,7 @@ class KeyboardManager(
             KeyCode.REDO -> editorInstance.performRedo()
             KeyCode.SETTINGS -> FlorisImeService.launchSettings()
             KeyCode.SHIFT -> handleShiftUp(data)
+            KeyCode.CTRL -> handleCtrlUp(data)
             KeyCode.SPACE -> handleSpace(data)
             KeyCode.SYSTEM_INPUT_METHOD_PICKER -> InputMethodUtils.showImePicker(appContext)
             KeyCode.SHOW_SUBTYPE_PICKER -> {
@@ -989,6 +1013,7 @@ class KeyboardManager(
                 editorInstance.massSelection.end()
             }
             KeyCode.SHIFT -> handleShiftCancel()
+            KeyCode.CTRL -> handleCtrlCancel()
         }
     }
 

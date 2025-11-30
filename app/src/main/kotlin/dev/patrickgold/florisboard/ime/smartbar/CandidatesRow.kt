@@ -20,11 +20,13 @@ import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -69,6 +71,7 @@ fun CandidatesRow(modifier: Modifier = Modifier) {
 
     val displayMode by prefs.suggestion.displayMode.observeAsState()
     val candidates by nlpManager.activeCandidatesFlow.collectAsState()
+    val maxSuggestions = 5
 
     SnyggRow(
         elementName = FlorisImeUi.SmartbarCandidatesRow.elementName,
@@ -78,7 +81,7 @@ fun CandidatesRow(modifier: Modifier = Modifier) {
                 florisHorizontalScroll(scrollbarHeight = CandidatesRowScrollbarHeight)
             },
         horizontalArrangement = if (candidates.size > 1) {
-            Arrangement.Start
+            Arrangement.SpaceEvenly
         } else {
             Arrangement.Center
         },
@@ -91,27 +94,14 @@ fun CandidatesRow(modifier: Modifier = Modifier) {
             } else {
                 Modifier
                     .fillMaxHeight()
-                    .conditional(displayMode == CandidatesDisplayMode.CLASSIC) {
-                        weight(1f)
-                    }
-                    .conditional(displayMode != CandidatesDisplayMode.CLASSIC) {
-                        wrapContentWidth().widthIn(max = 160.dp)
-                    }
+                    .weight(1f)
             }
+            val limited = candidates.take(maxSuggestions)
             val list = when (displayMode) {
-                CandidatesDisplayMode.CLASSIC -> candidates.subList(0, 3.coerceAtMost(candidates.size))
-                else -> candidates
+                CandidatesDisplayMode.CLASSIC -> limited.subList(0, 3.coerceAtMost(limited.size))
+                else -> limited
             }
             for ((n, candidate) in list.withIndex()) {
-                if (n > 0) {
-                    SnyggSpacer(
-                        elementName = FlorisImeUi.SmartbarCandidateSpacer.elementName,
-                        modifier = Modifier
-                            .width(1.dp)
-                            .fillMaxHeight(0.6f)
-                            .align(Alignment.CenterVertically),
-                    )
-                }
                 CandidateItem(
                     modifier = candidateModifier,
                     candidate = candidate,
@@ -160,6 +150,7 @@ private fun CandidateItem(
         attributes = attributes,
         selector = selector,
         modifier = modifier
+            .padding(horizontal = 8.dp, vertical = 4.dp)
             .pointerInput(Unit) {
                 awaitEachGesture {
                     val down = awaitFirstDown()
@@ -196,7 +187,7 @@ private fun CandidateItem(
             }
         }
         SnyggColumn(
-            modifier = if (displayMode == CandidatesDisplayMode.CLASSIC) Modifier.weight(1f) else Modifier,
+            modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {

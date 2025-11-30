@@ -89,6 +89,7 @@ open class KeyboardState protected constructor(open var rawValue: ULong) {
         const val F_IS_CHAR_HALF_WIDTH: ULong =             0x00200000u
         const val F_IS_KANA_KATA: ULong =                   0x00400000u
         const val F_IS_KANA_SMALL: ULong =                  0x00800000u
+        const val F_IS_CTRL_PRESSED: ULong =                0x10000000u
 
         const val F_IS_RTL_LAYOUT_DIRECTION: ULong =        0x08000000u
 
@@ -210,6 +211,10 @@ open class KeyboardState protected constructor(open var rawValue: ULong) {
     var isKanaSmall: Boolean
         get() = getFlag(F_IS_KANA_SMALL)
         set(v) { setFlag(F_IS_KANA_SMALL, v) }
+
+    var isCtrlPressed: Boolean
+        get() = getFlag(F_IS_CTRL_PRESSED)
+        set(v) { setFlag(F_IS_CTRL_PRESSED, v) }
 
     var debugShowDragAndDropHelpers: Boolean
         get() = getFlag(F_DEBUG_SHOW_DRAG_AND_DROP_HELPERS)
