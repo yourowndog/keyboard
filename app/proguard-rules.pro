@@ -27,3 +27,13 @@
 
 # @Serializable and @Polymorphic are used at runtime for polymorphic serialization.
 -keepattributes RuntimeVisibleAnnotations,AnnotationDefault
+
+# -------------------------------------------------------------------------
+# KEEPRULES for JSON Layout Serialization
+# -------------------------------------------------------------------------
+# R8 deletes these classes because they are only instantiated via JSON reflection.
+# We must explicitly keep them to ensure the layouts render in Release builds.
+
+-keep class dev.patrickgold.florisboard.ime.text.keyboard.** { *; }
+-keep class dev.patrickgold.florisboard.ime.keyboard.KeyData { *; }
+-keep class dev.patrickgold.florisboard.ime.keyboard.Case* { *; }
