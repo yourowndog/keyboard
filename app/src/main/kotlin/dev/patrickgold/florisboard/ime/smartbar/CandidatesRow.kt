@@ -86,22 +86,9 @@ fun CandidatesRow(modifier: Modifier = Modifier) {
             .conditional(list.size > 1) {
                 florisHorizontalScroll(scrollbarHeight = CandidatesRowScrollbarHeight)
             },
-        horizontalArrangement = if (list.size > 1) {
-            Arrangement.Start
-        } else {
-            Arrangement.Center
-        },
+        horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
         list.forEachIndexed { index, candidate ->
-            if (index > 0) {
-                SnyggSpacer(
-                    elementName = FlorisImeUi.SmartbarCandidateSpacer.elementName,
-                    modifier = Modifier
-                        .width(1.dp)
-                        .fillMaxHeight(0.6f)
-                        .align(Alignment.CenterVertically),
-                )
-            }
             val candidateModifier = Modifier
                 .fillMaxHeight()
                 .wrapContentWidth()

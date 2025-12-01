@@ -52,6 +52,14 @@
     "background": "var(--primary-variant)",
     "foreground": "var(--on-surface)"
   },
+  "key[code=-1]": {
+    "background": "var(--primary)",
+    "foreground": "var(--on-surface)"
+  },
+  "key[code=-1]:pressed": {
+    "background": "var(--primary-variant)",
+    "foreground": "var(--on-surface)"
+  },
   "key[code=-1]:focus": {
     "background": "var(--primary)",
     "foreground": "var(--on-surface)"

@@ -253,21 +253,26 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         val text = candidate.text.toString()
         if (text.isEmpty() || activeInfo.isRawInputEditor) return false
         val content = activeContent
+        
+        // We append a space to the candidate to match iOS/Gboard behavior (immediate separation).
+        val textWithSpace = "$text$SPACE"
+        
         return if (content.composing.isValid) {
             val original = content.composingText
             phantomSpace.setActive(showComposingRegion = false, candidate = candidate)
-            super.finalizeComposingText(text).also {
+            super.finalizeComposingText(textWithSpace).also {
                 if (original.isNotEmpty() && text != original) {
+                    // Track the word WITHOUT the space for the undo state, so our "trailing match" logic handles the space.
                     autoCorrectUndoState = AbstractEditorInstance.AutoCorrectUndoState(text, original)
                 }
             }
         } else {
-            val isPhantomSpaceActive = phantomSpace.determine(text)
+            val isPhantomSpaceActive = phantomSpace.determine(textWithSpace)
             phantomSpace.setActive(showComposingRegion = false, candidate = candidate)
             return if (isPhantomSpaceActive) {
-                super.commitText("$SPACE$text")
+                super.commitText("$SPACE$textWithSpace")
             } else {
-                super.commitText(text)
+                super.commitText(textWithSpace)
             }.also {
                 // handled in finalizeComposingText if content.composing.isValid
                 updateLastCommitPosition()
