@@ -462,7 +462,7 @@ class KeyboardManager(
      */
     fun handleArrow(code: Int, count: Int = 1) = editorInstance.apply {
         val isShiftPressed = activeState.isManualSelectionMode || inputEventDispatcher.isPressed(KeyCode.SHIFT)
-        val isCtrlPressed = inputEventDispatcher.isPressed(KeyCode.CTRL)
+        val isCtrlPressed = activeState.isCtrlPressed || inputEventDispatcher.isPressed(KeyCode.CTRL)
         val content = activeContent
         val selection = content.selection
         when (code) {
@@ -685,7 +685,7 @@ class KeyboardManager(
      * Handles a [KeyCode.CTRL] up event.
      */
     private fun handleCtrlUp(data: KeyData) {
-        activeState.isCtrlPressed = false
+        // Keep ctrl latched until the next key press is consumed.
     }
 
     /**
@@ -693,6 +693,40 @@ class KeyboardManager(
      */
     private fun handleCtrlCancel() {
         activeState.isCtrlPressed = false
+    }
+
+    private fun meta(
+        ctrl: Boolean = false,
+        alt: Boolean = false,
+        shift: Boolean = false,
+    ): Int = editorInstance.meta(ctrl = ctrl, alt = alt, shift = shift)
+
+    /**
+     * Maps a character to a hardware [KeyEvent] code for chord dispatch.
+     */
+    private fun keyEventCodeForChar(char: Char): Int? {
+        val upper = char.uppercaseChar()
+        val keyName = when {
+            upper.isLetter() -> "KEYCODE_$upper"
+            upper.isDigit() -> "KEYCODE_$upper"
+            upper == ' ' -> "KEYCODE_SPACE"
+            upper == '\n' -> "KEYCODE_ENTER"
+            else -> return null
+        }
+        return KeyEvent.keyCodeFromString(keyName).takeIf { it != KeyEvent.KEYCODE_UNKNOWN }
+    }
+
+    /**
+     * Sends a ctrl+key chord for character keys and returns true if handled.
+     */
+    private fun sendCtrlChordIfNeeded(data: KeyData): Boolean {
+        if (!activeState.isCtrlPressed) return false
+        if (data.code == KeyCode.CTRL) return false
+        if (data.code !in KeyCode.Spec.CHARACTERS) return false
+        val keyEventCode = keyEventCodeForChar(data.code.toChar()) ?: return false
+        val shiftPressed = inputEventDispatcher.isPressed(KeyCode.SHIFT)
+        val metaState = meta(ctrl = true, shift = shiftPressed)
+        return editorInstance.sendDownUpKeyEvent(keyEventCode, metaState)
     }
 
     /**
@@ -856,6 +890,11 @@ class KeyboardManager(
     }
 
     override fun onInputKeyUp(data: KeyData) = activeState.batchEdit {
+        val shouldConsumeCtrl = activeState.isCtrlPressed && data.code != KeyCode.CTRL
+        if (shouldConsumeCtrl && sendCtrlChordIfNeeded(data)) {
+            activeState.isCtrlPressed = false
+            return@batchEdit
+        }
         when (data.code) {
             KeyCode.ARROW_DOWN,
             KeyCode.ARROW_LEFT,
@@ -960,6 +999,9 @@ class KeyboardManager(
                 if (activeState.imeUiMode == ImeUiMode.MEDIA) {
                     nlpManager.getAutoCommitCandidate()?.let { commitCandidate(it) }
                     editorInstance.commitText(data.asString(isForDisplay = false))
+                    if (shouldConsumeCtrl) {
+                        activeState.isCtrlPressed = false
+                    }
                     return@batchEdit
                 }
                 when (activeState.keyboardMode) {
@@ -997,6 +1039,9 @@ class KeyboardManager(
                     activeState.inputShiftState = InputShiftState.UNSHIFTED
                 }
             }
+        }
+        if (shouldConsumeCtrl) {
+            activeState.isCtrlPressed = false
         }
     }
 

@@ -64,6 +64,13 @@ private val PROJECTIONS_LANGUAGE: Array<String> = arrayOf(
     UserDictionary.Words.LOCALE,
 )
 
+@Entity(tableName = "ignored_autocorrects", primaryKeys = ["original_word", "rejected_word"])
+data class UserDictionaryIgnoreEntry(
+    @ColumnInfo(name = "original_word") val originalWord: String,
+    @ColumnInfo(name = "rejected_word") val rejectedWord: String,
+    @ColumnInfo(name = "count") val count: Int = 1,
+)
+
 @Entity(tableName = WORDS_TABLE)
 data class UserDictionaryEntry(
     @PrimaryKey(autoGenerate = true)
@@ -78,6 +85,18 @@ data class UserDictionaryEntry(
     @ColumnInfo(name = UserDictionary.Words.SHORTCUT)
     val shortcut: String?,
 )
+
+@Dao
+interface UserDictionaryIgnoreDao {
+    @Query("SELECT * FROM ignored_autocorrects WHERE original_word = :original AND rejected_word = :rejected")
+    fun get(original: String, rejected: String): UserDictionaryIgnoreEntry?
+
+    @Insert(onConflict = androidx.room.OnConflictStrategy.REPLACE)
+    fun insert(entry: UserDictionaryIgnoreEntry)
+
+    @Query("UPDATE ignored_autocorrects SET count = count + 1 WHERE original_word = :original AND rejected_word = :rejected")
+    fun increment(original: String, rejected: String)
+}
 
 @Dao
 interface UserDictionaryDao {
@@ -133,6 +152,7 @@ interface UserDictionaryDao {
 
 interface UserDictionaryDatabase {
     fun userDictionaryDao(): UserDictionaryDao
+    fun userDictionaryIgnoreDao(): UserDictionaryIgnoreDao? = null
 
     fun reset()
 
@@ -218,7 +238,7 @@ interface UserDictionaryDatabase {
     }
 }
 
-@Database(entities = [UserDictionaryEntry::class], version = 1)
+@Database(entities = [UserDictionaryEntry::class, UserDictionaryIgnoreEntry::class], version = 2)
 @TypeConverters(FlorisUserDictionaryDatabase.Converters::class)
 abstract class FlorisUserDictionaryDatabase : RoomDatabase(), UserDictionaryDatabase {
     companion object {
@@ -226,6 +246,7 @@ abstract class FlorisUserDictionaryDatabase : RoomDatabase(), UserDictionaryData
     }
 
     abstract override fun userDictionaryDao(): UserDictionaryDao
+    abstract override fun userDictionaryIgnoreDao(): UserDictionaryIgnoreDao?
 
     override fun reset() {
         TODO("Not yet implemented")

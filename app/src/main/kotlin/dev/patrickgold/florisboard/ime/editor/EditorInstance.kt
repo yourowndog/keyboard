@@ -254,8 +254,13 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         if (text.isEmpty() || activeInfo.isRawInputEditor) return false
         val content = activeContent
         return if (content.composing.isValid) {
+            val original = content.composingText
             phantomSpace.setActive(showComposingRegion = false, candidate = candidate)
-            super.finalizeComposingText(text)
+            super.finalizeComposingText(text).also {
+                if (original.isNotEmpty() && text != original) {
+                    autoCorrectUndoState = AbstractEditorInstance.AutoCorrectUndoState(text, original)
+                }
+            }
         } else {
             val isPhantomSpaceActive = phantomSpace.determine(text)
             phantomSpace.setActive(showComposingRegion = false, candidate = candidate)
@@ -588,6 +593,8 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         }
         // Mark that the user rejected the last autocorrect so the next commit of the same token won't be re-corrected.
         dev.patrickgold.florisboard.ime.nlp.SymSpellManager.markNextAsUserRejected()
+        // Learn the ignore pair so it persists
+        dev.patrickgold.florisboard.ime.dictionary.DictionaryManager.default().learnUserIgnore(state.originalText, state.correctedText)
         autoCorrectUndoState = null
         return true
     }

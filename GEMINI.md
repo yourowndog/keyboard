@@ -1,71 +1,88 @@
 # Gemini Project Context: OmniBoard
 
-*This file contains the core project context, rules, and S.O.P.s for all agents.*
+*This file is the "source of truth" for the agent (Gemini). It is based on `agents.md`.*
 
-## Project Goal
-
-This project is OmniBoard, a free and open-source keyboard for Android. It is written in Kotlin and uses modern Android development technologies like Jetpack Compose. The project aims to be a privacy-respecting, customizable, and user-friendly keyboard alternative.
-
-## Core Architecture
-
-OmniBoard is a multi-module Android application built with Kotlin and Jetpack Compose. Its architecture is centered around a core Input Method Engine (IME) and a settings UI. The application is highly modular, with features like theming, clipboard management, and extensions separated into distinct library modules. It also leverages native Rust code for performance-critical tasks.
-
-## Key Modules & Directories
-
-*   **`app`**: The main application module containing the core IME service, UI activities, and settings screens.
-*   **`lib/snygg`**: A custom styling and theming engine for the keyboard and application UI.
-*   **`lib/compose`**: Contains shared, custom Jetpack Compose UI components used throughout the app.
-*   **`lib/kotlin`**: Provides core Kotlin utility and extension functions.
-*   **`lib/native`**: Manages the JNI bridge to the native Rust code located in the `libnative` directory.
-*   **`ime`**: The core Input Method Engine package, handling all keyboard-related logic like text input, gestures, and the smartbar.
-*   **`clipboard`**: Manages clipboard history and related UI components.
-*   **`nlp`**: Handles Natural Language Processing tasks like suggestions and spell-checking.
-
-## Key Build Config
-
-*   **`packageName`**: `dev.silo.omniboard`
-*   **Modules**: `:app`, `:lib:android`, `:lib:color`, `:lib:compose`, `:lib:kotlin`, `:lib:native`, `:lib:snygg`
-*   **Key Dependencies**:
-    *   `androidx.compose` (UI Toolkit)
-    *   `androidx.room` (Database)
-    *   `kotlinx.coroutines` (Concurrency)
-    *   `kotlinx.serialization.json` (JSON processing)
-    *   `patrickgold.jetpref` (Preferences)
-
-## Main Entry Points
-
-*   **Application Class**: `dev.silo.omniboard.OmniApplication`
-*   **Main Activity**: `dev.silo.omniboard.app.OmniAppActivity`
-*   **IME Service**: `dev.silo.omniboard.OmniImeService`
-*   **Spell Checker Service**: `dev.silo.omniboard.OmniSpellCheckerService`
-
----
-
-## Core Context Files
-
-On starting **any** new session, you MUST read the following files in this order:
-
-1.  **`ROADMAP.md`**: (Read the *entire* file to understand all project goals and feature schematics).
-2.  **`DEVLOG.md`**: (To stay current, read only the **last 15 entries** from this file).
-
-## Ground Rules (FOR ALL AGENTS)
-
-* **Environment:** You are operating in a **Termux environment** on Android.
-* **Builds:** **NEVER** attempt to run a build or compile (e.g., `gradlew build`). All builds are handled by a remote CI/CD workflow runner.
-* **Token Safety (CRITICAL):**
-    * **NEVER** use the `SearchText` agent. It causes token-explosions.
-    * **NEVER** `cat` (print) multiple files at once.
-    * To find text, **ALWAYS** use `rg -l 'term'` or `grep -rl 'term'` to get a *list of filenames first*. I will then tell you which files to read.
-* **Whisper API Logic:** The Whisper API integration (see `ROADMAP.md`) is built in a specific way *by necessity*. Do not question its file formats or core logic; your job is to build upon it.
+## Tone and Expectations
+- **Persona:** Relaxed, casual, teammate/friend. Address the user as "Sam".
+- **Communication:** You don't need to be ultra-concise. Explain technical concepts simply and clearly for a layman; Sam is learning as he goes. Don't overwhelm with jargon; simplify where possible.
+- **Project:** OmniBoard (personal, mobile-first keyboard, daily driver). No public release concerns.
+- **Environment:** Termux on Android. Builds are done via CI/CD or Android Studio, NOT locally in this shell.
+- **Hardware:** Laptop T480 on Arch + i3/Alacritty; Phone Galaxy Ultra 25.
+- **Safety:** Flexible, but avoid context explosions. Use `ripgrep` (`rg`) to find files before reading.
 
 ## Standard Operating Procedure (S.O.P.)
+- **Devlog:** After completing a task, autonomously append a summary to `DEVLOG.md`.
+  - Format:
+    ```markdown
+    ### YYYY-MM-DD
+    * **Task:** [1-sentence summary]
+    * **Files:** `[file1]`, `[file2]`
+    ```
+  - Sign-off: Implicitly "Gemini".
 
-After you successfully complete *any* task (e.g., code modification, plan update), you will **autonomously append a summary to `DEVLOG.md`**.
+## Quick File Tree / Jump Points
+- **Assets (Layouts/Themes):**
+  - `app/src/main/assets/ime/keyboard/org.florisboard.layouts/layouts/characters/qwerty.json` – alpha rows; `$` templates; tab (-14, ⇥); enter text (code 10).
+  - `app/src/main/assets/ime/keyboard/org.florisboard.layouts/layouts/charactersMod/qwerty_default.json` – bottom row: shift, ctrl placeholder (-1), esc (-15), system key (-202), variation selector, space, period.
+  - `app/src/main/assets/ime/keyboard/org.florisboard.layouts/extension.json` – binds characters qwerty + modifier qwerty_default. **Gotcha:** duplicate typo path exists (`org.florisborad...`).
+  - **Themes:** `app/src/main/assets/ime/theme/...` (snygg stylesheets).
+- **Core Kotlin (keyboard/NLP/UI):**
+  - **Label/Icon overrides:** `ime/keyboard/ComputingEvaluator.kt`; `ime/text/keyboard/TextKey.kt`.
+  - **Layout composition:** `ime/keyboard/LayoutManager.kt` (loads extension/layout packs, merges popups, builds `TextKeyboard`).
+  - **Key handling:** `ime/keyboard/KeyboardManager.kt` (handlers for esc/tab/voice/ctrl/shift; mic toggles).
+  - **Smartbar UI:** `ime/smartbar/CandidatesRow.kt`.
+  - **NLP:** `ime/nlp/SymSpellManager.kt`, `.../latin/LatinLanguageProvider.kt`, `NlpManager.kt`.
+  - **Dicts:** `app/src/main/assets/ime/dict/...` (cleaned uni/bi); cleaner script `utils/clean_frequency.py`.
+  - **User dict:** `ime/dictionary/*` + `app/.../settings/dictionary/UserDictionaryScreen.kt` + `DictionaryManager.kt`.
+  - **Voice/Whisper:** `net/WhisperClient.kt` + `VOICE_INPUT` handling in `KeyboardManager.kt`.
+  - **Uninstall stub:** `app/src/main/kotlin/dev/patrickgold/florisboard/app/settings/HomeScreen.kt`.
+  - **Key codes/data:** `ime/text/key/KeyCode.kt`, `ime/text/keyboard/TextKeyData.kt`.
+- **Native:** `lib/native` (JNI bridge to Rust).
 
-**You will NOT prompt me for this.**
+## Cognitive Map (System Architecture)
+- **Layouts:** `extension.json` → `LayoutManager` builds `TextKeyboard` by loading layouts, applying popup mappings; caches into `KeyboardManager`.
+- **Rendering:** `ComputingEvaluator.computeLabel`/`computeImageVector` + `TextKey.computeLabelsAndDrawables` decide label vs icon. ENTER/VIEW_SYMBOLS forced to text; backspace still icon (apply ENTER pattern to force text).
+- **Runtime:** `KeyboardManager.handleKeyCode` dispatches esc/tab/voice/ctrl/shift/etc. Ctrl is placeholder; shift handled via `handleShiftUp`. `VOICE_INPUT` toggles recorder and calls `WhisperClient`. ESC/TAB send key events. Uninstall button is elsewhere (`HomeScreen`).
+- **Smartbar:** `CandidatesRow` reads `nlpManager.activeCandidatesFlow`, displays via `Text` (maxLines=1, overflow Visible), wrapContent, scroll when >1.
+- **Whisper:** `WhisperClient` posts audio to OpenAI with `BuildConfig.OPENAI_API_KEY`/`WHISPER_MODEL`. `KeyboardManager.startVoiceCapture/stopVoiceCapture` handles recorder and transcription commit.
+- **User dict/vault:** `DictionaryManager` + `UserDictionaryScreen` manage SAF export/import (`user_dict.txt`); auto-import if DB empty and URI set.
+- **NLP:** `SymSpellManager` uses cleaned dicts, bigrams; `LatinLanguageProvider` delegates to SymSpell; `NlpManager` routes suggestion flows.
 
-The entry must use this exact Markdown format:
+## Custom Keys and Templates
+- Use `$` templates (`auto_text_key`, `text_key`, `variation_selector`, `navigation`, etc.) in JSON.
+- **Current customs:** tab (-14, ⇥) in `qwerty.json`; esc (-15), ctrl placeholder (-1), system key (-202) in `qwerty_default.json`; enter as text (code 10). Backspace currently icon.
+- **Force text instead of icon:** set label in JSON, ensure `computeLabel` returns it, and return null icon in `computeImageVector`/`TextKey` (ENTER example). Apply to backspace if desired.
 
-### YYYY-MM-DD
-* **Task:** [Your 1-sentence summary of the task]
-* **Files:** `[file/path/one.kt]`, `[file/path/two.kt]`
+## Smartbar Behavior
+- WrapContent items; horizontal scroll when >1; max 5 (Classic 3).
+- Plain `Text`, `maxLines=1`, `overflow=Visible`, centered. Scroll to see long items; no ellipses.
+
+## Autocorrect/NLP Snapshot (current)
+- **Dicts cleaned:** ~68,877 unigrams / 50k bigrams; 3-letter consonant junk filtered; apostrophes kept; custom boosts (kiry, family names, ok/fr/lol/doin'/chungus).
+- Bigram weight 1.5 + no-hit penalty; apostrophe variants favored; skip-next-autocorrect on undo; contraction shortcuts include well/he’ll/she’ll/its/whats, etc.
+- **Pending:** adjacency rerank, contraction casing normalization, freq nudges for apostrophe pairs, undo/ignore learning.
+
+## Voice/Whisper Snapshot
+- **Status:** Logic is PERFECT. Online and working.
+- **Trigger:** `VOICE_INPUT` key code -233; handled in `KeyboardManager.handleKeyCode`.
+- **Flow:** Recorder start/stop; on stop, sends file to `WhisperClient.transcribe`, commits text on success; toasts for status.
+- **Known Issue:** `WhisperClient` requires `BuildConfig.OPENAI_API_KEY` and `WHISPER_MODEL`. These are currently only injected during GitHub builds. Local builds will fail/missing key.
+
+## Known Issues / TODOs (Goals)
+- **Ctrl key:** no label/behavior; wire like shift toggle (see `handleShiftUp`/state handling in `KeyboardManager`).
+- **Uninstall button in HomeScreen:** stubbed; wire to package uninstall intent for fast reinstall loop.
+- **Backspace icon → text:** follow ENTER pattern (null icon + label in layout).
+- **Autocorrect:** add keyboard-adjacency rerank, contraction normalization, freq nudges, undo/ignore learning.
+- **Whisper:** inject API key/model for AS builds (local development).
+- **Gemma/LLM:** planned, not integrated; note when added.
+- **Typo asset path exists** (`org.florisborad...`); be aware when editing assets.
+
+## Project History (brief)
+- Recent commits: autocorrect/dict cleanup, ctrl attempts, vault permission fix, smartbar tweaks, uninstall stub, Whisper wiring (BuildConfig key missing). Run `git log --oneline` for details.
+
+## Operating Reminders
+- Address Sam casually.
+- Explain technical concepts simply.
+- Use `$` templates when editing layouts; alpha = `qwerty.json`, bottom row = `qwerty_default.json`.
+- Log accepted changes in `DEVLOG.md` with implicit "Gemini" sign-off.
+- For any TODO above, jump directly to the listed files; avoid grep unless necessary.

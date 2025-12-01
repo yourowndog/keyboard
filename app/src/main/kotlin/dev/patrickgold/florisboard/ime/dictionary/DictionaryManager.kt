@@ -110,10 +110,34 @@ class DictionaryManager private constructor(context: Context) {
         return ret
     }
 
+    fun learnUserIgnore(original: String, rejected: String) {
+        val dao = florisUserDictionaryIgnoreDao() ?: return
+        val entry = dao.get(original, rejected)
+        if (entry != null) {
+            dao.increment(original, rejected)
+        } else {
+            dao.insert(UserDictionaryIgnoreEntry(original, rejected))
+        }
+    }
+
+    fun isUserIgnored(original: String, rejected: String): Boolean {
+        val dao = florisUserDictionaryIgnoreDao() ?: return false
+        return dao.get(original, rejected) != null
+    }
+
     @Synchronized
     fun florisUserDictionaryDao(): UserDictionaryDao? {
         return if (prefs.dictionary.enableFlorisUserDictionary.get()) {
             florisUserDictionaryDatabase?.userDictionaryDao()
+        } else {
+            null
+        }
+    }
+
+    @Synchronized
+    fun florisUserDictionaryIgnoreDao(): UserDictionaryIgnoreDao? {
+        return if (prefs.dictionary.enableFlorisUserDictionary.get()) {
+            florisUserDictionaryDatabase?.userDictionaryIgnoreDao()
         } else {
             null
         }

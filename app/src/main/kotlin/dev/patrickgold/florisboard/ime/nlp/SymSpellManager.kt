@@ -90,6 +90,9 @@ object SymSpellManager {
     fun init(context: Context, scope: CoroutineScope) {
         scope.launch(Dispatchers.IO) {
             try {
+                // Ensure DictionaryManager is ready
+                dev.patrickgold.florisboard.ime.dictionary.DictionaryManager.init(context)
+
                 // 1. Initialize Engine Configuration
                 val settings = SpellCheckSettings(
                     maxEditDistance = MAX_EDIT_DISTANCE.toDouble(), // FIX: Compiler wants Double
@@ -231,6 +234,11 @@ object SymSpellManager {
         val finalSuggestion = when {
             suggestion == input && apostropheCandidate != null -> apostropheCandidate.term
             else -> suggestion
+        }
+
+        // Check against ignore list
+        if (dev.patrickgold.florisboard.ime.dictionary.DictionaryManager.default().isUserIgnored(input, finalSuggestion)) {
+            return input
         }
 
         // Heuristic: if the user typed multiple uppercase letters (likely an acronym/proper noun)
