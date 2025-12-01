@@ -1,6 +1,7 @@
 [
   [
     { "code": -11, "label": "shift", "type": "modifier" },
+    { "code": -1, "label": "ctrl", "type": "modifier" },
     { "code": 0, "type": "placeholder" }
   ],
   [

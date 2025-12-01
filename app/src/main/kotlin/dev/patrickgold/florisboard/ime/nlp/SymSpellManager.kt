@@ -188,6 +188,11 @@ object SymSpellManager {
     }
 
     fun fix(input: String, previousWord: String? = null): String {
+        // Fast-path for contractions so missing apostrophes don't divert to unrelated words.
+        CONTRACTION_SHORTCUTS[input.lowercase()]?.let { contraction ->
+            return applyCasingPattern(input, contraction)
+        }
+
         if (!isReady) return input
         if (skipNextAutocorrect) {
             skipNextAutocorrect = false
@@ -198,35 +203,44 @@ object SymSpellManager {
         // Do not auto-capitalize lone "i"; keep exactly what the user typed.
         if (input.length == 1) return input
 
-        // Fast-path for contractions so missing apostrophes don't divert to unrelated words.
-        CONTRACTION_SHORTCUTS[input.lowercase()]?.let { contraction ->
-            return applyCasingPattern(input, contraction)
-        }
-
         // Reflexes: Fast correction
         val normalized = input.lowercase()
         val normalizedNoApos = normalized.replace("'", "")
         val suggestions = instance.lookup(normalized, Verbosity.Top, MAX_EDIT_DISTANCE.toDouble())
         val prev = previousWord?.lowercase()
+        // If there is an apostrophe variant that is the same letters without apostrophe, prefer it.
+        val apostropheCandidate = suggestions.firstOrNull { cand ->
+            val candLower = cand.term.lowercase()
+            candLower.contains('\'') && candLower.replace("'", "") == normalizedNoApos
+        }
 
         // Prefer candidates that only differ by a missing apostrophe (treat apostrophes as zero-cost).
         val suggestion = suggestions.minByOrNull { candidate ->
             val candidateNorm = candidate.term.lowercase().replace("'", "")
-            val apostropheBonus = if (candidate.term.contains('\'') && candidateNorm == normalizedNoApos) -1 else 0
+            val apostropheBonus = when {
+                candidate.term.contains('\'') && candidateNorm == normalizedNoApos -> -2  // strongly favor apostrophe variant
+                else -> 0
+            }
             val bigram = bigramBonus(prev, candidate.term.lowercase())
             val bigramBoost = -BIGRAM_WEIGHT * bigram.bonus
             val noHitPenalty = if (prev != null && !bigram.hasHit) BIGRAM_NO_HIT_PENALTY else 0.0
             candidate.distance + apostropheBonus + bigramBoost + noHitPenalty
         }?.term ?: return input
 
+        // If we landed on the original input but have a matching apostrophe candidate, pick that instead.
+        val finalSuggestion = when {
+            suggestion == input && apostropheCandidate != null -> apostropheCandidate.term
+            else -> suggestion
+        }
+
         // Heuristic: if the user typed multiple uppercase letters (likely an acronym/proper noun)
         // and the suggestion doesn't match the same lowercase letters, keep the original.
         val upperCount = input.count { it.isUpperCase() }
-        if (upperCount >= 2 && suggestion.lowercase() != normalized) {
+        if (upperCount >= 2 && finalSuggestion.lowercase() != normalized) {
             return input
         }
 
-        return applyCasingPattern(input, suggestion)
+        return applyCasingPattern(input, finalSuggestion)
     }
 
     fun suggest(input: String, previousWord: String? = null): List<String> {
@@ -248,7 +262,10 @@ object SymSpellManager {
             .sortedBy { candidate ->
                 val candLower = candidate.term.lowercase()
                 val candidateNorm = candLower.replace("'", "")
-                val apostropheBonus = if (candidate.term.contains('\'') && candidateNorm == normalizedNoApos) -1 else 0
+                val apostropheBonus = when {
+                    candidate.term.contains('\'') && candidateNorm == normalizedNoApos -> -2  // favor apostrophe variant
+                    else -> 0
+                }
                 val bigram = bigramBonus(prev, candLower)
                 val bigramBoost = -BIGRAM_WEIGHT * bigram.bonus
                 val noHitPenalty = if (prev != null && !bigram.hasHit) BIGRAM_NO_HIT_PENALTY else 0.0
