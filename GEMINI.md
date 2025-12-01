@@ -58,9 +58,11 @@
 - Plain `Text`, `maxLines=1`, `overflow=Visible`, centered. Scroll to see long items; no ellipses.
 
 ## Autocorrect/NLP Snapshot (current)
-- **Dicts cleaned:** ~68,877 unigrams / 50k bigrams; 3-letter consonant junk filtered; apostrophes kept; custom boosts (kiry, family names, ok/fr/lol/doin'/chungus).
-- Bigram weight 1.5 + no-hit penalty; apostrophe variants favored; skip-next-autocorrect on undo; contraction shortcuts include well/he’ll/she’ll/its/whats, etc.
-- **Pending:** adjacency rerank, contraction casing normalization, freq nudges for apostrophe pairs, undo/ignore learning.
+- **Architecture:** `SymSpellManager` (logic) + `DictionaryManager` (data) + `EditorInstance` (undo/learn loop).
+- **Logic:** QWERTY adjacency reranking (near=0.5, far=2.0); Backspace-Undo learning (`ignored_autocorrects` table); aggressive apostrophe boosts (-20.0) for contractions.
+- **Dicts:** Cleaned unigrams/bigrams; `BLACKLIST` filters "wont"/"hows"; `CONTRACTION_SHORTCUTS` force-corrects "im"->"I'm", "wint"->"won't".
+- **Status:** "Backspace Revert" handles trailing spaces; undo state persists across space commits.
+- **Pending:** Fine-tuning spatial weights?
 
 ## Voice/Whisper Snapshot
 - **Status:** Logic is PERFECT. Online and working.

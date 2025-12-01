@@ -1,18 +1,20 @@
 [
   [
     { "code": -11, "label": "shift", "type": "modifier" },
-    { "code": -1, "label": "CTRL", "type": "modifier" },
     { "code": 0, "type": "placeholder" }
   ],
   [
     { "$": "navigation", "code": -15, "label": "⎋" },
-    { "code": -202, "label": "⚛", "type": "system_gui" },
+    { "code": -1, "label": "CTRL", "type": "modifier" },
     { "$": "variation_selector",
       "default":  { "code":   44, "label": ",", "groupId": 1 },
       "email":    { "code":   64, "label": "@", "groupId": 1 },
       "uri":      { "code":   47, "label": "/", "groupId": 1 }
     },
     { "code":   32, "label": "space" },
-    { "code":   46, "label": ".", "groupId": 2 }
+    { "code":   46, "label": ".", "groupId": 2 },
+    { "$": "navigation", "code": -21 },
+    { "$": "navigation", "code": -24 },
+    { "$": "navigation", "code": -22 }
   ]
 ]

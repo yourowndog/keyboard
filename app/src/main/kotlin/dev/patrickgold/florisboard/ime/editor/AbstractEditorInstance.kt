@@ -416,13 +416,11 @@ abstract class AbstractEditorInstance(context: Context) {
                 selectedText = "",
             )
             expectedContentQueue.push(newContent)
-            autoCorrectUndoState = if (corrected != stripped) {
-                AutoCorrectUndoState(
+            if (corrected != stripped) {
+                autoCorrectUndoState = AutoCorrectUndoState(
                     correctedText = finalText,
                     originalText = stripped + trailing,
                 )
-            } else {
-                null
             }
             // Then use finalText in the commit call
             ic.commitText(finalText, 1)

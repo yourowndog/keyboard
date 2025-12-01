@@ -9,7 +9,8 @@
     { "$": "auto_text_key", "code": 117, "label": "u" },
     { "$": "auto_text_key", "code": 105, "label": "i" },
     { "$": "auto_text_key", "code": 111, "label": "o" },
-    { "$": "auto_text_key", "code": 112, "label": "p" }
+    { "$": "auto_text_key", "code": 112, "label": "p" },
+    { "$": "text_key", "code": -7 }
   ],
   [
     { "$": "text_key", "code": -14, "label": "⇥" },
@@ -22,9 +23,10 @@
     { "$": "auto_text_key", "code": 106, "label": "j" },
     { "$": "auto_text_key", "code": 107, "label": "k" },
     { "$": "auto_text_key", "code": 108, "label": "l" },
-    { "$": "text_key", "code": -7 }
+    { "code": -202, "label": "⚛", "type": "system_gui" }
   ],
   [
+    { "$": "text_key", "code": 47, "label": "/" },
     { "$": "auto_text_key", "code": 122, "label": "z" },
     { "$": "auto_text_key", "code": 120, "label": "x" },
     { "$": "auto_text_key", "code": 99, "label": "c" },
@@ -32,7 +34,7 @@
     { "$": "auto_text_key", "code": 98, "label": "b" },
     { "$": "auto_text_key", "code": 110, "label": "n" },
     { "$": "auto_text_key", "code": 109, "label": "m" },
-    { "$": "text_key", "code": 47, "label": "/" },
+    { "$": "navigation", "code": -23 },
     { "$": "text_key", "code": 10, "label": "↵", "type": "enter_editing" }
   ]
 ]
