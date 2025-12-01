@@ -168,6 +168,7 @@ fun ComputingEvaluator.computeLabel(data: KeyData): String? {
             KeyCode.KESHIDA -> {
                 evaluator.context()?.getString(R.string.key__view_keshida)
             }
+            KeyCode.CTRL -> data.label as? String
             // THIS IS HOW YOU CHANGE THE LABEL OF THESE SPECIAL KEYS! GOOD FOR CUSTOMIZATION!!!!
             // The rendering logic for a key first checks for an `ImageVector` (icon). If the icon
             // is null, it then checks for a `String` label. By making computeImageVector() return

@@ -80,6 +80,13 @@ object SymSpellManager {
     // Tracks whether the last autocorrect was rejected; if so, skip autocorrect once.
     @Volatile private var skipNextAutocorrect = false
 
+    // QWERTY Neighbor Map (Hardcoded for robustness)
+    private val KEYBOARD_NEIGHBORS = mapOf(
+        'q' to "wa", 'w' to "qase", 'e' to "wsdfr", 'r' to "edft", 't' to "rfgy", 'y' to "tghu", 'u' to "yhij", 'i' to "ujko", 'o' to "iklp", 'p' to "ol",
+        'a' to "qwsz", 's' to "qweadzx", 'd' to "ersfcx", 'f' to "rtdgcv", 'g' to "tyfhvb", 'h' to "yugjbn", 'j' to "uikhnm", 'k' to "iojlm", 'l' to "opk",
+        'z' to "asx", 'x' to "zsdc", 'c' to "xdfv", 'v' to "cfgb", 'b' to "vghn", 'n' to "bhjm", 'm' to "njk"
+    )
+
     // Bigram bonus tables for reranking suggestions.
     private val bigramCounts = mutableMapOf<String, MutableMap<String, Int>>()
     private val bigramMaxByPrev = mutableMapOf<String, Int>()
@@ -186,6 +193,24 @@ object SymSpellManager {
         return BigramScore(bonus, true)
     }
 
+    // 0.0 = perfect neighbor match, 2.0 = far away
+    private fun spatialCost(typed: String, candidate: String): Double {
+        if (typed.length != candidate.length) return 0.0 // Only calculating for same-length typos for now
+        var cost = 0.0
+        for (i in typed.indices) {
+            val t = typed[i]
+            val c = candidate[i]
+            if (t == c) continue
+            val neighbors = KEYBOARD_NEIGHBORS[t] ?: ""
+            if (neighbors.contains(c)) {
+                cost += 0.5 // Close miss
+            } else {
+                cost += 2.0 // Far miss
+            }
+        }
+        return cost
+    }
+
     fun markNextAsUserRejected() {
         skipNextAutocorrect = true
     }
@@ -211,6 +236,10 @@ object SymSpellManager {
         val normalizedNoApos = normalized.replace("'", "")
         val suggestions = instance.lookup(normalized, Verbosity.Top, MAX_EDIT_DISTANCE.toDouble())
         val prev = previousWord?.lowercase()
+        
+        // Check against ignore list
+        val ignoreManager = dev.patrickgold.florisboard.ime.dictionary.DictionaryManager.default()
+        
         // If there is an apostrophe variant that is the same letters without apostrophe, prefer it.
         val apostropheCandidate = suggestions.firstOrNull { cand ->
             val candLower = cand.term.lowercase()
@@ -219,15 +248,23 @@ object SymSpellManager {
 
         // Prefer candidates that only differ by a missing apostrophe (treat apostrophes as zero-cost).
         val suggestion = suggestions.minByOrNull { candidate ->
-            val candidateNorm = candidate.term.lowercase().replace("'", "")
+            val term = candidate.term
+            val candidateNorm = term.lowercase().replace("'", "")
+            
+            if (ignoreManager.isUserIgnored(input, term)) return@minByOrNull Double.MAX_VALUE
+            
             val apostropheBonus = when {
-                candidate.term.contains('\'') && candidateNorm == normalizedNoApos -> -2  // strongly favor apostrophe variant
-                else -> 0
+                term.contains('\'') && candidateNorm == normalizedNoApos -> -20.0  // MASSIVE boost for apostrophe variant
+                else -> 0.0
             }
-            val bigram = bigramBonus(prev, candidate.term.lowercase())
-            val bigramBoost = -BIGRAM_WEIGHT * bigram.bonus
+            val bigram = bigramBonus(prev, term.lowercase())
+            val bigramBoost = -BIGRAM_WEIGHT * bigram.bonus * 5.0 // Boost bigram effect
             val noHitPenalty = if (prev != null && !bigram.hasHit) BIGRAM_NO_HIT_PENALTY else 0.0
-            candidate.distance + apostropheBonus + bigramBoost + noHitPenalty
+            
+            // Spatial cost: cheaper if keys are close
+            val spatial = spatialCost(normalized, term.lowercase())
+            
+            candidate.distance + apostropheBonus + bigramBoost + noHitPenalty + spatial
         }?.term ?: return input
 
         // If we landed on the original input but have a matching apostrophe candidate, pick that instead.
@@ -265,19 +302,27 @@ object SymSpellManager {
         val upperCount = input.count { it.isUpperCase() }
         val suggestions = instance.lookup(normalized, Verbosity.Closest, MAX_EDIT_DISTANCE.toDouble())
         val prev = previousWord?.lowercase()
+        val ignoreManager = dev.patrickgold.florisboard.ime.dictionary.DictionaryManager.default()
+
         val contractionTop = CONTRACTION_SHORTCUTS[normalized]?.let { applyCasingPattern(input, it) }
         val mapped = suggestions
             .sortedBy { candidate ->
-                val candLower = candidate.term.lowercase()
+                val term = candidate.term
+                val candLower = term.lowercase()
                 val candidateNorm = candLower.replace("'", "")
-                val apostropheBonus = when {
-                    candidate.term.contains('\'') && candidateNorm == normalizedNoApos -> -2  // favor apostrophe variant
-                    else -> 0
+                
+                if (ignoreManager.isUserIgnored(input, term)) Double.MAX_VALUE else {
+                    val apostropheBonus = when {
+                        term.contains('\'') && candidateNorm == normalizedNoApos -> -20.0  // favor apostrophe variant
+                        else -> 0.0
+                    }
+                    val bigram = bigramBonus(prev, candLower)
+                    val bigramBoost = -BIGRAM_WEIGHT * bigram.bonus * 5.0
+                    val noHitPenalty = if (prev != null && !bigram.hasHit) BIGRAM_NO_HIT_PENALTY else 0.0
+                    val spatial = spatialCost(normalized, candLower)
+                    
+                    candidate.distance + apostropheBonus + bigramBoost + noHitPenalty + spatial
                 }
-                val bigram = bigramBonus(prev, candLower)
-                val bigramBoost = -BIGRAM_WEIGHT * bigram.bonus
-                val noHitPenalty = if (prev != null && !bigram.hasHit) BIGRAM_NO_HIT_PENALTY else 0.0
-                candidate.distance + apostropheBonus + bigramBoost + noHitPenalty
             }
             .mapNotNull { candidate ->
                 val term = candidate.term

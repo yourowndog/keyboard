@@ -161,6 +161,7 @@ class TextKey(override val data: AbstractKeyData) : Key(data) {
                 else -> when (computed.code) {
                     KeyCode.VIEW_CHARACTERS,
                     KeyCode.VIEW_SYMBOLS2 -> 1.56f
+                    KeyCode.CTRL -> 1.30f
                     else -> 1.00f
                 }
             }
