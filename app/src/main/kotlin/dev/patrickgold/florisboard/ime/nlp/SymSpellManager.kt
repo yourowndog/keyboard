@@ -195,7 +195,10 @@ object SymSpellManager {
 
     // 0.0 = perfect neighbor match, 2.0 = far away
     private fun spatialCost(typed: String, candidate: String): Double {
-        if (typed.length != candidate.length) return 0.0 // Only calculating for same-length typos for now
+        // Penalize length differences (insertions/deletions) so substitutions are preferred.
+        // A substitution with a neighbor (0.5) should be cheaper than a deletion (1.0).
+        if (typed.length != candidate.length) return 1.0 
+        
         var cost = 0.0
         for (i in typed.indices) {
             val t = typed[i]

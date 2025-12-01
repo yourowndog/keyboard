@@ -563,24 +563,33 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         if (content.selection.isSelectionMode) return false
         val corrected = state.correctedText
         val before = content.textBeforeSelection
-        val correctedTrimmed = corrected.trimEnd()
-        val effectiveCorrected = when {
-            before.endsWith(corrected) -> corrected
-            correctedTrimmed.isNotEmpty() && before.endsWith(correctedTrimmed) -> correctedTrimmed
-            else -> return false
+        
+        // Check if we are at the end of the corrected word
+        val isExactMatch = before.endsWith(corrected)
+        
+        // Check if we are at the corrected word + 1 char (e.g. space)
+        // This allows "win " -> Backspace -> "wint " (restores word AND keeps space)
+        val isTrailingMatch = before.length > corrected.length && 
+                              before.endsWith(corrected) == false && 
+                              before.dropLast(1).endsWith(corrected)
+
+        if (!isExactMatch && !isTrailingMatch) {
+             return false
         }
-        val trimmedLen = effectiveCorrected.length
-        if (trimmedLen <= 0) {
-            return false
-        }
+        
+        val matchLen = if (isExactMatch) corrected.length else corrected.length + 1
+        // If we are reverting a trailing match (word + space), we must restore the space too.
+        // We grab the trailing char from 'before' to ensure we restore the exact separator used.
+        val textToRestore = if (isExactMatch) state.originalText else state.originalText + before.takeLast(1)
+        
         val ic = currentInputConnection() ?: return false
-        val newTextBefore = before.dropLast(trimmedLen) + state.originalText
+        val newTextBefore = before.dropLast(matchLen) + textToRestore
         val newSelection = EditorRange.cursor(newTextBefore.length)
         runBlocking {
             ic.beginBatchEdit()
             ic.finishComposingText()
-            ic.deleteSurroundingText(trimmedLen, 0)
-            ic.commitText(state.originalText, 1)
+            ic.deleteSurroundingText(matchLen, 0)
+            ic.commitText(textToRestore, 1)
             ic.endBatchEdit()
             expectedContentQueue.push(
                 content.generateCopy(

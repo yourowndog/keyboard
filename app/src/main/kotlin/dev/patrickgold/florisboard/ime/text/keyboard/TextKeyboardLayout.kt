@@ -323,6 +323,7 @@ private fun TextKeyButton(
     val selector = when {
         !key.isEnabled -> SnyggSelector.DISABLED
         key.isPressed -> SnyggSelector.PRESSED
+        key.computedData.code == KeyCode.CTRL && evaluator.state.isCtrlPressed -> SnyggSelector.FOCUS
         else -> SnyggSelector.NONE
     }
     val size = remember(key, desiredKey) {
