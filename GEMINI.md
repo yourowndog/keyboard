@@ -74,6 +74,11 @@
 - **Flow:** Recorder start/stop; on stop, sends file to `WhisperClient.transcribe`, commits text on success; toasts for status.
 - **Known Issue:** `WhisperClient` requires `BuildConfig.OPENAI_API_KEY` and `WHISPER_MODEL`. These are currently only injected during GitHub builds. Local builds will fail/missing key.
 
+## Gemma / LLM Snapshot
+- **Model Path (Device):** `/data/local/tmp/Gemma2-2B-IT_multi-prefill-seq_q8_ekv1280.task`
+- **Integration:** `ime/nlp/GemmaBridge.kt` (checks for this file).
+- **Status:** Code exists (`GemmaBridge`) but is currently dormant/untested.
+
 ## Known Issues / TODOs (Goals)
 - **Backspace icon → text:** follow ENTER pattern (null icon + label in layout).
 - **Gemma/LLM:** planned, not integrated; note when added.
