@@ -348,6 +348,13 @@
         "modifier": "org.florisboard.layouts:qwerty_default"
       },
       {
+        "id": "qwerty_wide",
+        "label": "QWERTY Wide",
+        "authors": [ "Sam/Codex" ],
+        "direction": "ltr",
+        "modifier": "org.florisboard.layouts:qwerty_wide_default"
+      },
+      {
         "id": "qwertz",
         "label": "QWERTZ",
         "authors": [ "patrickgold" ],

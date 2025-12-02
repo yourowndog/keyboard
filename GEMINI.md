@@ -75,11 +75,7 @@
 - **Known Issue:** `WhisperClient` requires `BuildConfig.OPENAI_API_KEY` and `WHISPER_MODEL`. These are currently only injected during GitHub builds. Local builds will fail/missing key.
 
 ## Known Issues / TODOs (Goals)
-- **Ctrl key:** no label/behavior; wire like shift toggle (see `handleShiftUp`/state handling in `KeyboardManager`).
-- **Uninstall button in HomeScreen:** stubbed; wire to package uninstall intent for fast reinstall loop.
 - **Backspace icon → text:** follow ENTER pattern (null icon + label in layout).
-- **Autocorrect:** add keyboard-adjacency rerank, contraction normalization, freq nudges, undo/ignore learning.
-- **Whisper:** inject API key/model for AS builds (local development).
 - **Gemma/LLM:** planned, not integrated; note when added.
 - **Typo asset path exists** (`org.florisborad...`); be aware when editing assets.
 
