@@ -17,3 +17,5 @@
 package org.florisboard.libnative
 
 external fun dummyAdd(a: Int, b: Int): Int
+
+external fun checkModelPath(path: String): Boolean

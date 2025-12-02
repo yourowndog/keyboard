@@ -42,6 +42,7 @@ import org.florisboard.lib.android.AndroidVersion
 import org.florisboard.lib.android.showLongToast
 import org.florisboard.lib.compose.stringRes
 import org.florisboard.lib.android.showLongToastSync
+import org.florisboard.libnative.checkModelPath
 
 class DebugOnPurposeCrashException : Exception(
     "Success! The app crashed purposely to display this beautiful screen we all love :)"
@@ -67,6 +68,22 @@ fun DevtoolsScreen() = FlorisScreen {
         )
 
         PreferenceGroup(title = stringRes(R.string.devtools__title)) {
+            Preference(
+                title = "Check Local Brain",
+                summary = "Verifies /data/local/tmp/Gemma... exists via Rust",
+                onClick = {
+                    scope.launch {
+                        try {
+                            val path = "/data/local/tmp/Gemma2-2B-IT_multi-prefill-seq_q8_ekv1280.task"
+                            val exists = checkModelPath(path)
+                            context.showLongToastSync("Brain Status: $exists")
+                        } catch (e: Throwable) {
+                            context.showLongToastSync("Brain Error: ${e.message}")
+                        }
+                    }
+                },
+                enabledIf = { prefs.devtools.enabled isEqualTo true },
+            )
             SwitchPreference(
                 prefs.devtools.showPrimaryClip,
                 title = stringRes(R.string.devtools__show_primary_clip__label),
