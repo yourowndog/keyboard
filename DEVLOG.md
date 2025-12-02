@@ -24,3 +24,8 @@
 * **Task:** Add alt “QWERTY Wide” layout (safe alongside default).
 * **Files:** `app/src/main/assets/ime/keyboard/org.florisboard.layouts/layouts/characters/qwerty_wide.json`, `app/src/main/assets/ime/keyboard/org.florisboard.layouts/layouts/charactersMod/qwerty_wide_default.json`, `app/src/main/assets/ime/keyboard/org.florisboard.layouts/extension.json`
 * **Notes:** New layout mirrors requested rows (alpha-only rows; Shift row: “Shift , Space . ↑ Del”; bottom row: “Ctrl Esc Mod ← ↓ → Enter”). Added as a new entry (`qwerty_wide`) so existing default stays untouched and selectable. – Codex
+
+### 2025-12-01
+* **Task:** Add subtype presets for quick QWERTY Wide selection.
+* **Files:** `app/src/main/assets/ime/keyboard/org.florisboard.localization/extension.json`
+* **Notes:** Added wide variants for en-US/UK/CA/AU and bumped version so preset dialog shows both standard and wide; default presets remain unchanged. – Codex
