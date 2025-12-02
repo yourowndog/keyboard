@@ -135,7 +135,7 @@ private fun CandidateItem(
         selector = selector,
         modifier = modifier
             .padding(horizontal = 8.dp, vertical = 4.dp)
-            .pointerInput(Unit) {
+            .pointerInput(onClick) {
                 awaitEachGesture {
                     val down = awaitFirstDown()
                     isPressed = true

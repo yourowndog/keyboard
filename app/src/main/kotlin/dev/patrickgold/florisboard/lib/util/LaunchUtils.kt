@@ -19,6 +19,7 @@ package dev.patrickgold.florisboard.lib.util
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.widget.Toast
 import androidx.annotation.StringRes
 import dev.patrickgold.florisboard.R
@@ -65,6 +66,22 @@ inline fun <T : Any> Context.launchActivity(kClass: KClass<T>, intentModifier: (
         intentModifier(intent)
         this.startActivity(intent)
     } catch (e: ActivityNotFoundException) {
+        flogError { e.toString() }
+        Toast.makeText(this, e.localizedMessage, Toast.LENGTH_LONG).show()
+    }
+}
+
+/**
+ * Launches the system uninstall flow for this app package.
+ */
+fun Context.launchAppSelfUninstall() {
+    try {
+        val intent = Intent(Intent.ACTION_DELETE).apply {
+            data = Uri.parse("package:$packageName")
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+        startActivity(intent)
+    } catch (e: Exception) {
         flogError { e.toString() }
         Toast.makeText(this, e.localizedMessage, Toast.LENGTH_LONG).show()
     }

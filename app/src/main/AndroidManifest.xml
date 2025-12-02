@@ -14,6 +14,9 @@
     <!-- Permission needed to connect to the internet for voice input -->
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!-- Permission needed to request uninstall of the app on Android 9+ -->
+    <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
+
     <!-- Android 11+ only: Define that FlorisBoard requests to see all apps that
           ship with an IME or Spell Check service. This is used to guide the user
           in the Settings Ui why FlorisBoard may not be working.

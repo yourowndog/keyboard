@@ -1025,7 +1025,8 @@ class KeyboardManager(
                     else -> when (data.type) {
                         KeyType.CHARACTER, KeyType.NUMERIC ->{
                             val text = data.asString(isForDisplay = false)
-                            if (!UCharacter.isUAlphabetic(UCharacter.codePointAt(text, 0))) {
+                            val isNumber = text.isNotEmpty() && text.all { it.isDigit() }
+                            if (!UCharacter.isUAlphabetic(UCharacter.codePointAt(text, 0)) && !isNumber) {
                                 nlpManager.getAutoCommitCandidate()?.let { commitCandidate(it) }
                             }
                             editorInstance.commitChar(text)

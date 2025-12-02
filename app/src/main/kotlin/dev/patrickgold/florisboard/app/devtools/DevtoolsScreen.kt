@@ -31,6 +31,7 @@ import dev.patrickgold.florisboard.ime.dictionary.FlorisUserDictionaryDatabase
 import dev.patrickgold.florisboard.ime.smartbar.quickaction.QuickActionArrangement
 import dev.patrickgold.florisboard.lib.compose.FlorisConfirmDeleteDialog
 import dev.patrickgold.florisboard.lib.compose.FlorisScreen
+import dev.patrickgold.florisboard.lib.util.launchAppSelfUninstall
 import dev.patrickgold.jetpref.datastore.model.observeAsState
 import dev.patrickgold.jetpref.datastore.ui.Preference
 import dev.patrickgold.jetpref.datastore.ui.PreferenceGroup
@@ -124,6 +125,12 @@ fun DevtoolsScreen() = FlorisScreen {
                 title = stringRes(R.string.devtools__reset_flag__label, "flag_name" to "isImeSetUp"),
                 summary = stringRes(R.string.devtools__reset_flag_is_ime_set_up__summary),
                 onClick = { scope.launch { prefs.internal.isImeSetUp.set(false) } },
+                enabledIf = { prefs.devtools.enabled isEqualTo true },
+            )
+            Preference(
+                title = "Uninstall FlorisBoard",
+                summary = "Quickly remove this build",
+                onClick = { context.launchAppSelfUninstall() },
                 enabledIf = { prefs.devtools.enabled isEqualTo true },
             )
             Preference(

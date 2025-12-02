@@ -16,11 +16,6 @@
  */
 
 package dev.patrickgold.florisboard.app.settings
-
-import android.content.Intent
-import android.net.Uri
-import android.provider.Settings
-import android.widget.Toast
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Assignment
@@ -45,6 +40,7 @@ import dev.patrickgold.florisboard.app.LocalNavController
 import dev.patrickgold.florisboard.app.Routes
 import dev.patrickgold.florisboard.lib.compose.FlorisScreen
 import dev.patrickgold.florisboard.lib.util.InputMethodUtils
+import dev.patrickgold.florisboard.lib.util.launchAppSelfUninstall
 import dev.patrickgold.jetpref.datastore.model.observeAsState
 import dev.patrickgold.jetpref.datastore.ui.Preference
 import org.florisboard.lib.compose.FlorisErrorCard
@@ -176,18 +172,7 @@ fun HomeScreen() = FlorisScreen {
             icon = Icons.Default.Delete,
             title = stringRes(R.string.settings__home__uninstall),
             onClick = {
-                // Launch the system uninstall flow for this package
-                val packageUri = Uri.fromParts("package", context.packageName, null)
-                val intent = Intent(Intent.ACTION_UNINSTALL_PACKAGE, packageUri).apply {
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                }
-                runCatching { context.startActivity(intent) }
-                    .onFailure {
-                        val fallback = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, packageUri)
-                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        runCatching { context.startActivity(fallback) }
-                            .onFailure { Toast.makeText(context, "Not available", Toast.LENGTH_SHORT).show() }
-                    }
+                context.launchAppSelfUninstall()
             },
         )
     }
