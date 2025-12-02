@@ -2,7 +2,7 @@
   "$": "ime.extension.keyboard",
   "meta": {
     "id": "org.florisboard.localization",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "title": "Default subtype presets / popup mappings",
     "description": "Trimmed to English presets and popup mappings only.",
     "maintainers": [ "patrickgold <patrick@patrickgold.dev>" ],
@@ -56,6 +56,34 @@
       "currencySet": "org.florisboard.currencysets:dollar",
       "popupMapping": "org.florisboard.localization:en",
       "preferred": { "characters": "org.florisboard.layouts:qwerty" }
+    },
+    {
+      "languageTag": "en-US",
+      "composer": "org.florisboard.composers:appender",
+      "currencySet": "org.florisboard.currencysets:dollar",
+      "popupMapping": "org.florisboard.localization:en",
+      "preferred": { "characters": "org.florisboard.layouts:qwerty_wide" }
+    },
+    {
+      "languageTag": "en-UK",
+      "composer": "org.florisboard.composers:appender",
+      "currencySet": "org.florisboard.currencysets:pound",
+      "popupMapping": "org.florisboard.localization:en",
+      "preferred": { "characters": "org.florisboard.layouts:qwerty_wide" }
+    },
+    {
+      "languageTag": "en-CA",
+      "composer": "org.florisboard.composers:appender",
+      "currencySet": "org.florisboard.currencysets:dollar",
+      "popupMapping": "org.florisboard.localization:en",
+      "preferred": { "characters": "org.florisboard.layouts:qwerty_wide" }
+    },
+    {
+      "languageTag": "en-AU",
+      "composer": "org.florisboard.composers:appender",
+      "currencySet": "org.florisboard.currencysets:dollar",
+      "popupMapping": "org.florisboard.localization:en",
+      "preferred": { "characters": "org.florisboard.layouts:qwerty_wide" }
     }
   ]
 }

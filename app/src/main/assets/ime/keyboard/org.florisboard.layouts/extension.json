@@ -508,6 +508,12 @@
         "direction": "ltr"
       },
       {
+        "id": "qwerty_wide_default",
+        "label": "QWERTY Wide default character modifier layout",
+        "authors": [ "Sam/Codex" ],
+        "direction": "ltr"
+      },
+      {
         "id": "armenian",
         "label": "Armenian",
         "authors": [ "PJTSearch" ],
