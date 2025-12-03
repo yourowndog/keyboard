@@ -128,8 +128,7 @@ class TextKey(override val data: AbstractKeyData) : Key(data) {
                 KeyboardMode.PHONE2 -> 1.0f
                 else -> when (computed.code) {
                     KeyCode.SHIFT,
-                    KeyCode.DELETE,
-                    KeyCode.TAB -> 1.5f
+                    KeyCode.DELETE -> 1.5f
                     KeyCode.VIEW_CHARACTERS,
                     KeyCode.VIEW_SYMBOLS,
                     KeyCode.VIEW_SYMBOLS2,
@@ -163,8 +162,7 @@ class TextKey(override val data: AbstractKeyData) : Key(data) {
                     KeyCode.VIEW_CHARACTERS,
                     KeyCode.VIEW_SYMBOLS2 -> 1.56f
                     KeyCode.SHIFT,
-                    KeyCode.DELETE,
-                    KeyCode.TAB -> 1.25f
+                    KeyCode.ENTER -> 1.25f
                     KeyCode.CTRL -> 1.30f
                     else -> 1.00f
                 }
