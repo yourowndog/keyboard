@@ -10,7 +10,7 @@
   3. **Then Code:** Only present the diff/tool call after setting the stage.
 - **Communication:** Explain concepts simply. Don't overwhelm with jargon.
 - **Project:** OmniBoard (personal, mobile-first keyboard, daily driver). No public release concerns.
-- **Environment:** Termux on Android. Builds are done via CI/CD or Android Studio, NOT locally in this shell.
+- **Environment:** Termux on Android. Builds are done via CI/CD, Android Studio, or the **Remote Build Factory**.
 - **Hardware:** Laptop T480 on Arch + i3/Alacritty; Phone Galaxy Ultra 25.
 - **Safety:** Flexible, but avoid context explosions. Use `ripgrep` (`rg`) to find files before reading.
 
@@ -23,6 +23,18 @@
     * **Files:** `[file1]`, `[file2]`
     ```
   - Sign-off: Implicitly "Gemini".
+
+## Remote Build Factory (CI/CD)
+**Context:** When phone-only (no local Android Studio), we use a remote server to build.
+- **Trigger:** `git push factory dev` (pushes `dev` branch to `factory` remote).
+- **Result:** Factory builds APK and hosts it.
+- **Download URL:** `http://142.93.94.124:8000/app-debug.apk`
+- **Branch Policy:**
+  - `main` = Stable. Do NOT push experimental work here.
+  - `dev` = Working branch. Factory builds from this.
+- **Agent Constraints:**
+  - Do NOT attempt to redesign this architecture.
+  - Do NOT modify server paths (e.g., `/home/silo/...`) unless explicitly debugging the factory hook itself.
 
 ## Quick File Tree / Jump Points
 - **Assets (Layouts/Themes):**

@@ -29,3 +29,31 @@
 * **Task:** Add subtype presets for quick QWERTY Wide selection.
 * **Files:** `app/src/main/assets/ime/keyboard/org.florisboard.localization/extension.json`
 * **Notes:** Added wide variants for en-US/UK/CA/AU and bumped version so preset dialog shows both standard and wide; default presets remain unchanged. – Codex
+
+### 2025-12-01
+* **Task:** Bump layouts extension version for wide layout discovery.
+* **Files:** `app/src/main/assets/ime/keyboard/org.florisboard.layouts/extension.json`
+* **Notes:** Version 0.1.3 to force reload of bundled layouts so `qwerty_wide` + modifier are discoverable. – Codex
+
+### 2025-12-01
+* **Task:** Fix wide layout assets/merge.
+* **Files:** `app/src/main/assets/ime/keyboard/org.florisboard.layouts/layouts/characters/qwerty_wide.json`, `app/src/main/assets/ime/keyboard/org.florisboard.layouts/layouts/charactersMod/qwerty_wide_default.json`, `app/src/main/assets/ime/keyboard/org.florisboard.layouts/extension.json`
+* **Notes:** Moved alpha layout into repo path; added placeholder-only mod row so third alpha row renders; removed duplicate mod entry and bumped extension to 0.1.3. – Codex
+
+### 2025-12-03
+* **Task:** Fixed 5-row wide layout using "Split Strategy" (Main + Mod with placeholder).
+* **Files:** `qwerty_wide.json`, `qwerty_wide_mod.json`, `layouts/extension.json`, `localization/extension.json`
+* **Notes:** Split layout into main (4 rows) and mod (2 rows). Row 1 of mod is a placeholder to inject the shift/space row. Row 2 is the custom ctrl/arrow row. Updated extension registry to link them properly. – Gemini
+
+### 2025-12-03
+* **Task:** Refined QWERTY Wide key mappings and labels.
+* **Files:** `qwerty_wide.json`, `qwerty_wide_mod.json`
+* **Notes:** Filled Row 3 gaps with Tab, /, and @. Added Up arrow to Row 4. Fixed Row 5: Esc label (⎋), added Nuclear/Mod key (-202), and fixed Enter label (↵). – Gemini
+
+### 2025-12-03
+* **Task:** Reshuffled Wide Layout for better ergonomics.
+* **Files:** `qwerty_wide.json`, `qwerty_wide_mod.json`
+* **Notes:**
+    *   **Row 3:** Shift | z x c v b n m | Del (Backpsace).
+    *   **Row 4:** Tab | , | Space | . | Up | Enter.
+    *   **Row 5:** Ctrl | Esc | Mod | Left | Down | Right. – Gemini
