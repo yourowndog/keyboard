@@ -1,0 +1,17 @@
+[
+  [
+    { "code": 0, "type": "placeholder" }
+  ],
+  [
+    { "code": -202, "label": "⚛", "type": "system_gui" },
+    { "$": "text_key", "code": 64, "label": "@" },
+    { "$": "text_key", "code": 126, "label": "~" },
+    { "$": "text_key", "code": 34, "label": "\"" },
+    { "$": "text_key", "code": 59, "label": ";" },
+    { "$": "text_key", "code": 45, "label": "-" },
+    { "$": "text_key", "code": 95, "label": "_" },
+    { "$": "navigation", "code": -21 },
+    { "$": "navigation", "code": -24 },
+    { "$": "navigation", "code": -22 }
+  ]
+]

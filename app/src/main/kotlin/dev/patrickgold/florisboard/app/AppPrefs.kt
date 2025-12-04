@@ -416,7 +416,7 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
         )
         val hapticVibrationMode = enum(
             key = "input_feedback__haptic_vibration_mode",
-            default = HapticVibrationMode.USE_VIBRATOR_DIRECTLY,
+            default = HapticVibrationMode.USE_HAPTIC_FEEDBACK_INTERFACE,
         )
         val hapticVibrationDuration = int(
             key = "input_feedback__haptic_vibration_duration",
