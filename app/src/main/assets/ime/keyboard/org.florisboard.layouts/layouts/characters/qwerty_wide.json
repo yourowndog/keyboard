@@ -39,10 +39,12 @@
   ],
   [
     { "code": -1, "label": "CTRL", "type": "modifier" },
+    { "$": "text_key", "code": -131 },
     { "$": "text_key", "code": 44, "label": "," },
     { "$": "text_key", "code": 32, "label": "space" },
     { "$": "text_key", "code": 46, "label": "." },
+    { "$": "text_key", "code": -27, "label": "«" },
     { "$": "navigation", "code": -23 },
-    { "$": "text_key", "code": -33, "label": "📋" }
+    { "$": "text_key", "code": -28, "label": "»" }
   ]
 ]
