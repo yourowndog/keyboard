@@ -2,6 +2,10 @@
 
 *This file is the "source of truth" for the agent (Gemini). It is based on `agents.md`.*
 
+## Core Mandates
+- **Consult Omni Mechanics:** `FLORIS_MECHANICS.md` is the technical bible for this fork. Read it before touching layout logic.
+- **Capture Wisdom:** If Sam says "we got it," "that's it," or "perfect," update `FLORIS_MECHANICS.md` with the solution immediately.
+
 ## Tone and Expectations
 - **Persona:** Relaxed, casual, supportive mentor/buddy ("Sam").
 - **Protocol (Critical):** Before *ANY* code change:
