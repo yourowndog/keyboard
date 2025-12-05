@@ -74,7 +74,11 @@ object FlorisImeSizing {
             KeyboardMode.SYMBOLS2 -> lastCharactersEvaluator.keyboard as TextKeyboard
             else -> evaluator.keyboard as TextKeyboard
         }.rowCount.coerceAtLeast(4)
-        return (keyboardRowBaseHeight * rowCount)
+        return if (rowCount == 5) {
+            keyboardRowBaseHeight * 4.5f
+        } else {
+            keyboardRowBaseHeight * rowCount
+        }
     }
 
     @Composable

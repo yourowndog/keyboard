@@ -58,8 +58,22 @@ class TextKeyboard(
         val rowMarginH = abs(desiredTouchBounds.width - desiredVisibleBounds.width)
         val rowMarginV = (keyboardHeight - desiredTouchBounds.height * rowCount.toFloat()) / (rowCount - 1).coerceAtLeast(1).toFloat()
 
+        var currentPosY = 0.0f
         for ((r, row) in rows().withIndex()) {
-            val posY = (desiredTouchBounds.height + rowMarginV) * r
+            val isFiveRowLayout = rowCount == 5
+            val rowHeight = if (isFiveRowLayout) {
+                val baseHeight = keyboardHeight / 4.5f
+                if (r < 3) baseHeight else baseHeight * 0.75f
+            } else {
+                desiredTouchBounds.height
+            }
+
+            val posY = if (isFiveRowLayout) {
+                currentPosY
+            } else {
+                (desiredTouchBounds.height + rowMarginV) * r
+            }
+
             val availableWidth = (keyboardWidth - rowMarginH) / desiredTouchBounds.width
             var requestedWidth = 0.0f
             var shrinkSum = 0.0f
@@ -85,7 +99,7 @@ class TextKeyboard(
                         left = posX
                         top = posY
                         right = posX + keyWidth
-                        bottom = posY + desiredTouchBounds.height
+                        bottom = posY + rowHeight
                     }
                     key.visibleBounds.apply {
                         left = key.touchBounds.left + abs(desiredTouchBounds.left - desiredVisibleBounds.left) + when {
@@ -126,7 +140,7 @@ class TextKeyboard(
                         left = posX
                         top = posY
                         right = posX + keyWidth
-                        bottom = posY + desiredTouchBounds.height
+                        bottom = posY + rowHeight
                     }
                     key.visibleBounds.apply {
                         left = key.touchBounds.left + abs(desiredTouchBounds.left - desiredVisibleBounds.left)
@@ -147,6 +161,9 @@ class TextKeyboard(
                         }
                     }
                 }
+            }
+            if (isFiveRowLayout) {
+                currentPosY += rowHeight
             }
         }
     }

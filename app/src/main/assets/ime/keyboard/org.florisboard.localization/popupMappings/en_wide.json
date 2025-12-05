@@ -1,0 +1,37 @@
+{
+  "all": {
+    "q": { "hint": { "code": 49, "label": "1" } },
+    "w": { "hint": { "code": 50, "label": "2" } },
+    "e": { "hint": { "code": 51, "label": "3" } },
+    "r": { "hint": { "code": 52, "label": "4" } },
+    "t": { "hint": { "code": 53, "label": "5" } },
+    "y": { "hint": { "code": 54, "label": "6" } },
+    "u": { "hint": { "code": 55, "label": "7" } },
+    "i": { "hint": { "code": 56, "label": "8" } },
+    "o": { "hint": { "code": 57, "label": "9" } },
+    "p": { "hint": { "code": 48, "label": "0" } },
+
+    "a": { "hint": { "code": 33, "label": "!" } },
+    "s": { "hint": { "code": 35, "label": "#" } },
+    "d": { "hint": { "code": 36, "label": "$" } },
+    "f": { "hint": { "code": 37, "label": "%" } },
+    "g": { "hint": { "code": 94, "label": "^" } },
+    "h": { "hint": { "code": 40, "label": "(" } },
+    "j": { "hint": { "code": 41, "label": ")" } },
+    "k": { "hint": { "code": 91, "label": "[" } },
+    "l": { "hint": { "code": 93, "label": "]" } },
+
+    "z": { "hint": { "code": 43, "label": "+" } },
+    "x": { "hint": { "code": 61, "label": "=" } },
+    "c": { "hint": { "code": 42, "label": "*" } },
+    "v": { "hint": { "code": 38, "label": "&" } },
+    "b": { "hint": { "code": 92, "label": "\" }, "relevant": [{ "code": 124, "label": "|" }] },
+    "n": { "hint": { "code": 123, "label": "{" } },
+    "m": { "hint": { "code": 125, "label": "}" } },
+    
+    "/": { "hint": { "code": 124, "label": "|" } }, 
+    
+    ".": { "hint": { "code": 63, "label": "?" } },
+    ",": { "hint": { "code": 60, "label": "<" }, "relevant": [{ "code": 62, "label": ">" }] }
+  }
+}

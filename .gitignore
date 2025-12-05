@@ -64,3 +64,11 @@ target/
 
 .gemini/
 gha-creds-*.json
+
+# Gemini specific
+agentic-automation/
+debug_read.py
+generated_code.py
+mission_log.txt
+token_counter.py
+user_dict.txt

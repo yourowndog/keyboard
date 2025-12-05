@@ -38,6 +38,13 @@
       "authors": [
         "patrickgold"
       ]
+    },
+    {
+      "id": "en_wide",
+      "label": "English Wide (Coder)",
+      "authors": [
+        "Sam/Codex"
+      ]
     }
   ],
   "subtypePresets": [
@@ -81,7 +88,7 @@
       "languageTag": "en-US",
       "composer": "org.florisboard.composers:appender",
       "currencySet": "org.florisboard.currencysets:dollar",
-      "popupMapping": "org.florisboard.localization:en",
+      "popupMapping": "org.florisboard.localization:en_wide",
       "preferred": {
         "characters": "org.florisboard.layouts:qwerty_wide"
       }
@@ -90,7 +97,7 @@
       "languageTag": "en-UK",
       "composer": "org.florisboard.composers:appender",
       "currencySet": "org.florisboard.currencysets:pound",
-      "popupMapping": "org.florisboard.localization:en",
+      "popupMapping": "org.florisboard.localization:en_wide",
       "preferred": {
         "characters": "org.florisboard.layouts:qwerty_wide"
       }
@@ -99,7 +106,7 @@
       "languageTag": "en-CA",
       "composer": "org.florisboard.composers:appender",
       "currencySet": "org.florisboard.currencysets:dollar",
-      "popupMapping": "org.florisboard.localization:en",
+      "popupMapping": "org.florisboard.localization:en_wide",
       "preferred": {
         "characters": "org.florisboard.layouts:qwerty_wide"
       }
@@ -108,7 +115,7 @@
       "languageTag": "en-AU",
       "composer": "org.florisboard.composers:appender",
       "currencySet": "org.florisboard.currencysets:dollar",
-      "popupMapping": "org.florisboard.localization:en",
+      "popupMapping": "org.florisboard.localization:en_wide",
       "preferred": {
         "characters": "org.florisboard.layouts:qwerty_wide"
       }
