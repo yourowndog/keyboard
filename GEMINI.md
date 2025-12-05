@@ -24,6 +24,16 @@
     ```
   - Sign-off: Implicitly "Gemini".
 
+## SNYGG Theme Iteration Routine
+**Target:** `lcars.flex` (Zip archive containing themes)
+
+**Protocol:**
+1.  **Unzip:** Extract `lcars.flex` to `.gemini/tmp/lcars_work/`.
+2.  **Edit:** Modify target theme files (e.g., `stylesheets/lcars_ops.json`).
+3.  **Repack:** Zip contents of `.gemini/tmp/lcars_work/` back to `lcars.flex`.
+    *   *Command:* `cd .gemini/tmp/lcars_work && zip -r ../../../lcars.flex .`
+4.  **Cleanup:** Remove `.gemini/tmp/lcars_work/`.
+
 ## Remote Build Factory (CI/CD)
 **Context:** When phone-only (no local Android Studio), we use a remote server to build.
 - **Trigger:** `git push factory dev` (pushes `dev` branch to `factory` remote).

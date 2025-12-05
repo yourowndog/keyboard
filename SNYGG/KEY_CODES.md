@@ -8,8 +8,8 @@ These codes are used in layout definitions (`.json` files) and theme rules (Snyg
 |---|---|---|
 | UNSPECIFIED | 0 | Default / Null state |
 | ENTER | 10 | Enter / Return |
-| TAB | 9 | Tab key |
-| ESCAPE | 27 | Escape key |
+| TAB | -14 | Tab key |
+| ESCAPE | -15 | Escape key |
 | SPACE | 32 | Standard Space bar |
 | CTRL | -1 | Control Key |
 | CTRL_LOCK | -2 | Control Lock |

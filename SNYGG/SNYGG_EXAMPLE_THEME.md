@@ -343,8 +343,7 @@ This is the actual theme file for "catppuccin_mocha" extracted from the .flex fi
     "shape": "var(--shape)"
   },
   "smartbar-candidate-spacer": {
-    "background": "var(--spacer-color)",
-    "height": "1dp"
+    "background": "var(--spacer-color)"
   },
   "inline-autofill-chip": {
     "background": "var(--surface)",
@@ -971,7 +970,7 @@ Candidate words – text only, transparent background.
 
 Clipboard candidate – pill with surface background.
 
-Spacer – thin 1dp line using --spacer-color.
+Spacer – vertical divider using --spacer-color.
 
 Autofill chip – pill shaped suggestion for autofill.
 
