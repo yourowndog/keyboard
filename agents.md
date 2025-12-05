@@ -89,3 +89,11 @@
 - Use `$` templates when editing layouts; alpha = `qwerty.json`, bottom row = `qwerty_default.json`.
 - Log accepted changes in `DEVLOG.md` with “– Codex.”
 - For any TODO above, jump directly to the listed files; avoid grep unless necessary.
+
+## Key Sizing & Width Tuning
+- **Logic:** Key widths are controlled in `TextKey.kt` -> `flayWidthFactor`.
+- **Standard:** Default is `1.0f`.
+- **Wide Keys:** Shift/Enter set to `1.25f` for emphasis.
+- **Narrow Keys:** Nav cluster (Arrows/Home/End) set to `0.8f` to save space.
+- **Spacebar:** Automatically expands (`flayGrow = 1.0f`) to fill width saved by narrowing other keys.
+- **To Adjust:** Add `KeyCode` to the `when` block in `TextKey.kt` with the desired float factor.
