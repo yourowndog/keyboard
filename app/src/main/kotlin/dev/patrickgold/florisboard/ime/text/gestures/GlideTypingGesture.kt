@@ -90,6 +90,7 @@ class GlideTypingGesture {
                             flogDebug { "Distance glided: $dist dp with velocity: ${dist / time} dp/ms" }
                             if (dist > keySize && (dist / time) > VELOCITY_THRESHOLD && (initialKey?.computedData?.code !in SWIPE_GESTURE_KEYS)) {
                                 pointerData.isActuallyGesture = true
+                                android.util.Log.d("SWIPE_PROBE", "Gesture Detected! Distance: $dist")
                                 // Let listener know all those points need to be added.
                                 pointerData.positions.take(pointerData.positions.size - 1).forEach { point ->
                                     listeners.forEach {

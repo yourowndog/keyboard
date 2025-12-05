@@ -151,6 +151,7 @@ class StatisticalGlideTypingClassifier(context: Context) : GlideTypingClassifier
         }
 
         this.words = nlpManager.getListOfWords(subtype)
+        android.util.Log.d("SWIPE_PROBE", "Word data loaded. Count: ${this.words.size}")
 
         this.wordDataSubtype = subtype
         if (wordDataSubtype == layoutSubtype) {
