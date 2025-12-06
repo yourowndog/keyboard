@@ -963,7 +963,7 @@
         "authors": [
           "Clem0908"
         ],
-        "direction": "ltr"
+        "direction":.ltr"
       },
       {
         "id": "telugu",
