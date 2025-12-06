@@ -548,7 +548,7 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
         )
         val heightFactorPortrait = int(
             key = "keyboard__height_factor_portrait",
-            default = 100,
+            default = 80,
         )
         val heightFactorLandscape = int(
             key = "keyboard__height_factor_landscape",
@@ -556,7 +556,7 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
         )
         val keySpacingVertical = float(
             key = "keyboard__key_spacing_vertical",
-            default = 5.0f,
+            default = 2.0f,
         )
         val keySpacingHorizontal = float(
             key = "keyboard__key_spacing_horizontal",
