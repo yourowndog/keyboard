@@ -44,6 +44,30 @@
       "label": "Floris Pure Night (Borderless)",
       "authors": [ "serebit" ],
       "isNight": true
+    },
+    {
+      "id": "lcars",
+      "label": "LCARS Ops",
+      "authors": [ "Sam/Codex" ],
+      "isNight": true
+    },
+    {
+      "id": "lcars_neon",
+      "label": "LCARS Neon",
+      "authors": [ "Sam/Codex" ],
+      "isNight": true
+    },
+    {
+      "id": "lcars_sickbay",
+      "label": "LCARS Sickbay",
+      "authors": [ "Sam/Codex" ],
+      "isNight": false
+    },
+    {
+      "id": "lcars_tactical",
+      "label": "LCARS Tactical",
+      "authors": [ "Sam/Codex" ],
+      "isNight": true
     }
   ]
 }
