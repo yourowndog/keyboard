@@ -282,7 +282,7 @@ class LayoutManager(context: Context) {
         subtype: Subtype,
         main: LTN? = null,
         modifier: LTN? = null,
-        extension: LTN? = null,
+        extensions: List<LTN> = emptyList(),
     ): TextKeyboard {
         val extendedPopupsDefault = loadPopupMappingAsync()
         val extendedPopups = loadPopupMappingAsync(subtype)
@@ -311,23 +311,25 @@ class LayoutManager(context: Context) {
         val modifierLayout = modifierLayoutResult.onFailure {
             flogWarning { "$keyboardMode - mod - $it" }
         }.getOrNull()
-        val extensionLayoutResult = loadLayoutAsync(extension, allowNullLTN = true).await()
-        val extensionLayout = extensionLayoutResult.onFailure {
-            flogWarning { "$keyboardMode - ext - $it" }
-        }.getOrNull()
+        
+        val extensionLayoutResults = extensions.map { loadLayoutAsync(it, allowNullLTN = true) }
+        val extensionResults = extensionLayoutResults.map { it.await() }
+        val extensionLayouts = extensionResults.map { it.getOrNull() }
 
         debugLayoutComputationResultFlow.value = DebugLayoutComputationResult(
             main = mainLayoutResult,
             mod = modifierLayoutResult,
-            ext = extensionLayoutResult,
+            ext = extensionResults.firstOrNull() ?: Result.success(null), // Approximate debug info
         )
 
         val computedArrangement: ArrayList<Array<TextKey>> = arrayListOf()
 
-        if (extensionLayout != null) {
-            for (row in extensionLayout.arrangement) {
-                val rowArray = Array(row.size) { TextKey(row[it]) }
-                computedArrangement.add(rowArray)
+        for (extLayout in extensionLayouts) {
+            if (extLayout != null) {
+                for (row in extLayout.arrangement) {
+                    val rowArray = Array(row.size) { TextKey(row[it]) }
+                    computedArrangement.add(rowArray)
+                }
             }
         }
 
@@ -497,12 +499,16 @@ class LayoutManager(context: Context) {
     ): Deferred<TextKeyboard> = ioScope.async {
         var main: LTN? = null
         var modifier: LTN? = null
-        var extension: LTN? = null
+        val extensions = mutableListOf<LTN>()
 
         when (keyboardMode) {
             KeyboardMode.CHARACTERS -> {
                 if (prefs.keyboard.numberRow.get()) {
-                    extension = LTN(LayoutType.NUMERIC_ROW, subtype.layoutMap.numericRow)
+                    extensions.add(LTN(LayoutType.NUMERIC_ROW, subtype.layoutMap.numericRow))
+                }
+                if (prefs.keyboard.devRow.get()) {
+                    // dev_row is registered as a numeric row in extension.json
+                    extensions.add(LTN(LayoutType.NUMERIC_ROW, extCoreLayout("dev_row")))
                 }
                 main = LTN(LayoutType.CHARACTERS, subtype.layoutMap.characters)
                 modifier = LTN(LayoutType.CHARACTERS_MOD, extCoreLayout("default"))
@@ -524,7 +530,7 @@ class LayoutManager(context: Context) {
                 main = LTN(LayoutType.PHONE2, subtype.layoutMap.phone2)
             }
             KeyboardMode.SYMBOLS -> {
-                extension = LTN(LayoutType.NUMERIC_ROW, subtype.layoutMap.numericRow)
+                extensions.add(LTN(LayoutType.NUMERIC_ROW, subtype.layoutMap.numericRow))
                 main = LTN(LayoutType.SYMBOLS, subtype.layoutMap.symbols)
                 modifier = LTN(LayoutType.SYMBOLS_MOD, extCoreLayout("default"))
             }
@@ -533,17 +539,17 @@ class LayoutManager(context: Context) {
                 modifier = LTN(LayoutType.SYMBOLS2_MOD, extCoreLayout("default"))
             }
             KeyboardMode.SMARTBAR_CLIPBOARD_CURSOR_ROW -> {
-                extension = LTN(LayoutType.EXTENSION, extCoreLayout("clipboard_cursor_row"))
+                extensions.add(LTN(LayoutType.EXTENSION, extCoreLayout("clipboard_cursor_row")))
             }
             KeyboardMode.SMARTBAR_NUMBER_ROW -> {
-                extension = LTN(LayoutType.NUMERIC_ROW, subtype.layoutMap.numericRow)
+                extensions.add(LTN(LayoutType.NUMERIC_ROW, subtype.layoutMap.numericRow))
             }
             else -> {
                 // Default values are already provided
             }
         }
 
-        return@async mergeLayouts(keyboardMode, subtype, main, modifier, extension)
+        return@async mergeLayouts(keyboardMode, subtype, main, modifier, extensions)
     }
 
     /**

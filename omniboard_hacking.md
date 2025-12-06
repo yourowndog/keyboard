@@ -42,8 +42,9 @@ Paths (dev):
 - Code-side defaults: `TextKey.kt` (flayWidthFactor/flayShrink/flayGrow). Backspace/Shift get special shrink; some keys get width >1. Restore wider Backspace/Tab by adding them to these cases or set JSON `"units"` > 1.
 - JSON width: `"units": <float>` in layout rows; default 1. Use this for per-key width overrides.
 
-## 4) Row height (not implemented yet)
-- Current code uses uniform row height based on rowCount. If you need shorter bottom rows, add row-level height factors and adjust `TextKeyboardLayout` to scale rows (planned: 5-row → total 4.5*base; rows 0–2 at 100%, rows 3–4 at ~75%). Not implemented yet.
+## 4) Row height (5-Row Hack Implemented)
+- **Problem:** 5 rows is too tall.
+- **Solution:** `FlorisImeSizing.kt` caps height at `4.5 * base` if rowCount is 5. `TextKeyboard.kt` distributes this unevenly: Top 3 rows get 100% height, Bottom 2 rows get 75% height. This keeps alpha keys big and mods compact.
 
 ## 5) Current behavior changes (dev)
 - Ctrl: latches until next key; sends ctrl+char chords; tinted primary/variant like Enter. Files: `KeyboardManager.kt`, `FlorisImeThemeBaseStyle.kt`.
@@ -68,3 +69,20 @@ Paths (dev):
 - Do not hand-roll letter keys; use `auto_text_key`.
 - Do not omit placeholders when merging main+mod; you’ll lose the last main row.
 - Do not leave layout files outside `app/src/main/assets/...`; they won’t be packaged.
+
+## 10) Creating Custom Action Keys (The "Toggle" Hack)
+To create a key that runs custom logic (like toggling a setting):
+1.  **Define Code:** Add constant in `KeyCode.kt` (e.g., `TOGGLE_NUMBER_ROW = -305`).
+2.  **Register Data:** Add to `TextKeyData.kt` (`InternalKeys` list + static val).
+3.  **Map Icon:** Update `ComputingEvaluator.kt` -> `computeImageVector`.
+4.  **Implement Logic:** Update `KeyboardManager.kt` -> `onInputKeyUp`.
+    ```kotlin
+    KeyCode.TOGGLE_NUMBER_ROW -> scope.launch { prefs.keyboard.numberRow.let { it.set(!it.get()) } }
+    ```
+5.  **Place Key:** Use `"$": "text_key", "code": -305` in layout JSON.
+
+## 11) The Symbol Layout Overlay (Hint System)
+- FlorisBoard generates key hints (small numbers/symbols) by overlaying the **Symbol Layout** on top of the **Main Layout**.
+- **Alignment is Key:** If Main is 5 rows and Symbol is 4 rows, the overlay aligns to the *bottom*, leaving the top rows blank (no hints).
+- **The Fix:** Create a matching 5-row Symbol Layout (`western_wide.json`) and register it in `extension.json` -> `layouts.symbols`. Point the subtype preset to use it.
+- This forces a 1:1 overlay (Row 0->0, Row 1->1), ensuring hints appear correctly on all rows.

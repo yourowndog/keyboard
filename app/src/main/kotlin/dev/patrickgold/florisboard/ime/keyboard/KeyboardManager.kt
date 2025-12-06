@@ -229,6 +229,11 @@ class KeyboardManager(
                     keyboardCache.clear(KeyboardMode.CHARACTERS)
                 }
             }
+            prefs.keyboard.devRow.asFlow().collectLatestIn(scope) {
+                updateActiveEvaluators {
+                    keyboardCache.clear(KeyboardMode.CHARACTERS)
+                }
+            }
             prefs.keyboard.hintedNumberRowEnabled.asFlow().collectLatestIn(scope) {
                 updateActiveEvaluators()
             }
@@ -981,6 +986,9 @@ class KeyboardManager(
             }
             KeyCode.TOGGLE_NUMBER_ROW -> scope.launch {
                 prefs.keyboard.numberRow.let { it.set(!it.get()) }
+            }
+            KeyCode.TOGGLE_DEV_ROW -> scope.launch {
+                prefs.keyboard.devRow.let { it.set(!it.get()) }
             }
             KeyCode.TOGGLE_ACTIONS_OVERFLOW -> {
                 activeState.isActionsOverflowVisible = !activeState.isActionsOverflowVisible

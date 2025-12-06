@@ -862,6 +862,14 @@
     ],
     "numericRow": [
       {
+        "id": "dev_row",
+        "label": "Developer Row",
+        "authors": [
+          "Sam/Codex"
+        ],
+        "direction": "ltr"
+      },
+      {
         "id": "bengali",
         "label": "Bengali",
         "authors": [
