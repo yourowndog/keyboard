@@ -147,6 +147,7 @@ data class TextKeyData(
                 SETTINGS,
                 VOICE_INPUT,
                 TOGGLE_SMARTBAR_VISIBILITY,
+                TOGGLE_NUMBER_ROW,
                 TOGGLE_ACTIONS_OVERFLOW,
                 TOGGLE_ACTIONS_EDITOR,
                 TOGGLE_INCOGNITO_MODE,
@@ -509,6 +510,13 @@ data class TextKeyData(
             code = KeyCode.TOGGLE_SMARTBAR_VISIBILITY,
             label = "toggle_smartbar_visibility",
         )
+        /** Predefined key data for [KeyCode.TOGGLE_NUMBER_ROW] */
+        val TOGGLE_NUMBER_ROW = TextKeyData(
+            type = KeyType.SYSTEM_GUI,
+            code = KeyCode.TOGGLE_NUMBER_ROW,
+            label = "toggle_number_row",
+        )
+
         /** Predefined key data for [KeyCode.TOGGLE_ACTIONS_OVERFLOW] */
         val TOGGLE_ACTIONS_OVERFLOW = TextKeyData(
             type = KeyType.SYSTEM_GUI,

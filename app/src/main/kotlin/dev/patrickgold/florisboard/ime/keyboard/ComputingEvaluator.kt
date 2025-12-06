@@ -34,6 +34,7 @@ import androidx.compose.material.icons.filled.ContentPasteGo
 import androidx.compose.material.icons.filled.DeleteSweep
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.FontDownload
+import androidx.compose.material.icons.filled.Keyboard
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.KeyboardCapslock
@@ -275,6 +276,9 @@ fun ComputingEvaluator.computeImageVector(data: KeyData): ImageVector? {
         }
         KeyCode.REDO -> {
             Icons.AutoMirrored.Filled.Redo
+        }
+        KeyCode.TOGGLE_NUMBER_ROW -> {
+            Icons.Default.Keyboard
         }
         KeyCode.TOGGLE_ACTIONS_OVERFLOW -> {
             Icons.Default.MoreHoriz

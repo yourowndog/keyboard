@@ -3,8 +3,7 @@
     { "code": 0, "type": "placeholder" }
   ],
   [
-    { "code": -202, "label": "⚛", "type": "system_gui" },
-    { "$": "text_key", "code": -305 },
+    { "code": -202, "label": "ABC", "type": "system_gui" },
     { "$": "text_key", "code": -35 },
     { "$": "text_key", "code": -31 },
     { "$": "text_key", "code": -33 },
