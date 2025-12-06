@@ -85,7 +85,7 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
     inner class Clipboard {
         val useInternalClipboard = boolean(
             key = "clipboard__use_internal_clipboard",
-            default = false,
+            default = true,
         )
         val syncToFloris = enum(
             key = "clipboard__sync_to_floris",
@@ -105,7 +105,7 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
         )
         val historyEnabled = boolean(
             key = "clipboard__history_enabled",
-            default = false,
+            default = true,
         )
         val historyNumGridColumnsPortrait = int(
             key = "clipboard__history_num_grid_columns_portrait",
@@ -516,7 +516,7 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
         )
         val spaceBarMode = enum(
             key = "keyboard__space_bar_display_mode",
-            default = SpaceBarMode.CURRENT_LANGUAGE,
+            default = SpaceBarMode.NOTHING,
         )
         val capitalizationBehavior = enum(
             key = "keyboard__capitalization_behavior",
@@ -580,7 +580,7 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
         )
         val longPressDelay = int(
             key = "keyboard__long_press_delay",
-            default = 300,
+            default = 200,
         )
         val spaceBarSwitchesToCharacters = boolean(
             key = "keyboard__space_bar_switches_to_characters",
@@ -742,7 +742,7 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
         )
         val enabled = boolean(
             key = "suggestion__enabled",
-            default = false,
+            default = true,
         )
         val displayMode = enum(
             key = "suggestion__display_mode",
