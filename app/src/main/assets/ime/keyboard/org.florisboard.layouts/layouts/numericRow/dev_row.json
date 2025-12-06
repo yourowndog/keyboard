@@ -1,6 +1,6 @@
 [
   [
-    { "$": "text_key", "code": 33, "label": "!" },
+    { "$": "navigation", "code": -15, "label": "⎋" },
     { "$": "text_key", "code": 64, "label": "@" },
     { "$": "text_key", "code": 35, "label": "#" },
     { "$": "text_key", "code": 36, "label": "$" },
