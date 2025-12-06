@@ -996,6 +996,14 @@
           "patrickgold"
         ],
         "direction": "ltr"
+      },
+      {
+        "id": "dev_row",
+        "label": "Developer Row",
+        "authors": [
+          "Sam/Codex"
+        ],
+        "direction": "ltr"
       }
     ],
     "phone": [
@@ -1144,6 +1152,7 @@
           "Sam/Codex"
         ],
         "direction": "ltr"
+
       }
     ],
     "symbols2": [
