@@ -2,7 +2,7 @@
   "$": "ime.extension.keyboard",
   "meta": {
     "id": "org.florisboard.layouts",
-    "version": "0.1.6",
+    "version": "0.1.7",
     "title": "Default layouts",
     "description": "Default layouts which are always available.",
     "maintainers": [
@@ -862,6 +862,14 @@
     ],
     "numericRow": [
       {
+        "id": "dev_row",
+        "label": "Developer Row",
+        "authors": [
+          "Sam/Codex"
+        ],
+        "direction": "ltr"
+      },
+      {
         "id": "bengali",
         "label": "Bengali",
         "authors": [
@@ -996,6 +1004,14 @@
           "patrickgold"
         ],
         "direction": "ltr"
+      },
+      {
+        "id": "dev_row",
+        "label": "Developer Row",
+        "authors": [
+          "Sam/Codex"
+        ],
+        "direction": "ltr"
       }
     ],
     "phone": [
@@ -1093,6 +1109,15 @@
           "nettnikl"
         ],
         "direction": "ltr"
+      },
+      {
+        "id": "western_wide",
+        "label": "Western Wide (5-Row)",
+        "authors": [
+          "Sam/Codex"
+        ],
+        "direction": "ltr",
+        "modifier": "org.florisboard.layouts:western_wide_mod"
       }
     ],
     "symbolsMod": [
@@ -1125,6 +1150,14 @@
         "label": "Neo2",
         "authors": [
           "ostrya"
+        ],
+        "direction": "ltr"
+      },
+      {
+        "id": "western_wide_mod",
+        "label": "Western Wide Mod (5-Row)",
+        "authors": [
+          "Sam/Codex"
         ],
         "direction": "ltr"
       }

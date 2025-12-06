@@ -3,12 +3,13 @@
     { "code": 0, "type": "placeholder" }
   ],
   [
-    { "code": -202, "label": "⚛", "type": "system_gui" },
-    { "$": "text_key", "code": -305 },
-    { "$": "text_key", "code": -306 },
+    { "code": -202, "label": "ABC", "type": "system_gui" },
     { "$": "text_key", "code": -35 },
     { "$": "text_key", "code": -31 },
     { "$": "text_key", "code": -33 },
+    { "$": "text_key", "code": 34, "label": "\"" },
+    { "$": "text_key", "code": 45, "label": "-" },
+    { "$": "text_key", "code": 95, "label": "_" },
     { "$": "navigation", "code": -21 },
     { "$": "navigation", "code": -24 },
     { "$": "navigation", "code": -22 }

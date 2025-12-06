@@ -90,7 +90,8 @@
       "currencySet": "org.florisboard.currencysets:dollar",
       "popupMapping": "org.florisboard.localization:en_wide",
       "preferred": {
-        "characters": "org.florisboard.layouts:qwerty_wide"
+        "characters": "org.florisboard.layouts:qwerty_wide",
+        "symbols": "org.florisboard.layouts:western_wide"
       }
     },
     {
@@ -99,7 +100,8 @@
       "currencySet": "org.florisboard.currencysets:pound",
       "popupMapping": "org.florisboard.localization:en_wide",
       "preferred": {
-        "characters": "org.florisboard.layouts:qwerty_wide"
+        "characters": "org.florisboard.layouts:qwerty_wide",
+        "symbols": "org.florisboard.layouts:western_wide"
       }
     },
     {
@@ -108,7 +110,8 @@
       "currencySet": "org.florisboard.currencysets:dollar",
       "popupMapping": "org.florisboard.localization:en_wide",
       "preferred": {
-        "characters": "org.florisboard.layouts:qwerty_wide"
+        "characters": "org.florisboard.layouts:qwerty_wide",
+        "symbols": "org.florisboard.layouts:western_wide"
       }
     },
     {
@@ -117,7 +120,8 @@
       "currencySet": "org.florisboard.currencysets:dollar",
       "popupMapping": "org.florisboard.localization:en_wide",
       "preferred": {
-        "characters": "org.florisboard.layouts:qwerty_wide"
+        "characters": "org.florisboard.layouts:qwerty_wide",
+        "symbols": "org.florisboard.layouts:western_wide"
       }
     }
   ]
