@@ -971,7 +971,7 @@
         "authors": [
           "Clem0908"
         ],
-        "direction": "ltr"
+        "direction":.ltr"
       },
       {
         "id": "telugu",
@@ -1002,6 +1002,14 @@
         "label": "Western Arabic",
         "authors": [
           "patrickgold"
+        ],
+        "direction": "ltr"
+      },
+      {
+        "id": "dev_row",
+        "label": "Developer Row",
+        "authors": [
+          "Sam/Codex"
         ],
         "direction": "ltr"
       }
@@ -1152,6 +1160,7 @@
           "Sam/Codex"
         ],
         "direction": "ltr"
+
       }
     ],
     "symbols2": [

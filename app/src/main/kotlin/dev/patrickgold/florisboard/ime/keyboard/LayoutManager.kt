@@ -319,7 +319,7 @@ class LayoutManager(context: Context) {
         debugLayoutComputationResultFlow.value = DebugLayoutComputationResult(
             main = mainLayoutResult,
             mod = modifierLayoutResult,
-            ext = extensionResults.firstOrNull() ?: Result.success(null), // Approximate debug info
+            ext = extensionResults.firstOrNull() ?: Result.success(null),
         )
 
         val computedArrangement: ArrayList<Array<TextKey>> = arrayListOf()
@@ -507,7 +507,6 @@ class LayoutManager(context: Context) {
                     extensions.add(LTN(LayoutType.NUMERIC_ROW, subtype.layoutMap.numericRow))
                 }
                 if (prefs.keyboard.devRow.get()) {
-                    // dev_row is registered as a numeric row in extension.json
                     extensions.add(LTN(LayoutType.NUMERIC_ROW, extCoreLayout("dev_row")))
                 }
                 main = LTN(LayoutType.CHARACTERS, subtype.layoutMap.characters)
