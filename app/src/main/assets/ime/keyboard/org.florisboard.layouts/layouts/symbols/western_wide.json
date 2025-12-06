@@ -28,7 +28,7 @@
   [
     { "code": -11, "type": "modifier" },
     { "$": "text_key", "code": 126, "label": "~" },
-    { "$": "text_key", "code": 92, "label": "\" },
+    { "$": "text_key", "code": 92, "label": "\\" },
     { "$": "text_key", "code": 124, "label": "|" },
     { "$": "text_key", "code": 45, "label": "-" },
     { "$": "text_key", "code": 61, "label": "=" },
