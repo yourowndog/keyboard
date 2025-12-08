@@ -60,4 +60,8 @@ object NgramEngineManager {
     }
 
     fun ready(): Boolean = isReady
+    fun generateAiCompletion(prompt: String): String? {
+        val eng = engine ?: return null
+        return eng.generateAiCompletion(prompt)
+    }
 }
