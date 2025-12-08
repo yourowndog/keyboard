@@ -6,6 +6,7 @@ import java.io.InputStream
 import java.io.InputStreamReader
 import kotlin.math.ln
 import kotlin.math.max
+import kotlin.math.min
 
 data class SuggestionRequest(
     val typed: String,
@@ -18,6 +19,7 @@ interface SuggestionEngine {
     fun predictNext(prevWord: String?, max: Int = 3): List<String>
     fun notifySuggestionAccepted(candidate: SuggestionCandidate) { }
     fun notifySuggestionReverted(candidate: SuggestionCandidate) { }
+    fun generateAiCompletion(prompt: String): String? { return null }
 }
 
 /**
@@ -99,7 +101,7 @@ interface SuggestionEngine {
                 sourceProvider = null,
             )
             candidates.add(candidate)
-            Log.d(TAG, "Input: $typed | Candidate: $word | Score: $total")
+            Log.d(TAG, "Input:  | Candidate:  | Score: ")
         }
 
         val ranked = candidates
@@ -127,6 +129,10 @@ interface SuggestionEngine {
             .sortedByDescending { it.value }
             .take(max)
             .map { it.key }
+    }
+
+    override fun generateAiCompletion(prompt: String): String? {
+        return GemmaClient.complete(prompt)
     }
 
     override fun notifySuggestionAccepted(candidate: SuggestionCandidate) {

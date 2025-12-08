@@ -948,6 +948,17 @@ class KeyboardManager(
             KeyCode.IME_HIDE_UI -> FlorisImeService.hideUi()
             KeyCode.IME_PREV_SUBTYPE -> subtypeManager.switchToPrevSubtype()
             KeyCode.IME_NEXT_SUBTYPE -> subtypeManager.switchToNextSubtype()
+            KeyCode.AI_GENERATE -> scope.launch(Dispatchers.IO) {
+                val prompt = activeState.composingText.toString().ifEmpty { "Hello" }
+                val result = suggestionEngine.generateAiCompletion(prompt)
+                withContext(Dispatchers.Main) {
+                    if (result != null) {
+                        commitGesture(result)
+                    } else {
+                        appContext.showShortToast("AI Error: Check server")
+                    }
+                }
+            }
             KeyCode.IME_UI_MODE_TEXT -> activeState.imeUiMode = ImeUiMode.TEXT
             KeyCode.IME_UI_MODE_MEDIA -> activeState.imeUiMode = ImeUiMode.MEDIA
             KeyCode.IME_UI_MODE_CLIPBOARD -> activeState.imeUiMode = ImeUiMode.CLIPBOARD

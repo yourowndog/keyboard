@@ -91,11 +91,15 @@ android {
 
         sourceSets {
             maybeCreate("main").apply {
+            maybeCreate("test").apply {
+                java {
+                    srcDirs("src/test/kotlin")
+                }
+            }
                 assets {
                     srcDirs("src/main/assets")
                 }
                 java {
-                    srcDirs("src/main/kotlin")
                 }
             }
         }
@@ -244,6 +248,7 @@ dependencies {
     testImplementation(libs.kotlin.test.junit5)
     androidTestImplementation(libs.androidx.test.ext)
     androidTestImplementation(libs.androidx.test.espresso.core)
+    androidTestImplementation(libs.mockwebserver)
 }
 
 fun getGitCommitHash(short: Boolean = false): String {
