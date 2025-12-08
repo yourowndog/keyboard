@@ -89,6 +89,7 @@ fun GesturesScreen() = FlorisScreen {
             )
         }*/
 
+
         PreferenceGroup(title = stringRes(R.string.pref__gestures__general_title)) {
             ListPreference(
                 prefs.gestures.swipeUp,

@@ -24,6 +24,7 @@ import dev.patrickgold.florisboard.ime.nlp.FeatureFlags
 import dev.patrickgold.florisboard.ime.nlp.NgramEngineManager
 import dev.patrickgold.florisboard.ime.nlp.SuggestionRequest
 import dev.patrickgold.florisboard.ime.nlp.SpellingProvider
+import dev.patrickgold.florisboard.ime.nlp.SymSpellManager
 import dev.patrickgold.florisboard.ime.nlp.SpellingResult
 import dev.patrickgold.florisboard.ime.nlp.SuggestionCandidate
 import dev.patrickgold.florisboard.ime.nlp.SuggestionProvider
@@ -171,7 +172,7 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
     }
 
     override suspend fun getListOfWords(subtype: Subtype): List<String> {
-        return wordData.withLock { it.keys.toList() }
+        return SymSpellManager.getAllWords(appContext)
     }
 
     override suspend fun getFrequencyForWord(subtype: Subtype, word: String): Double {

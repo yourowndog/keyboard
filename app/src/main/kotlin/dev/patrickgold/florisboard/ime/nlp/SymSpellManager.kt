@@ -413,4 +413,32 @@ object SymSpellManager {
         return suggestion
     }
 
+
+    /**
+     * Get all words from the dictionary for swipe/glide typing.
+     * Returns words in lowercase (as stored in SymSpell).
+     */
+    fun getAllWords(context: Context): List<String> {
+        if (!isReady) return emptyList()
+        
+        return try {
+            val words = mutableListOf<String>()
+            BufferedReader(InputStreamReader(context.assets.open(DICT_ASSET_PATH))).useLines { lines ->
+                lines.forEach { line ->
+                    val parts = line.split('\t')
+                    if (parts.isNotEmpty()) {
+                        val word = parts[0].lowercase()
+                        if (word.isNotBlank() && word.length >= 2) {
+                            words.add(word)
+                        }
+                    }
+                }
+            }
+            android.util.Log.i("SymSpellManager", "Extracted ${words.size} words for swipe typing")
+            words
+        } catch (e: Exception) {
+            android.util.Log.w("SymSpellManager", "Failed to extract words for swipe", e)
+            emptyList()
+        }
+    }
 }

@@ -221,7 +221,14 @@ class StatisticalGlideTypingClassifier(context: Context) : GlideTypingClassifier
                 val shapeProbability = calcGaussianProbability(shapeDistance, 0.0f, SHAPE_STD)
                 val locationProbability = calcGaussianProbability(locationDistance, 0.0f, LOCATION_STD * radius)
                 val frequency = 255f * nlpManager.getFrequencyForWord(currentSubtype!!, word).toFloat()
-                val confidence = 1.0f / (shapeProbability * locationProbability * frequency)
+                
+                // Length penalty: prefer words closer to gesture complexity
+                val gestureLength = gesture.getLength()
+                val estimatedWordLength = (gestureLength / (radius * 0.8f)).toInt().coerceIn(2, 15)
+                val lengthDiff = kotlin.math.abs(word.length - estimatedWordLength)
+                val lengthPenalty = 1.0f + (lengthDiff * 0.15f)  // Penalize words far from estimated length
+                
+                val confidence = (lengthPenalty) / (shapeProbability * locationProbability * frequency)
 
                 var candidateDistanceSortedIndex = 0
                 var duplicateIndex = Int.MAX_VALUE

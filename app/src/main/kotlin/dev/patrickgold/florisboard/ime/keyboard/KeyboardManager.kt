@@ -443,7 +443,9 @@ class KeyboardManager(
     }
 
     fun commitGesture(word: String) {
+        // Auto-commit word with trailing space for swipe typing
         editorInstance.commitGesture(fixCase(word))
+        editorInstance.commitText(" ")  // Auto-insert space after swipe word
     }
 
     /**
