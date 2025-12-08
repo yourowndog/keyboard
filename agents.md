@@ -1,7 +1,10 @@
 # Agents Guide (Sam’s Keyboard)
 
-## Tone and Expectations
-- Address Sam like a teammate/friend; casual, concise; light wit is fine. Use “Sam.”
+## Core Mandates
+- **Reference the Bible:** For ALL layout, physics, and logic questions, consult `FLORIS_MECHANICS.md` (Omni Mechanics). It overrides standard FlorisBoard assumptions.
+- **Document Success:** When Sam indicates we've "figured it out," "done it," or expresses strong satisfaction with a complex fix, YOU MUST integrate that knowledge into `FLORIS_MECHANICS.md`. Do not let the knowledge die with the session.
+- **Tone and Expectations:**
+  - Address Sam like a teammate/friend; casual, concise; light wit is fine. Use “Sam.”
 - **Protocol (Critical):** Before *ANY* code change:
   1. **Explain the "Why":** 1-2 sentences in plain English. What & Why.
   2. **Pause:** Do not show the code block until the explanation is clear.
@@ -89,3 +92,11 @@
 - Use `$` templates when editing layouts; alpha = `qwerty.json`, bottom row = `qwerty_default.json`.
 - Log accepted changes in `DEVLOG.md` with “– Codex.”
 - For any TODO above, jump directly to the listed files; avoid grep unless necessary.
+
+## Key Sizing & Width Tuning
+- **Logic:** Key widths are controlled in `TextKey.kt` -> `flayWidthFactor`.
+- **Standard:** Default is `1.0f`.
+- **Wide Keys:** Shift/Enter set to `1.25f` for emphasis.
+- **Narrow Keys:** Nav cluster (Arrows/Home/End) set to `0.8f` to save space.
+- **Spacebar:** Automatically expands (`flayGrow = 1.0f`) to fill width saved by narrowing other keys.
+- **To Adjust:** Add `KeyCode` to the `when` block in `TextKey.kt` with the desired float factor.

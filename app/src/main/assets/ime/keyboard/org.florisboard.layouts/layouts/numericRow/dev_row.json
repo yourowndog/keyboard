@@ -1,0 +1,15 @@
+[
+  [
+    { "$": "navigation", "code": -15, "label": "⎋" },
+    { "$": "text_key", "code": -307, "label": "AI" },
+    { "$": "text_key", "code": 35, "label": "#" },
+    { "$": "text_key", "code": 36, "label": "$" },
+    { "$": "text_key", "code": 37, "label": "%" },
+    { "$": "text_key", "code": 94, "label": "^" },
+    { "$": "text_key", "code": 45, "label": "-" },
+    { "$": "text_key", "code": 95, "label": "_" },
+    { "$": "text_key", "code": 34, "label": "\"" },
+    { "$": "text_key", "code": 63, "label": "?" },
+    { "$": "text_key", "code": -306, "type": "system_gui", "label": "toggle_dev_row" }
+  ]
+]

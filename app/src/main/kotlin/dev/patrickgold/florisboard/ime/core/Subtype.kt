@@ -69,7 +69,7 @@ data class Subtype(
             currencySet = extCoreCurrencySet("dollar"),
             punctuationRule = extCorePunctuationRule("default"),
             popupMapping = extCorePopupMapping("en"),
-            layoutMap = SubtypeLayoutMap(characters = extCoreLayout("qwerty")),
+            layoutMap = SubtypeLayoutMap(characters = extCoreLayout("qwerty_wide")),
         )
     }
 
@@ -128,9 +128,9 @@ data class SubtypeLayoutMap(
         private const val EQUALS =                      "="
         private const val DELIMITER =                   ","
 
-        private val CHARACTERS_DEFAULT =          extCoreLayout("qwerty")
-        private val SYMBOLS_DEFAULT =             extCoreLayout("western")
-        private val SYMBOLS2_DEFAULT =            extCoreLayout("western")
+        private val CHARACTERS_DEFAULT =          extCoreLayout("qwerty_wide")
+        private val SYMBOLS_DEFAULT =             extCoreLayout("western_wide")
+        private val SYMBOLS2_DEFAULT =            extCoreLayout("western_wide")
         private val NUMERIC_DEFAULT =             extCoreLayout("western_arabic")
         private val NUMERIC_ADVANCED_DEFAULT =    extCoreLayout("western_arabic")
         private val NUMERIC_ROW_DEFAULT =         extCoreLayout("western_arabic")

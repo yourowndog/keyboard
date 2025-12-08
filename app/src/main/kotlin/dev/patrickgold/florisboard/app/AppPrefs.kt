@@ -85,7 +85,7 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
     inner class Clipboard {
         val useInternalClipboard = boolean(
             key = "clipboard__use_internal_clipboard",
-            default = false,
+            default = true,
         )
         val syncToFloris = enum(
             key = "clipboard__sync_to_floris",
@@ -105,7 +105,7 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
         )
         val historyEnabled = boolean(
             key = "clipboard__history_enabled",
-            default = false,
+            default = true,
         )
         val historyNumGridColumnsPortrait = int(
             key = "clipboard__history_num_grid_columns_portrait",
@@ -486,6 +486,10 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "keyboard__number_row",
             default = false,
         )
+        val devRow = boolean(
+            key = "keyboard__dev_row",
+            default = false,
+        )
         val hintedNumberRowEnabled = boolean(
             key = "keyboard__hinted_number_row_enabled",
             default = true,
@@ -512,7 +516,7 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
         )
         val spaceBarMode = enum(
             key = "keyboard__space_bar_display_mode",
-            default = SpaceBarMode.CURRENT_LANGUAGE,
+            default = SpaceBarMode.NOTHING,
         )
         val capitalizationBehavior = enum(
             key = "keyboard__capitalization_behavior",
@@ -544,7 +548,7 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
         )
         val heightFactorPortrait = int(
             key = "keyboard__height_factor_portrait",
-            default = 100,
+            default = 80,
         )
         val heightFactorLandscape = int(
             key = "keyboard__height_factor_landscape",
@@ -552,7 +556,7 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
         )
         val keySpacingVertical = float(
             key = "keyboard__key_spacing_vertical",
-            default = 5.0f,
+            default = 2.0f,
         )
         val keySpacingHorizontal = float(
             key = "keyboard__key_spacing_horizontal",
@@ -576,7 +580,7 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
         )
         val longPressDelay = int(
             key = "keyboard__long_press_delay",
-            default = 300,
+            default = 200,
         )
         val spaceBarSwitchesToCharacters = boolean(
             key = "keyboard__space_bar_switches_to_characters",
@@ -738,7 +742,7 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
         )
         val enabled = boolean(
             key = "suggestion__enabled",
-            default = false,
+            default = true,
         )
         val displayMode = enum(
             key = "suggestion__display_mode",
@@ -767,12 +771,12 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
         )
         val dayThemeId = custom(
             key = "theme__day_theme_id",
-            default = extCoreTheme("floris_day"),
+            default = ExtensionComponentName("com.brokentooth.lcars", "lcars_neon"),
             serializer = ExtensionComponentName.Serializer,
         )
         val nightThemeId = custom(
             key = "theme__night_theme_id",
-            default = extCoreTheme("floris_night"),
+            default = ExtensionComponentName("com.brokentooth.lcars", "lcars_neon"),
             serializer = ExtensionComponentName.Serializer,
         )
         val accentColor = custom(

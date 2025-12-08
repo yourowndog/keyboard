@@ -1,0 +1,33 @@
+{
+  "$": "ime.extension.theme",
+  "meta": {
+    "id": "com.brokentooth.lcars",
+    "version": "2.4.0",
+    "title": "LCARS System",
+    "maintainers": ["BrokenTooth"],
+    "license": "CC-BY-NC"
+  },
+  "themes": [
+    {
+      "id": "lcars_neon",
+      "label": "LCARS Neon",
+      "authors": ["BrokenTooth", "Gemini"],
+      "stylesheet": "stylesheets/lcars_neon.json",
+      "isNight": true
+    },
+    {
+      "id": "lcars_tactical",
+      "label": "LCARS Tactical",
+      "authors": ["BrokenTooth", "Gemini"],
+      "stylesheet": "stylesheets/lcars_tactical.json",
+      "isNight": true
+    },
+    {
+      "id": "lcars_sickbay",
+      "label": "LCARS Sickbay",
+      "authors": ["BrokenTooth", "Gemini"],
+      "stylesheet": "stylesheets/lcars_sickbay.json",
+      "isNight": false
+    }
+  ]
+}

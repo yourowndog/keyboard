@@ -103,6 +103,9 @@ object KeyCode {
     const val VOICE_INPUT =                 -233
 
     const val TOGGLE_SMARTBAR_VISIBILITY =  -241
+    const val TOGGLE_NUMBER_ROW =           -305
+    const val TOGGLE_DEV_ROW =              -306
+    const val AI_GENERATE =                 -307
     const val TOGGLE_ACTIONS_OVERFLOW =     -242
     const val TOGGLE_ACTIONS_EDITOR =       -243
     const val TOGGLE_INCOGNITO_MODE =       -244

@@ -74,6 +74,7 @@ import dev.patrickgold.florisboard.lib.titlecase
 import dev.patrickgold.florisboard.lib.uppercase
 import dev.patrickgold.florisboard.lib.util.InputMethodUtils
 import dev.patrickgold.florisboard.nlpManager
+import dev.patrickgold.florisboard.ime.nlp.NgramEngineManager
 import dev.patrickgold.florisboard.subtypeManager
 import java.lang.ref.WeakReference
 import kotlinx.coroutines.CoroutineScope
@@ -82,6 +83,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.florisboard.lib.android.AndroidKeyguardManager
@@ -225,6 +227,11 @@ class KeyboardManager(
                 }
             }
             prefs.keyboard.numberRow.asFlow().collectLatestIn(scope) {
+                updateActiveEvaluators {
+                    keyboardCache.clear(KeyboardMode.CHARACTERS)
+                }
+            }
+            prefs.keyboard.devRow.asFlow().collectLatestIn(scope) {
                 updateActiveEvaluators {
                     keyboardCache.clear(KeyboardMode.CHARACTERS)
                 }
@@ -943,6 +950,25 @@ class KeyboardManager(
             KeyCode.IME_HIDE_UI -> FlorisImeService.hideUi()
             KeyCode.IME_PREV_SUBTYPE -> subtypeManager.switchToPrevSubtype()
             KeyCode.IME_NEXT_SUBTYPE -> subtypeManager.switchToNextSubtype()
+            KeyCode.AI_GENERATE -> scope.launch(Dispatchers.IO) {
+                var prompt = editorInstance.activeContent.textBeforeSelection.toString()
+                if (prompt.isBlank()) {
+                    val clip = clipboardManager.primaryClip?.text
+                    if (!clip.isNullOrBlank()) {
+                        prompt = "Context: \"$clip\"\n\nReply to this message:"
+                    } else {
+                        prompt = "Hello"
+                    }
+                }
+                val result = NgramEngineManager.generateAiCompletion(prompt)
+                withContext(Dispatchers.Main) {
+                    if (result != null) {
+                        commitGesture(result)
+                    } else {
+                        Toast.makeText(appContext, "AI Error: Check server", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
             KeyCode.IME_UI_MODE_TEXT -> activeState.imeUiMode = ImeUiMode.TEXT
             KeyCode.IME_UI_MODE_MEDIA -> activeState.imeUiMode = ImeUiMode.MEDIA
             KeyCode.IME_UI_MODE_CLIPBOARD -> activeState.imeUiMode = ImeUiMode.CLIPBOARD
@@ -978,6 +1004,12 @@ class KeyboardManager(
             }
             KeyCode.TOGGLE_SMARTBAR_VISIBILITY -> scope.launch {
                 prefs.smartbar.enabled.let { it.set(!it.get()) }
+            }
+            KeyCode.TOGGLE_NUMBER_ROW -> scope.launch {
+                prefs.keyboard.numberRow.let { it.set(!it.get()) }
+            }
+            KeyCode.TOGGLE_DEV_ROW -> scope.launch {
+                prefs.keyboard.devRow.let { it.set(!it.get()) }
             }
             KeyCode.TOGGLE_ACTIONS_OVERFLOW -> {
                 activeState.isActionsOverflowVisible = !activeState.isActionsOverflowVisible

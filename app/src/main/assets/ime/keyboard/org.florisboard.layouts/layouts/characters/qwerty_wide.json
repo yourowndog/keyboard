@@ -1,6 +1,5 @@
 [
   [
-    { "$": "navigation", "code": -15, "label": "⎋" },
     { "$": "auto_text_key", "code": 113, "label": "q" },
     { "$": "auto_text_key", "code": 119, "label": "w" },
     { "$": "auto_text_key", "code": 101, "label": "e" },
@@ -13,7 +12,6 @@
     { "$": "auto_text_key", "code": 112, "label": "p" }
   ],
   [
-    { "$": "text_key", "code": -14, "label": "⇥" },
     { "$": "auto_text_key", "code": 97, "label": "a" },
     { "$": "auto_text_key", "code": 115, "label": "s" },
     { "$": "auto_text_key", "code": 100, "label": "d" },
@@ -26,7 +24,7 @@
     { "code": -7, "type": "modifier" }
   ],
   [
-    { "code": -11, "type": "modifier" },
+    { "$": "text_key", "code": -14, "label": "⇥" },
     { "$": "auto_text_key", "code": 122, "label": "z" },
     { "$": "auto_text_key", "code": 120, "label": "x" },
     { "$": "auto_text_key", "code": 99, "label": "c" },
@@ -38,7 +36,7 @@
     { "$": "text_key", "code": 10, "label": "↵", "type": "enter_editing" }
   ],
   [
-    { "code": -1, "label": "CTRL", "type": "modifier" },
+    { "code": -11, "type": "modifier" },
     { "$": "text_key", "code": -131 },
     { "$": "text_key", "code": 44, "label": "," },
     { "$": "text_key", "code": 32, "label": "space" },
