@@ -951,7 +951,15 @@ class KeyboardManager(
             KeyCode.IME_PREV_SUBTYPE -> subtypeManager.switchToPrevSubtype()
             KeyCode.IME_NEXT_SUBTYPE -> subtypeManager.switchToNextSubtype()
             KeyCode.AI_GENERATE -> scope.launch(Dispatchers.IO) {
-                val prompt = editorInstance.activeContent.textBeforeSelection.toString().ifEmpty { "Hello" }
+                var prompt = editorInstance.activeContent.textBeforeSelection.toString()
+                if (prompt.isBlank()) {
+                    val clip = clipboardManager.primaryClip?.text
+                    if (!clip.isNullOrBlank()) {
+                        prompt = "Context: \"$clip\"\n\nReply to this message:"
+                    } else {
+                        prompt = "Hello"
+                    }
+                }
                 val result = NgramEngineManager.generateAiCompletion(prompt)
                 withContext(Dispatchers.Main) {
                     if (result != null) {

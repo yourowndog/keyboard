@@ -1,0 +1,101 @@
+{
+  "$schema": "https://schemas.florisboard.org/snygg/v2/stylesheet",
+  "@defines": {
+    "--primary": "#FF6A4D",
+    "--secondary": "#5AC7E0",
+    "--primary-variant": "#FF3B2F",
+    "--background": "#0B0D13",
+    "--surface": "#5E6573",
+    "--surface-variant": "#2B313A",
+    "--disabled": "#2B313A",
+    "--popup-surface": "#2B313A",
+    "--focused-popup-surface": "#5AC7E0",
+    "--drag-marker": "#5AC7E0",
+    "--spacer-color": "rgba(199, 204, 216, 0.3)",
+    "--one-hand-background": "#2B313A",
+    "--one-hand-foreground": "#FF6A4D",
+    "--incognito-icon-color": "rgba(199, 204, 216, 0.1)",
+    "--on-primary": "#0B0D13",
+    "--on-background": "#C7CCD8",
+    "--on-background-disabled": "rgba(199, 204, 216, 0.3)",
+    "--on-surface": "#C7CCD8",
+    "--on-surface-variant": "#5AC7E0",
+    "--shape": "rounded-corner(8dp, 8dp, 8dp, 8dp)",
+    "--shape-variant": "rounded-corner(12dp, 12dp, 12dp, 12dp)",
+    "--pill-shape": "rounded-corner(24dp, 24dp, 24dp, 24dp)"
+  },
+  "window": {
+    "background": "var(--background)",
+    "foreground": "var(--on-background)",
+    "clip": "no"
+  },
+  "key": {
+    "background": "var(--surface)",
+    "foreground": "var(--on-surface)",
+    "font-size": "22sp",
+    "shadow-elevation": "0dp",
+    "shape": "var(--shape)",
+    "text-max-lines": "1"
+  },
+  "key:pressed": {
+    "background": "var(--surface-variant)",
+    "foreground": "var(--on-surface)"
+  },
+  "key[code=10]": {
+    "background": "var(--primary)",
+    "foreground": "var(--on-primary)"
+  },
+  "key[code=10]:pressed": {
+    "background": "var(--primary-variant)",
+    "foreground": "var(--on-primary)"
+  },
+  "key[code=32]": {
+    "background": "var(--surface)",
+    "foreground": "var(--on-surface-variant)",
+    "font-size": "12sp",
+    "text-overflow": "ellipsis",
+    "shape": "var(--pill-shape)"
+  },
+  "key[code=-201,-202,-203]": {
+    "font-size": "18sp"
+  },
+  "key[code=-204,-205]": {
+    "font-size": "12sp"
+  },
+  "key[code=-205]": {
+    "text-max-lines": "2"
+  },
+  "key[code=-11][shiftstate=`caps_lock`]": {
+    "foreground": "var(--secondary)"
+  },
+  "key-hint": {
+    "background": "transparent",
+    "foreground": "var(--on-surface-variant)",
+    "font-family": "monospace",
+    "font-size": "12sp",
+    "padding": "4dp 4dp 0dp 0dp",
+    "text-max-lines": "1"
+  },
+  "key-popup-box": {
+    "background": "var(--popup-surface)",
+    "foreground": "var(--on-surface)",
+    "font-size": "22sp",
+    "shape": "var(--shape)",
+    "shadow-elevation": "0dp"
+  },
+  "key-popup-element:focus": {
+    "background": "var(--focused-popup-surface)"
+  },
+  "key[code=-1]": {
+    "background": "var(--primary)",
+    "foreground": "var(--on-primary)"
+  },
+  "key[code=-1]:pressed": {
+    "background": "var(--primary-variant)",
+    "foreground": "var(--on-primary)"
+  },
+  "key[code=-1]:focus": {
+    "background": "var(--primary)",
+    "foreground": "var(--on-primary)"
+  }
+}

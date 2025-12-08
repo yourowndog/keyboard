@@ -61,6 +61,9 @@ object SymSpellManager {
     private val PROPER_OVERRIDES = setOf(
         "kiry", "kiry's",
         "sam", "sam's",
+        "i'd",
+        "mike", "mike's",
+        "john", "john's",
         "elijah", "elijah's",
         "dad", "dad's",
         "mom", "mom's",
