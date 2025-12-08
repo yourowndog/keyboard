@@ -24,8 +24,8 @@ object SymSpellManager {
     // Config
     private const val MAX_EDIT_DISTANCE = 2
     private const val PREFIX_LENGTH = 7
-    private const val DICT_ASSET_PATH = "ime/dict/frequency_dictionary_en.txt"
-    private const val BIGRAM_ASSET_PATH = "ime/dict/frequency_bigram_en.txt"
+    private const val DICT_ASSET_PATH = "ime/dict/frequency_dictionary_en.cleaned.txt"
+    private const val BIGRAM_ASSET_PATH = "ime/dict/final_mobile_bigrams.tsv"
     private const val BIGRAM_WEIGHT = 1.5
     private const val BIGRAM_NO_HIT_PENALTY = 0.2
     private val USER_OVERRIDES = listOf("kiry" to Double.MAX_VALUE)

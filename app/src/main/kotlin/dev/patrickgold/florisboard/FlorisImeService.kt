@@ -90,7 +90,9 @@ import dev.patrickgold.florisboard.ime.keyboard.ProvideKeyboardRowBaseHeight
 import dev.patrickgold.florisboard.ime.landscapeinput.LandscapeInputUiMode
 import dev.patrickgold.florisboard.ime.lifecycle.LifecycleInputMethodService
 import dev.patrickgold.florisboard.ime.media.MediaInputLayout
+import dev.patrickgold.florisboard.ime.nlp.FeatureFlags
 import dev.patrickgold.florisboard.ime.nlp.NlpInlineAutofill
+import dev.patrickgold.florisboard.ime.nlp.NgramEngineManager
 import dev.patrickgold.florisboard.ime.onehanded.OneHandedMode
 import dev.patrickgold.florisboard.ime.onehanded.OneHandedPanel
 import dev.patrickgold.florisboard.ime.sheet.BottomSheetHostUi
@@ -298,6 +300,9 @@ class FlorisImeService : LifecycleInputMethodService() {
             updateInputViewShown()
         }
         dev.patrickgold.florisboard.ime.nlp.SymSpellManager.init(this, lifecycleScope)
+        if (FeatureFlags.useNgramEngine) {
+            NgramEngineManager.init(this, lifecycleScope)
+        }
         @Suppress("DEPRECATION") // We do not retrieve the wallpaper but only listen to changes
         registerReceiver(wallpaperChangeReceiver, IntentFilter(Intent.ACTION_WALLPAPER_CHANGED))
     }
