@@ -1,26 +1,23 @@
 package dev.patrickgold.florisboard.ime.nlp
 
+import android.util.Log
 import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader
 import kotlin.math.ln
 import kotlin.math.max
 
- data class SuggestionRequest(
+data class SuggestionRequest(
     val typed: String,
     val prevWord: String? = null,
     val maxSuggestions: Int = 5,
 )
 
- data class SuggestionCandidate(
-    val word: String,
-    val score: Double,
-    val source: String = "ngram",
-)
-
- interface SuggestionEngine {
+interface SuggestionEngine {
     fun suggest(request: SuggestionRequest): List<SuggestionCandidate>
     fun predictNext(prevWord: String?, max: Int = 3): List<String>
+    fun notifySuggestionAccepted(candidate: SuggestionCandidate) { }
+    fun notifySuggestionReverted(candidate: SuggestionCandidate) { }
 }
 
 /**
@@ -64,21 +61,63 @@ import kotlin.math.max
     }
 
     override fun suggest(request: SuggestionRequest): List<SuggestionCandidate> {
-        val typed = request.typed.lowercase()
+        val rawInput = request.typed
+        val typed = rawInput.lowercase()
         if (typed.isEmpty()) return emptyList()
 
-        val candidates = mutableListOf<SuggestionCandidate>()
-        val pool = bucketedWords[typed[0]] ?: emptyList()
+        val typedNoApos = typed.replace("'", "")
+        val candidates = mutableListOf<WordSuggestionCandidate>()
+
+        // Build a pool from first char bucket + neighbor buckets (fat-finger tolerant).
+        val pool = buildList {
+            addAll(bucketedWords[typed[0]] ?: emptyList())
+            val neighborStart = neighborMap[typed[0]] ?: ""
+            neighborStart.forEach { ch -> addAll(bucketedWords[ch] ?: emptyList()) }
+        }.distinct()
+
         for (word in pool) {
-            if (!word.startsWith(typed)) continue
+            val wordNoApos = word.replace("'", "")
+            if (kotlin.math.abs(wordNoApos.length - typedNoApos.length) > 2) continue
+
             val baseScore = (unigramLogFreq[word] ?: continue) * weights.base
             val bigramBonus = bigramBonus(request.prevWord, word) * weights.bigram
-            val touchPenalty = touchPenalty(typed, word) * weights.touchPenalty
+            val touchPenalty = touchPenalty(typedNoApos, wordNoApos) * weights.touchPenalty
             val userBonus = (userBoosts[word] ?: 0.0) * weights.user
-            val total = baseScore + bigramBonus + userBonus - touchPenalty
-            candidates.add(SuggestionCandidate(word = word, score = total))
+
+            var total = baseScore + bigramBonus + userBonus - touchPenalty
+
+            // Apostrophe-blind perfect match.
+            if (typedNoApos == wordNoApos) {
+                total += 3.0
+            }
+
+            val casedText = applyCasing(word, rawInput)
+            val candidate = WordSuggestionCandidate(
+                text = casedText,
+                confidence = total,
+                isEligibleForAutoCommit = false,
+                sourceProvider = null,
+            )
+            candidates.add(candidate)
+            Log.d(TAG, "Input: $typed | Candidate: $word | Score: $total")
         }
-        return candidates.sortedByDescending { it.score }.take(request.maxSuggestions)
+
+        val ranked = candidates
+            .sortedByDescending { it.confidence }
+            .take(request.maxSuggestions)
+            .toMutableList()
+
+        // Auto-commit promotion if top is clearly stronger than runner-up.
+        if (ranked.isNotEmpty()) {
+            val top = ranked[0]
+            val second = ranked.getOrNull(1)
+            val promote = second == null || (top.confidence - second.confidence) >= 0.75
+            if (promote && top is WordSuggestionCandidate) {
+                ranked[0] = top.copy(isEligibleForAutoCommit = true)
+            }
+        }
+
+        return ranked
     }
 
     override fun predictNext(prevWord: String?, max: Int): List<String> {
@@ -88,6 +127,14 @@ import kotlin.math.max
             .sortedByDescending { it.value }
             .take(max)
             .map { it.key }
+    }
+
+    override fun notifySuggestionAccepted(candidate: SuggestionCandidate) {
+        // No-op: hook for future learning.
+    }
+
+    override fun notifySuggestionReverted(candidate: SuggestionCandidate) {
+        // No-op: stateless engine; nothing to revert.
     }
 
     private fun bigramBonus(prev: String?, cand: String): Double {
@@ -107,9 +154,20 @@ import kotlin.math.max
             val c = cand[i]
             if (t == c) continue
             val neighbors = neighborMap[t] ?: ""
-            penalty += if (c in neighbors) 0.3 else 1.0
+            penalty += if (c in neighbors) 0.1 else 0.5
         }
         return penalty + lenPenalty
+    }
+
+    internal fun applyCasing(word: String, rawInput: String): String {
+        if (rawInput.isEmpty()) return word
+        val isAllUpper = rawInput.all { it.isUpperCase() }
+        val isTitle = rawInput.length > 1 && rawInput[0].isUpperCase() && rawInput.drop(1).all { it.isLowerCase() }
+        return when {
+            isAllUpper -> word.uppercase()
+            isTitle -> word.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+            else -> word
+        }
     }
 
     companion object {
@@ -161,5 +219,7 @@ import kotlin.math.max
             }
             return table to maxByPrev
         }
+
+        private const val TAG = "NgramSuggestionEngine"
     }
 }

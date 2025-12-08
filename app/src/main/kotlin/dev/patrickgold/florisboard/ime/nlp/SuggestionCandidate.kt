@@ -56,6 +56,12 @@ interface SuggestionCandidate {
     val secondaryText: CharSequence?
 
     /**
+     * Backwards compatibility shim for legacy callers expecting `word`; by default mirrors [text].
+     */
+    val word: String
+        get() = text.toString()
+
+    /**
      * The confidence of this suggestion to be what the user wanted to type. Must be a value between 0.0 and 1.0 (both
      * inclusive), where 0.0 means no confidence and 1.0 means highest confidence. The confidence rating may be used to
      * sort and filter candidates if multiple providers provide suggestions for a single input.
@@ -113,6 +119,8 @@ data class WordSuggestionCandidate(
     override val sourceProvider: SuggestionProvider? = null,
 ) : SuggestionCandidate {
     override val icon: ImageVector? = null
+    // Backward compatibility for legacy callers expecting a 'word' property.
+    override val word: String get() = text.toString()
 }
 
 /**
@@ -146,6 +154,9 @@ data class ClipboardSuggestionCandidate(
         ItemType.IMAGE -> Icons.Default.Image
         ItemType.VIDEO -> Icons.Default.Videocam
     }
+
+    override val word: String
+        get() = text.toString()
 }
 
 /**
@@ -168,4 +179,5 @@ data class EmojiSuggestionCandidate(
 ) : SuggestionCandidate {
     override val text = emoji.value
     override val secondaryText = if (showName) emoji.name else null
+    override val word: String get() = text
 }
