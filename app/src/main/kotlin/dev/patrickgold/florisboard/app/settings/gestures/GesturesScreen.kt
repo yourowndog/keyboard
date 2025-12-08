@@ -23,13 +23,17 @@ import androidx.compose.ui.unit.dp
 import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.enumDisplayEntriesOf
 import dev.patrickgold.florisboard.ime.text.gestures.SwipeAction
+import dev.patrickgold.florisboard.ime.text.gestures.GlideTrailShape
 import dev.patrickgold.florisboard.lib.compose.FlorisScreen
+import dev.patrickgold.jetpref.datastore.ui.ColorPickerPreference
 import dev.patrickgold.jetpref.datastore.ui.DialogSliderPreference
 import dev.patrickgold.jetpref.datastore.ui.ExperimentalJetPrefDatastoreUi
 import dev.patrickgold.jetpref.datastore.ui.ListPreference
 import dev.patrickgold.jetpref.datastore.ui.PreferenceGroup
+import dev.patrickgold.jetpref.datastore.ui.SwitchPreference
 import org.florisboard.lib.compose.FlorisInfoCard
 import org.florisboard.lib.compose.stringRes
+import org.florisboard.lib.color.ColorMappings
 
 @OptIn(ExperimentalJetPrefDatastoreUi::class)
 @Composable
@@ -38,14 +42,8 @@ fun GesturesScreen() = FlorisScreen {
     previewFieldVisible = true
 
     content {
-        FlorisInfoCard(
-            modifier = Modifier.padding(8.dp),
-            text = """
-                Glide typing is currently not available and will be re-implemented from the ground up with word suggestions & the new keyboard layout engine. DO NOT file an issue for this missing functionality.
-            """.trimIndent()
-        )
 
-        /*PreferenceGroup(title = stringRes(R.string.pref__glide__title)) {
+        PreferenceGroup(title = stringRes(R.string.pref__glide__title)) {
             SwitchPreference(
                 prefs.glide.enabled,
                 title = stringRes(R.string.pref__glide__enabled__label),
@@ -64,6 +62,27 @@ fun GesturesScreen() = FlorisScreen {
                 min = 0,
                 max = 500,
                 stepIncrement = 10,
+                enabledIf = { prefs.glide.enabled isEqualTo true && prefs.glide.showTrail isEqualTo true },
+            )
+            ColorPickerPreference(
+                prefs.glide.trailColor,
+                title = stringRes(R.string.pref__glide_trail_color),
+                defaultColors = ColorMappings.colors,
+                enabledIf = { prefs.glide.enabled isEqualTo true && prefs.glide.showTrail isEqualTo true },
+            )
+            ListPreference(
+                prefs.glide.trailShape,
+                title = stringRes(R.string.pref__glide_trail_shape),
+                entries = enumDisplayEntriesOf(GlideTrailShape::class),
+                enabledIf = { prefs.glide.enabled isEqualTo true && prefs.glide.showTrail isEqualTo true },
+            )
+            DialogSliderPreference(
+                prefs.glide.trailWidth,
+                title = stringRes(R.string.pref__glide_trail_width),
+                valueLabel = { stringRes(R.string.unit__display_pixel__symbol, "v" to it) },
+                min = 1,
+                max = 20,
+                stepIncrement = 1,
                 enabledIf = { prefs.glide.enabled isEqualTo true && prefs.glide.showTrail isEqualTo true },
             )
             SwitchPreference(
@@ -87,7 +106,7 @@ fun GesturesScreen() = FlorisScreen {
                 summary = stringRes(R.string.pref__glide__immediate_backspace_deletes_word__summary),
                 enabledIf = { prefs.glide.enabled isEqualTo true },
             )
-        }*/
+        }
 
 
         PreferenceGroup(title = stringRes(R.string.pref__gestures__general_title)) {

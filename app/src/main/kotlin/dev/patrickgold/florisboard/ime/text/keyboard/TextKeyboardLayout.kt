@@ -77,6 +77,7 @@ import dev.patrickgold.florisboard.ime.text.key.KeyCode
 import dev.patrickgold.florisboard.ime.text.key.KeyType
 import dev.patrickgold.florisboard.ime.text.key.KeyVariation
 import dev.patrickgold.florisboard.ime.theme.FlorisImeUi
+import dev.patrickgold.florisboard.ime.text.gestures.GlideTrailShape
 import dev.patrickgold.florisboard.keyboardManager
 import dev.patrickgold.florisboard.lib.FlorisRect
 import dev.patrickgold.florisboard.lib.Pointer
@@ -117,6 +118,9 @@ fun TextKeyboardLayout(
     val glideEnabled = glideEnabledInternal && evaluator.editorInfo.isRichInputEditor &&
         evaluator.state.keyVariation != KeyVariation.PASSWORD
     val glideShowTrail by prefs.glide.showTrail.observeAsState()
+    val glideTrailColorPref by prefs.glide.trailColor.observeAsState()
+    val glideTrailWidth by prefs.glide.trailWidth.observeAsState()
+    val glideTrailShape by prefs.glide.trailShape.observeAsState()
     val glideTrailStyle = rememberSnyggThemeQuery(FlorisImeUi.GlideTrail.elementName)
     val glideTrailColor = glideTrailStyle.foreground(default = Color.Green)
 
@@ -189,7 +193,7 @@ fun TextKeyboardLayout(
                 drawContent()
                 if (glideEnabled && glideShowTrail) {
                     val targetDist = 3.0f
-                    val radius = 20.0f
+                    val radius = glideTrailWidth.toFloat()
 
                     val radiusReductionFactor = 0.99f
                     if (controller.fadingGlideRadius > 0) {
@@ -199,13 +203,15 @@ fun TextKeyboardLayout(
                             targetDist,
                             controller.fadingGlideRadius,
                             radiusReductionFactor,
-                            glideTrailColor,
+                            glideTrailColorPref,
+                            glideTrailShape,
                         )
                     }
                     if (controller.isGliding && controller.glideDataForDrawing.isNotEmpty()) {
                         controller.drawGlideTrail(
                             this, controller.glideDataForDrawing, targetDist, radius,
-                            radiusReductionFactor, glideTrailColor,
+                            radiusReductionFactor, glideTrailColorPref,
+                            glideTrailShape,
                         )
                     }
                 }
@@ -935,7 +941,7 @@ private class TextKeyboardLayoutController(
             fadingGlide.clear()
             fadingGlide.addAll(glideDataForDrawing)
 
-            val animator = ValueAnimator.ofFloat(20.0f, 0.0f)
+            val animator = ValueAnimator.ofFloat(prefs.glide.trailWidth.get().toFloat(), 0.0f)
             animator.interpolator = AccelerateInterpolator()
             animator.duration = prefs.glide.trailDuration.get().toLong()
             animator.addUpdateListener {
@@ -955,6 +961,7 @@ private class TextKeyboardLayoutController(
         initialRadius: Float,
         radiusReductionFactor: Float,
         color: Color,
+        shape: GlideTrailShape = GlideTrailShape.ROUND,
     ) {
         var radius = initialRadius
         var drawnPoints = 0
@@ -976,7 +983,23 @@ private class TextKeyboardLayoutController(
                     gestureData[i].first.x * (1 - j.toFloat() / numPoints) + gestureData[i - 1].first.x * (j.toFloat() / numPoints)
                 val intermediateY =
                     gestureData[i].first.y * (1 - j.toFloat() / numPoints) + gestureData[i - 1].first.y * (j.toFloat() / numPoints)
-                drawScope.drawCircle(color, radius, center = Offset(intermediateX, intermediateY))
+                
+                when (shape) {
+                    GlideTrailShape.ROUND -> drawScope.drawCircle(color, radius, center = Offset(intermediateX, intermediateY))
+                    GlideTrailShape.SQUARE -> drawScope.drawRect(
+                        color = color,
+                        topLeft = Offset(intermediateX - radius, intermediateY - radius),
+                        size = Size(radius * 2, radius * 2)
+                    )
+                    GlideTrailShape.DIAMOND -> { 
+                        // Simple diamond approximation (rotated square) or just square for now
+                        drawScope.drawRect(
+                            color = color,
+                            topLeft = Offset(intermediateX - radius, intermediateY - radius),
+                            size = Size(radius * 2, radius * 2)
+                        )
+                    }
+                }
                 drawnPoints += 1
                 prevX = intermediateX
                 prevY = intermediateY
