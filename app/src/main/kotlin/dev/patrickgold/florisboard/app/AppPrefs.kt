@@ -19,6 +19,7 @@ package dev.patrickgold.florisboard.app
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
+import dev.patrickgold.florisboard.ime.text.gestures.GlideTrailShape
 import androidx.compose.ui.platform.LocalConfiguration
 import dev.patrickgold.florisboard.app.settings.theme.ColorPreferenceSerializer
 import dev.patrickgold.florisboard.app.settings.theme.DisplayKbdAfterDialogs
@@ -347,7 +348,7 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
     inner class Glide {
         val enabled = boolean(
             key = "glide__enabled",
-            default = false,
+            default = true,
         )
         val showTrail = boolean(
             key = "glide__show_trail",
@@ -356,6 +357,19 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
         val trailDuration = int(
             key = "glide__trail_fade_duration",
             default = 200,
+        )
+        val trailColor = custom(
+            key = "glide__trail_color",
+            default = Color.Green,
+            serializer = ColorPreferenceSerializer,
+        )
+        val trailShape = enum(
+            key = "glide__trail_shape",
+            default = GlideTrailShape.ROUND,
+        )
+        val trailWidth = int(
+            key = "glide__trail_width",
+            default = 10,
         )
         val showPreview = boolean(
             key = "glide__show_preview",

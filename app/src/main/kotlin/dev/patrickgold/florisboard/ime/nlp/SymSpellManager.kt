@@ -24,8 +24,8 @@ object SymSpellManager {
     // Config
     private const val MAX_EDIT_DISTANCE = 2
     private const val PREFIX_LENGTH = 7
-    private const val DICT_ASSET_PATH = "ime/dict/frequency_dictionary_en.txt"
-    private const val BIGRAM_ASSET_PATH = "ime/dict/frequency_bigram_en.txt"
+    private const val DICT_ASSET_PATH = "ime/dict/frequency_dictionary_en.cleaned.txt"
+    private const val BIGRAM_ASSET_PATH = "ime/dict/final_mobile_bigrams.tsv"
     private const val BIGRAM_WEIGHT = 1.5
     private const val BIGRAM_NO_HIT_PENALTY = 0.2
     private val USER_OVERRIDES = listOf("kiry" to Double.MAX_VALUE)
@@ -61,6 +61,9 @@ object SymSpellManager {
     private val PROPER_OVERRIDES = setOf(
         "kiry", "kiry's",
         "sam", "sam's",
+        "i'd",
+        "mike", "mike's",
+        "john", "john's",
         "elijah", "elijah's",
         "dad", "dad's",
         "mom", "mom's",
@@ -410,4 +413,32 @@ object SymSpellManager {
         return suggestion
     }
 
+
+    /**
+     * Get all words from the dictionary for swipe/glide typing.
+     * Returns words in lowercase (as stored in SymSpell).
+     */
+    fun getAllWords(context: Context): List<String> {
+        if (!isReady) return emptyList()
+        
+        return try {
+            val words = mutableListOf<String>()
+            BufferedReader(InputStreamReader(context.assets.open(DICT_ASSET_PATH))).useLines { lines ->
+                lines.forEach { line ->
+                    val parts = line.split('\t')
+                    if (parts.isNotEmpty()) {
+                        val word = parts[0].lowercase()
+                        if (word.isNotBlank() && word.length >= 2) {
+                            words.add(word)
+                        }
+                    }
+                }
+            }
+            android.util.Log.i("SymSpellManager", "Extracted ${words.size} words for swipe typing")
+            words
+        } catch (e: Exception) {
+            android.util.Log.w("SymSpellManager", "Failed to extract words for swipe", e)
+            emptyList()
+        }
+    }
 }

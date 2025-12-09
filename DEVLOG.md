@@ -57,3 +57,6 @@
     *   **Row 3:** Shift | z x c v b n m | Del (Backpsace).
     *   **Row 4:** Tab | , | Space | . | Up | Enter.
     *   **Row 5:** Ctrl | Esc | Mod | Left | Down | Right. – Gemini
+### 2025-12-08
+* **Task:** Integrated Gemma 2B (Q4_K_M) via local llama.cpp server with Vulkan acceleration.
+* **Files:** `GemmaClient.kt`, `SuggestionEngine.kt`, `KeyboardManager.kt`, `AndroidManifest.xml`

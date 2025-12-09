@@ -40,6 +40,7 @@ import dev.patrickgold.florisboard.ime.smartbar.ExtendedActionsPlacement
 import dev.patrickgold.florisboard.ime.smartbar.IncognitoDisplayMode
 import dev.patrickgold.florisboard.ime.smartbar.SmartbarLayout
 import dev.patrickgold.florisboard.ime.text.gestures.SwipeAction
+import dev.patrickgold.florisboard.ime.text.gestures.GlideTrailShape
 import dev.patrickgold.florisboard.ime.text.key.KeyHintMode
 import dev.patrickgold.florisboard.ime.text.key.UtilityKeyAction
 import dev.patrickgold.florisboard.ime.theme.ThemeMode
@@ -545,6 +546,22 @@ private val ENUM_DISPLAY_ENTRIES = mapOf<Pair<KClass<*>, String>, @Composable ()
             )
         }
     },
+        GlideTrailShape::class to DEFAULT to {
+        listPrefEntries {
+            entry(
+                key = GlideTrailShape.ROUND,
+                label = "Round",
+            )
+            entry(
+                key = GlideTrailShape.SQUARE,
+                label = "Square",
+            )
+            entry(
+                key = GlideTrailShape.DIAMOND,
+                label = "Diamond",
+            )
+        }
+    },
     SwipeAction::class to "general" to {
         listPrefEntries {
             entry(
@@ -645,6 +662,22 @@ private val ENUM_DISPLAY_ENTRIES = mapOf<Pair<KClass<*>, String>, @Composable ()
             )
         }
     },
+        GlideTrailShape::class to DEFAULT to {
+        listPrefEntries {
+            entry(
+                key = GlideTrailShape.ROUND,
+                label = "Round",
+            )
+            entry(
+                key = GlideTrailShape.SQUARE,
+                label = "Square",
+            )
+            entry(
+                key = GlideTrailShape.DIAMOND,
+                label = "Diamond",
+            )
+        }
+    },
     SwipeAction::class to "deleteSwipe" to {
         listPrefEntries {
             entry(
@@ -670,6 +703,22 @@ private val ENUM_DISPLAY_ENTRIES = mapOf<Pair<KClass<*>, String>, @Composable ()
             entry(
                 key = SwipeAction.SELECT_WORDS_PRECISELY,
                 label = stringRes(R.string.enum__swipe_action__select_words_precisely),
+            )
+        }
+    },
+        GlideTrailShape::class to DEFAULT to {
+        listPrefEntries {
+            entry(
+                key = GlideTrailShape.ROUND,
+                label = "Round",
+            )
+            entry(
+                key = GlideTrailShape.SQUARE,
+                label = "Square",
+            )
+            entry(
+                key = GlideTrailShape.DIAMOND,
+                label = "Diamond",
             )
         }
     },
@@ -733,6 +782,6 @@ fun <V : Any> enumDisplayEntriesOf(
     variant: String = DEFAULT,
 ): List<ListPreferenceEntry<V>> {
     @Suppress("UNCHECKED_CAST")
-    return ENUM_DISPLAY_ENTRIES[enumClass to variant]?.invoke()
-        as List<ListPreferenceEntry<V>>
+    return ENUM_DISPLAY_ENTRIES[enumClass to variant]?.invoke() as? List<ListPreferenceEntry<V>>
+        ?: emptyList()
 }

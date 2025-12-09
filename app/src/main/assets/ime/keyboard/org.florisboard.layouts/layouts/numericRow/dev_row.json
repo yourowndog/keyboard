@@ -1,7 +1,7 @@
 [
   [
     { "$": "navigation", "code": -15, "label": "⎋" },
-    { "$": "text_key", "code": 64, "label": "@" },
+    { "$": "text_key", "code": -307, "label": "AI" },
     { "$": "text_key", "code": 35, "label": "#" },
     { "$": "text_key", "code": 36, "label": "$" },
     { "$": "text_key", "code": 37, "label": "%" },

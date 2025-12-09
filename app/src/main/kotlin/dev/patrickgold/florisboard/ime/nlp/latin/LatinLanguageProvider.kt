@@ -20,7 +20,11 @@ import android.content.Context
 import dev.patrickgold.florisboard.appContext
 import dev.patrickgold.florisboard.ime.core.Subtype
 import dev.patrickgold.florisboard.ime.editor.EditorContent
+import dev.patrickgold.florisboard.ime.nlp.FeatureFlags
+import dev.patrickgold.florisboard.ime.nlp.NgramEngineManager
+import dev.patrickgold.florisboard.ime.nlp.SuggestionRequest
 import dev.patrickgold.florisboard.ime.nlp.SpellingProvider
+import dev.patrickgold.florisboard.ime.nlp.SymSpellManager
 import dev.patrickgold.florisboard.ime.nlp.SpellingResult
 import dev.patrickgold.florisboard.ime.nlp.SuggestionCandidate
 import dev.patrickgold.florisboard.ime.nlp.SuggestionProvider
@@ -109,7 +113,7 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         val previousWord = lastWordBefore(content.textBeforeSelection)
         // If there is no composing text yet (or just one char), surface next-word bigram predictions.
         if (currentWordRaw.isBlank() || currentWordRaw.length == 1) {
-            val nextWords = dev.patrickgold.florisboard.ime.nlp.SymSpellManager.nextWordPredictions(previousWord)
+            val nextWords = if (FeatureFlags.useNgramEngine) dev.patrickgold.florisboard.ime.nlp.NgramEngineManager.predictNext(previousWord) else dev.patrickgold.florisboard.ime.nlp.SymSpellManager.nextWordPredictions(previousWord)
             if (nextWords.isNotEmpty()) {
                 val upperCount = currentWordRaw.count { it.isUpperCase() }
                 return nextWords.map { word ->
@@ -126,10 +130,20 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
 
         // DELEGATE TO NEW ENGINE
         // Preserve casing for display/commit; lowercase is handled inside the manager for lookup.
-        val suggestions = dev.patrickgold.florisboard.ime.nlp.SymSpellManager.suggest(
-            input = currentWordRaw,
-            previousWord = previousWord,
-        )
+        val suggestions = if (FeatureFlags.useNgramEngine) {
+            dev.patrickgold.florisboard.ime.nlp.NgramEngineManager.suggest(
+                SuggestionRequest(
+                    typed = currentWordRaw,
+                    prevWord = previousWord,
+                    maxSuggestions = maxCandidateCount,
+                )
+            ).map { it.word }
+        } else {
+            dev.patrickgold.florisboard.ime.nlp.SymSpellManager.suggest(
+                input = currentWordRaw,
+                previousWord = previousWord,
+            )
+        }
         val upperCount = currentWordRaw.count { it.isUpperCase() }
 
         return suggestions.map { word ->
@@ -158,7 +172,7 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
     }
 
     override suspend fun getListOfWords(subtype: Subtype): List<String> {
-        return wordData.withLock { it.keys.toList() }
+        return SymSpellManager.getAllWords(appContext)
     }
 
     override suspend fun getFrequencyForWord(subtype: Subtype, word: String): Double {
