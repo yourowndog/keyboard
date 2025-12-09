@@ -251,7 +251,8 @@ class NlpManager(context: Context) {
     }
 
     fun getAutoCommitCandidate(): SuggestionCandidate? {
-        return activeCandidates.firstOrNull { it.isEligibleForAutoCommit }
+        val top = activeCandidates.firstOrNull() ?: return null
+        return if (top.isEligibleForAutoCommit) top else null
     }
 
     fun removeSuggestion(subtype: Subtype, candidate: SuggestionCandidate): Boolean {

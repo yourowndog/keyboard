@@ -25,6 +25,7 @@ import dev.patrickgold.florisboard.ime.nlp.NgramEngineManager
 import dev.patrickgold.florisboard.ime.nlp.SuggestionRequest
 import dev.patrickgold.florisboard.ime.nlp.SpellingProvider
 import dev.patrickgold.florisboard.ime.nlp.SymSpellManager
+
 import dev.patrickgold.florisboard.ime.nlp.SpellingResult
 import dev.patrickgold.florisboard.ime.nlp.SuggestionCandidate
 import dev.patrickgold.florisboard.ime.nlp.SuggestionProvider
@@ -49,6 +50,7 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
 
     private val wordData = guardedByLock { mutableMapOf<String, Int>() }
     private val wordDataSerializer = MapSerializer(String.serializer(), Int.serializer())
+    private var ngramEngine: dev.patrickgold.florisboard.ime.nlp.NgramSuggestionEngine? = null
 
     override val providerId = ProviderId
 
@@ -80,6 +82,16 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
                 // No-op: legacy test dictionary removed; SymSpell handles suggestions/corrections.
             }
         }
+        
+        // Initialize Ngram Engine for Ranking
+        try {
+            val unigrams = appContext.assets.open("ime/dict/aosp_unigram.tsv")
+            val bigrams = appContext.assets.open("ime/dict/final_mobile_bigrams.tsv")
+            ngramEngine = dev.patrickgold.florisboard.ime.nlp.NgramSuggestionEngine.fromStreams(unigrams, bigrams)
+            dev.patrickgold.florisboard.lib.devtools.flogInfo { "NgramSuggestionEngine loaded successfully" }
+        } catch (e: Exception) {
+            dev.patrickgold.florisboard.lib.devtools.flogError { "Failed to load NgramEngine: ${e.message}" }
+        }
     }
 
     override suspend fun spell(
@@ -110,40 +122,87 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         isPrivateSession: Boolean,
     ): List<SuggestionCandidate> {
         val currentWordRaw = content.composingText.toString().trim()
-        val previousWord = lastWordBefore(content.textBeforeSelection)
-        // If there is no composing text yet (or just one char), surface next-word bigram predictions.
-        if (currentWordRaw.isBlank() || currentWordRaw.length == 1) {
-            val nextWords = if (FeatureFlags.useNgramEngine) dev.patrickgold.florisboard.ime.nlp.NgramEngineManager.predictNext(previousWord) else dev.patrickgold.florisboard.ime.nlp.SymSpellManager.nextWordPredictions(previousWord)
+        val textBeforeSelection = content.textBeforeSelection
+        val textBeforeCurrentWord = if (textBeforeSelection.endsWith(currentWordRaw)) {
+            textBeforeSelection.dropLast(currentWordRaw.length)
+        } else {
+            textBeforeSelection
+        }
+        val previousWord = lastWordBefore(textBeforeCurrentWord)
+        // If there is no composing text, surface next-word bigram predictions.
+        // For single chars like "i", fall through to engine for correction (i -> I).
+        if (currentWordRaw.isBlank()) {
+            val nextWords = dev.patrickgold.florisboard.ime.nlp.SymSpellManager.nextWordPredictions(previousWord)
             if (nextWords.isNotEmpty()) {
-                val upperCount = currentWordRaw.count { it.isUpperCase() }
                 return nextWords.map { word ->
+                    val casedText = SymSpellManager.applyPredictedCasing(
+                        typed = currentWordRaw,
+                        suggestion = word,
+                        textBeforeSelection = textBeforeCurrentWord
+                    )
                     WordSuggestionCandidate(
-                        text = applyCasingFromContext(word, upperCount),
+                        text = casedText,
                         secondaryText = null,
-                        isEligibleForAutoCommit = false,
+                        isEligibleForAutoCommit = false, // Don't auto-commit predictions
                         sourceProvider = this
                     )
                 }
             }
+            return emptyList()
         }
-        if (currentWordRaw.isBlank()) return emptyList()
 
-        // DELEGATE TO NEW ENGINE
-        // Preserve casing for display/commit; lowercase is handled inside the manager for lookup.
-        val suggestions = if (FeatureFlags.useNgramEngine) {
-            dev.patrickgold.florisboard.ime.nlp.NgramEngineManager.suggest(
-                SuggestionRequest(
-                    typed = currentWordRaw,
-                    prevWord = previousWord,
-                    maxSuggestions = maxCandidateCount,
+        // Special case: lone "i" -> "I" (SymSpell doesn't return "i" as candidate)
+        if (currentWordRaw.equals("i", ignoreCase = true)) {
+            return listOf(
+                WordSuggestionCandidate(
+                    text = "I",
+                    secondaryText = null,
+                    isEligibleForAutoCommit = true,
+                    sourceProvider = this
                 )
-            ).map { it.word }
-        } else {
-            dev.patrickgold.florisboard.ime.nlp.SymSpellManager.suggest(
-                input = currentWordRaw,
-                previousWord = previousWord,
             )
         }
+
+        // DELEGATE TO NEW ENGINE (Brain Transplant)
+        // 1. Retrieve candidates from SymSpell (The Retriever)
+        val rawCandidates = dev.patrickgold.florisboard.ime.nlp.SymSpellManager.findCandidates(currentWordRaw)
+        
+        // 2. Rank using NgramEngine (The Judge)
+        val engine = ngramEngine
+        if (engine != null) {
+            // Map SymSpell items to (Term, Distance) pairs
+            val mappedCandidates = rawCandidates.map { candidate -> candidate.term to candidate.distance }
+            val rankedSuggestions = engine.rank(mappedCandidates, currentWordRaw, previousWord)
+            return rankedSuggestions.map { candidate ->
+                if (candidate is WordSuggestionCandidate) {
+                    // Use SymSpellManager's casing logic which handles i→I, proper nouns, sentence start
+                    val casedText = SymSpellManager.applyPredictedCasing(
+                        typed = currentWordRaw,
+                        suggestion = candidate.text.toString(),
+                        textBeforeSelection = textBeforeCurrentWord
+                    )
+                    val shouldCommit = candidate.isEligibleForAutoCommit || casedText != currentWordRaw
+                    
+                    if (currentWordRaw == "i" || currentWordRaw == "store") {
+                        android.util.Log.d("LatinProvider", "Input: '$currentWordRaw' -> Cased: '$casedText' | AutoCommit: $shouldCommit | Before: '${content.textBeforeSelection}'")
+                    }
+
+                    candidate.copy(
+                        text = casedText,
+                        isEligibleForAutoCommit = shouldCommit,
+                        sourceProvider = this
+                    )
+                } else {
+                    candidate
+                }
+            }
+        }
+
+        // Fallback to old logic if engine failed to load
+        val suggestions = dev.patrickgold.florisboard.ime.nlp.SymSpellManager.suggest(
+            input = currentWordRaw,
+            previousWord = previousWord,
+        )
         val upperCount = currentWordRaw.count { it.isUpperCase() }
 
         return suggestions.map { word ->
@@ -194,7 +253,7 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
     private fun applyCasingFromContext(word: String, upperCount: Int): String {
         return when {
             upperCount >= 2 -> word.uppercase()
-            upperCount == 1 -> word.replaceFirstChar { it.titlecase() }
+            upperCount == 1 -> word.first().uppercase() + word.substring(1)
             else -> word
         }
     }

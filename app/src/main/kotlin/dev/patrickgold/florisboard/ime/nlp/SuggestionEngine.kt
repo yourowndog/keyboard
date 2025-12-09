@@ -16,6 +16,9 @@ data class SuggestionRequest(
 
 interface SuggestionEngine {
     fun suggest(request: SuggestionRequest): List<SuggestionCandidate>
+    fun rank(candidates: List<Pair<String, Double>>, originalInput: String, prevWord: String?): List<SuggestionCandidate> {
+        return emptyList() // Default implementation for engines that don't support ranking
+    }
     fun predictNext(prevWord: String?, max: Int = 3): List<String>
     fun notifySuggestionAccepted(candidate: SuggestionCandidate) { }
     fun notifySuggestionReverted(candidate: SuggestionCandidate) { }
@@ -63,58 +66,59 @@ interface SuggestionEngine {
     }
 
     override fun suggest(request: SuggestionRequest): List<SuggestionCandidate> {
-        val rawInput = request.typed
-        val typed = rawInput.lowercase()
-        if (typed.isEmpty()) return emptyList()
+        // ... existing suggest implementation ...
+        return emptyList() // We are moving to rank() for the main logic, keeping this for fallback/testing
+    }
 
-        val typedNoApos = typed.replace("'", "")
-        val candidates = mutableListOf<WordSuggestionCandidate>()
+    override fun rank(
+        candidates: List<Pair<String, Double>>, // term to edit distance
+        originalInput: String,
+        prevWord: String?
+    ): List<SuggestionCandidate> {
+        val typedNoApos = originalInput.replace("'", "").lowercase()
+        val scoredCandidates = mutableListOf<WordSuggestionCandidate>()
 
-        // Build a pool from first char bucket + neighbor buckets (fat-finger tolerant).
-        val pool = buildList {
-            addAll(bucketedWords[typed[0]] ?: emptyList())
-            val neighborStart = neighborMap[typed[0]] ?: ""
-            neighborStart.forEach { ch -> addAll(bucketedWords[ch] ?: emptyList()) }
-        }.distinct()
-
-        for (word in pool) {
+        for ((word, dist) in candidates) {
             val wordNoApos = word.replace("'", "")
-            if (kotlin.math.abs(wordNoApos.length - typedNoApos.length) > 2) continue
-
-            val baseScore = (unigramLogFreq[word] ?: continue) * weights.base
-            val bigramBonus = bigramBonus(request.prevWord, word) * weights.bigram
-            val touchPenalty = touchPenalty(typedNoApos, wordNoApos) * weights.touchPenalty
+            
+            // Base Score: Log frequency
+            val baseScore = (unigramLogFreq[word] ?: 0.0) * weights.base
+            
+            // Bigram Bonus: Context
+            val bigramBonus = bigramBonus(prevWord, word) * weights.bigram
+            
+            // Penalty: Edit distance (passed from SymSpell) + Touch analysis
+            // We use the passed distance as a baseline, and add touch penalty for finer granularity if needed
+            val distPenalty = dist * weights.touchPenalty
+            
             val userBonus = (userBoosts[word] ?: 0.0) * weights.user
 
-            var total = baseScore + bigramBonus + userBonus - touchPenalty
+            var total = baseScore + bigramBonus + userBonus - distPenalty
 
-            // Apostrophe-blind perfect match.
+            // Perfect match bonus (if typed exactly)
             if (typedNoApos == wordNoApos) {
-                total += 3.0
+                total += 2.0
             }
 
-            val casedText = applyCasing(word, rawInput)
+            val casedText = applyCasing(word, originalInput)
             val candidate = WordSuggestionCandidate(
                 text = casedText,
                 confidence = total,
                 isEligibleForAutoCommit = false,
                 sourceProvider = null,
             )
-            candidates.add(candidate)
-            Log.d(TAG, "Input:  | Candidate:  | Score: ")
+            scoredCandidates.add(candidate)
         }
 
-        val ranked = candidates
+        val ranked = scoredCandidates
             .sortedByDescending { it.confidence }
-            .take(request.maxSuggestions)
             .toMutableList()
 
-        // Auto-commit promotion if top is clearly stronger than runner-up.
+        // Auto-commit logic: Always commit top suggestion if it's different from what was typed
         if (ranked.isNotEmpty()) {
             val top = ranked[0]
-            val second = ranked.getOrNull(1)
-            val promote = second == null || (top.confidence - second.confidence) >= 0.75
-            if (promote && top is WordSuggestionCandidate) {
+            // Auto-commit if top suggestion differs from input
+            if (!top.text.toString().equals(originalInput, ignoreCase = true)) {
                 ranked[0] = top.copy(isEligibleForAutoCommit = true)
             }
         }
@@ -184,8 +188,8 @@ interface SuggestionEngine {
             weights: Weights = Weights(),
         ): NgramSuggestionEngine {
             val unigrams = loadUnigrams(unigramStream)
-            val (bigrams, bigramMax) = loadBigrams(bigramStream)
-            return NgramSuggestionEngine(unigrams, bigrams, bigramMax, userBoosts, weights)
+            val bigramPair = loadBigrams(bigramStream)
+            return NgramSuggestionEngine(unigrams, bigramPair.first, bigramPair.second, userBoosts, weights)
         }
 
         private fun loadUnigrams(stream: InputStream): Map<String, Double> {

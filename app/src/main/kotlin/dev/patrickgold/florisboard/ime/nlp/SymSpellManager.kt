@@ -392,6 +392,21 @@ object SymSpellManager {
         return if (withContraction.isNotEmpty()) withContraction else listOf(input)
     }
 
+    data class RawCandidate(val term: String, val distance: Double)
+
+    /**
+     * Returns raw candidates from SymSpell without applying the internal hardcoded ranking/fixing logic.
+     * This allows external engines (like NgramSuggestionEngine) to apply their own scoring.
+     */
+    fun findCandidates(input: String): List<RawCandidate> {
+        if (!isReady) return emptyList()
+        val instance = symSpell ?: return emptyList()
+        
+        // Use Verbosity.All to get all candidates within edit distance
+        val suggestions = instance.lookup(input.lowercase(), Verbosity.All, MAX_EDIT_DISTANCE.toDouble())
+        return suggestions.map { RawCandidate(it.term, it.distance) }
+    }
+
     private fun applyCasingPattern(original: String, suggestion: String): String {
         if (original.isEmpty()) return suggestion
         if (original.length == 1 && original.equals("i", ignoreCase = true) && suggestion.equals("i", ignoreCase = true)) {
@@ -412,6 +427,45 @@ object SymSpellManager {
         }
         return suggestion
     }
+
+    /**
+     * Public casing function that checks sentence context (start of text, after period)
+     * before applying normal casing rules.
+     */
+    fun applyPredictedCasing(typed: String, suggestion: String, textBeforeSelection: String): String {
+        // Special case: lone "i" should always become "I"
+        if (typed.equals("i", ignoreCase = true) && suggestion.equals("i", ignoreCase = true)) {
+            return "I"
+        }
+        
+        // Apply contraction shortcuts (im -> I'm, etc.)
+        val contractionResult = CONTRACTION_SHORTCUTS[typed.lowercase()]
+        if (contractionResult != null && suggestion.replace("'", "").equals(typed, ignoreCase = true)) {
+            return contractionResult
+        }
+        
+        // Check if we're at sentence start (empty or after period/newline)
+        val trimmed = textBeforeSelection.trimEnd()
+        val atSentenceStart = trimmed.isEmpty() || 
+                             trimmed.endsWith('.') || 
+                             trimmed.endsWith('!') || 
+                             trimmed.endsWith('?') ||
+                             trimmed.endsWith('\n')
+
+        if (atSentenceStart && typed.firstOrNull()?.isLowerCase() == true) {
+            // At sentence start, force capitalize first letter
+            val cased = applyCasingPattern(typed, suggestion)
+            return if (cased.firstOrNull()?.isLowerCase() == true) {
+                cased.replaceFirstChar { it.titlecase() }
+            } else {
+                cased
+            }
+        }
+        
+        // Otherwise use normal casing rules
+        return applyCasingPattern(typed, suggestion)
+    }
+
 
 
     /**
