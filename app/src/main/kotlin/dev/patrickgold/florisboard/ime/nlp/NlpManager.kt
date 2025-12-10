@@ -270,6 +270,22 @@ class NlpManager(context: Context) {
         }
     }
 
+    fun addToUserDictionary(subtype: Subtype, candidate: SuggestionCandidate) {
+        val word = candidate.text.toString()
+        dev.patrickgold.florisboard.ime.dictionary.DictionaryManager.default().addToUserDictionary(word, subtype.primaryLocale)
+        scope.launch {
+            suggest(subtypeManager.activeSubtype, editorInstance.activeContent)
+        }
+    }
+
+    fun addToUserDictionary(subtype: Subtype, candidate: SuggestionCandidate) {
+        val word = candidate.text.toString()
+        dev.patrickgold.florisboard.ime.dictionary.DictionaryManager.default().addToUserDictionary(word, subtype.primaryLocale)
+        scope.launch {
+            suggest(subtypeManager.activeSubtype, editorInstance.activeContent)
+        }
+    }
+
     fun getListOfWords(subtype: Subtype): List<String> {
         return runBlocking { getSuggestionProvider(subtype).getListOfWords(subtype) }
     }

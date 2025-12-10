@@ -220,33 +220,40 @@ class StatisticalGlideTypingClassifier(context: Context) : GlideTypingClassifier
                 val locationDistance = calcLocationDistance(wordGesture, userGesture)
                 val shapeProbability = calcGaussianProbability(shapeDistance, 0.0f, SHAPE_STD)
                 val locationProbability = calcGaussianProbability(locationDistance, 0.0f, LOCATION_STD * radius)
-                val frequency = 255f * nlpManager.getFrequencyForWord(currentSubtype!!, word).toFloat()
+                
+                // Get log frequency from ngram engine (already in log-space)
+                val logFreq = nlpManager.getFrequencyForWord(currentSubtype!!, word).toFloat()
                 
                 // Length penalty: prefer words closer to gesture complexity
                 val gestureLength = gesture.getLength()
                 val estimatedWordLength = (gestureLength / (radius * 0.8f)).toInt().coerceIn(2, 15)
                 val lengthDiff = kotlin.math.abs(word.length - estimatedWordLength)
-                val lengthPenalty = 1.0f + (lengthDiff * 0.15f)  // Penalize words far from estimated length
+                val lengthPenalty = lengthDiff * 0.3f
                 
-                val confidence = (lengthPenalty) / (shapeProbability * locationProbability * frequency)
+                // Additive score: higher is better
+                // Log probabilities to avoid tiny numbers; add frequency boost; subtract penalty
+                val shapeScore = kotlin.math.ln(shapeProbability.coerceAtLeast(1e-10f))
+                val locationScore = kotlin.math.ln(locationProbability.coerceAtLeast(1e-10f))
+                val confidence = shapeScore + locationScore + (logFreq * 1.5f) - lengthPenalty
 
-                var candidateDistanceSortedIndex = 0
+                var candidateDescendingSortedIndex = 0
                 var duplicateIndex = Int.MAX_VALUE
 
-                while (candidateDistanceSortedIndex < candidateWeights.size
-                    && candidateWeights[candidateDistanceSortedIndex] <= confidence
+                // Sort descending: higher confidence comes first
+                while (candidateDescendingSortedIndex < candidateWeights.size
+                    && candidateWeights[candidateDescendingSortedIndex] >= confidence
                 ) {
-                    if (candidates[candidateDistanceSortedIndex].contentEquals(word)) duplicateIndex =
-                        candidateDistanceSortedIndex
-                    candidateDistanceSortedIndex++
+                    if (candidates[candidateDescendingSortedIndex].contentEquals(word)) duplicateIndex =
+                        candidateDescendingSortedIndex
+                    candidateDescendingSortedIndex++
                 }
-                if (candidateDistanceSortedIndex < maxSuggestionCount && candidateDistanceSortedIndex <= duplicateIndex) {
+                if (candidateDescendingSortedIndex < maxSuggestionCount && candidateDescendingSortedIndex <= duplicateIndex) {
                     if (duplicateIndex < Int.MAX_VALUE) {
                         candidateWeights.removeAt(duplicateIndex)
                         candidates.removeAt(duplicateIndex)
                     }
-                    candidateWeights.add(candidateDistanceSortedIndex, confidence)
-                    candidates.add(candidateDistanceSortedIndex, word)
+                    candidateWeights.add(candidateDescendingSortedIndex, confidence)
+                    candidates.add(candidateDescendingSortedIndex, word)
                     if (candidateWeights.size > maxSuggestionCount) {
                         candidateWeights.removeAt(maxSuggestionCount)
                         candidates.removeAt(maxSuggestionCount)

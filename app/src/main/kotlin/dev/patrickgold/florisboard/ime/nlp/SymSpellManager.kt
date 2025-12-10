@@ -24,7 +24,8 @@ object SymSpellManager {
     // Config
     private const val MAX_EDIT_DISTANCE = 2
     private const val PREFIX_LENGTH = 7
-    private const val DICT_ASSET_PATH = "ime/dict/frequency_dictionary_en.cleaned.txt"
+    private const val DICT_ASSET_PATH = "ime/dict/unified_dictionary.tsv"
+    private const val SWIPE_DICT_PATH = "ime/dict/unified_dictionary.tsv"  // Same dict for everything
     private const val BIGRAM_ASSET_PATH = "ime/dict/final_mobile_bigrams.tsv"
     private const val BIGRAM_WEIGHT = 1.5
     private const val BIGRAM_NO_HIT_PENALTY = 0.2
@@ -32,6 +33,7 @@ object SymSpellManager {
     // Prefer common contractions before running SymSpell so "im" maps to "I'm" instead of "pm".
     private val CONTRACTION_SHORTCUTS = mapOf(
         "im" to "I'm",
+        "i'm" to "I'm",
         "ive" to "I've",
         "id" to "I'd",
         "ill" to "I'll",
@@ -242,12 +244,22 @@ object SymSpellManager {
         // Reflexes: Fast correction
         val normalized = input.lowercase()
         val normalizedNoApos = normalized.replace("'", "")
+        
+        // Check against ignore list
+        val dictManager = dev.patrickgold.florisboard.ime.dictionary.DictionaryManager.default()
+        
+        // Check User Dictionary (Highest Priority)
+        // If the user has explicitly added this word, we MUST respect it.
+        // We check if the input itself is in the user dictionary.
+        val userDictMatches = dictManager.queryUserDictionary(input, dev.patrickgold.florisboard.lib.FlorisLocale.fromTag("en")) // FIXME: Use active locale
+        if (userDictMatches.isNotEmpty()) {
+             // The user typed a word that is in their dictionary. Keep it.
+             return input
+        }
+
         // Use Verbosity.All to ensure we find distance 2 candidates (like won't from wint) even if distance 1 candidates exist.
         val suggestions = instance.lookup(normalized, Verbosity.All, MAX_EDIT_DISTANCE.toDouble())
         val prev = previousWord?.lowercase()
-        
-        // Check against ignore list
-        val ignoreManager = dev.patrickgold.florisboard.ime.dictionary.DictionaryManager.default()
         
         // If there is an apostrophe variant that is the same letters without apostrophe, prefer it.
         val apostropheCandidate = suggestions.firstOrNull { cand ->
@@ -261,9 +273,13 @@ object SymSpellManager {
             val lowerTerm = term.lowercase()
             val candidateNorm = lowerTerm.replace("'", "")
             
-            if (ignoreManager.isUserIgnored(input, term)) return@minByOrNull Double.MAX_VALUE
+            if (dictManager.isUserIgnored(input, term)) return@minByOrNull Double.MAX_VALUE
             if (BLACKLIST.contains(lowerTerm)) return@minByOrNull Double.MAX_VALUE
             
+            // Check if candidate is in user dictionary -> Boost it to infinity
+            val isUserWord = dictManager.queryUserDictionary(term, dev.patrickgold.florisboard.lib.FlorisLocale.fromTag("en")).isNotEmpty()
+            val userBonus = if (isUserWord) -1000.0 else 0.0
+
             var apostropheBonus = 0.0
             if (term.contains('\'')) {
                 if (candidateNorm == normalizedNoApos) {
@@ -288,10 +304,10 @@ object SymSpellManager {
             
             // Exact matches (distance 0) must effectively win against everything except explicit user overrides
             if (candidate.distance == 0.0 && spatial == 0.0) {
-                return@minByOrNull -100.0
+                return@minByOrNull -100.0 + userBonus
             }
             
-            candidate.distance + apostropheBonus + bigramBoost + noHitPenalty + spatial
+            candidate.distance + apostropheBonus + bigramBoost + noHitPenalty + spatial + userBonus
         }?.term ?: return input
 
         // If we landed on the original input but have a matching apostrophe candidate, pick that instead.
@@ -301,7 +317,7 @@ object SymSpellManager {
         }
 
         // Check against ignore list
-        if (dev.patrickgold.florisboard.ime.dictionary.DictionaryManager.default().isUserIgnored(input, finalSuggestion)) {
+        if (dictManager.isUserIgnored(input, finalSuggestion)) {
             return input
         }
 
@@ -477,7 +493,7 @@ object SymSpellManager {
         
         return try {
             val words = mutableListOf<String>()
-            BufferedReader(InputStreamReader(context.assets.open(DICT_ASSET_PATH))).useLines { lines ->
+            BufferedReader(InputStreamReader(context.assets.open(SWIPE_DICT_PATH))).useLines { lines ->
                 lines.forEach { line ->
                     val parts = line.split('\t')
                     if (parts.isNotEmpty()) {

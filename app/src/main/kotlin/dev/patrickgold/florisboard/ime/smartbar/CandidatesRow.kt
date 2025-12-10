@@ -101,7 +101,10 @@ fun CandidatesRow(modifier: Modifier = Modifier) {
                     if (candidate.isEligibleForUserRemoval) {
                         nlpManager.removeSuggestion(subtypeManager.activeSubtype, candidate)
                     } else {
-                        false
+                        // If it's not eligible for removal (e.g. a dictionary word or raw input),
+                        // we treat long-press as "Add to User Dictionary"
+                        nlpManager.addToUserDictionary(subtypeManager.activeSubtype, candidate)
+                        true
                     }
                 },
                 longPressDelay = prefs.keyboard.longPressDelay.get().toLong(),

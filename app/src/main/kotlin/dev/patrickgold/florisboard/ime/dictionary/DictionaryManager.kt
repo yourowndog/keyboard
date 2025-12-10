@@ -125,6 +125,25 @@ class DictionaryManager private constructor(context: Context) {
         return dao.get(original, rejected) != null
     }
 
+    fun addToUserDictionary(word: String, locale: FlorisLocale) {
+        val dao = florisUserDictionaryDao() ?: return
+        val existing = dao.queryExact(word, locale)
+        if (existing.isEmpty()) {
+            dao.insert(UserDictionaryEntry(0, word, 255, locale.localeTag(), null))
+        } else {
+            val entry = existing[0]
+            dao.update(entry.copy(freq = 255))
+        }
+        exportUserDictionaryToVault()
+    }
+
+    fun removeFromUserDictionary(word: String, locale: FlorisLocale) {
+        val dao = florisUserDictionaryDao() ?: return
+        val existing = dao.queryExact(word, locale)
+        existing.forEach { dao.delete(it) }
+        exportUserDictionaryToVault()
+    }
+
     @Synchronized
     fun florisUserDictionaryDao(): UserDictionaryDao? {
         return if (prefs.dictionary.enableFlorisUserDictionary.get()) {
@@ -201,6 +220,12 @@ class DictionaryManager private constructor(context: Context) {
     // --- Vault backup/restore helpers ---------------------------------------------------------
 
     private fun vaultUri(): Uri? {
+        // We ignore the preference and force the git-tracked path if possible, or fallback to pref.
+        // Actually, since we can't easily write to assets at runtime (it's read-only), we must write to a file
+        // that the USER can access and commit. The user said "tracked in the same repo".
+        // On Android, we can't write to the APK assets. We can write to external storage.
+        // The user is on Termux, so we can write to a path they can reach.
+        // But for now, let's stick to the Vault URI preference, but I will instruct the user to set it to a file in their repo.
         val uriStr = prefs.dictionary.userDictionaryVaultUri.get()
         return uriStr.takeIf { it.isNotBlank() }?.let { runCatching { Uri.parse(it) }.getOrNull() }
     }
@@ -237,7 +262,7 @@ class DictionaryManager private constructor(context: Context) {
     private fun maybeImportFromVault(context: Context) {
         val db = florisUserDictionaryDatabase ?: return
         val dao = db.userDictionaryDao()
-        if (dao.queryAll().isNotEmpty()) return
+        // Always try to import on init to sync changes made via git
         importUserDictionaryFromVault()
     }
 }

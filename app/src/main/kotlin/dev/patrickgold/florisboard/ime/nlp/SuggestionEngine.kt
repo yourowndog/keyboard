@@ -32,7 +32,7 @@ interface SuggestionEngine {
  * without touching UI or Android-specific code.
  */
  class NgramSuggestionEngine(
-    private val unigramLogFreq: Map<String, Double>,
+    internal val unigramLogFreq: Map<String, Double>,
     private val bigramTable: Map<String, Map<String, Int>>,
     private val bigramMaxByPrev: Map<String, Int>,
     private val userBoosts: Map<String, Double> = emptyMap(),

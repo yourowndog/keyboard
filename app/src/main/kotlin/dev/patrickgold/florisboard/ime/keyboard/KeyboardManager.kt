@@ -444,7 +444,9 @@ class KeyboardManager(
 
     fun commitGesture(word: String) {
         // Auto-commit word with trailing space for swipe typing
-        editorInstance.commitGesture(fixCase(word))
+        val textBefore = editorInstance.activeContent.textBeforeSelection.toString()
+        val smartCased = dev.patrickgold.florisboard.ime.nlp.SymSpellManager.applyPredictedCasing(word, word, textBefore)
+        editorInstance.commitGesture(fixCase(smartCased))
         editorInstance.commitText(" ")  // Auto-insert space after swipe word
     }
 

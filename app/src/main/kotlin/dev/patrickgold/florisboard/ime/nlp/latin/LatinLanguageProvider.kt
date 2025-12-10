@@ -83,9 +83,9 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
             }
         }
         
-        // Initialize Ngram Engine for Ranking
+        // Initialize Ngram Engine for Ranking (use cleaned dictionary - same as swipe)
         try {
-            val unigrams = appContext.assets.open("ime/dict/aosp_unigram.tsv")
+            val unigrams = appContext.assets.open("ime/dict/unified_dictionary.tsv")
             val bigrams = appContext.assets.open("ime/dict/final_mobile_bigrams.tsv")
             ngramEngine = dev.patrickgold.florisboard.ime.nlp.NgramSuggestionEngine.fromStreams(unigrams, bigrams)
             dev.patrickgold.florisboard.lib.devtools.flogInfo { "NgramSuggestionEngine loaded successfully" }
@@ -231,11 +231,15 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
     }
 
     override suspend fun getListOfWords(subtype: Subtype): List<String> {
-        return SymSpellManager.getAllWords(appContext)
+        // Use the ngram engine's word list (already loaded in memory)
+        val engine = ngramEngine ?: return SymSpellManager.getAllWords(appContext)
+        return engine.unigramLogFreq.keys.toList()
     }
 
     override suspend fun getFrequencyForWord(subtype: Subtype, word: String): Double {
-        return wordData.withLock { it.getOrDefault(word, 0) / 255.0 }
+        // Query the live ngram engine which has AOSP unigram frequencies loaded
+        val engine = ngramEngine ?: return 0.0
+        return engine.unigramLogFreq[word.lowercase()] ?: 0.0
     }
 
     override suspend fun destroy() {
