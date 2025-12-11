@@ -69,14 +69,43 @@
   - **Key codes/data:** `ime/text/key/KeyCode.kt`, `ime/text/keyboard/TextKeyData.kt`.
 - **Native:** `lib/native` (JNI bridge to Rust).
 
-## Cognitive Map (System Architecture)
-- **Layouts:** `extension.json` → `LayoutManager` builds `TextKeyboard` by loading layouts, applying popup mappings; caches into `KeyboardManager`.
-- **Rendering:** `ComputingEvaluator.computeLabel`/`computeImageVector` + `TextKey.computeLabelsAndDrawables` decide label vs icon. ENTER/VIEW_SYMBOLS forced to text; backspace still icon (apply ENTER pattern to force text).
-- **Runtime:** `KeyboardManager.handleKeyCode` dispatches esc/tab/voice/ctrl/shift/etc. Ctrl is placeholder; shift handled via `handleShiftUp`. `VOICE_INPUT` toggles recorder and calls `WhisperClient`. ESC/TAB send key events. Uninstall button is elsewhere (`HomeScreen`).
-- **Smartbar:** `CandidatesRow` reads `nlpManager.activeCandidatesFlow`, displays via `Text` (maxLines=1, overflow Visible), wrapContent, scroll when >1.
-- **Whisper:** `WhisperClient` posts audio to OpenAI with `BuildConfig.OPENAI_API_KEY`/`WHISPER_MODEL`. `KeyboardManager.startVoiceCapture/stopVoiceCapture` handles recorder and transcription commit.
-- **User dict/vault:** `DictionaryManager` + `UserDictionaryScreen` manage SAF export/import (`user_dict.txt`); auto-import if DB empty and URI set.
-- **NLP:** `SymSpellManager` uses cleaned dicts, bigrams; `LatinLanguageProvider` delegates to SymSpell; `NlpManager` routes suggestion flows.
+## Architecture Overview (Reconciled)
+
+### 1. System Architecture
+- **Core:** Jetpack Compose IME built atop FlorisBoard.
+- **Entrypoint:** `app/src/main/kotlin/dev/patrickgold/florisboard/FlorisImeService.kt` (extends `LifecycleInputMethodService`).
+- **Modules:** `app` (Android app), `lib/*` (shared libs: compose, cache, io, crashutility, snygg), `lib/native` (JNI/Rust).
+- **Lifecycle:** `FlorisImeService` manages composition, config changes, window insets, IME UI modes, theme updates, Smartbar visibility.
+- **Event Flow:** `InputEventDispatcher` -> `KeyboardManager` -> `LayoutManager`/`TextKeyboard` -> `EditorInstance`. NLP (`NlpManager`, `SymSpellManager`) feeds Smartbar.
+
+### 2. Input Handling
+- **Gesture:** `GlideTypingManager` (in `ime/text/gestures`) links `GlideTypingGesture.Detector` with `StatisticalGlideTypingClassifier`.
+- **Tap/Long-Press:** `KeyboardManager` interprets `KeyCode`, applies modifiers. Long-press popups defined in layout JSON, resolved by `TextKeyData`.
+
+### 3. Key System
+- **Rendering:** `TextKey.kt` + Compose drawing.
+- **Data:** `TextKeyData.kt` (type, code, label).
+- **Computation:** `ComputingEvaluator.kt` evaluates enabled/visible state, computes labels/icons.
+- **Sizing:** `FlorisImeSizing.kt`, `TextKey.kt` (width factors).
+
+### 4. Layout Engine
+- **Manager:** `LayoutManager.kt` loads, caches, and merges layouts (main + modifier + extension).
+- **Assets:** `app/src/main/assets/ime/keyboard` (`org.florisboard.layouts`).
+- **Typo Alert:** Note existence of `org.florisborad.layouts` (typo in folder name).
+
+### 5. Suggestions & NLP
+- **Manager:** `NlpManager.kt` orchestrates suggestions.
+- **Engine:** `SymSpellManager.kt` uses `SymSpell` for spell checking/correction, loads bigrams (`final_mobile_bigrams.tsv`).
+- **Dictionary:** `DictionaryManager.kt`, `UserDictionary.kt` (Room-backed).
+
+### 6. AI Integrations
+- **Whisper:** `net/WhisperClient.kt` posts audio to OpenAI. Triggered by `VOICE_INPUT` (-233) in `KeyboardManager`.
+- **Gemma:** `ime/nlp/GemmaClient.kt` connects to local server (`http://127.0.0.1:8080/completion`). Persona in `assets/ime/nlp/gemma_persona.txt`.
+
+### 7. UI/UX & Customization
+- **Theme:** `ThemeManager.kt` manages Snygg-based themes (`ime/theme/*`).
+- **Smartbar:** `SmartbarLayout.kt`, `CandidatesRow.kt`.
+- **Media:** `MediaInputLayout.kt` (emoji/emoticon).
 
 ## Custom Keys and Templates
 - Use `$` templates (`auto_text_key`, `text_key`, `variation_selector`, `navigation`, etc.) in JSON.
@@ -102,8 +131,8 @@
 
 ## Gemma / LLM Snapshot
 - **Model Path (Device):** `/data/local/tmp/Gemma2-2B-IT_multi-prefill-seq_q8_ekv1280.task`
-- **Integration:** `ime/nlp/GemmaBridge.kt` (checks for this file).
-- **Status:** Code exists (`GemmaBridge`) but is currently dormant/untested.
+- **Integration:** `ime/nlp/GemmaClient.kt` (Note: previously referred to as Bridge, now Client).
+- **Status:** Code exists (`GemmaClient`) but is currently dormant/untested.
 
 ## Known Issues / TODOs (Goals)
 - **Backspace icon → text:** follow ENTER pattern (null icon + label in layout).

@@ -76,10 +76,12 @@ interface SuggestionEngine {
         prevWord: String?
     ): List<SuggestionCandidate> {
         val typedNoApos = originalInput.replace("'", "").lowercase()
+        val typedLower = originalInput.lowercase()
         val scoredCandidates = mutableListOf<WordSuggestionCandidate>()
 
         for ((word, dist) in candidates) {
             val wordNoApos = word.replace("'", "")
+            val wordLower = word.lowercase()
             
             // Base Score: Log frequency
             val baseScore = (unigramLogFreq[word] ?: 0.0) * weights.base
@@ -87,9 +89,10 @@ interface SuggestionEngine {
             // Bigram Bonus: Context
             val bigramBonus = bigramBonus(prevWord, word) * weights.bigram
             
-            // Penalty: Edit distance (passed from SymSpell) + Touch analysis
-            // We use the passed distance as a baseline, and add touch penalty for finer granularity if needed
-            val distPenalty = dist * weights.touchPenalty
+            // Penalty: Use SymSpellManager's spatialCost which handles transpositions
+            // This ensures consistent scoring between autocorrect and suggestions
+            val spatialPenalty = dev.patrickgold.florisboard.ime.nlp.SymSpellManager.spatialCost(typedLower, wordLower)
+            val distPenalty = (dist + spatialPenalty) * weights.touchPenalty
             
             val userBonus = (userBoosts[word] ?: 0.0) * weights.user
 

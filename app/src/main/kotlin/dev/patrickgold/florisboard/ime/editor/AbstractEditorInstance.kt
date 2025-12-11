@@ -388,43 +388,92 @@ abstract class AbstractEditorInstance(context: Context) {
 
     open fun commitText(text: String): Boolean = commitTextInternal(text)
 
+
     private fun commitTextInternal(text: String): Boolean {
         val ic = currentInputConnection() ?: return false
         val content = activeContent
         val selection = content.selection
         ic.beginBatchEdit()
-        ic.finishComposingText()
+        
         if (activeInfo.isRawInputEditor) {
+            ic.finishComposingText()
             ic.commitText(text, 1)
         } else runBlocking {
-            // Run the Reflex check
-            val stripped = text.trimEnd()
-            val trailing = text.removePrefix(stripped)
-            val prevWord = lastWordBefore(content.textBeforeSelection)
-            val corrected = dev.patrickgold.florisboard.ime.nlp.SymSpellManager.fix(
-                input = stripped,
-                previousWord = prevWord,
-            )
-            val finalText = corrected + trailing
-            val newSelection = EditorRange.cursor(selection.start + finalText.length)
-            val newContent = content.generateCopy(
-                selection = newSelection,
-                textBeforeSelection = buildString {
-                    append(content.textBeforeSelection)
-                    append(finalText)
-                },
-                selectedText = "",
-            )
-            expectedContentQueue.push(newContent)
-            if (corrected != stripped) {
-                autoCorrectUndoState = AutoCorrectUndoState(
-                    correctedText = finalText,
-                    originalText = stripped + trailing,
+            // Check if we're committing a word separator AND there's a composing word to autocorrect
+            val composingText = content.composingText
+            val isWordSeparator = text.length == 1 && (text == " " || text == "\n" || ".,;:!?".contains(text))
+            
+            if (isWordSeparator && composingText.isNotEmpty()) {
+                // Autocorrect the COMPOSING WORD, not the separator
+                val prevWord = lastWordBefore(content.textBeforeSelection.removeSuffix(composingText))
+                val corrected = dev.patrickgold.florisboard.ime.nlp.SymSpellManager.fix(
+                    input = composingText,
+                    previousWord = prevWord,
                 )
+                android.util.Log.d("SymSpell", "Autocorrect: '$composingText' -> '$corrected' (prev: $prevWord)")
+                
+                if (corrected != composingText) {
+                    // Replace the composing word with the corrected version, then add the separator
+                    val composing = content.composing
+                    if (composing.isValid) {
+                        // Calculate new selection position
+                        val newSelection = EditorRange.cursor(composing.start + corrected.length + text.length)
+                        val newContent = content.generateCopy(
+                            selection = newSelection,
+                            textBeforeSelection = buildString {
+                                append(content.textBeforeSelection.removeSuffix(composingText))
+                                append(corrected)
+                                append(text)
+                            },
+                            selectedText = "",
+                        )
+                        expectedContentQueue.push(newContent)
+                        autoCorrectUndoState = AutoCorrectUndoState(
+                            correctedText = corrected,
+                            originalText = composingText,
+                        )
+                        // Replace composing region with corrected word + separator
+                        ic.setComposingRegion(composing.start, composing.end)
+                        ic.setComposingText(corrected + text, 1)
+                        ic.finishComposingText()
+                        ic.setComposingRegion(newContent.composing)
+                    } else {
+                        // Fallback: just commit as-is
+                        ic.finishComposingText()
+                        ic.commitText(text, 1)
+                    }
+                } else {
+                    // No correction needed, just commit the separator
+                    ic.finishComposingText()
+                    val newSelection = EditorRange.cursor(selection.start + text.length)
+                    val newContent = content.generateCopy(
+                        selection = newSelection,
+                        textBeforeSelection = buildString {
+                            append(content.textBeforeSelection)
+                            append(text)
+                        },
+                        selectedText = "",
+                    )
+                    expectedContentQueue.push(newContent)
+                    ic.commitText(text, 1)
+                    ic.setComposingRegion(newContent.composing)
+                }
+            } else {
+                // Not a word separator or no composing word, just commit as-is
+                ic.finishComposingText()
+                val newSelection = EditorRange.cursor(selection.start + text.length)
+                val newContent = content.generateCopy(
+                    selection = newSelection,
+                    textBeforeSelection = buildString {
+                        append(content.textBeforeSelection)
+                        append(text)
+                    },
+                    selectedText = "",
+                )
+                expectedContentQueue.push(newContent)
+                ic.commitText(text, 1)
+                ic.setComposingRegion(newContent.composing)
             }
-            // Then use finalText in the commit call
-            ic.commitText(finalText, 1)
-            ic.setComposingRegion(newContent.composing)
         }
         ic.endBatchEdit()
         return true

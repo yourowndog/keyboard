@@ -775,8 +775,10 @@ class KeyboardManager(
      * enabled by the user.
      */
     private fun handleSpace(data: KeyData) {
-        val candidate = nlpManager.getAutoCommitCandidate()
-        candidate?.let { commitCandidate(it) }
+        // DISABLED: NLP auto-commit - we now use SymSpell autocorrect in commitTextInternal instead
+        // val candidate = nlpManager.getAutoCommitCandidate()
+        // candidate?.let { commitCandidate(it) }
+        
         if (prefs.keyboard.spaceBarSwitchesToCharacters.get()) {
             when (activeState.keyboardMode) {
                 KeyboardMode.NUMERIC_ADVANCED,
@@ -797,11 +799,8 @@ class KeyboardManager(
                 }
             }
         }
-        // TODO: this is whether we commit space after selecting candidate. Should be determined by SuggestionProvider
-        if (!subtypeManager.activeSubtype.primaryLocale.supportsAutoSpace &&
-                candidate != null) { /* Do nothing */ } else {
-            editorInstance.commitText(KeyCode.SPACE.toChar().toString())
-        }
+        // Always commit space - autocorrect happens in commitTextInternal
+        editorInstance.commitText(KeyCode.SPACE.toChar().toString())
     }
 
     /**

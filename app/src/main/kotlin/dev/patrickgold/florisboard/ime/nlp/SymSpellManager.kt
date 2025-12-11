@@ -27,7 +27,7 @@ object SymSpellManager {
     private const val DICT_ASSET_PATH = "ime/dict/unified_dictionary.tsv"
     private const val SWIPE_DICT_PATH = "ime/dict/unified_dictionary.tsv"  // Same dict for everything
     private const val BIGRAM_ASSET_PATH = "ime/dict/final_mobile_bigrams.tsv"
-    private const val BIGRAM_WEIGHT = 0.1 // Reduced from 1.5 to prevent "hry" -> "by" and "chill" -> "child"
+    private const val BIGRAM_WEIGHT = 0.5 // Increased to 0.5 for better context
     private const val BIGRAM_NO_HIT_PENALTY = 0.2
     private val USER_OVERRIDES = listOf("kiry" to Double.MAX_VALUE)
     // Prefer common contractions before running SymSpell so "im" maps to "I'm" instead of "pm".
@@ -207,24 +207,45 @@ object SymSpellManager {
     )
 
     // 0.0 = perfect neighbor match, 2.0 = far away
-    private fun spatialCost(typed: String, candidate: String): Double {
-        // Penalize length differences (insertions/deletions) HEAVILY so substitutions are preferred.
-        // "si" -> "so" (subst) should be CHEAP (0.5).
-        // "si" -> "i" (del) should be EXPENSIVE (3.0).
-        if (typed.length != candidate.length) return 3.0 
-        
+    // Made public so NgramSuggestionEngine can use the same scoring
+    fun spatialCost(typed: String, candidate: String): Double {
         var cost = 0.0
-        for (i in typed.indices) {
+        val len = kotlin.math.min(typed.length, candidate.length)
+        
+        var i = 0
+        while (i < len) {
             val t = typed[i]
             val c = candidate[i]
-            if (t == c) continue
+            if (t == c) {
+                i++
+                continue
+            }
+            
+            // Check for transposition (adjacent swap like ie -> ei)
+            if (i + 1 < len && i + 1 < typed.length && i + 1 < candidate.length) {
+                val t1 = typed[i + 1]
+                val c1 = candidate[i + 1]
+                if (t == c1 && t1 == c) {
+                    // This is a transposition - penalize lightly
+                    cost += 0.3
+                    i += 2  // Skip both characters
+                    continue
+                }
+            }
+            
             val neighbors = KEYBOARD_NEIGHBORS[t] ?: ""
             if (neighbors.contains(c)) {
                 cost += 0.5 // Close miss
             } else {
                 cost += 2.0 // Far miss
             }
+            i++
         }
+        
+        // Add penalty for length difference (insertions/deletions)
+        val diff = kotlin.math.abs(typed.length - candidate.length)
+        cost += diff * 0.5
+        
         return cost
     }
 
@@ -252,8 +273,10 @@ object SymSpellManager {
         }
         val instance = symSpell ?: return input
         // Handle single-letter inputs explicitly to avoid over-correcting every keystroke.
-        // Do not auto-capitalize lone "i"; keep exactly what the user typed.
-        if (input.length == 1) return input
+        // Special case: lone "i" should become "I"
+        if (input.length == 1) {
+            return if (input == "i") "I" else input
+        }
 
         // Reflexes: Fast correction
         val normalized = input.lowercase()
@@ -270,12 +293,15 @@ object SymSpellManager {
 
         // TRUST REAL WORDS: If the user typed a valid dictionary word, KEEP IT.
         val exactMatches = instance.lookup(normalized, Verbosity.Top, 0.0)
-        if (exactMatches.isNotEmpty()) {
+        android.util.Log.d("SymSpell", "[$input] exactMatches(dist=0): ${exactMatches.map { "${it.term}:${it.distance}" }}")
+        if (exactMatches.isNotEmpty() && exactMatches.first().distance == 0.0) {
+            android.util.Log.d("SymSpell", "[$input] -> TRUST (exact match found)")
             return input
         }
 
         // Use Verbosity.All to ensure we find distance 2 candidates
         val suggestions = instance.lookup(normalized, Verbosity.All, MAX_EDIT_DISTANCE.toDouble())
+        android.util.Log.d("SymSpell", "[$input] suggestions(dist<=2): ${suggestions.take(5).map { "${it.term}:${it.distance}" }}")
         
         // Also check if any user dictionary word is a close match and should win
         val bestUserMatch = userWordsCache.firstOrNull { userWord ->
@@ -289,14 +315,6 @@ object SymSpellManager {
 
         val prev = previousWord?.lowercase()
 
-        
-        if (input == "si") {
-            android.util.Log.d("SymSpell", "Candidates for 'si': ${suggestions.joinToString { "${it.term}:${it.distance}" }}")
-        }
-        if (input == "hry") {
-            android.util.Log.d("SymSpell", "Candidates for 'hry': ${suggestions.joinToString { "${it.term}:${it.distance}" }}")
-        }
-
         // If there is an apostrophe variant that is the same letters without apostrophe, prefer it.
         val apostropheCandidate = suggestions.firstOrNull { cand ->
             val candLower = cand.term.lowercase()
@@ -304,18 +322,18 @@ object SymSpellManager {
         }
 
         // Prefer candidates that only differ by a missing apostrophe (treat apostrophes as zero-cost).
-        val suggestion = suggestions.minByOrNull { candidate ->
+        val scoredCandidates = suggestions.map { candidate ->
             val term = candidate.term
             val lowerTerm = term.lowercase()
             val candidateNorm = lowerTerm.replace("'", "")
             
             // CULLING: Filter out 2-letter words not in whitelist
             if (lowerTerm.length == 2 && !TWO_LETTER_WHITELIST.contains(lowerTerm)) {
-                return@minByOrNull Double.MAX_VALUE
+                return@map Triple(candidate, Double.MAX_VALUE, "2-letter cull")
             }
             
-            if (dictManager.isUserIgnored(input, term)) return@minByOrNull Double.MAX_VALUE
-            if (BLACKLIST.contains(lowerTerm)) return@minByOrNull Double.MAX_VALUE
+            if (dictManager.isUserIgnored(input, term)) return@map Triple(candidate, Double.MAX_VALUE, "ignored")
+            if (BLACKLIST.contains(lowerTerm)) return@map Triple(candidate, Double.MAX_VALUE, "blacklist")
             
             // Check if candidate is in user dictionary -> Boost it to infinity
             val isUserWord = userWordsCache.any { it.equals(term, ignoreCase = true) }
@@ -343,11 +361,19 @@ object SymSpellManager {
             
             // Exact matches (distance 0) must effectively win against everything except explicit user overrides
             if (candidate.distance == 0.0 && spatial == 0.0) {
-                return@minByOrNull -100.0 + userBonus
+                return@map Triple(candidate, -100.0 + userBonus, "exact")
             }
             
-            candidate.distance + apostropheBonus + bigramBoost + noHitPenalty + spatial + userBonus
-        }?.term ?: return input
+            val score = candidate.distance + apostropheBonus + bigramBoost + noHitPenalty + spatial + userBonus
+            Triple(candidate, score, "d=${candidate.distance} s=$spatial b=$bigramBoost")
+        }.sortedBy { it.second }
+        
+        // Log top 3 candidates for debugging
+        if (scoredCandidates.isNotEmpty()) {
+            android.util.Log.d("SymSpell", "[$input] Top candidates: ${scoredCandidates.take(3).map { "${it.first.term}:${it.second}(${it.third})" }}")
+        }
+        
+        val suggestion = scoredCandidates.firstOrNull()?.first?.term ?: return input
 
         // If we landed on the original input but have a matching apostrophe candidate, pick that instead.
         val finalSuggestion = when {
