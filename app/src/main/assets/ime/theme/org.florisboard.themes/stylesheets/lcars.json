@@ -72,8 +72,8 @@
     "background": "transparent",
     "foreground": "var(--on-surface-variant)",
     "font-family": "monospace",
-    "font-size": "12sp",
-    "padding": "4dp 4dp 0dp 0dp",
+    "font-size": "6sp",
+    "padding": "0dp 1dp 1dp 0dp",
     "text-max-lines": "1"
   },
   "key-popup-box": {

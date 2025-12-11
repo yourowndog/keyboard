@@ -25,6 +25,7 @@ object NgramEngineManager {
     @Volatile var useAosp: Boolean = false
 
     fun init(context: Context, scope: CoroutineScope) {
+        GemmaClient.loadPersona(context)
         scope.launch(Dispatchers.IO) {
             try {
                 val assets = context.assets
@@ -60,8 +61,8 @@ object NgramEngineManager {
     }
 
     fun ready(): Boolean = isReady
-    fun generateAiCompletion(prompt: String): String? {
+    fun generateAiCompletion(config: GemmaClient.PromptConfig): String? {
         val eng = engine ?: return null
-        return eng.generateAiCompletion(prompt)
+        return eng.generateAiCompletion(config)
     }
 }

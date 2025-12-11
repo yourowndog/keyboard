@@ -18,6 +18,7 @@ package dev.patrickgold.florisboard.ime.clipboard
 
 import android.content.ClipData
 import android.content.Context
+import android.util.Log
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.appContext
 import dev.patrickgold.florisboard.editorInstance
@@ -168,6 +169,7 @@ class ClipboardManager(
         val syncBehavior = prefs.clipboard.syncToFloris.get()
         if (!prefs.clipboard.useInternalClipboard.get() || syncBehavior != ClipboardSyncBehavior.NO_EVENTS) {
             val systemPrimaryClip = systemClipboardManager.primaryClip
+            Log.d("FlorisClipboard", "onPrimaryClipChanged: systemClip=$systemPrimaryClip")
             ioScope.launch {
                 val isDuplicate: Boolean
                 primaryClipLastFromCallbackGuard.withLock {
@@ -204,7 +206,9 @@ class ClipboardManager(
 
                 val isEqual = internalPrimaryClip?.isEqualTo(systemPrimaryClip) == true
                 if (!isEqual) {
+                    Log.d("FlorisClipboard", "Syncing new clip from system")
                     val item = ClipboardItem.fromClipData(appContext, systemPrimaryClip, cloneUri = true)
+                    Log.d("FlorisClipboard", "Created item: $item")
                     primaryClip = item
                     insertOrMoveBeginning(item)
                 }

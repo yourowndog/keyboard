@@ -272,19 +272,18 @@ class NlpManager(context: Context) {
 
     fun addToUserDictionary(subtype: Subtype, candidate: SuggestionCandidate) {
         val word = candidate.text.toString()
-        dev.patrickgold.florisboard.ime.dictionary.DictionaryManager.default().addToUserDictionary(word, subtype.primaryLocale)
+        val locale = subtype.primaryLocale
+        val success = dev.patrickgold.florisboard.ime.dictionary.DictionaryManager.default().addToUserDictionary(word, locale)
+        if (success) {
+             val allWords = dev.patrickgold.florisboard.ime.dictionary.DictionaryManager.default().queryAllWords(locale)
+             dev.patrickgold.florisboard.ime.nlp.SymSpellManager.updateUserDictCache(allWords)
+        }
         scope.launch {
             suggest(subtypeManager.activeSubtype, editorInstance.activeContent)
         }
     }
 
-    fun addToUserDictionary(subtype: Subtype, candidate: SuggestionCandidate) {
-        val word = candidate.text.toString()
-        dev.patrickgold.florisboard.ime.dictionary.DictionaryManager.default().addToUserDictionary(word, subtype.primaryLocale)
-        scope.launch {
-            suggest(subtypeManager.activeSubtype, editorInstance.activeContent)
-        }
-    }
+
 
     fun getListOfWords(subtype: Subtype): List<String> {
         return runBlocking { getSuggestionProvider(subtype).getListOfWords(subtype) }
@@ -469,9 +468,9 @@ class NlpManager(context: Context) {
                 it.id != lastItemId
                     // Check if content is empty
                     && contentText.isBlank()
-                    // Check if clipboard content has any valid characters
-                    && !currentItem.text.isNullOrBlank()
-                    && !blankStrRegex.matches(currentItem.text)
+                    // Check if clipboard content is valid (text or image)
+                    && ((!currentItem.text.isNullOrBlank() && !blankStrRegex.matches(currentItem.text))
+                        || (currentItem.type == ItemType.IMAGE && currentItem.uri != null))
             }
     }
 }

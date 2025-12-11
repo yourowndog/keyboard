@@ -27,6 +27,7 @@ import android.net.Uri
 import android.os.ParcelFileDescriptor
 import android.provider.MediaStore
 import android.provider.OpenableColumns
+import android.util.Log
 import androidx.exifinterface.media.ExifInterface
 import dev.patrickgold.florisboard.BuildConfig
 import dev.patrickgold.florisboard.lib.devtools.flogError
@@ -133,7 +134,7 @@ class ClipboardMediaProvider : ContentProvider() {
         return ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY)
     }
 
-    override fun insert(uri: Uri, values: ContentValues?): Uri {
+    override fun insert(uri: Uri, values: ContentValues?): Uri? {
         when (val m = Matcher.match(uri)) {
             IMAGE_CLIPS_TABLE, VIDEO_CLIPS_TABLE -> {
                 return try {
@@ -166,8 +167,9 @@ class ClipboardMediaProvider : ContentProvider() {
                         ContentUris.withAppendedId(VIDEO_CLIPS_URI, id)
                     }
                 } catch (e: Exception) {
+                    Log.e("FlorisClipboard", "Error inserting clip media", e)
                     flogError { e.message.toString() }
-                    uri.buildUpon().appendPath("0").build()
+                    return null
                 }
             }
             else -> error("Unable to identify type of $uri")

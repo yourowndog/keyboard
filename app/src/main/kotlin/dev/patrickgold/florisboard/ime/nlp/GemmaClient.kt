@@ -19,15 +19,23 @@ object GemmaClient {
     
     private val json = Json { ignoreUnknownKeys = true }
     
-    private val history = mutableListOf<Pair<String, String>>()
-    private const val MAX_HISTORY = 4
+    private var persona: String = "You are a helpful assistant."
+
+    fun loadPersona(context: android.content.Context) {
+        try {
+            persona = context.assets.open("ime/nlp/gemma_persona.txt").bufferedReader().use { it.readText() }
+        } catch (e: Exception) {
+            // Fallback if file missing
+            e.printStackTrace()
+        }
+    }
 
     @Serializable
     data class CompletionRequest(
         val prompt: String,
-        val n_predict: Int = 20,
-        val temperature: Double = 0.7,
-        val stop: List<String> = listOf("\n")
+        val n_predict: Int = 128, // Increased for slightly longer replies
+        val temperature: Double = 0.8, // Slightly more creative
+        val stop: List<String> = listOf("<end_of_turn>")
     )
 
     @Serializable
@@ -35,10 +43,35 @@ object GemmaClient {
         val content: String
     )
 
-    fun complete(inputText: String): String? {
+    data class PromptConfig(
+        val mode: Mode,
+        val originalInput: String,
+        val context: String? = null
+    ) {
+        enum class Mode {
+            REPLY,
+            REWRITE,
+            CONTINUE
+        }
+    }
+
+    fun complete(config: PromptConfig): String? {
         return try {
-            val context = history.joinToString("\n") { (u, a) -> "User: $u\nAI: $a" }
-            val fullPrompt = "<start_of_turn>user\nContext:\n$context\n\nCurrent Input: \"$inputText\"\n\nRespond naturally as a helpful assistant. Do not be too chatty.<end_of_turn>\n<start_of_turn>model\n"
+            val systemPrompt = "<start_of_turn>model\n$persona<end_of_turn>\n"
+            
+            val userPrompt = when (config.mode) {
+                PromptConfig.Mode.REPLY -> {
+                    "Context (Message to reply to):\n${config.context}\n\nTask: Draft a reply in my style."
+                }
+                PromptConfig.Mode.REWRITE -> {
+                    "Original Text:\n${config.originalInput}\n\nTask: Rewrite/Fix this in my style."
+                }
+                PromptConfig.Mode.CONTINUE -> {
+                    "Current Text:\n${config.originalInput}\n\nTask: Complete this thought in my style."
+                }
+            }
+
+            val fullPrompt = "$systemPrompt<start_of_turn>user\n$userPrompt<end_of_turn>\n<start_of_turn>model\n"
             
             val requestBody = CompletionRequest(fullPrompt)
             val body = json.encodeToString(requestBody).toRequestBody(JSON_MEDIA_TYPE)
@@ -52,9 +85,6 @@ object GemmaClient {
                 val responseBody = response.body?.string() ?: return null
                 val completionResponse = json.decodeFromString<CompletionResponse>(responseBody)
                 val reply = completionResponse.content.trim()
-                
-                if (history.size >= MAX_HISTORY) history.removeAt(0)
-                history.add(inputText to reply)
                 
                 reply
             }

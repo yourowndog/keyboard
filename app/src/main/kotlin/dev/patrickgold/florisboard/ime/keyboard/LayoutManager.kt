@@ -375,7 +375,7 @@ class LayoutManager(context: Context) {
         if (keyboardMode == KeyboardMode.CHARACTERS && computedArrangement.isNotEmpty()) {
             val symbolsComputedArrangement = computeKeyboardAsync(KeyboardMode.SYMBOLS, subtype).await().arrangement
             // number row hint always happens on first row
-            if (prefs.keyboard.hintedNumberRowEnabled.get() && symbolsComputedArrangement.isNotEmpty()) {
+            if (prefs.keyboard.hintedNumberRowEnabled.get() && !prefs.keyboard.devRow.get() && symbolsComputedArrangement.isNotEmpty()) {
                 val row = computedArrangement[0]
                 val symbolRow = symbolsComputedArrangement[0]
                 addRowHints(row, symbolRow, KeyType.NUMERIC)

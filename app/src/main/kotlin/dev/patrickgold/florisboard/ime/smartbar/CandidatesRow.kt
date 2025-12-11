@@ -16,15 +16,21 @@
 
 package dev.patrickgold.florisboard.ime.smartbar
 
+import android.content.ContentUris
+import android.graphics.BitmapFactory
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -34,18 +40,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.input.pointer.PointerEventTimeoutCancellationException
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
+import dev.patrickgold.florisboard.ime.clipboard.provider.ClipboardFileStorage
+import dev.patrickgold.florisboard.ime.clipboard.provider.ItemType
 import dev.patrickgold.florisboard.ime.nlp.ClipboardSuggestionCandidate
 import dev.patrickgold.florisboard.ime.nlp.SuggestionCandidate
 import dev.patrickgold.florisboard.ime.theme.FlorisImeUi
+import dev.patrickgold.florisboard.editorInstance
 import dev.patrickgold.florisboard.keyboardManager
 import dev.patrickgold.florisboard.nlpManager
 import dev.patrickgold.florisboard.subtypeManager
@@ -56,6 +67,7 @@ import org.florisboard.lib.snygg.SnyggSelector
 import org.florisboard.lib.snygg.ui.SnyggBox
 import org.florisboard.lib.snygg.ui.SnyggColumn
 import org.florisboard.lib.snygg.ui.SnyggIcon
+import org.florisboard.lib.snygg.ui.SnyggIconButton
 import org.florisboard.lib.snygg.ui.SnyggRow
 import org.florisboard.lib.snygg.ui.SnyggSpacer
 
@@ -79,6 +91,8 @@ fun CandidatesRow(modifier: Modifier = Modifier) {
         else -> limited
     }
 
+    val editorInstance by context.editorInstance()
+
     SnyggRow(
         elementName = FlorisImeUi.SmartbarCandidatesRow.elementName,
         modifier = modifier
@@ -88,6 +102,38 @@ fun CandidatesRow(modifier: Modifier = Modifier) {
             },
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
+        SnyggIconButton(
+            onClick = {
+                val text = editorInstance.activeContent.composingText.toString().ifBlank {
+                    editorInstance.activeContent.currentWordText
+                }
+                if (text.isNotBlank()) {
+                    val success = dev.patrickgold.florisboard.ime.dictionary.DictionaryManager.default().addToUserDictionary(
+                        text,
+                        subtypeManager.activeSubtype.primaryLocale
+                    )
+                    if (success) {
+                        nlpManager.suggest(subtypeManager.activeSubtype, editorInstance.activeContent)
+                        android.widget.Toast.makeText(context, "Added '$text' to dictionary", android.widget.Toast.LENGTH_SHORT).show()
+                    } else {
+                        android.widget.Toast.makeText(context, "Error: Dictionary disabled or unavailable", android.widget.Toast.LENGTH_LONG).show()
+                    }
+                }
+            },
+            modifier = Modifier.padding(horizontal = 4.dp),
+        ) {
+             androidx.compose.foundation.layout.Box(
+                 contentAlignment = Alignment.Center,
+                 modifier = Modifier.fillMaxSize()
+             ) {
+                 androidx.compose.material3.Icon(
+                     imageVector = Icons.Default.Add,
+                     contentDescription = "Add to dictionary",
+                     tint = androidx.compose.material3.MaterialTheme.colorScheme.onSurface
+                 )
+             }
+        }
+
         list.forEachIndexed { index, candidate ->
             val candidateModifier = Modifier
                 .fillMaxHeight()
@@ -164,26 +210,53 @@ private fun CandidateItem(
             },
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        if (candidate.icon != null) {
-            SnyggBox(
-                elementName = "$elementName-icon",
-                attributes = attributes,
-                selector = selector,
-            ) {
-                SnyggIcon(imageVector = candidate.icon!!)
+        if (candidate is ClipboardSuggestionCandidate && candidate.clipboardItem.type == ItemType.IMAGE && candidate.clipboardItem.uri != null) {
+            val item = candidate.clipboardItem
+            val id = ContentUris.parseId(item.uri!!)
+            val context = LocalContext.current
+            val file = ClipboardFileStorage.getFileForId(context, id)
+            val bitmap = remember(id) {
+                runCatching {
+                    check(file.exists()) { "Unable to resolve image at ${file.absolutePath}" }
+                    val rawBitmap = BitmapFactory.decodeFile(file.absolutePath)
+                    checkNotNull(rawBitmap) { "Unable to decode image at ${file.absolutePath}" }
+                    rawBitmap.asImageBitmap()
+                }
             }
-        }
-        SnyggColumn(
-            modifier = Modifier.wrapContentWidth(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Text(
-                text = candidate.text.toString(),
-                maxLines = 1,
-                overflow = TextOverflow.Visible,
-                textAlign = TextAlign.Center,
-            )
+            if (bitmap.isSuccess) {
+                Image(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .aspectRatio(1f),
+                    bitmap = bitmap.getOrThrow(),
+                    contentDescription = null,
+                    contentScale = ContentScale.Fit,
+                )
+            } else {
+                Text(text = "Img Error")
+            }
+        } else {
+            if (candidate.icon != null) {
+                SnyggBox(
+                    elementName = "$elementName-icon",
+                    attributes = attributes,
+                    selector = selector,
+                ) {
+                    SnyggIcon(imageVector = candidate.icon!!)
+                }
+            }
+            SnyggColumn(
+                modifier = Modifier.wrapContentWidth(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Text(
+                    text = candidate.text.toString(),
+                    maxLines = 1,
+                    overflow = TextOverflow.Visible,
+                    textAlign = TextAlign.Center,
+                )
+            }
         }
     }
 }

@@ -92,22 +92,18 @@ class DictionaryManager private constructor(context: Context) {
 
     }
 
-    fun spell(word: String, locale: FlorisLocale): Boolean {
+    fun queryAllWords(locale: FlorisLocale): List<String> {
         val florisDao = florisUserDictionaryDao()
         val systemDao = systemUserDictionaryDao()
-        if (florisDao == null && systemDao == null) {
-            return false
-        }
-        var ret = false
+        val words = mutableListOf<String>()
+        
         if (prefs.dictionary.enableFlorisUserDictionary.get()) {
-            ret = ret || florisDao?.queryExactFuzzyLocale(word, locale)?.isNotEmpty() ?: false
-            ret = ret || florisDao?.queryShortcut(word, locale)?.isNotEmpty() ?: false
+            florisDao?.queryAll(locale)?.forEach { words.add(it.word) }
         }
         if (prefs.dictionary.enableSystemUserDictionary.get()) {
-            ret = ret || systemDao?.queryExactFuzzyLocale(word, locale)?.isNotEmpty() ?: false
-            ret = ret || systemDao?.queryShortcut(word, locale)?.isNotEmpty() ?: false
+            systemDao?.queryAll(locale)?.forEach { words.add(it.word) }
         }
-        return ret
+        return words
     }
 
     fun learnUserIgnore(original: String, rejected: String) {
@@ -125,16 +121,24 @@ class DictionaryManager private constructor(context: Context) {
         return dao.get(original, rejected) != null
     }
 
-    fun addToUserDictionary(word: String, locale: FlorisLocale) {
-        val dao = florisUserDictionaryDao() ?: return
+    fun addToUserDictionary(word: String, locale: FlorisLocale): Boolean {
+        loadUserDictionariesIfNecessary()
+        val dao = florisUserDictionaryDao()
+        if (dao == null) {
+            android.util.Log.e("DictionaryManager", "addToUserDictionary: DAO is null (dictionary disabled?)")
+            return false
+        }
         val existing = dao.queryExact(word, locale)
         if (existing.isEmpty()) {
+            android.util.Log.d("DictionaryManager", "addToUserDictionary: Inserting '$word' for locale '$locale'")
             dao.insert(UserDictionaryEntry(0, word, 255, locale.localeTag(), null))
         } else {
             val entry = existing[0]
+            android.util.Log.d("DictionaryManager", "addToUserDictionary: Updating '$word' for locale '$locale'")
             dao.update(entry.copy(freq = 255))
         }
         exportUserDictionaryToVault()
+        return true
     }
 
     fun removeFromUserDictionary(word: String, locale: FlorisLocale) {

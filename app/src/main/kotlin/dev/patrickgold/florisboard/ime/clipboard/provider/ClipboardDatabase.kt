@@ -166,11 +166,13 @@ data class ClipboardItem @OptIn(ExperimentalSerializationApi::class) constructor
                         put(ClipboardMediaProvider.Columns.MediaUri, dataItem.uri.toString())
                         put(ClipboardMediaProvider.Columns.MimeTypes, data.description.filterMimeTypes("*/*").joinToString(","))
                     }
-                    context.contentResolver.insert(when (type) {
+                    val insertedUri = context.contentResolver.insert(when (type) {
                         ItemType.IMAGE -> ClipboardMediaProvider.IMAGE_CLIPS_URI
                         ItemType.VIDEO -> ClipboardMediaProvider.VIDEO_CLIPS_URI
                         else -> error("Impossible.")
                     }, values)
+                    android.util.Log.d("FlorisClipboard", "Inserted media URI: $insertedUri")
+                    insertedUri
                 }
             } else { null }
 

@@ -22,7 +22,7 @@ interface SuggestionEngine {
     fun predictNext(prevWord: String?, max: Int = 3): List<String>
     fun notifySuggestionAccepted(candidate: SuggestionCandidate) { }
     fun notifySuggestionReverted(candidate: SuggestionCandidate) { }
-    fun generateAiCompletion(prompt: String): String? { return null }
+    fun generateAiCompletion(config: GemmaClient.PromptConfig): String? { return null }
 }
 
 /**
@@ -135,8 +135,8 @@ interface SuggestionEngine {
             .map { it.key }
     }
 
-    override fun generateAiCompletion(prompt: String): String? {
-        return GemmaClient.complete(prompt)
+    override fun generateAiCompletion(config: GemmaClient.PromptConfig): String? {
+        return GemmaClient.complete(config)
     }
 
     override fun notifySuggestionAccepted(candidate: SuggestionCandidate) {

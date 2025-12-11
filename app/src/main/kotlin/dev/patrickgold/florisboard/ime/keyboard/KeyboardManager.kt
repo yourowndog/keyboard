@@ -689,7 +689,17 @@ class KeyboardManager(
      * Handles a [KeyCode.CTRL] down event.
      */
     private fun handleCtrlDown(data: KeyData) {
-        activeState.isCtrlPressed = true
+        if (activeState.isCtrlLocked) {
+            activeState.isCtrlLocked = false
+            activeState.isCtrlPressed = false
+        } else {
+            if (inputEventDispatcher.isConsecutiveDown(data)) {
+                activeState.isCtrlLocked = true
+                activeState.isCtrlPressed = true
+            } else {
+                activeState.isCtrlPressed = !activeState.isCtrlPressed
+            }
+        }
     }
 
     /**
@@ -704,6 +714,7 @@ class KeyboardManager(
      */
     private fun handleCtrlCancel() {
         activeState.isCtrlPressed = false
+        activeState.isCtrlLocked = false
     }
 
     private fun meta(
@@ -737,7 +748,11 @@ class KeyboardManager(
         val keyEventCode = keyEventCodeForChar(data.code.toChar()) ?: return false
         val shiftPressed = inputEventDispatcher.isPressed(KeyCode.SHIFT)
         val metaState = meta(ctrl = true, shift = shiftPressed)
-        return editorInstance.sendDownUpKeyEvent(keyEventCode, metaState)
+        val handled = editorInstance.sendDownUpKeyEvent(keyEventCode, metaState)
+        if (handled && !activeState.isCtrlLocked) {
+            activeState.isCtrlPressed = false
+        }
+        return handled
     }
 
     /**
@@ -955,24 +970,55 @@ class KeyboardManager(
             KeyCode.IME_PREV_SUBTYPE -> subtypeManager.switchToPrevSubtype()
             KeyCode.IME_NEXT_SUBTYPE -> subtypeManager.switchToNextSubtype()
             KeyCode.AI_GENERATE -> scope.launch(Dispatchers.IO) {
-                var prompt = editorInstance.activeContent.textBeforeSelection.toString()
-                if (prompt.isBlank()) {
-                    val clip = clipboardManager.primaryClip?.text
-                    if (!clip.isNullOrBlank()) {
-                        prompt = "Context: \"$clip\"\n\nReply to this message:"
-                    } else {
-                        prompt = "Hello"
-                    }
+            appContext.showShortToastSync("Thinking...")
+            val activeContent = editorInstance.activeContent
+            val selection = activeContent.selection
+            val text = activeContent.text
+            val selectedText = if (selection.isValid && selection.length > 0) {
+                 text.substring(selection.start, selection.end)
+            } else {
+                 ""
+            }
+            
+            val config = if (selectedText.isNotBlank()) {
+                dev.patrickgold.florisboard.ime.nlp.GemmaClient.PromptConfig(
+                    mode = dev.patrickgold.florisboard.ime.nlp.GemmaClient.PromptConfig.Mode.REWRITE,
+                    originalInput = selectedText
+                )
+            } else if (activeContent.textBeforeSelection.isBlank()) {
+                val clip = clipboardManager.primaryClip?.text?.toString() ?: ""
+                if (clip.isNotBlank()) {
+                    dev.patrickgold.florisboard.ime.nlp.GemmaClient.PromptConfig(
+                        mode = dev.patrickgold.florisboard.ime.nlp.GemmaClient.PromptConfig.Mode.REPLY,
+                        originalInput = "", 
+                        context = clip
+                    )
+                } else {
+                     dev.patrickgold.florisboard.ime.nlp.GemmaClient.PromptConfig(
+                        mode = dev.patrickgold.florisboard.ime.nlp.GemmaClient.PromptConfig.Mode.CONTINUE,
+                        originalInput = "Hello"
+                     )
                 }
-                val result = NgramEngineManager.generateAiCompletion(prompt)
-                withContext(Dispatchers.Main) {
-                    if (result != null) {
-                        commitGesture(result)
+            } else {
+                dev.patrickgold.florisboard.ime.nlp.GemmaClient.PromptConfig(
+                    mode = dev.patrickgold.florisboard.ime.nlp.GemmaClient.PromptConfig.Mode.CONTINUE,
+                    originalInput = activeContent.textBeforeSelection.toString()
+                )
+            }
+
+            val result = NgramEngineManager.generateAiCompletion(config)
+            withContext(Dispatchers.Main) {
+                if (result != null) {
+                    if (config.mode == dev.patrickgold.florisboard.ime.nlp.GemmaClient.PromptConfig.Mode.REWRITE) {
+                         editorInstance.commitText(result)
                     } else {
-                        Toast.makeText(appContext, "AI Error: Check server", Toast.LENGTH_SHORT).show()
+                         commitGesture(result)
                     }
+                } else {
+                    Toast.makeText(appContext, "AI Error: Check server", Toast.LENGTH_SHORT).show()
                 }
             }
+        }
             KeyCode.IME_UI_MODE_TEXT -> activeState.imeUiMode = ImeUiMode.TEXT
             KeyCode.IME_UI_MODE_MEDIA -> activeState.imeUiMode = ImeUiMode.MEDIA
             KeyCode.IME_UI_MODE_CLIPBOARD -> activeState.imeUiMode = ImeUiMode.CLIPBOARD

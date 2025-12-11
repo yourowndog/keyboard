@@ -27,7 +27,7 @@ object SymSpellManager {
     private const val DICT_ASSET_PATH = "ime/dict/unified_dictionary.tsv"
     private const val SWIPE_DICT_PATH = "ime/dict/unified_dictionary.tsv"  // Same dict for everything
     private const val BIGRAM_ASSET_PATH = "ime/dict/final_mobile_bigrams.tsv"
-    private const val BIGRAM_WEIGHT = 1.5
+    private const val BIGRAM_WEIGHT = 0.1 // Reduced from 1.5 to prevent "hry" -> "by" and "chill" -> "child"
     private const val BIGRAM_NO_HIT_PENALTY = 0.2
     private val USER_OVERRIDES = listOf("kiry" to Double.MAX_VALUE)
     // Prefer common contractions before running SymSpell so "im" maps to "I'm" instead of "pm".
@@ -200,11 +200,18 @@ object SymSpellManager {
         return BigramScore(bonus, true)
     }
 
+    // Whitelist for 2-letter words. All others are culled to prevent "si", "da", "yo" etc.
+    private val TWO_LETTER_WHITELIST = setOf(
+        "am", "an", "as", "at", "be", "by", "do", "go", "ha", "he", "hi", "if", "in", "is", "it", 
+        "me", "my", "no", "of", "oh", "ok", "on", "or", "ox", "so", "to", "up", "us", "we", "yo"
+    )
+
     // 0.0 = perfect neighbor match, 2.0 = far away
     private fun spatialCost(typed: String, candidate: String): Double {
-        // Penalize length differences (insertions/deletions) so substitutions are preferred.
-        // A substitution with a neighbor (0.5) should be cheaper than a deletion (1.0).
-        if (typed.length != candidate.length) return 1.0 
+        // Penalize length differences (insertions/deletions) HEAVILY so substitutions are preferred.
+        // "si" -> "so" (subst) should be CHEAP (0.5).
+        // "si" -> "i" (del) should be EXPENSIVE (3.0).
+        if (typed.length != candidate.length) return 3.0 
         
         var cost = 0.0
         for (i in typed.indices) {
@@ -223,6 +230,13 @@ object SymSpellManager {
 
     fun markNextAsUserRejected() {
         skipNextAutocorrect = true
+    }
+
+    // Cache of user dictionary words for the current locale
+    @Volatile private var userWordsCache: List<String> = emptyList()
+
+    fun updateUserDictCache(words: List<String>) {
+        userWordsCache = words
     }
 
     fun fix(input: String, previousWord: String? = null): String {
@@ -248,19 +262,41 @@ object SymSpellManager {
         // Check against ignore list
         val dictManager = dev.patrickgold.florisboard.ime.dictionary.DictionaryManager.default()
         
-        // Check User Dictionary (Highest Priority)
+        // Check User Dictionary Cache (Highest Priority)
         // If the user has explicitly added this word, we MUST respect it.
-        // We check if the input itself is in the user dictionary.
-        val userDictMatches = dictManager.queryUserDictionary(input, dev.patrickgold.florisboard.lib.FlorisLocale.fromTag("en")) // FIXME: Use active locale
-        if (userDictMatches.isNotEmpty()) {
-             // The user typed a word that is in their dictionary. Keep it.
+        if (userWordsCache.any { it.equals(input, ignoreCase = true) }) {
              return input
         }
 
-        // Use Verbosity.All to ensure we find distance 2 candidates (like won't from wint) even if distance 1 candidates exist.
+        // TRUST REAL WORDS: If the user typed a valid dictionary word, KEEP IT.
+        val exactMatches = instance.lookup(normalized, Verbosity.Top, 0.0)
+        if (exactMatches.isNotEmpty()) {
+            return input
+        }
+
+        // Use Verbosity.All to ensure we find distance 2 candidates
         val suggestions = instance.lookup(normalized, Verbosity.All, MAX_EDIT_DISTANCE.toDouble())
-        val prev = previousWord?.lowercase()
         
+        // Also check if any user dictionary word is a close match and should win
+        val bestUserMatch = userWordsCache.firstOrNull { userWord ->
+            val dist = DamerauLevenshteinDistance().getDistance(normalized, userWord.lowercase())
+            dist <= MAX_EDIT_DISTANCE
+        }
+        if (bestUserMatch != null) {
+            // User added this word, prioritize it
+            return applyCasingPattern(input, bestUserMatch)
+        }
+
+        val prev = previousWord?.lowercase()
+
+        
+        if (input == "si") {
+            android.util.Log.d("SymSpell", "Candidates for 'si': ${suggestions.joinToString { "${it.term}:${it.distance}" }}")
+        }
+        if (input == "hry") {
+            android.util.Log.d("SymSpell", "Candidates for 'hry': ${suggestions.joinToString { "${it.term}:${it.distance}" }}")
+        }
+
         // If there is an apostrophe variant that is the same letters without apostrophe, prefer it.
         val apostropheCandidate = suggestions.firstOrNull { cand ->
             val candLower = cand.term.lowercase()
@@ -273,11 +309,16 @@ object SymSpellManager {
             val lowerTerm = term.lowercase()
             val candidateNorm = lowerTerm.replace("'", "")
             
+            // CULLING: Filter out 2-letter words not in whitelist
+            if (lowerTerm.length == 2 && !TWO_LETTER_WHITELIST.contains(lowerTerm)) {
+                return@minByOrNull Double.MAX_VALUE
+            }
+            
             if (dictManager.isUserIgnored(input, term)) return@minByOrNull Double.MAX_VALUE
             if (BLACKLIST.contains(lowerTerm)) return@minByOrNull Double.MAX_VALUE
             
             // Check if candidate is in user dictionary -> Boost it to infinity
-            val isUserWord = dictManager.queryUserDictionary(term, dev.patrickgold.florisboard.lib.FlorisLocale.fromTag("en")).isNotEmpty()
+            val isUserWord = userWordsCache.any { it.equals(term, ignoreCase = true) }
             val userBonus = if (isUserWord) -1000.0 else 0.0
 
             var apostropheBonus = 0.0
@@ -286,8 +327,6 @@ object SymSpellManager {
                      apostropheBonus = -20.0 // Exact letter match (im -> I'm)
                 } else {
                      // Allow typo + apostrophe (wint -> won't). 
-                     // If the normalized form (wont) is close to input (wint), give bonus.
-                     // We use spatialCost to check closeness of the non-apostrophe parts.
                      val spatial = spatialCost(normalizedNoApos, candidateNorm)
                      if (spatial < 2.0) { // If keys are close
                          apostropheBonus = -10.0
@@ -296,7 +335,7 @@ object SymSpellManager {
             }
 
             val bigram = bigramBonus(prev, term.lowercase())
-            val bigramBoost = -BIGRAM_WEIGHT * bigram.bonus // Removed 5.0x multiplier
+            val bigramBoost = -BIGRAM_WEIGHT * bigram.bonus 
             val noHitPenalty = if (prev != null && !bigram.hasHit) BIGRAM_NO_HIT_PENALTY else 0.0
             
             // Spatial cost: cheaper if keys are close
@@ -450,7 +489,8 @@ object SymSpellManager {
      */
     fun applyPredictedCasing(typed: String, suggestion: String, textBeforeSelection: String): String {
         // Special case: lone "i" should always become "I"
-        if (typed.equals("i", ignoreCase = true) && suggestion.equals("i", ignoreCase = true)) {
+        // This handles both the typed "i" and the suggested "i"
+        if (suggestion.equals("i", ignoreCase = true)) {
             return "I"
         }
         

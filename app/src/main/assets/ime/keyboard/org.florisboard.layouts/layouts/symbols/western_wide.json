@@ -1,51 +1,198 @@
 [
   [
-    { "$": "navigation", "code": -15, "label": "⎋" },
-    { "$": "text_key", "code": 49, "label": "1" },
-    { "$": "text_key", "code": 50, "label": "2" },
-    { "$": "text_key", "code": 51, "label": "3" },
-    { "$": "text_key", "code": 52, "label": "4" },
-    { "$": "text_key", "code": 53, "label": "5" },
-    { "$": "text_key", "code": 54, "label": "6" },
-    { "$": "text_key", "code": 55, "label": "7" },
-    { "$": "text_key", "code": 56, "label": "8" },
-    { "$": "text_key", "code": 57, "label": "9" },
-    { "$": "text_key", "code": 48, "label": "0" }
+    {
+      "$": "text_key",
+      "code": 49,
+      "label": "1"
+    },
+    {
+      "$": "text_key",
+      "code": 50,
+      "label": "2"
+    },
+    {
+      "$": "text_key",
+      "code": 51,
+      "label": "3"
+    },
+    {
+      "$": "text_key",
+      "code": 52,
+      "label": "4"
+    },
+    {
+      "$": "text_key",
+      "code": 53,
+      "label": "5"
+    },
+    {
+      "$": "text_key",
+      "code": 54,
+      "label": "6"
+    },
+    {
+      "$": "text_key",
+      "code": 55,
+      "label": "7"
+    },
+    {
+      "$": "text_key",
+      "code": 56,
+      "label": "8"
+    },
+    {
+      "$": "text_key",
+      "code": 57,
+      "label": "9"
+    },
+    {
+      "$": "text_key",
+      "code": 48,
+      "label": "0"
+    }
   ],
   [
-    { "$": "text_key", "code": -14, "label": "⇥" },
-    { "$": "text_key", "code": 33, "label": "!" },
-    { "$": "text_key", "code": 64, "label": "@" },
-    { "$": "text_key", "code": 35, "label": "#" },
-    { "$": "text_key", "code": 36, "label": "$" },
-    { "$": "text_key", "code": 37, "label": "%" },
-    { "$": "text_key", "code": 94, "label": "^" },
-    { "$": "text_key", "code": 38, "label": "&" },
-    { "$": "text_key", "code": 42, "label": "*" },
-    { "$": "text_key", "code": 40, "label": "(" },
-    { "$": "text_key", "code": 41, "label": ")" }
+    {
+      "$": "text_key",
+      "code": 33,
+      "label": "!"
+    },
+    {
+      "$": "text_key",
+      "code": 64,
+      "label": "@"
+    },
+    {
+      "$": "text_key",
+      "code": 35,
+      "label": "#"
+    },
+    {
+      "$": "text_key",
+      "code": 36,
+      "label": "$"
+    },
+    {
+      "$": "text_key",
+      "code": 37,
+      "label": "%"
+    },
+    {
+      "$": "text_key",
+      "code": 94,
+      "label": "^"
+    },
+    {
+      "$": "text_key",
+      "code": 38,
+      "label": "&"
+    },
+    {
+      "$": "text_key",
+      "code": 42,
+      "label": "*"
+    },
+    {
+      "$": "text_key",
+      "code": 40,
+      "label": "("
+    },
+    {
+      "$": "text_key",
+      "code": 41,
+      "label": ")"
+    }
   ],
   [
-    { "code": -11, "type": "modifier" },
-    { "$": "text_key", "code": 126, "label": "~" },
-    { "$": "text_key", "code": 92, "label": "\\" },
-    { "$": "text_key", "code": 124, "label": "|" },
-    { "$": "text_key", "code": 45, "label": "-" },
-    { "$": "text_key", "code": 61, "label": "=" },
-    { "$": "text_key", "code": 91, "label": "[" },
-    { "$": "text_key", "code": 93, "label": "]" },
-    { "$": "text_key", "code": 123, "label": "{" },
-    { "$": "text_key", "code": 125, "label": "}" },
-    { "$": "text_key", "code": 10, "label": "↵", "type": "enter_editing" }
+    {
+      "$": "text_key",
+      "code": 92,
+      "label": "\\"
+    },
+    {
+      "$": "text_key",
+      "code": 124,
+      "label": "|"
+    },
+    {
+      "$": "text_key",
+      "code": 95,
+      "label": "_"
+    },
+    {
+      "$": "text_key",
+      "code": 61,
+      "label": "="
+    },
+    {
+      "$": "text_key",
+      "code": 91,
+      "label": "["
+    },
+    {
+      "$": "text_key",
+      "code": 93,
+      "label": "]"
+    },
+    {
+      "$": "text_key",
+      "code": 123,
+      "label": "{"
+    },
+    {
+      "$": "text_key",
+      "code": 125,
+      "label": "}"
+    },
+    {
+      "$": "text_key",
+      "code": 59,
+      "label": ";"
+    },
+    {
+      "$": "text_key",
+      "code": 58,
+      "label": ":"
+    }
   ],
   [
-    { "code": -1, "label": "CTRL", "type": "modifier" },
-    { "$": "text_key", "code": -131 },
-    { "$": "text_key", "code": 60, "label": "<" },
-    { "$": "text_key", "code": 32, "label": "space" },
-    { "$": "text_key", "code": 62, "label": ">" },
-    { "$": "text_key", "code": -27, "label": "«" },
-    { "$": "navigation", "code": -23 },
-    { "$": "text_key", "code": -28, "label": "»" }
+    {
+      "code": -1,
+      "label": "CTRL",
+      "type": "modifier"
+    },
+    {
+      "$": "text_key",
+      "code": -131
+    },
+    {
+      "$": "text_key",
+      "code": 60,
+      "label": "<"
+    },
+    {
+      "$": "text_key",
+      "code": 32,
+      "label": "space"
+    },
+    {
+      "$": "text_key",
+      "code": 62,
+      "label": ">"
+    },
+    {
+      "$": "text_key",
+      "code": -27,
+      "label": "«"
+    },
+    {
+      "$": "navigation",
+      "code": -23
+    },
+    {
+      "$": "text_key",
+      "code": -28,
+      "label": "»"
+    }
   ]
 ]

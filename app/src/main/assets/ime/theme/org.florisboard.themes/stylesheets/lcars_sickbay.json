@@ -4,18 +4,14 @@
     "--void-prime": "#050505",
     "--hull-100": "#C7CCD8",
     "--hull-500": "#5F7186",
-    
     "--med-bg": "#ECEFF1",
     "--med-key": "#FFFFFF",
     "--med-text": "#37474F",
     "--med-text-dim": "#90A4AE",
-    
     "--med-accent-teal": "#009688",
     "--med-accent-blue": "#0288D1",
     "--med-alert-coral": "#FF7043",
-    
     "--med-glass": "#ECEFF1E6",
-    
     "--shape-med": "rounded-corner(12dp, 12dp, 12dp, 12dp)",
     "--shape-med-sharp": "cut-corner(8dp, 8dp, 8dp, 8dp)"
   },
@@ -41,37 +37,39 @@
     "shadow-elevation": "4dp",
     "shadow-color": "var(--med-accent-teal)"
   },
-  
+  "key-hint": {
+    "background": "transparent",
+    "foreground": "var(--med-text-dim)",
+    "font-family": "monospace",
+    "font-size": "6sp",
+    "padding": "0dp 1dp 1dp 0dp",
+    "text-max-lines": "1"
+  },
   "key[code=97..122,65..90,48..57,44,46,47]": {
     "background": "var(--med-key)",
     "foreground": "var(--med-text)",
     "shadow-elevation": "2dp",
     "shadow-color": "#B0BEC5"
   },
-  
   "key[code=32]": {
     "background": "var(--med-key)",
     "shape": "var(--shape-med)"
   },
-  
   "key[code=-202,-14,-11,-131,-4,-7,-9]": {
     "background": "#CFD8DC",
     "foreground": "var(--med-text)",
     "shape": "var(--shape-med)"
   },
-  
   "key[code=-28..-21]": {
     "background": "var(--med-accent-blue)",
     "foreground": "#FFFFFF",
     "shape": "var(--shape-med)"
   },
-  
   "key[code=-206..-201,-35,-31,-33,34,45,95]": {
     "background": "#CFD8DC",
     "foreground": "var(--med-text)",
     "shape": "var(--shape-med)"
   },
-  
   "key[code=10]": {
     "background": "var(--med-alert-coral)",
     "foreground": "#FFFFFF",
@@ -79,13 +77,11 @@
     "shadow-color": "var(--med-alert-coral)",
     "shape": "var(--shape-med-sharp)"
   },
-  
   "key[code=-15,-1]": {
     "background": "var(--med-alert-coral)",
     "foreground": "#FFFFFF",
     "shape": "var(--shape-med-sharp)"
   },
-  
   "key-popup-box": {
     "background": "var(--med-key)",
     "foreground": "var(--med-text)",
@@ -101,7 +97,6 @@
     "background": "var(--med-accent-teal)",
     "foreground": "#FFFFFF"
   },
-  
   "smartbar": {
     "background": "transparent"
   },

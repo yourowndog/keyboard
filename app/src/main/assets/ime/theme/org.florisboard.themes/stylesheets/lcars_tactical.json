@@ -38,6 +38,14 @@
     "shadow-color": "var(--tac-red-neon)",
     "border-color": "var(--tac-red-neon)"
   },
+  "key-hint": {
+    "background": "transparent",
+    "foreground": "var(--text-dim)",
+    "font-family": "monospace",
+    "font-size": "6sp",
+    "padding": "0dp 1dp 1dp 0dp",
+    "text-max-lines": "1"
+  },
   "key[code=97..122,65..90,48..57]": {
     "background": "var(--tac-hull)",
     "foreground": "var(--tac-red-alert)",
