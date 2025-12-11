@@ -16,6 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.math.ln
 import kotlin.math.max
+import dev.patrickgold.florisboard.ime.core.KeyboardLayout
 
 object SymSpellManager {
     private var symSpell: SymSpell? = null
@@ -85,12 +86,8 @@ object SymSpellManager {
     // Tracks whether the last autocorrect was rejected; if so, skip autocorrect once.
     @Volatile private var skipNextAutocorrect = false
 
-    // QWERTY Neighbor Map (Hardcoded for robustness)
-    private val KEYBOARD_NEIGHBORS = mapOf(
-        'q' to "wa", 'w' to "qase", 'e' to "wsdfr", 'r' to "edft", 't' to "rfgy", 'y' to "tghu", 'u' to "yhij", 'i' to "ujko", 'o' to "iklp", 'p' to "ol",
-        'a' to "qwsz", 's' to "qweadzx", 'd' to "ersfcx", 'f' to "rtdgcv", 'g' to "tyfhvb", 'h' to "yugjbn", 'j' to "uikhnm", 'k' to "iojlm", 'l' to "opk",
-        'z' to "asx", 'x' to "zsdc", 'c' to "xdfv", 'v' to "cfgb", 'b' to "vghn", 'n' to "bhjm", 'm' to "njk"
-    )
+    // QWERTY Neighbor Map - now uses shared KeyboardLayout
+    private val KEYBOARD_NEIGHBORS get() = KeyboardLayout.QWERTY_NEIGHBORS
     
     private val BLACKLIST = setOf("wont", "hows", "cant", "dont", "isnt", "arent", "didnt", "couldnt", "wouldnt", "shouldnt", "wasnt", "werent", "hasnt", "havent", "hadnt")
 

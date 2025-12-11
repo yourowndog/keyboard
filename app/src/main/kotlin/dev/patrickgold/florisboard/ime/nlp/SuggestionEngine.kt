@@ -46,13 +46,7 @@ interface SuggestionEngine {
         val user: Double = 1.0,
     )
 
-    private val neighborMap: Map<Char, String> = mapOf(
-        'q' to "wa", 'w' to "qase", 'e' to "wsdfr", 'r' to "edft", 't' to "rfgy", 'y' to "tghu",
-        'u' to "yhij", 'i' to "ujko", 'o' to "iklp", 'p' to "ol",
-        'a' to "qwsz", 's' to "qweadzx", 'd' to "ersfcx", 'f' to "rtdgcv", 'g' to "tyfhvb",
-        'h' to "yugjbn", 'j' to "uikhnm", 'k' to "iojlm", 'l' to "opk",
-        'z' to "asx", 'x' to "zsdc", 'c' to "xdfv", 'v' to "cfgb", 'b' to "vghn", 'n' to "bhjm", 'm' to "njk"
-    )
+    // Keyboard neighbor map removed - using SymSpellManager.spatialCost() instead which uses shared KeyboardLayout
 
     // Basic bucket for prefix search to avoid scanning entire lexicon.
     private val bucketedWords: Map<Char, List<String>> = run {
