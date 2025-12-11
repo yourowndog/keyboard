@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 import kotlin.math.ln
 import kotlin.math.max
 import dev.patrickgold.florisboard.ime.core.KeyboardLayout
+import dev.patrickgold.florisboard.ime.nlp.shared.BigramTable
 
 object SymSpellManager {
     private var symSpell: SymSpell? = null
@@ -91,11 +92,7 @@ object SymSpellManager {
     
     private val BLACKLIST = setOf("wont", "hows", "cant", "dont", "isnt", "arent", "didnt", "couldnt", "wouldnt", "shouldnt", "wasnt", "werent", "hasnt", "havent", "hadnt")
 
-    // Bigram bonus tables for reranking suggestions.
-    private val bigramCounts = mutableMapOf<String, MutableMap<String, Int>>()
-    private val bigramMaxByPrev = mutableMapOf<String, Int>()
-    private val bigramTopFollowers = mutableMapOf<String, List<String>>() // sorted by freq desc
-
+    // Bigram data now provided by shared BigramTable singleton
     private data class BigramScore(val bonus: Double, val hasHit: Boolean)
 
     fun init(context: Context, scope: CoroutineScope) {
@@ -119,7 +116,7 @@ object SymSpellManager {
                 // 3. Load Real Dictionary from Assets (unigram + bigram)
                 holder.loadUnigramTxtFile(context.assets.open(DICT_ASSET_PATH).use { it.readBytes() })
                 holder.loadBigramTxtFile(context.assets.open(BIGRAM_ASSET_PATH).use { it.readBytes() })
-                loadBigramTable(context)
+                BigramTable.load(context)  // Load shared bigram table once
 
                 // Inject must-win personal words until we wire user dictionary
                 USER_OVERRIDES.forEach { (word, freq) -> instance.createDictionaryEntry(word, freq) }
@@ -140,61 +137,16 @@ object SymSpellManager {
         }
     }
 
-    private fun loadBigramTable(context: Context) {
-        bigramCounts.clear()
-        bigramMaxByPrev.clear()
-        try {
-            val reader = BufferedReader(InputStreamReader(context.assets.open(BIGRAM_ASSET_PATH)))
-            reader.useLines { lines ->
-                lines.forEach { line ->
-                    val parts = line.split('\t')
-                    if (parts.size != 2) return@forEach
-                    val pair = parts[0]
-                    val freq = parts[1].toIntOrNull() ?: return@forEach
-                    val spaceIdx = pair.indexOf(' ')
-                    if (spaceIdx <= 0) return@forEach
-                    val w1 = pair.substring(0, spaceIdx).lowercase()
-                    val w2 = pair.substring(spaceIdx + 1).lowercase()
-                    val row = bigramCounts.getOrPut(w1) { mutableMapOf() }
-                    row[w2] = freq
-                    val currentMax = bigramMaxByPrev[w1] ?: 0
-                    if (freq > currentMax) {
-                        bigramMaxByPrev[w1] = freq
-                    }
-                }
-            }
-            // Build top followers list for quick "next word" predictions
-            bigramTopFollowers.clear()
-            for ((prev, followers) in bigramCounts) {
-                val top = followers.entries
-                    .sortedByDescending { it.value }
-                    .take(5)
-                    .map { it.key }
-                bigramTopFollowers[prev] = top
-            }
-            android.util.Log.i(
-                "SymSpellManager",
-                "Loaded bigram table for reranking with ${bigramCounts.size} first-words"
-            )
-        } catch (e: Exception) {
-            android.util.Log.w("SymSpellManager", "Failed to load bigram table for reranking", e)
-        }
-    }
-
     fun nextWordPredictions(prev: String?, max: Int = 3): List<String> {
-        if (prev == null) return emptyList()
-        return bigramTopFollowers[prev.lowercase()]?.take(max) ?: emptyList()
+        return BigramTable.get()?.predictNext(prev, max) ?: emptyList()
     }
 
     private fun bigramBonus(prev: String?, cand: String?): BigramScore {
-        val p = prev ?: return BigramScore(0.0, false)
+        val table = BigramTable.get() ?: return BigramScore(0.0, false)
         val c = cand ?: return BigramScore(0.0, false)
-        val row = bigramCounts[p] ?: return BigramScore(0.0, false)
-        val freq = row[c] ?: return BigramScore(0.0, false)
-        val maxFreq = max(1, bigramMaxByPrev[p] ?: 1)
-        // Normalized log freq in [0,1] range-ish
-        val bonus = ln(freq + 1.0) / ln(maxFreq + 1.0)
-        return BigramScore(bonus, true)
+        val bonus = table.bonus(prev, c)
+        val hasHit = table.hasHit(prev, c)
+        return BigramScore(bonus, hasHit)
     }
 
     // Whitelist for 2-letter words. All others are culled to prevent "si", "da", "yo" etc.

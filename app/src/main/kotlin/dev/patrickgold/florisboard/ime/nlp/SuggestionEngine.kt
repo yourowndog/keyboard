@@ -6,6 +6,7 @@ import java.io.InputStream
 import java.io.InputStreamReader
 import kotlin.math.ln
 import kotlin.math.max
+import dev.patrickgold.florisboard.ime.nlp.shared.BigramTable
 import kotlin.math.min
 
 data class SuggestionRequest(
@@ -124,6 +125,8 @@ interface SuggestionEngine {
     }
 
     override fun predictNext(prevWord: String?, max: Int): List<String> {
+        // Prefer shared BigramTable, fallback to constructor-provided data
+        BigramTable.get()?.let { return it.predictNext(prevWord, max) }
         val prev = prevWord?.lowercase() ?: return emptyList()
         val row = bigramTable[prev] ?: return emptyList()
         return row.entries
@@ -145,6 +148,8 @@ interface SuggestionEngine {
     }
 
     private fun bigramBonus(prev: String?, cand: String): Double {
+        // Prefer shared BigramTable, fallback to constructor-provided data
+        BigramTable.get()?.let { return it.bonus(prev, cand) }
         val p = prev?.lowercase() ?: return 0.0
         val row = bigramTable[p] ?: return 0.0
         val freq = row[cand] ?: return 0.0
