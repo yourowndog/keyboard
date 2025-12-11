@@ -74,7 +74,7 @@ import dev.patrickgold.florisboard.lib.titlecase
 import dev.patrickgold.florisboard.lib.uppercase
 import dev.patrickgold.florisboard.lib.util.InputMethodUtils
 import dev.patrickgold.florisboard.nlpManager
-import dev.patrickgold.florisboard.ime.nlp.NgramEngineManager
+import dev.patrickgold.florisboard.ime.nlp.GemmaClient
 import dev.patrickgold.florisboard.subtypeManager
 import java.lang.ref.WeakReference
 import kotlinx.coroutines.CoroutineScope
@@ -1005,7 +1005,7 @@ class KeyboardManager(
                 )
             }
 
-            val result = NgramEngineManager.generateAiCompletion(config)
+            val result = GemmaClient.complete(config)
             withContext(Dispatchers.Main) {
                 if (result != null) {
                     if (config.mode == dev.patrickgold.florisboard.ime.nlp.GemmaClient.PromptConfig.Mode.REWRITE) {

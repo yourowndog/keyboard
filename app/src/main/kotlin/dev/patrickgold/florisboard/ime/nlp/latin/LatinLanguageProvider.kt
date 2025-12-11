@@ -20,8 +20,6 @@ import android.content.Context
 import dev.patrickgold.florisboard.appContext
 import dev.patrickgold.florisboard.ime.core.Subtype
 import dev.patrickgold.florisboard.ime.editor.EditorContent
-import dev.patrickgold.florisboard.ime.nlp.FeatureFlags
-import dev.patrickgold.florisboard.ime.nlp.NgramEngineManager
 import dev.patrickgold.florisboard.ime.nlp.SuggestionRequest
 import dev.patrickgold.florisboard.ime.nlp.SpellingProvider
 import dev.patrickgold.florisboard.ime.nlp.SymSpellManager
@@ -33,11 +31,6 @@ import dev.patrickgold.florisboard.ime.nlp.WordSuggestionCandidate
 import dev.patrickgold.florisboard.lib.devtools.flogDebug
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.builtins.MapSerializer
-import kotlinx.serialization.builtins.serializer
-import kotlinx.serialization.json.Json
-import org.florisboard.lib.android.readText
-import org.florisboard.lib.kotlin.guardedByLock
 
 class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProvider {
     companion object {
@@ -48,8 +41,7 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
 
     private val appContext by context.appContext()
 
-    private val wordData = guardedByLock { mutableMapOf<String, Int>() }
-    private val wordDataSerializer = MapSerializer(String.serializer(), Int.serializer())
+
     private var ngramEngine: dev.patrickgold.florisboard.ime.nlp.NgramSuggestionEngine? = null
 
     override val providerId = ProviderId
@@ -77,11 +69,7 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         // The subtype we get here contains a lot of data, however we are only interested in subtype.primaryLocale and
         // subtype.secondaryLocales.
 
-        wordData.withLock { wordData ->
-            if (wordData.isEmpty()) {
-                // No-op: legacy test dictionary removed; SymSpell handles suggestions/corrections.
-            }
-        }
+        // SymSpell handles all suggestions/corrections - legacy dictionary code removed
         
         // Initialize Ngram Engine for Ranking (use cleaned dictionary - same as swipe)
         try {
@@ -254,11 +242,5 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         return match.groupValues.getOrNull(1)
     }
 
-    private fun applyCasingFromContext(word: String, upperCount: Int): String {
-        return when {
-            upperCount >= 2 -> word.uppercase()
-            upperCount == 1 -> word.first().uppercase() + word.substring(1)
-            else -> word
-        }
-    }
+
 }

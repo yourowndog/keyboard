@@ -158,19 +158,7 @@ interface SuggestionEngine {
         return ln(freq + 1.0) / ln(maxFreq + 1.0)
     }
 
-    private fun touchPenalty(typed: String, cand: String): Double {
-        val lenPenalty = kotlin.math.abs(typed.length - cand.length) * 0.2
-        val limit = minOf(typed.length, cand.length)
-        var penalty = 0.0
-        for (i in 0 until limit) {
-            val t = typed[i]
-            val c = cand[i]
-            if (t == c) continue
-            val neighbors = neighborMap[t] ?: ""
-            penalty += if (c in neighbors) 0.1 else 0.5
-        }
-        return penalty + lenPenalty
-    }
+
 
     internal fun applyCasing(word: String, rawInput: String): String {
         if (rawInput.isEmpty()) return word
