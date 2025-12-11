@@ -60,3 +60,12 @@
 ### 2025-12-08
 * **Task:** Integrated Gemma 2B (Q4_K_M) via local llama.cpp server with Vulkan acceleration.
 * **Files:** `GemmaClient.kt`, `SuggestionEngine.kt`, `KeyboardManager.kt`, `AndroidManifest.xml`
+
+### 2025-12-11
+* **Task:** NLP Codebase Cleanup: Phases 2-3 complete. Removed duplicate bigram loading, dead code, consolidated casing logic.
+* **Files:** `SuggestionEngine.kt`, `LatinLanguageProvider.kt`, `SymSpellManager.kt`, `CasingUtils.kt` (NEW), `BigramTable.kt`
+* **Details:**
+  - **Phase 2:** Removed `loadBigrams()`, `applyCasing()`, `bucketedWords` from NgramSuggestionEngine. Simplified constructor from 5 params to 3. Memory savings ~2MB.
+  - **Phase 3:** Created `CasingUtils.kt` as single source of truth for casing. SymSpellManager now delegates to it.
+  - **Architecture:** Brain Transplant pattern documented: SymSpell→Retriever, NgramEngine→Judge, CasingUtils→Caser.
+

@@ -18,6 +18,7 @@ import kotlin.math.ln
 import kotlin.math.max
 import dev.patrickgold.florisboard.ime.core.KeyboardLayout
 import dev.patrickgold.florisboard.ime.nlp.shared.BigramTable
+import dev.patrickgold.florisboard.ime.nlp.shared.CasingUtils
 
 object SymSpellManager {
     private var symSpell: SymSpell? = null
@@ -62,7 +63,7 @@ object SymSpellManager {
         "shell" to "she'll",
         "its" to "it's",
     )
-    private val PROPER_OVERRIDES = setOf(
+    val PROPER_OVERRIDES = setOf(
         "kiry", "kiry's",
         "sam", "sam's",
         "i'd",
@@ -437,64 +438,24 @@ object SymSpellManager {
         return suggestions.map { RawCandidate(it.term, it.distance) }
     }
 
+    /**
+     * Match casing pattern of original input to suggestion.
+     * Delegates to shared [CasingUtils] for consistency.
+     */
     private fun applyCasingPattern(original: String, suggestion: String): String {
-        if (original.isEmpty()) return suggestion
-        if (original.length == 1 && original.equals("i", ignoreCase = true) && suggestion.equals("i", ignoreCase = true)) {
-            return "I"
-        }
-        if (suggestion.lowercase() in PROPER_OVERRIDES) {
-            return suggestion.replaceFirstChar { it.titlecase() }
-        }
-        val isAllUpper = original.all { it.isUpperCase() }
-        if (isAllUpper) return suggestion.uppercase()
-
-        val isTitle = original.first().isUpperCase() && original.drop(1).all { it.isLowerCase() }
-        if (isTitle) return suggestion.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
-
-        // Preserve leading capital if user started with one (e.g., names like iPhone stay mixed)
-        if (original.first().isUpperCase()) {
-            return suggestion.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
-        }
-        return suggestion
+        return CasingUtils.matchCasingPattern(original, suggestion)
     }
 
     /**
-     * Public casing function that checks sentence context (start of text, after period)
-     * before applying normal casing rules.
+     * Apply context-aware casing to a suggestion.
+     * Delegates to shared [CasingUtils] for consistency.
+     *
+     * @param typed What the user typed
+     * @param suggestion The raw suggestion
+     * @param textBeforeSelection Text before cursor for sentence-start detection
      */
     fun applyPredictedCasing(typed: String, suggestion: String, textBeforeSelection: String): String {
-        // Special case: lone "i" should always become "I"
-        // This handles both the typed "i" and the suggested "i"
-        if (suggestion.equals("i", ignoreCase = true)) {
-            return "I"
-        }
-        
-        // Apply contraction shortcuts (im -> I'm, etc.)
-        val contractionResult = CONTRACTION_SHORTCUTS[typed.lowercase()]
-        if (contractionResult != null && suggestion.replace("'", "").equals(typed, ignoreCase = true)) {
-            return contractionResult
-        }
-        
-        // Check if we're at sentence start (empty or after period/newline)
-        val trimmed = textBeforeSelection.trimEnd()
-        val atSentenceStart = trimmed.isEmpty() || 
-                             trimmed.endsWith('.') || 
-                             trimmed.endsWith('!') || 
-                             trimmed.endsWith('?') ||
-                             trimmed.endsWith('\n')
-
-        if (atSentenceStart && typed.firstOrNull()?.isLowerCase() == true) {
-            // At sentence start, force capitalize first letter
-            val cased = applyCasingPattern(typed, suggestion)
-            return if (cased.firstOrNull()?.isLowerCase() == true) {
-                cased.replaceFirstChar { it.titlecase() }
-            } else {
-                cased
-            }
-        }
-        
-        // Otherwise use normal casing rules
-        return applyCasingPattern(typed, suggestion)
+        return CasingUtils.applyPredictedCasing(typed, suggestion, textBeforeSelection)
     }
 
 

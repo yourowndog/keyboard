@@ -404,13 +404,12 @@ abstract class AbstractEditorInstance(context: Context) {
             val isWordSeparator = text.length == 1 && (text == " " || text == "\n" || ".,;:!?".contains(text))
             
             if (isWordSeparator && composingText.isNotEmpty()) {
-                // Autocorrect the COMPOSING WORD, not the separator
-                val prevWord = lastWordBefore(content.textBeforeSelection.removeSuffix(composingText))
-                val corrected = dev.patrickgold.florisboard.ime.nlp.SymSpellManager.fix(
-                    input = composingText,
-                    previousWord = prevWord,
-                )
-                android.util.Log.d("SymSpell", "Autocorrect: '$composingText' -> '$corrected' (prev: $prevWord)")
+                // UNIFIED AUTOCORRECT: Use the top suggestion from the Smartbar pipeline
+                // This ensures autocorrect uses the same casing logic as suggestions
+                val autoCommitCandidate = nlpManager.getAutoCommitCandidate()
+                val corrected = autoCommitCandidate?.text?.toString() 
+                    ?: composingText // Fallback to original if no auto-commit candidate
+                android.util.Log.d("Autocorrect", "Input: '$composingText' -> Candidate: '${autoCommitCandidate?.text}' -> Final: '$corrected'")
                 
                 if (corrected != composingText) {
                     // Replace the composing word with the corrected version, then add the separator

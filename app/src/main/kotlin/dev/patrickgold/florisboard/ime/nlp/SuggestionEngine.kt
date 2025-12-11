@@ -1,13 +1,10 @@
 package dev.patrickgold.florisboard.ime.nlp
 
-import android.util.Log
 import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader
 import kotlin.math.ln
-import kotlin.math.max
 import dev.patrickgold.florisboard.ime.nlp.shared.BigramTable
-import kotlin.math.min
 
 data class SuggestionRequest(
     val typed: String,
@@ -27,15 +24,24 @@ interface SuggestionEngine {
 }
 
 /**
- * Lightweight n-gram based scorer (SymSpell-free).
+ * Lightweight n-gram based scorer for ranking spelling candidates.
  *
- * Inputs/outputs are primitive/flat so we can swap in a JNI/Rust-backed engine later
+ * ## Architecture Role:
+ * This engine is the "Judge" in the Brain Transplant pattern:
+ * - SymSpellManager retrieves candidates (the "Retriever")
+ * - NgramSuggestionEngine ranks them by frequency + context (this class)
+ * - SymSpellManager applies casing (the "Caser")
+ *
+ * ## Data Sources:
+ * - Unigrams: Loaded from TSV file at construction time (for frequency scoring)
+ * - Bigrams: Provided by shared [BigramTable] singleton (for context scoring)
+ *
+ * ## Future:
+ * Inputs/outputs are primitive/flat so we can swap in a JNI/Rust-backed engine
  * without touching UI or Android-specific code.
  */
- class NgramSuggestionEngine(
+class NgramSuggestionEngine(
     internal val unigramLogFreq: Map<String, Double>,
-    private val bigramTable: Map<String, Map<String, Int>>,
-    private val bigramMaxByPrev: Map<String, Int>,
     private val userBoosts: Map<String, Double> = emptyMap(),
     private val weights: Weights = Weights(),
 ) : SuggestionEngine {
@@ -47,26 +53,20 @@ interface SuggestionEngine {
         val user: Double = 1.0,
     )
 
-    // Keyboard neighbor map removed - using SymSpellManager.spatialCost() instead which uses shared KeyboardLayout
+    // Note: suggest() is not used in production - ranking is done via rank()
+    // called by LatinLanguageProvider after SymSpellManager retrieves candidates.
+    override fun suggest(request: SuggestionRequest): List<SuggestionCandidate> = emptyList()
 
-    // Basic bucket for prefix search to avoid scanning entire lexicon.
-    private val bucketedWords: Map<Char, List<String>> = run {
-        val buckets = mutableMapOf<Char, MutableList<String>>()
-        for (word in unigramLogFreq.keys) {
-            if (word.isNotEmpty()) {
-                buckets.getOrPut(word[0]) { mutableListOf() }.add(word)
-            }
-        }
-        buckets.mapValues { it.value.sorted() }
-    }
-
-    override fun suggest(request: SuggestionRequest): List<SuggestionCandidate> {
-        // ... existing suggest implementation ...
-        return emptyList() // We are moving to rank() for the main logic, keeping this for fallback/testing
-    }
-
+    /**
+     * Rank spelling candidates by frequency, context, and spatial proximity.
+     *
+     * @param candidates List of (term, editDistance) pairs from SymSpellManager
+     * @param originalInput What the user actually typed
+     * @param prevWord The word before the cursor (for bigram context)
+     * @return Ranked list of suggestions, best first
+     */
     override fun rank(
-        candidates: List<Pair<String, Double>>, // term to edit distance
+        candidates: List<Pair<String, Double>>,
         originalInput: String,
         prevWord: String?
     ): List<SuggestionCandidate> {
@@ -81,31 +81,31 @@ interface SuggestionEngine {
             // Base Score: Log frequency
             val baseScore = (unigramLogFreq[word] ?: 0.0) * weights.base
             
-            // Bigram Bonus: Context
+            // Bigram Bonus: Context from shared BigramTable
             val bigramBonus = bigramBonus(prevWord, word) * weights.bigram
             
             // Penalty: Use SymSpellManager's spatialCost which handles transpositions
             // This ensures consistent scoring between autocorrect and suggestions
-            val spatialPenalty = dev.patrickgold.florisboard.ime.nlp.SymSpellManager.spatialCost(typedLower, wordLower)
+            val spatialPenalty = SymSpellManager.spatialCost(typedLower, wordLower)
             val distPenalty = (dist + spatialPenalty) * weights.touchPenalty
             
             val userBonus = (userBoosts[word] ?: 0.0) * weights.user
 
             var total = baseScore + bigramBonus + userBonus - distPenalty
 
-            // Perfect match bonus (if typed exactly)
-            // Perfect match bonus (if typed exactly)
-            // CRITICAL: Only apply if word is in dictionary! 
-            // This ensures "sam" (valid) beats "same", but "teh" (invalid) still corrects to "the".
+            // Perfect match bonus: Boost exact matches that are valid words
+            // CRITICAL: Only apply if word is in dictionary OR is a known proper noun!
+            // This ensures "sam" (valid override) beats "same", but "teh" still corrects to "the".
             if (typedNoApos == wordNoApos) {
-                if (unigramLogFreq.containsKey(word)) {
+                if (unigramLogFreq.containsKey(word) || SymSpellManager.PROPER_OVERRIDES.contains(word)) {
                     total += 25.0
                 }
             }
 
-            val casedText = applyCasing(word, originalInput)
+            // Note: Casing is NOT applied here - it's delegated to SymSpellManager.applyPredictedCasing()
+            // which is called by LatinLanguageProvider after ranking.
             val candidate = WordSuggestionCandidate(
-                text = casedText,
+                text = word,
                 confidence = total,
                 isEligibleForAutoCommit = false,
                 sourceProvider = null,
@@ -117,10 +117,9 @@ interface SuggestionEngine {
             .sortedByDescending { it.confidence }
             .toMutableList()
 
-        // Auto-commit logic: Always commit top suggestion if it's different from what was typed
+        // Auto-commit: Mark top suggestion for auto-commit if different from input
         if (ranked.isNotEmpty()) {
             val top = ranked[0]
-            // Auto-commit if top suggestion differs from input
             if (!top.text.toString().equals(originalInput, ignoreCase = true)) {
                 ranked[0] = top.copy(isEligibleForAutoCommit = true)
             }
@@ -130,14 +129,7 @@ interface SuggestionEngine {
     }
 
     override fun predictNext(prevWord: String?, max: Int): List<String> {
-        // Prefer shared BigramTable, fallback to constructor-provided data
-        BigramTable.get()?.let { return it.predictNext(prevWord, max) }
-        val prev = prevWord?.lowercase() ?: return emptyList()
-        val row = bigramTable[prev] ?: return emptyList()
-        return row.entries
-            .sortedByDescending { it.value }
-            .take(max)
-            .map { it.key }
+        return BigramTable.get()?.predictNext(prevWord, max) ?: emptyList()
     }
 
     override fun generateAiCompletion(config: GemmaClient.PromptConfig): String? {
@@ -152,39 +144,28 @@ interface SuggestionEngine {
         // No-op: stateless engine; nothing to revert.
     }
 
+    /**
+     * Calculate bigram bonus for context-aware ranking.
+     * Uses shared [BigramTable] singleton for data.
+     */
     private fun bigramBonus(prev: String?, cand: String): Double {
-        // Prefer shared BigramTable, fallback to constructor-provided data
-        BigramTable.get()?.let { return it.bonus(prev, cand) }
-        val p = prev?.lowercase() ?: return 0.0
-        val row = bigramTable[p] ?: return 0.0
-        val freq = row[cand] ?: return 0.0
-        val maxFreq = max(1, bigramMaxByPrev[p] ?: 1)
-        return ln(freq + 1.0) / ln(maxFreq + 1.0)
-    }
-
-
-
-    internal fun applyCasing(word: String, rawInput: String): String {
-        if (rawInput.isEmpty()) return word
-        val isAllUpper = rawInput.all { it.isUpperCase() }
-        val isTitle = rawInput.length > 1 && rawInput[0].isUpperCase() && rawInput.drop(1).all { it.isLowerCase() }
-        return when {
-            isAllUpper -> word.uppercase()
-            isTitle -> word.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
-            else -> word
-        }
+        return BigramTable.get()?.bonus(prev, cand) ?: 0.0
     }
 
     companion object {
+        private const val TAG = "NgramSuggestionEngine"
+
+        /**
+         * Create an engine from a unigram TSV stream.
+         * Bigram data is provided by the shared [BigramTable] singleton.
+         */
         fun fromStreams(
             unigramStream: InputStream,
-            bigramStream: InputStream,
             userBoosts: Map<String, Double> = emptyMap(),
             weights: Weights = Weights(),
         ): NgramSuggestionEngine {
             val unigrams = loadUnigrams(unigramStream)
-            val bigramPair = loadBigrams(bigramStream)
-            return NgramSuggestionEngine(unigrams, bigramPair.first, bigramPair.second, userBoosts, weights)
+            return NgramSuggestionEngine(unigrams, userBoosts, weights)
         }
 
         private fun loadUnigrams(stream: InputStream): Map<String, Double> {
@@ -200,31 +181,6 @@ interface SuggestionEngine {
             }
             return map
         }
-
-        private fun loadBigrams(stream: InputStream): Pair<Map<String, Map<String, Int>>, Map<String, Int>> {
-            val table = mutableMapOf<String, MutableMap<String, Int>>()
-            val maxByPrev = mutableMapOf<String, Int>()
-            BufferedReader(InputStreamReader(stream)).useLines { lines ->
-                lines.forEach { line ->
-                    val parts = line.split('\t')
-                    if (parts.size < 2) return@forEach
-                    val pair = parts[0]
-                    val freq = parts[1].toIntOrNull() ?: return@forEach
-                    val spaceIdx = pair.indexOf(' ')
-                    if (spaceIdx <= 0) return@forEach
-                    val w1 = pair.substring(0, spaceIdx).lowercase()
-                    val w2 = pair.substring(spaceIdx + 1).lowercase()
-                    val row = table.getOrPut(w1) { mutableMapOf() }
-                    row[w2] = freq
-                    val currentMax = maxByPrev[w1] ?: 0
-                    if (freq > currentMax) {
-                        maxByPrev[w1] = freq
-                    }
-                }
-            }
-            return table to maxByPrev
-        }
-
-        private const val TAG = "NgramSuggestionEngine"
     }
 }
+

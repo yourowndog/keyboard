@@ -71,11 +71,12 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
 
         // SymSpell handles all suggestions/corrections - legacy dictionary code removed
         
-        // Initialize Ngram Engine for Ranking (use cleaned dictionary - same as swipe)
+        // Initialize Ngram Engine for Ranking
+        // Note: Only loads unigrams here. Bigrams are provided by the shared BigramTable singleton
+        // which is loaded once in SymSpellManager.init()
         try {
             val unigrams = appContext.assets.open("ime/dict/unified_dictionary.tsv")
-            val bigrams = appContext.assets.open("ime/dict/final_mobile_bigrams.tsv")
-            ngramEngine = dev.patrickgold.florisboard.ime.nlp.NgramSuggestionEngine.fromStreams(unigrams, bigrams)
+            ngramEngine = dev.patrickgold.florisboard.ime.nlp.NgramSuggestionEngine.fromStreams(unigrams)
             dev.patrickgold.florisboard.lib.devtools.flogInfo { "NgramSuggestionEngine loaded successfully" }
         } catch (e: Exception) {
             dev.patrickgold.florisboard.lib.devtools.flogError { "Failed to load NgramEngine: ${e.message}" }
@@ -171,9 +172,8 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
                     )
                     val shouldCommit = candidate.isEligibleForAutoCommit || casedText != currentWordRaw
                     
-                    if (currentWordRaw == "i" || currentWordRaw == "store") {
-                        android.util.Log.d("LatinProvider", "Input: '$currentWordRaw' -> Cased: '$casedText' | AutoCommit: $shouldCommit | Before: '${content.textBeforeSelection}'")
-                    }
+                    // DEBUG: Uncomment to trace casing logic
+                    // android.util.Log.d("LatinProvider", "Input: '$currentWordRaw' | Cased: '$casedText' | Commit: $shouldCommit")
 
                     candidate.copy(
                         text = casedText,
