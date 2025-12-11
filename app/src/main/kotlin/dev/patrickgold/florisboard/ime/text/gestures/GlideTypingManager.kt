@@ -19,7 +19,9 @@ package dev.patrickgold.florisboard.ime.text.gestures
 import android.content.Context
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.ime.nlp.WordSuggestionCandidate
+import dev.patrickgold.florisboard.ime.nlp.shared.CasingUtils
 import dev.patrickgold.florisboard.ime.text.keyboard.TextKey
+import dev.patrickgold.florisboard.editorInstance
 import dev.patrickgold.florisboard.keyboardManager
 import dev.patrickgold.florisboard.nlpManager
 import dev.patrickgold.florisboard.subtypeManager
@@ -40,6 +42,7 @@ class GlideTypingManager(context: Context) : GlideTypingGesture.Listener {
     }
 
     private val prefs by FlorisPreferenceStore
+    private val editorInstance by context.editorInstance()
     private val keyboardManager by context.keyboardManager()
     private val nlpManager by context.nlpManager()
     private val subtypeManager by context.subtypeManager()
@@ -97,18 +100,34 @@ class GlideTypingManager(context: Context) : GlideTypingGesture.Listener {
             val suggestions = glideTypingClassifier.getSuggestions(MAX_SUGGESTION_COUNT, true)
 
             withContext(Dispatchers.Main) {
+                // Get text before selection for context-aware casing (sentence start detection)
+                val textBefore = editorInstance.activeContent.textBeforeSelection.toString()
+                
                 val suggestionList = buildList {
                     suggestions.subList(
                         1.coerceAtMost(min(commit.compareTo(false), suggestions.size)),
                         maxSuggestionsToShow.coerceAtMost(suggestions.size)
-                    ).map { keyboardManager.fixCase(it) }.forEach {
+                    ).map { word ->
+                        // Use shared CasingUtils for consistent sentence-start/proper noun handling
+                        CasingUtils.applyPredictedCasing(
+                            typed = word,
+                            suggestion = word,
+                            textBeforeSelection = textBefore
+                        )
+                    }.forEach {
                         add(WordSuggestionCandidate(it, confidence = 1.0))
                     }
                 }
 
                 nlpManager.suggestDirectly(suggestionList)
                 if (commit && suggestions.isNotEmpty()) {
-                    keyboardManager.commitGesture(suggestions.first())
+                    // Apply casing to the committed word too
+                    val casedFirst = CasingUtils.applyPredictedCasing(
+                        typed = suggestions.first(),
+                        suggestion = suggestions.first(),
+                        textBeforeSelection = textBefore
+                    )
+                    keyboardManager.commitGesture(casedFirst)
                 }
                 callback.invoke(true)
             }

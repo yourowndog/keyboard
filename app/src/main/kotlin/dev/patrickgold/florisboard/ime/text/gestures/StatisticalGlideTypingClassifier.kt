@@ -333,8 +333,9 @@ class StatisticalGlideTypingClassifier(context: Context) : GlideTypingClassifier
             val startY = userGesture.getFirstY()
             val endX = userGesture.getLastX()
             val endY = userGesture.getLastY()
-            val startKeys = findNClosestKeys(startX, startY, 2, keys)
-            val endKeys = findNClosestKeys(endX, endY, 2, keys)
+            // Expand search to 3 closest keys (was 2) for more tolerance on imprecise gestures
+            val startKeys = findNClosestKeys(startX, startY, 3, keys)
+            val endKeys = findNClosestKeys(endX, endY, 3, keys)
             for (startKey in startKeys) {
                 for (endKey in endKeys) {
                     val keyPair = Pair(startKey, endKey)
