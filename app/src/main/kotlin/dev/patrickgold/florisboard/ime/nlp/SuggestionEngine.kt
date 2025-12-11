@@ -94,8 +94,13 @@ interface SuggestionEngine {
             var total = baseScore + bigramBonus + userBonus - distPenalty
 
             // Perfect match bonus (if typed exactly)
+            // Perfect match bonus (if typed exactly)
+            // CRITICAL: Only apply if word is in dictionary! 
+            // This ensures "sam" (valid) beats "same", but "teh" (invalid) still corrects to "the".
             if (typedNoApos == wordNoApos) {
-                total += 2.0
+                if (unigramLogFreq.containsKey(word)) {
+                    total += 25.0
+                }
             }
 
             val casedText = applyCasing(word, originalInput)
