@@ -48,6 +48,7 @@ private fun TextKey.baseCode(): Int {
  */
 class StatisticalGlideTypingClassifier(context: Context) : GlideTypingClassifier {
     private val nlpManager by context.nlpManager()
+    private val precomputedGestures = PrecomputedGestureCache(context)
 
     private val gesture = Gesture()
     private var keysByCharacter: SparseArrayCompat<TextKey> = SparseArrayCompat()
@@ -60,11 +61,22 @@ class StatisticalGlideTypingClassifier(context: Context) : GlideTypingClassifier
     val ready: Boolean
         get() = currentSubtype == layoutSubtype && wordDataSubtype == layoutSubtype && wordDataSubtype != null
     private val prunerCache = LruCache<Subtype, Pruner>(PRUNER_CACHE_SIZE)
+    
+    // Keyboard dimensions for scaling precomputed gestures
+    private var keyboardWidth: Float = 1.0f
+    private var keyboardHeight: Float = 1.0f
 
     /**
      * The minimum distance between points to be added to a gesture.
      */
     private var distanceThresholdSquared = 0
+    
+    init {
+        // Load precomputed gestures in background
+        Thread {
+            precomputedGestures.load()
+        }.start()
+    }
 
     companion object {
         /**
@@ -129,6 +141,18 @@ class StatisticalGlideTypingClassifier(context: Context) : GlideTypingClassifier
 
         keysByCharacter.clear()
         keys.clear()
+        
+        // Calculate keyboard dimensions for scaling precomputed gestures
+        if (keyViews.isNotEmpty()) {
+            val minX = keyViews.minOf { it.visibleBounds.left }
+            val maxX = keyViews.maxOf { it.visibleBounds.right }
+            val minY = keyViews.minOf { it.visibleBounds.top }
+            val maxY = keyViews.maxOf { it.visibleBounds.bottom }
+            
+            keyboardWidth = maxX - minX
+            keyboardHeight = maxY - minY
+        }
+        
         keyViews.forEach {
             keysByCharacter[it.baseCode()] = it
             keys.add(it)
@@ -223,7 +247,10 @@ class StatisticalGlideTypingClassifier(context: Context) : GlideTypingClassifier
 
         for (i in remainingWords.indices) {
             val word = remainingWords[i]
-            val idealGestures = Gesture.generateIdealGestures(word, keysByCharacter)
+            
+            // Try to get precomputed gestures first (FAST PATH)
+            val idealGestures = precomputedGestures.getScaledGestures(word, keyboardWidth, keyboardHeight)
+                ?: Gesture.generateIdealGestures(word, keysByCharacter) // Fallback to runtime generation
 
             for (idealGesture in idealGestures) {
                 val wordGesture = idealGesture.resample(SAMPLING_POINTS)
