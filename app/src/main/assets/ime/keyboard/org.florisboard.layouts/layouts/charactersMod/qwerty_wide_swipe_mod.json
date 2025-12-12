@@ -1,0 +1,54 @@
+[
+    [
+        {
+            "code": 0,
+            "type": "placeholder"
+        }
+    ],
+    [
+        {
+            "code": -1,
+            "label": "CTRL",
+            "type": "modifier"
+        },
+        {
+            "code": -202,
+            "label": "⚛",
+            "type": "system_gui"
+        },
+        {
+            "$": "text_key",
+            "code": -305,
+            "label": "Σ"
+        },
+        {
+            "$": "text_key",
+            "code": -306,
+            "label": "λ"
+        },
+        {
+            "$": "text_key",
+            "code": -35
+        },
+        {
+            "$": "text_key",
+            "code": -31
+        },
+        {
+            "$": "text_key",
+            "code": -33
+        },
+        {
+            "$": "navigation",
+            "code": -21
+        },
+        {
+            "$": "navigation",
+            "code": -24
+        },
+        {
+            "$": "navigation",
+            "code": -22
+        }
+    ]
+]
