@@ -74,8 +74,10 @@ object FlorisImeSizing {
             KeyboardMode.SYMBOLS2 -> lastCharactersEvaluator.keyboard as TextKeyboard
             else -> evaluator.keyboard as TextKeyboard
         }.rowCount.coerceAtLeast(4)
-        return if (rowCount == 5) {
-            keyboardRowBaseHeight * 4.5f
+        return if (rowCount >= 5) {
+            // Dynamic formula: e.g. 5->4.5, 6->5, 7->5.5 (compress bottom 2 rows to 75%)
+            val baseRowCount = rowCount - (rowCount - 4) * 0.5f
+            keyboardRowBaseHeight * baseRowCount
         } else {
             keyboardRowBaseHeight * rowCount
         }

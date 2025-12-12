@@ -69,3 +69,12 @@
   - **Phase 3:** Created `CasingUtils.kt` as single source of truth for casing. SymSpellManager now delegates to it.
   - **Architecture:** Brain Transplant pattern documented: SymSpell→Retriever, NgramEngine→Judge, CasingUtils→Caser.
 
+
+### 2025-12-12
+* **Task:** Fixed keyboard height jump when toggling number/dev rows.
+* **Files:** `TextKeyboard.kt`, `FlorisImeSizing.kt`
+* **Details:**
+  - **Root Cause:** The special row height compression (75% for bottom 2 rows) only triggered when `rowCount == 5` exactly. Toggling dev/number rows changed row count (5→6 or 6→5), causing height to jump.
+  - **Fix:** Changed `rowCount == 5` to `rowCount >= 5` with dynamic formula: `baseRowCount = rowCount - (rowCount - 4) * 0.5f` (e.g. 5→4.5, 6→5, 7→5.5).
+  - **Result:** Bottom 2 rows now stay compressed regardless of toggle state, preventing jarring layout shifts.
+
