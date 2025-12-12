@@ -60,15 +60,22 @@ class TextKeyboard(
 
         var currentPosY = 0.0f
         for ((r, row) in rows().withIndex()) {
-            val isFiveRowLayout = rowCount == 5
-            val rowHeight = if (isFiveRowLayout) {
-                val baseHeight = keyboardHeight / 4.5f
-                if (r < 3) baseHeight else baseHeight * 0.75f
+            val hasExtraRows = rowCount >= 5
+            val rowHeight = if (hasExtraRows) {
+                // Base is 5 rows: 3 alpha (full) + 2 bottom (75%)
+                // Extensions at top also 75%
+                // Total = 3 + (rowCount-3)*0.75 = 0.75*(rowCount+1)
+                val effectiveRowCount = 0.75f * (rowCount + 1)
+                val baseHeight = keyboardHeight / effectiveRowCount
+                val extensionRowCount = rowCount - 5  // rows beyond base 5
+                val isTopExtensionRow = r < extensionRowCount
+                val isBottomCompressedRow = r >= rowCount - 2
+                if (isTopExtensionRow || isBottomCompressedRow) baseHeight * 0.75f else baseHeight
             } else {
                 desiredTouchBounds.height
             }
 
-            val posY = if (isFiveRowLayout) {
+            val posY = if (hasExtraRows) {
                 currentPosY
             } else {
                 (desiredTouchBounds.height + rowMarginV) * r
@@ -162,7 +169,7 @@ class TextKeyboard(
                     }
                 }
             }
-            if (isFiveRowLayout) {
+            if (hasExtraRows) {
                 currentPosY += rowHeight
             }
         }

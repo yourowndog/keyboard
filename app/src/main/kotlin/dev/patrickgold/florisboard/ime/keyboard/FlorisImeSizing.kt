@@ -74,8 +74,11 @@ object FlorisImeSizing {
             KeyboardMode.SYMBOLS2 -> lastCharactersEvaluator.keyboard as TextKeyboard
             else -> evaluator.keyboard as TextKeyboard
         }.rowCount.coerceAtLeast(4)
-        return if (rowCount == 5) {
-            keyboardRowBaseHeight * 4.5f
+        return if (rowCount >= 5) {
+            // Base is 5 rows: 3 alpha (full) + 2 bottom (75%)
+            // Extensions at top also 75%
+            // Total = 3 + (rowCount-3)*0.75 = 0.75*(rowCount+1)
+            keyboardRowBaseHeight * (0.75f * (rowCount + 1))
         } else {
             keyboardRowBaseHeight * rowCount
         }
