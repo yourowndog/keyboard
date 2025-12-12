@@ -293,6 +293,29 @@ class NlpManager(context: Context) {
         return runBlocking { getSuggestionProvider(subtype).getFrequencyForWord(subtype, word) }
     }
 
+    /**
+     * Gets the previous word from the editor context for bigram scoring.
+     * Returns null if no previous word exists (cursor at start or after non-word characters).
+     */
+    fun getPreviousWord(@Suppress("UNUSED_PARAMETER") subtype: Subtype): String? {
+        val textBefore = editorInstance.activeContent.textBeforeSelection.toString()
+        if (textBefore.isBlank()) return null
+        
+        // Find the last complete word (skip any trailing spaces, then find word boundary)
+        val trimmed = textBefore.trimEnd()
+        if (trimmed.isEmpty()) return null
+        
+        // Find the start of the last word
+        val lastSpaceIndex = trimmed.lastIndexOf(' ')
+        val lastWord = if (lastSpaceIndex >= 0) {
+            trimmed.substring(lastSpaceIndex + 1)
+        } else {
+            trimmed
+        }
+        
+        return lastWord.takeIf { it.isNotEmpty() && it.all { c -> c.isLetter() } }
+    }
+
     private fun assembleCandidates() {
         runBlocking {
             val candidates = when {

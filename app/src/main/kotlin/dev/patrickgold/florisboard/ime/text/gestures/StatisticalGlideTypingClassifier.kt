@@ -25,6 +25,7 @@ import dev.patrickgold.florisboard.ime.keyboard.KeyData
 import dev.patrickgold.florisboard.ime.text.key.KeyCode
 import dev.patrickgold.florisboard.ime.text.keyboard.TextKey
 import dev.patrickgold.florisboard.nlpManager
+import dev.patrickgold.florisboard.ime.nlp.shared.BigramTable
 import java.text.Normalizer
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -204,7 +205,18 @@ class StatisticalGlideTypingClassifier(context: Context) : GlideTypingClassifier
         val candidateWeights = arrayListOf<Float>()
         val key = keys.firstOrNull() ?: return listOf()
         val radius = min(key.visibleBounds.height, key.visibleBounds.width)
+        val gestureLength = gesture.getLength()
+        
+        // For very short gestures, include all short words as fallback since pruning is too aggressive
+        val isShortGesture = gestureLength < radius * 2.5f
         var remainingWords = pruner.pruneByExtremities(gesture, this.keys)
+        
+        // Add all 2-4 letter words for short gestures (pruning misses too many valid candidates)
+        if (isShortGesture) {
+            val shortWords = words.filter { it.length in 2..4 }
+            remainingWords = ArrayList(remainingWords.toSet() + shortWords.toSet())
+        }
+        
         val userGesture = gesture.resample(SAMPLING_POINTS)
         val normalizedUserGesture: Gesture = userGesture.normalizeByBoxSide()
         remainingWords = pruner.pruneByLength(gesture, remainingWords, keysByCharacter, keys)
@@ -228,13 +240,20 @@ class StatisticalGlideTypingClassifier(context: Context) : GlideTypingClassifier
                 val gestureLength = gesture.getLength()
                 val estimatedWordLength = (gestureLength / (radius * 0.8f)).toInt().coerceIn(2, 15)
                 val lengthDiff = kotlin.math.abs(word.length - estimatedWordLength)
-                val lengthPenalty = lengthDiff * 0.3f
+                val lengthPenalty = lengthDiff * 0.15f
                 
                 // Additive score: higher is better
                 // Log probabilities to avoid tiny numbers; add frequency boost; subtract penalty
                 val shapeScore = kotlin.math.ln(shapeProbability.coerceAtLeast(1e-10f))
                 val locationScore = kotlin.math.ln(locationProbability.coerceAtLeast(1e-10f))
-                val confidence = shapeScore + locationScore + (logFreq * 1.5f) - lengthPenalty
+                
+                // Get previous word for bigram context
+                val prevWord = nlpManager.getPreviousWord(currentSubtype!!)?.lowercase() ?: ""
+                val bigramBonus = if (prevWord.isNotEmpty()) {
+                    BigramTable.get()?.bonus(prevWord, word.lowercase())?.toFloat() ?: 0f
+                } else 0f
+                
+                val confidence = shapeScore + locationScore + (logFreq * 1.5f) + (bigramBonus * 0.5f) - lengthPenalty
 
                 var candidateDescendingSortedIndex = 0
                 var duplicateIndex = Int.MAX_VALUE
@@ -333,9 +352,9 @@ class StatisticalGlideTypingClassifier(context: Context) : GlideTypingClassifier
             val startY = userGesture.getFirstY()
             val endX = userGesture.getLastX()
             val endY = userGesture.getLastY()
-            // Expand search to 3 closest keys (was 2) for more tolerance on imprecise gestures
-            val startKeys = findNClosestKeys(startX, startY, 3, keys)
-            val endKeys = findNClosestKeys(endX, endY, 3, keys)
+            // Expand search to 4 closest keys (was 2, then 3) for more tolerance on imprecise gestures
+            val startKeys = findNClosestKeys(startX, startY, 4, keys)
+            val endKeys = findNClosestKeys(endX, endY, 4, keys)
             for (startKey in startKeys) {
                 for (endKey in endKeys) {
                     val keyPair = Pair(startKey, endKey)
