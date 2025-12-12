@@ -172,6 +172,8 @@ fun ComputingEvaluator.computeLabel(data: KeyData): String? {
             // The label itself is sourced from the `label` property in the JSON layout file.
             KeyCode.ENTER -> data.label as? String
             KeyCode.VIEW_SYMBOLS -> data.label as? String
+            KeyCode.TOGGLE_NUMBER_ROW,
+            KeyCode.TOGGLE_DEV_ROW -> data.label as? String
             else -> null
         }
     }
@@ -272,11 +274,9 @@ fun ComputingEvaluator.computeImageVector(data: KeyData): ImageVector? {
         KeyCode.REDO -> {
             Icons.AutoMirrored.Filled.Redo
         }
-        KeyCode.TOGGLE_NUMBER_ROW -> {
-            Icons.Default.Keyboard
-        }
+        KeyCode.TOGGLE_NUMBER_ROW,
         KeyCode.TOGGLE_DEV_ROW -> {
-            Icons.Default.Build
+            null // Use text label from layout JSON instead
         }
         KeyCode.TOGGLE_ACTIONS_OVERFLOW -> {
             Icons.Default.MoreHoriz

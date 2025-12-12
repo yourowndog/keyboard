@@ -472,6 +472,15 @@
         "modifier": "org.florisboard.layouts:qwerty_wide_mod"
       },
       {
+        "id": "qwerty_wide_swipe",
+        "label": "QWERTY Wide Swipe",
+        "authors": [
+          "Sam/Codex"
+        ],
+        "direction": "ltr",
+        "modifier": "org.florisboard.layouts:qwerty_wide_swipe_mod"
+      },
+      {
         "id": "qwertz",
         "label": "QWERTZ",
         "authors": [
@@ -696,6 +705,14 @@
       {
         "id": "qwerty_wide_mod",
         "label": "QWERTY Wide 5-Row Mod",
+        "authors": [
+          "Sam/Codex"
+        ],
+        "direction": "ltr"
+      },
+      {
+        "id": "qwerty_wide_swipe_mod",
+        "label": "QWERTY Wide Swipe Mod",
         "authors": [
           "Sam/Codex"
         ],
