@@ -7,14 +7,25 @@
     ],
     [
         {
-            "code": -1,
-            "label": "CTRL",
-            "type": "modifier"
+            "$": "navigation",
+            "code": -21
         },
         {
-            "code": -202,
-            "label": "⚛",
-            "type": "system_gui"
+            "$": "navigation",
+            "code": -24
+        },
+        {
+            "$": "navigation",
+            "code": -22
+        },
+        {
+            "$": "text_key",
+            "code": -1,
+            "label": "CTRL"
+        },
+        {
+            "$": "text_key",
+            "code": -202
         },
         {
             "$": "text_key",
@@ -28,27 +39,12 @@
         },
         {
             "$": "text_key",
-            "code": -35
+            "code": -307,
+            "label": "Ψ"
         },
         {
             "$": "text_key",
-            "code": -31
-        },
-        {
-            "$": "text_key",
-            "code": -33
-        },
-        {
-            "$": "navigation",
-            "code": -21
-        },
-        {
-            "$": "navigation",
-            "code": -24
-        },
-        {
-            "$": "navigation",
-            "code": -22
+            "code": -132
         }
     ]
 ]

@@ -210,6 +210,9 @@ fun ComputingEvaluator.computeImageVector(data: KeyData): ImageVector? {
         KeyCode.ARROW_DOWN -> {
             Icons.Default.KeyboardArrowDown
         }
+        KeyCode.ESCAPE -> {
+            Icons.Default.Close
+        }
         KeyCode.CLIPBOARD_COPY -> {
             Icons.Default.ContentCopy
         }

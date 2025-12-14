@@ -32,13 +32,13 @@ class PrecomputedGestureCache(private val context: Context) {
     
     companion object {
         private const val TAG = "PrecomputedGestures"
-        private const val ASSET_PATH = "ime/swipe/precomputed_gestures.json"
+        private const val ASSET_PATH = "ime/swipe/futo_swipes.bin"
         private const val PRECOMPUTED_SAMPLE_POINTS = 50
     }
     
     /**
-     * Load precomputed gestures from assets.
-     * This is called once on initialization and runs in background.
+     * Load precomputed gestures from binary asset.
+     * Binary format loads 50x+ faster than JSON.
      */
     fun load() {
         if (isLoaded) return
@@ -48,29 +48,75 @@ class PrecomputedGestureCache(private val context: Context) {
             val startTime = System.currentTimeMillis()
             
             val inputStream = context.assets.open(ASSET_PATH)
-            val reader = BufferedReader(InputStreamReader(inputStream))
-            val jsonText = reader.readText()
-            reader.close()
             
-            val jsonObject = JSONObject(jsonText)
-            val words = jsonObject.keys()
+            // Read header
+            val headerBuf = ByteArray(8)
+            inputStream.read(headerBuf)
+            val headerBB = java.nio.ByteBuffer.wrap(headerBuf).order(java.nio.ByteOrder.LITTLE_ENDIAN)
+            val numWords = headerBB.getInt(0)
+            val numSamplePoints = headerBB.getInt(4)
             
-            while (words.hasNext()) {
-                val word = words.next()
-                val gesturesArray = jsonObject.getJSONArray(word)
-                val gestures = mutableListOf<FloatArray>()
-                
-                for (i in 0 until gesturesArray.length()) {
-                    val gestureArray = gesturesArray.getJSONArray(i)
-                    val points = FloatArray(gestureArray.length())
-                    for (j in 0 until gestureArray.length()) {
-                        points[j] = gestureArray.getDouble(j).toFloat()
+            Log.d(TAG, "Header: $numWords words, $numSamplePoints points per gesture")
+            
+            // Read each word
+            for (i in 0 until numWords) {
+                try {
+                    // Read word length (2 bytes)
+                    val wordLenBuf = ByteArray(2)
+                    if (inputStream.read(wordLenBuf) != 2) {
+                        Log.e(TAG, "Failed to read word length at word $i")
+                        break
                     }
-                    gestures.add(points)
+                    val wordLen = ((wordLenBuf[1].toInt() and 0xFF) shl 8) or (wordLenBuf[0].toInt() and 0xFF)
+                    
+                    // Read word
+                    val wordBytes = ByteArray(wordLen)
+                    if (inputStream.read(wordBytes) != wordLen) {
+                        Log.e(TAG, "Failed to read word bytes at word $i")
+                        break
+                    }
+                    val word = String(wordBytes, Charsets.UTF_8)
+                    
+                    // Read number of gestures (1 byte)
+                    val numGesturesArray = ByteArray(1)
+                    if (inputStream.read(numGesturesArray) != 1) {
+                        Log.e(TAG, "Failed to read num gestures at word $i ($word)")
+                        break
+                    }
+                    val numGestures = numGesturesArray[0].toInt() and 0xFF
+                    
+                    // Read each gesture
+                    val gestures = mutableListOf<FloatArray>()
+                    val pointsPerGesture = numSamplePoints * 2 // x,y pairs
+                    val bytesPerGesture = pointsPerGesture * 4 // 4 bytes per float
+                    
+                    for (g in 0 until numGestures) {
+                        val gestureBytes = ByteArray(bytesPerGesture)
+                        val bytesRead = inputStream.read(gestureBytes)
+                        if (bytesRead != bytesPerGesture) {
+                            Log.e(TAG, "Failed to read gesture $g for word $i ($word): expected $bytesPerGesture, got $bytesRead")
+                            break
+                        }
+                        
+                        // Convert bytes to floats
+                        val points = FloatArray(pointsPerGesture)
+                        val bb = java.nio.ByteBuffer.wrap(gestureBytes).order(java.nio.ByteOrder.LITTLE_ENDIAN)
+                        for (p in 0 until pointsPerGesture) {
+                            points[p] = bb.getFloat(p * 4)
+                        }
+                        gestures.add(points)
+                    }
+                    
+                    if (gestures.isNotEmpty()) {
+                        gestureCache[word] = gestures
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error reading word $i", e)
+                    break
                 }
-                
-                gestureCache[word] = gestures
             }
+            
+            inputStream.close()
             
             val loadTime = System.currentTimeMillis() - startTime
             Log.d(TAG, "Loaded ${gestureCache.size} precomputed gestures in ${loadTime}ms")

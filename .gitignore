@@ -72,3 +72,16 @@ generated_code.py
 mission_log.txt
 token_counter.py
 user_dict.txt
+
+# Swipe training data (large files)
+keyboardtools/swipe-trainer/*.parquet
+keyboardtools/swipe-trainer/synthetic_swipes_full.jsonl
+keyboardtools/swipe-trainer/synthetic_swipes_final.jsonl
+keyboardtools/swipe-trainer/venv/
+keyboardtools/swipe-trainer/__pycache__/
+
+# External cloned repos
+external/
+
+# Binary swipe assets (large)
+app/src/main/assets/ime/swipe/*.bin

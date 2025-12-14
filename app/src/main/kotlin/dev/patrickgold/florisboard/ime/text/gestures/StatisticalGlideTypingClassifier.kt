@@ -225,32 +225,65 @@ class StatisticalGlideTypingClassifier(context: Context) : GlideTypingClassifier
     }
 
     private fun unCachedGetSuggestions(maxSuggestionCount: Int): List<String> {
+        val startTime = System.currentTimeMillis()
+        android.util.Log.d("SWIPE_PERF", "=== Starting getSuggestions ===")
+        
         val candidates = arrayListOf<String>()
         val candidateWeights = arrayListOf<Float>()
         val key = keys.firstOrNull() ?: return listOf()
         val radius = min(key.visibleBounds.height, key.visibleBounds.width)
         val gestureLength = gesture.getLength()
         
-        // For very short gestures, include all short words as fallback since pruning is too aggressive
-        val isShortGesture = gestureLength < radius * 2.5f
-        var remainingWords = pruner.pruneByExtremities(gesture, this.keys)
+        // === NEW SIMPLE PRUNING ===
+        // 1. Find the key closest to gesture start
+        val startX = gesture.getFirstX()
+        val startY = gesture.getFirstY()
         
-        // Add all 2-4 letter words for short gestures (pruning misses too many valid candidates)
-        if (isShortGesture) {
-            val shortWords = words.filter { it.length in 2..4 }
-            remainingWords = ArrayList(remainingWords.toSet() + shortWords.toSet())
+        var closestKey: TextKey? = null
+        var minDistance = Float.MAX_VALUE
+        for (k in keys) {
+            val center = k.visibleBounds.center
+            val dx = center.x - startX
+            val dy = center.y - startY
+            val dist = dx * dx + dy * dy
+            if (dist < minDistance) {
+                minDistance = dist
+                closestKey = k
+            }
         }
+        
+        val startChar = closestKey?.baseCode()?.toChar()?.lowercaseChar()
+        android.util.Log.d("SWIPE_PERF", "Start char: $startChar")
+        
+        // 2. Filter words by first letter + approximate length
+        val estimatedWordLength = (gestureLength / (radius * 1.2f)).toInt().coerceIn(2, 12)
+        val lengthRange = estimatedWordLength - 3 .. estimatedWordLength + 3
+        
+        val remainingWords = words.filter { word ->
+            val firstChar = word.firstOrNull()?.lowercaseChar()
+            firstChar == startChar && word.length in lengthRange
+        }
+        
+        android.util.Log.d("SWIPE_PERF", "Filtered to ${remainingWords.size} words (first='$startChar', len=$lengthRange)")
+        // === END NEW PRUNING ===
         
         val userGesture = gesture.resample(SAMPLING_POINTS)
         val normalizedUserGesture: Gesture = userGesture.normalizeByBoxSide()
-        remainingWords = pruner.pruneByLength(gesture, remainingWords, keysByCharacter, keys)
-
+        
+        var precomputedHits = 0
+        var runtimeGenerations = 0
+        val loopStartTime = System.currentTimeMillis()
+        
         for (i in remainingWords.indices) {
             val word = remainingWords[i]
             
             // Try to get precomputed gestures first (FAST PATH)
             val idealGestures = precomputedGestures.getScaledGestures(word, keyboardWidth, keyboardHeight)
-                ?: Gesture.generateIdealGestures(word, keysByCharacter) // Fallback to runtime generation
+                ?.also { precomputedHits++ }
+                ?: run {
+                    runtimeGenerations++
+                    Gesture.generateIdealGestures(word, keysByCharacter)
+                }
 
             for (idealGesture in idealGestures) {
                 val wordGesture = idealGesture.resample(SAMPLING_POINTS)
@@ -307,6 +340,15 @@ class StatisticalGlideTypingClassifier(context: Context) : GlideTypingClassifier
                 }
             }
         }
+        
+        val totalTime = System.currentTimeMillis() - startTime
+        val loopTime = System.currentTimeMillis() - loopStartTime
+        android.util.Log.d("SWIPE_PERF", "Total time: ${totalTime}ms")
+        android.util.Log.d("SWIPE_PERF", "Loop time: ${loopTime}ms")
+        android.util.Log.d("SWIPE_PERF", "Remaining words: ${remainingWords.size}")
+        android.util.Log.d("SWIPE_PERF", "Precomputed hits: $precomputedHits")
+        android.util.Log.d("SWIPE_PERF", "Runtime generations: $runtimeGenerations")
+        android.util.Log.d("SWIPE_PERF", "Top candidates: ${candidates.take(3)}")
 
         return candidates
     }

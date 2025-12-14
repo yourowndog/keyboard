@@ -78,3 +78,13 @@
   - **Fix:** Changed `rowCount == 5` to `rowCount >= 5` with dynamic formula: `baseRowCount = rowCount - (rowCount - 4) * 0.5f` (e.g. 5→4.5, 6→5, 7→5.5).
   - **Result:** Bottom 2 rows now stay compressed regardless of toggle state, preventing jarring layout shifts.
 
+
+### 2025-12-14
+* **Task:** Finalized `qwerty_wide_swipe` layout and smartbar customization.
+* **Files:** `qwerty_wide_swipe.json`, `qwerty_wide_swipe_mod.json`, `QuickActionArrangement.kt`, `ComputingEvaluator.kt`, `TextKey.kt`
+* **Details:**
+    * Fixed Z-row (Shift/Backspace width match 1.25f).
+    * Reordered Mod row: `[TAB] [LEFT] [DOWN] [RIGHT] [-] [_] [Greeks] [REDO] [UNDO]`.
+    * Added `/` to penultimate row.
+    * Moved ESC to Smartbar (added icon support in `ComputingEvaluator`).
+    * Removed Undo/Redo/Arrows/Incognito/Autocorrect from Smartbar defaults.

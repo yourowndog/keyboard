@@ -86,3 +86,9 @@ To create a key that runs custom logic (like toggling a setting):
 - **Alignment is Key:** If Main is 5 rows and Symbol is 4 rows, the overlay aligns to the *bottom*, leaving the top rows blank (no hints).
 - **The Fix:** Create a matching 5-row Symbol Layout (`western_wide.json`) and register it in `extension.json` -> `layouts.symbols`. Point the subtype preset to use it.
 - This forces a 1:1 overlay (Row 0->0, Row 1->1), ensuring hints appear correctly on all rows.
+
+## 12) Swipe Layout & Smartbar (Proven Configuration)
+- **Wide Swipe Layout:** 5 rows. Backspace on Z-row (width 1.25f to match Shift).
+- **Mod Row:** `[TAB] [LEFT] [DOWN] [RIGHT] ...`. Use `navigation` template for arrows (-21, -24, -22).
+- **Smartbar Icons:** `ComputingEvaluator.computeImageVector` maps codes to icons. If a code (like ESC -15) is missing there, Smartbar renders nothing (or text if label exists).
+- **Proven Smartbar:** ESC as first item (added `Icons.Default.Close` mapping). Removed Redo/Undo/Arrows from defaults to save space.

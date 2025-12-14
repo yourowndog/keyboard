@@ -140,12 +140,21 @@
     },
     {
       "$": "text_key",
-      "code": 10,
-      "label": "↵",
-      "type": "enter_editing"
+      "code": -7,
+      "label": "⌫",
+      "type": "modifier"
     }
   ],
   [
+    {
+      "$": "text_key",
+      "code": -14,
+      "label": "⇥"
+    },
+    {
+      "$": "navigation",
+      "code": -23
+    },
     {
       "$": "text_key",
       "code": -131
@@ -178,12 +187,15 @@
       }
     },
     {
-      "$": "navigation",
-      "code": -23
+      "$": "text_key",
+      "code": 47,
+      "label": "/"
     },
     {
       "$": "text_key",
-      "code": -132
+      "code": 10,
+      "label": "↵",
+      "type": "enter_editing"
     }
   ]
 ]
