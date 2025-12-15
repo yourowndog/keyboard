@@ -156,7 +156,10 @@ class NgramSuggestionEngine(
 
     /**
      * Score a single word given context. Unified scoring for tap and swipe.
-     * This is the method that can be swapped for a neural LM in the future.
+     * 
+     * Scoring Strategy:
+     * 1. Try SmolLM neural scoring (if server available)
+     * 2. Fall back to n-gram scoring (frequency + bigram)
      *
      * @param word The candidate word to score
      * @param prevWord Previous word for bigram context
@@ -166,16 +169,20 @@ class NgramSuggestionEngine(
     override fun scoreWord(word: String, prevWord: String?, editDistance: Double): Double {
         val wordLower = word.lowercase()
         
-        // Base score: log frequency
+        // Try neural scoring first (SmolLM)
+        val context = if (prevWord != null) "$prevWord " else ""
+        val neuralScore = SmolLMClient.scoreWord(context, word)
+        
+        if (neuralScore != null) {
+            // Neural score is log probability, scale it to match our scoring range
+            // Add edit distance penalty on top
+            return (neuralScore * 10.0) - (editDistance * weights.touchPenalty)
+        }
+        
+        // Fallback: n-gram scoring (frequency + bigram)
         val baseScore = (unigramLogFreq[wordLower] ?: 0.0) * weights.base
-        
-        // Bigram bonus: context awareness
         val bigramBonus = bigramBonus(prevWord, word) * weights.bigram
-        
-        // User boost
         val userBonus = (userBoosts[wordLower] ?: 0.0) * weights.user
-        
-        // Edit distance penalty
         val distPenalty = editDistance * weights.touchPenalty
         
         return baseScore + bigramBonus + userBonus - distPenalty

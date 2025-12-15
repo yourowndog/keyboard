@@ -98,3 +98,13 @@
     * BigramTable still used (access now goes through `NgramSuggestionEngine.scoreWord()` → `bigramBonus()`).
     * **Architecture:** Creates seam for future neural LM drop-in replacement. – Gemini
 
+### 2025-12-14
+* **Task:** Integrated SmolLM 135M for neural word scoring.
+* **Files:** `SmolLMClient.kt` (NEW), `GemmaClient.kt`, `SuggestionEngine.kt`
+* **Details:**
+    * Created `SmolLMClient.kt` on port 8080 for fast word scoring (autocorrect/swipe).
+    * Moved `GemmaClient.kt` to port 8081 for text generation (AI rewrite/reply).
+    * `NgramSuggestionEngine.scoreWord()` now tries SmolLM first, falls back to n-gram if server unavailable.
+    * **Dual-model architecture:** SmolLM (always-on scoring) + Gemma (on-demand generation). – Gemini
+
+

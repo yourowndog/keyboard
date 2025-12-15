@@ -10,7 +10,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.util.concurrent.TimeUnit
 
 object GemmaClient {
-    private const val SERVER_URL = "http://127.0.0.1:8080/completion"
+    private const val SERVER_URL = "http://127.0.0.1:8081/completion"
     private val JSON_MEDIA_TYPE = "application/json; charset=utf-8".toMediaType()
     private val client = OkHttpClient.Builder()
         .connectTimeout(60, TimeUnit.SECONDS)
