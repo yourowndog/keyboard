@@ -67,7 +67,7 @@ object GemmaClient {
                     "Original Text:\n${config.originalInput}\n\nTask: Rewrite/Fix this in my style."
                 }
                 PromptConfig.Mode.CONTINUE -> {
-                    "Current Text:\n${config.originalInput}\n\nTask: Complete this thought in my style."
+                    "User is typing:\\n${config.originalInput}\\n\\nComplete this sentence. Output ONLY the remaining words to finish the thought, not the whole sentence. Do not repeat what the user already typed."
                 }
             }
 
