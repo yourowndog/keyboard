@@ -25,7 +25,8 @@
         },
         {
             "$": "text_key",
-            "code": -202
+            "code": -201,
+            "label": "ABC"
         },
         {
             "$": "text_key",

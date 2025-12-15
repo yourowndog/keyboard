@@ -105,6 +105,12 @@
     * Created `SmolLMClient.kt` on port 8080 for fast word scoring (autocorrect/swipe).
     * Moved `GemmaClient.kt` to port 8081 for text generation (AI rewrite/reply).
     * `NgramSuggestionEngine.scoreWord()` now tries SmolLM first, falls back to n-gram if server unavailable.
-    * **Dual-model architecture:** SmolLM (always-on scoring) + Gemma (on-demand generation). – Gemini
 
 
+### 2025-12-15
+* **Task:** QWERTY-WIDE layout reorganization and ABC key fix.
+* **Files:** `qwerty_wide.json`, `qwerty_wide_mod.json`, `qwerty_wide_swipe_mod.json`
+* **Details:**
+    * Fixed ABC key bug: Changed code -202 (VIEW_SYMBOLS) to -201 (VIEW_CHARACTERS) so MOD→ABC returns to main layout.
+    * Reorganized MOD row: Replaced SelectAll with Ψ (AI key, -307), replaced Copy with Slash (/).
+    * Removed slash from main Z row (now only in MOD layer). – Gemini

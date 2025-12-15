@@ -12,8 +12,8 @@
       "type": "modifier"
     },
     {
-      "code": -202,
-      "label": "⚛",
+      "code": -201,
+      "label": "ABC",
       "type": "system_gui"
     },
     {
@@ -28,11 +28,13 @@
     },
     {
       "$": "text_key",
-      "code": -35
+      "code": -307,
+      "label": "Ψ"
     },
     {
       "$": "text_key",
-      "code": -31
+      "code": 47,
+      "label": "/"
     },
     {
       "$": "text_key",
