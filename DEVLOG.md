@@ -119,3 +119,12 @@
 * **Task:** Dictionary cleanup - strict 2-3 letter whitelists
 * **Files:** `utils/create_unified_dict.py`, `app/src/main/assets/ime/dict/unified_dictionary.tsv`
 * **Impact:** Nuked ~1,590 garbage entries (acronyms like RKO, RFK, BBC, km, dB). 2-letter words: 204→34. 3-letter words: 1719→299. All remaining short words are real conversational words.
+
+### 2025-12-15
+* **Task:** Developer Harvest System + UX Fixes
+* **Files:** `HarvestManager.kt` (NEW), `EditorInstance.kt`, `FlorisImeService.kt`, `usage_harvest.md`
+* **Details:**
+    * **HarvestManager:** New singleton that writes usage events to `/sdcard/Documents/usage_harvest.md`. Logs ACCEPTED/REJECTED autocorrects, NEW_WORDS, INSISTED, and PICKED events with timestamps and context.
+    * **Punctuation Eats Space:** Fixed iOS/Gboard-style behavior where typing `.` after `word ` now produces `word.` instead of `word .` (checks phantomSpace + punctuation).
+    * **getPreviousWord():** Added helper to EditorInstance for context logging.
+    * **Workflow:** Use keyboard → `cp /sdcard/Documents/usage_harvest.md ~/vault/projects/keyboard/` → review with agents to update dictionary/ignore lists. – Gemini

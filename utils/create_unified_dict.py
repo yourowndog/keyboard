@@ -278,7 +278,78 @@ def main():
         "nope": 1200000,
         "yep": 1500000,
         "yeah": 2000000,
+        
+        # ====================================================================
+        # CONTRACTIONS - All common contractions should be high frequency
+        # ====================================================================
+        # 'm (am)
         "I'm": 3000000,
+        # 'll (will)
+        "I'll": 1500000,
+        "you'll": 800000,
+        "we'll": 800000,
+        "he'll": 800000,
+        "she'll": 800000,
+        "they'll": 800000,
+        "it'll": 800000,
+        "that'll": 600000,
+        "what'll": 500000,
+        "who'll": 500000,
+        "there'll": 500000,
+        "where'll": 400000,
+        # 've (have)
+        "I've": 1200000,
+        "you've": 800000,
+        "we've": 800000,
+        "they've": 800000,
+        "could've": 600000,
+        "would've": 600000,
+        "should've": 600000,
+        "might've": 500000,
+        "who've": 400000,
+        "how've": 400000,
+        # 'd (would/had) - CRITICAL, these were very low!
+        "I'd": 1500000,  # WAS MISSING!
+        "you'd": 800000,
+        "he'd": 800000,
+        "she'd": 800000,
+        "we'd": 800000,
+        "they'd": 800000,
+        "it'd": 600000,  # was only 419!
+        "that'd": 600000,
+        "who'd": 500000,
+        "how'd": 500000,
+        "what'd": 500000,
+        # 're (are)
+        "you're": 1200000,
+        "we're": 800000,
+        "they're": 800000,
+        "how're": 400000,
+        # 's (is/has) - handled naturally, usually high already
+        # n't (not)
+        "don't": 2500000,
+        "can't": 1500000,
+        "won't": 1200000,
+        "didn't": 1200000,
+        "doesn't": 800000,
+        "wouldn't": 800000,
+        "couldn't": 800000,
+        "shouldn't": 600000,
+        "isn't": 600000,
+        "wasn't": 600000,
+        "weren't": 500000,
+        "aren't": 500000,
+        "hasn't": 500000,
+        "haven't": 500000,
+        "hadn't": 500000,
+        "ain't": 600000,
+        "needn't": 300000,
+        "shan't": 200000,
+        "mustn't": 200000,
+        # Casual
+        "y'all": 600000,
+        "ma'am": 400000,
+        "o'clock": 500000,
     }
     
     injected_count = 0

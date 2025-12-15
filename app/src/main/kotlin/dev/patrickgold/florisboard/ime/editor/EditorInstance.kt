@@ -44,6 +44,7 @@ import dev.patrickgold.florisboard.subtypeManager
 import java.util.concurrent.atomic.AtomicInteger
 import kotlinx.coroutines.runBlocking
 import org.florisboard.lib.android.showShortToastSync
+import dev.patrickgold.florisboard.ime.nlp.HarvestManager
 
 class EditorInstance(context: Context) : AbstractEditorInstance(context) {
     companion object {
@@ -200,6 +201,15 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         val isInsertAutoSpaceBeforeChar = shouldInsertAutoSpaceBefore(char)
         val isInsertAutoSpaceAfterChar = shouldInsertAutoSpaceAfter(char)
         val isDeletePreviousSpace = isInsertAutoSpaceAfterChar && autoSpace.isActive
+        
+        // iOS/Gboard behavior: if phantomSpace is active and we're typing punctuation,
+        // delete the trailing space that was auto-inserted after the last word.
+        // This makes "word " + "." = "word." instead of "word ."
+        val punctuationRule = nlpManager.getActivePunctuationRule()
+        val isPunctuation = char.isNotEmpty() && punctuationRule.symbolsPrecedingAutoSpace.contains(char.first())
+        val shouldEatTrailingSpace = phantomSpace.isActive && isPunctuation && 
+            activeContent.getTextBeforeCursor(1).let { it.isNotEmpty() && it.last() == ' ' }
+        
         if (isInsertAutoSpaceAfterChar) {
             autoSpace.setActive()
         } else {
@@ -209,7 +219,7 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         phantomSpace.setInactive()
         return super.commitChar(
             char = char,
-            deletePreviousSpace = isDeletePreviousSpace,
+            deletePreviousSpace = isDeletePreviousSpace || shouldEatTrailingSpace,
             insertSpaceBeforeChar = isInsertAutoSpaceBeforeChar || isPhantomSpaceActive,
             insertSpaceAfterChar = isInsertAutoSpaceAfterChar,
         )
@@ -259,11 +269,14 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         
         return if (content.composing.isValid) {
             val original = content.composingText
+            val prevWord = getPreviousWord()
             phantomSpace.setActive(showComposingRegion = false, candidate = candidate)
             super.finalizeComposingText(textWithSpace).also {
                 if (original.isNotEmpty() && text != original) {
                     // Track the word WITHOUT the space for the undo state, so our "trailing match" logic handles the space.
                     autoCorrectUndoState = AbstractEditorInstance.AutoCorrectUndoState(text, original)
+                    // Log accepted autocorrect for harvest
+                    HarvestManager.logAccepted(original, text, prevWord)
                 }
             }
         } else {
@@ -609,8 +622,25 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         dev.patrickgold.florisboard.ime.nlp.SymSpellManager.markNextAsUserRejected()
         // Learn the ignore pair so it persists
         dev.patrickgold.florisboard.ime.dictionary.DictionaryManager.default().learnUserIgnore(state.originalText, state.correctedText)
+        // Log rejected autocorrect for harvest
+        HarvestManager.logRejected(state.originalText, state.correctedText, getPreviousWord())
         autoCorrectUndoState = null
         return true
+    }
+
+    /**
+     * Get the previous word from the text before cursor for context in harvest logging.
+     */
+    private fun getPreviousWord(): String? {
+        val textBefore = activeContent.textBeforeSelection.toString().trimEnd()
+        if (textBefore.isEmpty()) return null
+        val lastSpaceIndex = textBefore.lastIndexOf(' ')
+        val lastWord = if (lastSpaceIndex >= 0) {
+            textBefore.substring(lastSpaceIndex + 1)
+        } else {
+            textBefore
+        }
+        return lastWord.takeIf { it.isNotEmpty() && it.all { c -> c.isLetter() } }
     }
 
     private fun PhantomSpaceState.determine(text: String, forceActive: Boolean = false): Boolean {

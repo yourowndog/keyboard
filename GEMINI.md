@@ -123,6 +123,21 @@
 - **Status:** "Backspace Revert" handles trailing spaces; undo state persists across space commits.
 - **Pending:** Fine-tuning spatial weights?
 
+## Developer Harvest System
+- **Purpose:** Captures real usage data during dev iteration (survives reinstalls via file export).
+- **File:** `HarvestManager.kt` writes to `/sdcard/Documents/usage_harvest.md`
+- **Events Logged:**
+  - `ACCEPTED` – autocorrect stood (user continued)
+  - `REJECTED` – autocorrect reverted (user backspaced)
+  - `NEW_WORD` – typed word not in dictionary
+  - `INSISTED` – user picked their typed word over suggestions
+  - `PICKED` – user manually picked a different suggestion
+- **Workflow:**
+  1. Use keyboard normally
+  2. `cp /sdcard/Documents/usage_harvest.md ~/vault/projects/keyboard/`
+  3. Review with agents to update dictionary/ignore lists
+- **UX Fix:** Punctuation now eats trailing space (iOS/Gboard style). Type `word ` then `.` → `word.`
+
 ## Voice/Whisper Snapshot
 - **Status:** Logic is PERFECT. Online and working.
 - **Trigger:** `VOICE_INPUT` key code -233; handled in `KeyboardManager.handleKeyCode`.
