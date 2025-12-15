@@ -25,6 +25,76 @@ TARGET_WORDS = 65000
 MAX_FREQ = 10000000  # Output scale max
 MIN_FREQ = 100       # Output scale min
 
+# ============================================================================
+# STRICT 2-LETTER WHITELIST - Only real conversational words, no acronyms
+# ============================================================================
+TWO_LETTER_WHITELIST = {
+    # Core function words
+    "to", "of", "in", "is", "as", "on", "by", "at", "or", "an",
+    "be", "we", "he", "it", "so", "no", "do", "go", "my", "me",
+    "up", "if", "us", "am",
+    # Common casual
+    "ok", "hi", "yo", "ya", "ew", "uh", "oh", "ah", "eh",
+    # Pronouns / articles
+    "id",  # as in "I'd" variant or Freudian id
+}
+
+# ============================================================================
+# STRICT 3-LETTER WHITELIST - Common conversational words only
+# No acronyms (BBC, RFK), no obscure proper nouns, no scientific units
+# ============================================================================
+THREE_LETTER_WHITELIST = {
+    # Core function words / pronouns
+    "the", "and", "for", "are", "but", "not", "you", "all", "can",
+    "had", "her", "was", "one", "our", "out", "has", "his", "how",
+    "its", "let", "may", "who", "boy", "did", "get", "him", "got",
+    "now", "old", "see", "two", "way", "new", "any", "day", "too",
+    "use", "she", "own", "say", "why",
+    # Common verbs
+    "add", "ask", "ate", "buy", "cut", "die", "eat", "end", "fly",
+    "hit", "lay", "led", "lie", "met", "pay", "put", "ran", "run",
+    "sat", "saw", "set", "sit", "sit", "top", "try", "win", "won",
+    # Common nouns
+    "age", "air", "arm", "art", "bag", "bar", "bat", "bed", "bit",
+    "box", "bus", "car", "cat", "cup", "dad", "dog", "dot", "ear",
+    "egg", "end", "eye", "fan", "fat", "few", "fun", "god", "gun",
+    "guy", "hat", "ice", "ill", "ink", "job", "joy", "key", "kid",
+    "law", "leg", "lip", "lot", "low", "man", "map", "men", "mix",
+    "mom", "mud", "net", "oil", "pan", "pay", "pen", "pet", "pie",
+    "pig", "pin", "pop", "pot", "pub", "red", "rib", "rod", "row",
+    "rug", "sad", "sea", "sex", "sin", "sir", "six", "sky", "son",
+    "sum", "sun", "tan", "tap", "tax", "tea", "ten", "tie", "tin",
+    "tip", "toe", "top", "toy", "van", "war", "web", "wet", "wig",
+    "win", "wit", "zoo",
+    # Common adjectives
+    "bad", "big", "dry", "due", "far", "fit", "gay", "hot", "mad",
+    "odd", "raw", "shy",
+    # Common adverbs / prepositions
+    "ago", "yet", "off", "per", "via",
+    # Casual / internet
+    "lol", "omg", "wtf", "brb", "wow", "yes", "yep", "nah", "nay",
+    "hey", "bye", "bro", "sis", "sup", "yay", "aww", "hmm", "umm",
+    "duh", "huh", "meh", "ugh", "ooh", "oops",
+    # Contractions parts (useful for suggestions)
+    "ain", "aint",
+    # Common names that people actually type
+    "sam", "dan", "tom", "joe", "ben", "bob", "ted", "tim", "jim",
+    "amy", "ann", "eve", "kim", "sue", "jen", "max", "ray", "lee",
+    # Body / nature
+    "gut", "hip", "paw", "rib", "bay", "fog", "mud", "oak", "oak",
+    # Food / drink
+    "ale", "bun", "ham", "jam", "nut", "oat", "pie", "rye", "soy",
+    # Miscellaneous common
+    "act", "aid", "aim", "arc", "ban", "bet", "bid", "bow", "cab",
+    "cap", "cop", "cow", "cue", "dip", "dug", "era", "fee", "gap",
+    "gem", "gym", "hen", "hug", "jam", "jar", "jet", "jog", "kit",
+    "lab", "lap", "log", "mat", "mob", "nap", "nod", "nun", "nut",
+    "oak", "owe", "owl", "pad", "pat", "pea", "peg", "pit", "pod",
+    "pup", "rag", "ram", "rat", "rip", "rot", "rub", "sack", "sip",
+    "sob", "spa", "spy", "sue", "tag", "tap", "tub", "tug", "vet",
+    "vow", "wag", "wed", "win", "wok", "yawn", "zip",
+}
+
 # Words to always include (even if filtered)
 ALWAYS_INCLUDE = {
     # Days/months
@@ -95,6 +165,22 @@ def should_include(word: str, freq: int) -> bool:
     # Filter out very long words (usually garbage)
     if len(word) > 20:
         return False
+    
+    # ========================================================================
+    # STRICT 2-LETTER FILTER - Only whitelisted words allowed
+    # No acronyms (UK, TV, km), no obscure abbreviations
+    # ========================================================================
+    if len(lower) == 2:
+        if lower not in TWO_LETTER_WHITELIST:
+            return False
+    
+    # ========================================================================
+    # STRICT 3-LETTER FILTER - Only whitelisted words allowed  
+    # No acronyms (BBC, RFK, RKO), no scientific units, no obscure proper nouns
+    # ========================================================================
+    if len(lower) == 3:
+        if lower not in THREE_LETTER_WHITELIST:
+            return False
     
     # Keep common words (high frequency = common)
     return True

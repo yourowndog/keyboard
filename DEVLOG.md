@@ -114,3 +114,8 @@
     * Fixed ABC key bug: Changed code -202 (VIEW_SYMBOLS) to -201 (VIEW_CHARACTERS) so MOD→ABC returns to main layout.
     * Reorganized MOD row: Replaced SelectAll with Ψ (AI key, -307), replaced Copy with Slash (/).
     * Removed slash from main Z row (now only in MOD layer). – Gemini
+
+### 2025-12-15
+* **Task:** Dictionary cleanup - strict 2-3 letter whitelists
+* **Files:** `utils/create_unified_dict.py`, `app/src/main/assets/ime/dict/unified_dictionary.tsv`
+* **Impact:** Nuked ~1,590 garbage entries (acronyms like RKO, RFK, BBC, km, dB). 2-letter words: 204→34. 3-letter words: 1719→299. All remaining short words are real conversational words.
