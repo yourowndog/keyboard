@@ -17,6 +17,16 @@ interface SuggestionEngine {
     fun rank(candidates: List<Pair<String, Double>>, originalInput: String, prevWord: String?): List<SuggestionCandidate> {
         return emptyList() // Default implementation for engines that don't support ranking
     }
+    /**
+     * Score a single word given context. Used by both tap and swipe for unified ranking.
+     * @param word The candidate word to score
+     * @param prevWord Previous word for bigram context (nullable)
+     * @param editDistance Edit distance penalty (0.0 for swipe, actual distance for tap)
+     * @return Score where higher is better
+     */
+    fun scoreWord(word: String, prevWord: String?, editDistance: Double = 0.0): Double {
+        return 0.0 // Default implementation
+    }
     fun predictNext(prevWord: String?, max: Int = 3): List<String>
     fun notifySuggestionAccepted(candidate: SuggestionCandidate) { }
     fun notifySuggestionReverted(candidate: SuggestionCandidate) { }
@@ -142,6 +152,33 @@ class NgramSuggestionEngine(
 
     override fun notifySuggestionReverted(candidate: SuggestionCandidate) {
         // No-op: stateless engine; nothing to revert.
+    }
+
+    /**
+     * Score a single word given context. Unified scoring for tap and swipe.
+     * This is the method that can be swapped for a neural LM in the future.
+     *
+     * @param word The candidate word to score
+     * @param prevWord Previous word for bigram context
+     * @param editDistance Edit distance penalty (0.0 for swipe which has its own geometry penalty)
+     * @return Score where higher is better
+     */
+    override fun scoreWord(word: String, prevWord: String?, editDistance: Double): Double {
+        val wordLower = word.lowercase()
+        
+        // Base score: log frequency
+        val baseScore = (unigramLogFreq[wordLower] ?: 0.0) * weights.base
+        
+        // Bigram bonus: context awareness
+        val bigramBonus = bigramBonus(prevWord, word) * weights.bigram
+        
+        // User boost
+        val userBonus = (userBoosts[wordLower] ?: 0.0) * weights.user
+        
+        // Edit distance penalty
+        val distPenalty = editDistance * weights.touchPenalty
+        
+        return baseScore + bigramBonus + userBonus - distPenalty
     }
 
     /**

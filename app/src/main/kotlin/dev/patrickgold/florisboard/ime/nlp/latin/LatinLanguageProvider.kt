@@ -230,6 +230,11 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         return engine.unigramLogFreq[word.lowercase()] ?: 0.0
     }
 
+    override suspend fun scoreWord(subtype: Subtype, word: String, prevWord: String?, editDistance: Double): Double {
+        val engine = ngramEngine ?: return 0.0
+        return engine.scoreWord(word, prevWord, editDistance)
+    }
+
     override suspend fun destroy() {
         // Here we have the chance to de-allocate memory and finish our work. However this might never be called if
         // the app process is killed (which will most likely always be the case).

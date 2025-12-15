@@ -88,3 +88,13 @@
     * Added `/` to penultimate row.
     * Moved ESC to Smartbar (added icon support in `ComputingEvaluator`).
     * Removed Undo/Redo/Arrows/Incognito/Autocorrect from Smartbar defaults.
+
+### 2025-12-14
+* **Task:** Unified candidate scoring for tap and swipe input modes.
+* **Files:** `SuggestionEngine.kt`, `NlpProviders.kt`, `LatinLanguageProvider.kt`, `NlpManager.kt`, `StatisticalGlideTypingClassifier.kt`
+* **Details:**
+    * Added `scoreWord()` method throughout provider chain: `NlpManager` → `SuggestionProvider` → `LatinLanguageProvider` → `NgramSuggestionEngine`.
+    * Refactored swipe classifier to use unified scorer instead of inline frequency/bigram lookups.
+    * BigramTable still used (access now goes through `NgramSuggestionEngine.scoreWord()` → `bigramBonus()`).
+    * **Architecture:** Creates seam for future neural LM drop-in replacement. – Gemini
+

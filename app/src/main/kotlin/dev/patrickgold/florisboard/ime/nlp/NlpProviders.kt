@@ -198,6 +198,21 @@ interface SuggestionProvider : NlpProvider {
     suspend fun getFrequencyForWord(subtype: Subtype, word: String): Double
 
     /**
+     * Score a word given context. Used for unified ranking across tap autocorrect and swipe.
+     * This is the method that can be swapped for a neural LM in the future.
+     *
+     * @param subtype Information about the current subtype.
+     * @param word The candidate word to score.
+     * @param prevWord Previous word for bigram context (nullable).
+     * @param editDistance Edit distance penalty (0.0 for swipe which has its own geometry penalty).
+     *
+     * @return Score where higher is better.
+     */
+    suspend fun scoreWord(subtype: Subtype, word: String, prevWord: String?, editDistance: Double = 0.0): Double {
+        return 0.0 // Default implementation
+    }
+
+    /**
      * When initializing composing text given a new context, the suggestion engine determines the composing range.
      * The default behavior gets the last word according to the current subtype's primaryLocale.
      * @param subtype The current subtype used to determine word or character boundary.

@@ -25,7 +25,6 @@ import dev.patrickgold.florisboard.ime.keyboard.KeyData
 import dev.patrickgold.florisboard.ime.text.key.KeyCode
 import dev.patrickgold.florisboard.ime.text.keyboard.TextKey
 import dev.patrickgold.florisboard.nlpManager
-import dev.patrickgold.florisboard.ime.nlp.shared.BigramTable
 import java.text.Normalizer
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -293,27 +292,23 @@ class StatisticalGlideTypingClassifier(context: Context) : GlideTypingClassifier
                 val shapeProbability = calcGaussianProbability(shapeDistance, 0.0f, SHAPE_STD)
                 val locationProbability = calcGaussianProbability(locationDistance, 0.0f, LOCATION_STD * radius)
                 
-                // Get log frequency from ngram engine (already in log-space)
-                val logFreq = nlpManager.getFrequencyForWord(currentSubtype!!, word).toFloat()
-                
                 // Length penalty: prefer words closer to gesture complexity
                 val gestureLength = gesture.getLength()
                 val estimatedWordLength = (gestureLength / (radius * 0.8f)).toInt().coerceIn(2, 15)
                 val lengthDiff = kotlin.math.abs(word.length - estimatedWordLength)
                 val lengthPenalty = lengthDiff * 0.15f
-                
-                // Additive score: higher is better
                 // Log probabilities to avoid tiny numbers; add frequency boost; subtract penalty
                 val shapeScore = kotlin.math.ln(shapeProbability.coerceAtLeast(1e-10f))
                 val locationScore = kotlin.math.ln(locationProbability.coerceAtLeast(1e-10f))
                 
                 // Get previous word for bigram context
                 val prevWord = nlpManager.getPreviousWord(currentSubtype!!)?.lowercase() ?: ""
-                val bigramBonus = if (prevWord.isNotEmpty()) {
-                    BigramTable.get()?.bonus(prevWord, word.lowercase())?.toFloat() ?: 0f
-                } else 0f
                 
-                val confidence = shapeScore + locationScore + (logFreq * 1.5f) + (bigramBonus * 0.5f) - lengthPenalty
+                // Use unified scoring from NlpManager (frequency + bigram + user boost)
+                // This is the seam where a neural LM can be plugged in later
+                val nlpScore = nlpManager.scoreWord(currentSubtype!!, word, prevWord.ifEmpty { null })
+                
+                val confidence = shapeScore + locationScore + nlpScore.toFloat() - lengthPenalty
 
                 var candidateDescendingSortedIndex = 0
                 var duplicateIndex = Int.MAX_VALUE

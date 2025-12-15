@@ -294,6 +294,14 @@ class NlpManager(context: Context) {
     }
 
     /**
+     * Score a word given context. Unified scoring for tap autocorrect and swipe.
+     * Delegates to the active suggestion provider's scoring logic.
+     */
+    fun scoreWord(subtype: Subtype, word: String, prevWord: String?, editDistance: Double = 0.0): Double {
+        return runBlocking { getSuggestionProvider(subtype).scoreWord(subtype, word, prevWord, editDistance) }
+    }
+
+    /**
      * Gets the previous word from the editor context for bigram scoring.
      * Returns null if no previous word exists (cursor at start or after non-word characters).
      */
