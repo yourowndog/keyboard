@@ -23,6 +23,10 @@ import dev.patrickgold.florisboard.ime.nlp.shared.CasingUtils
 object SymSpellManager {
     private var symSpell: SymSpell? = null
     @Volatile private var isReady = false
+    
+    // Prefix index for fast autocomplete - maps prefix (1-3 chars) to words starting with it
+    private var prefixIndex: Map<String, List<Pair<String, Long>>> = emptyMap()
+    private var appContextRef: Context? = null
 
     // Config
     private const val MAX_EDIT_DISTANCE = 2
@@ -122,12 +126,16 @@ object SymSpellManager {
                 // Inject must-win personal words until we wire user dictionary
                 USER_OVERRIDES.forEach { (word, freq) -> instance.createDictionaryEntry(word, freq) }
 
+                // 4. Build prefix index for autocomplete
+                appContextRef = context
+                buildPrefixIndex(context)
+
                 val loadedWords = holder.wordCount
                 symSpell = instance
                 isReady = loadedWords > 0
                 android.util.Log.i(
                     "SymSpellManager",
-                    "Reflexes Ready: Loaded $loadedWords words from $DICT_ASSET_PATH with bigrams from $BIGRAM_ASSET_PATH"
+                    "Reflexes Ready: Loaded $loadedWords words from $DICT_ASSET_PATH with bigrams from $BIGRAM_ASSET_PATH, prefix index: ${prefixIndex.size} prefixes"
                 )
                 if (!isReady) {
                     android.util.Log.w("SymSpellManager", "Reflexes dictionary is empty; keeping autocorrect disabled")
@@ -369,6 +377,11 @@ object SymSpellManager {
                 val lowerTerm = term.lowercase()
                 val candidateNorm = lowerTerm.replace("'", "")
                 
+                // CULLING: Filter out 2-letter words not in whitelist
+                if (lowerTerm.length == 2 && !TWO_LETTER_WHITELIST.contains(lowerTerm)) {
+                    return@sortedBy Double.MAX_VALUE
+                }
+                
                 if (ignoreManager.isUserIgnored(input, term)) Double.MAX_VALUE 
                 else if (BLACKLIST.contains(lowerTerm)) Double.MAX_VALUE
                 else {
@@ -428,6 +441,8 @@ object SymSpellManager {
     /**
      * Returns raw candidates from SymSpell without applying the internal hardcoded ranking/fixing logic.
      * This allows external engines (like NgramSuggestionEngine) to apply their own scoring.
+     * 
+     * Note: 2-letter words are filtered to whitelist only.
      */
     fun findCandidates(input: String): List<RawCandidate> {
         if (!isReady) return emptyList()
@@ -435,7 +450,14 @@ object SymSpellManager {
         
         // Use Verbosity.All to get all candidates within edit distance
         val suggestions = instance.lookup(input.lowercase(), Verbosity.All, MAX_EDIT_DISTANCE.toDouble())
-        return suggestions.map { RawCandidate(it.term, it.distance) }
+        
+        // Filter out 2-letter garbage words
+        return suggestions
+            .filter { candidate ->
+                val term = candidate.term.lowercase()
+                term.length != 2 || TWO_LETTER_WHITELIST.contains(term)
+            }
+            .map { RawCandidate(it.term, it.distance) }
     }
 
     /**
@@ -486,5 +508,80 @@ object SymSpellManager {
             android.util.Log.w("SymSpellManager", "Failed to extract words for swipe", e)
             emptyList()
         }
+    }
+    
+    /**
+     * Build prefix index from dictionary for fast autocomplete lookups.
+     * Maps 1-3 character prefixes to words and their frequencies.
+     */
+    private fun buildPrefixIndex(context: Context) {
+        try {
+            val indexMap = mutableMapOf<String, MutableList<Pair<String, Long>>>()
+            
+            BufferedReader(InputStreamReader(context.assets.open(DICT_ASSET_PATH))).useLines { lines ->
+                lines.forEach { line ->
+                    val parts = line.split('\t')
+                    if (parts.size >= 2) {
+                        val word = parts[0].lowercase()
+                        val freq = parts[1].toLongOrNull() ?: 0L
+                        
+                        // Skip very short or blank words
+                        if (word.length < 2 || word.isBlank()) return@forEach
+                        
+                        // Filter 2-letter words to whitelist only
+                        if (word.length == 2 && !TWO_LETTER_WHITELIST.contains(word)) return@forEach
+                        
+                        // Index by 1, 2, and 3 character prefixes
+                        for (prefixLen in 1..minOf(3, word.length)) {
+                            val prefix = word.take(prefixLen)
+                            indexMap.getOrPut(prefix) { mutableListOf() }.add(word to freq)
+                        }
+                    }
+                }
+            }
+            
+            // Sort each prefix's words by frequency (descending) and limit to top 100
+            prefixIndex = indexMap.mapValues { (_, words) ->
+                words.sortedByDescending { it.second }.take(100)
+            }
+            
+            android.util.Log.i("SymSpellManager", "Built prefix index: ${prefixIndex.size} prefixes")
+        } catch (e: Exception) {
+            android.util.Log.e("SymSpellManager", "Failed to build prefix index", e)
+            prefixIndex = emptyMap()
+        }
+    }
+    
+    /**
+     * Find words starting with given prefix, ranked by bigram context.
+     * This is how we get "going", "gonna", "getting" when typing "g" after "we are".
+     * 
+     * @param prefix What the user typed (e.g., "g")
+     * @param previousWord Previous word for bigram context (e.g., "are")
+     * @param limit Max candidates to return
+     * @return Words starting with prefix, ranked by frequency + bigram bonus
+     */
+    fun findPrefixCandidates(prefix: String, previousWord: String?, limit: Int = 10): List<RawCandidate> {
+        if (prefix.isBlank() || !isReady) return emptyList()
+        
+        val normalizedPrefix = prefix.lowercase()
+        val lookupKey = normalizedPrefix.take(3)  // Use at most 3 chars for lookup
+        
+        val candidates = prefixIndex[lookupKey] ?: return emptyList()
+        
+        // Filter to exact prefix match and score by bigram
+        val scored = candidates
+            .filter { (word, _) -> word.startsWith(normalizedPrefix) }
+            .map { (word, freq) ->
+                val bigram = bigramBonus(previousWord, word)
+                // Score: base frequency log + bigram boost (higher = better, but we negate for sorting)
+                val score = -(ln(freq.toDouble() + 1.0) + bigram.bonus * 2.0)
+                Triple(word, freq, score)
+            }
+            .sortedBy { it.third }
+            .take(limit)
+        
+        // Convert to RawCandidate with distance = 0 (perfect prefix match)
+        return scored.map { (word, _, score) -> RawCandidate(word, 0.0) }
     }
 }

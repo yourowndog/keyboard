@@ -22,6 +22,7 @@ import dev.patrickgold.florisboard.ime.core.Subtype
 import dev.patrickgold.florisboard.ime.editor.EditorContent
 import dev.patrickgold.florisboard.ime.nlp.SuggestionRequest
 import dev.patrickgold.florisboard.ime.nlp.SpellingProvider
+import dev.patrickgold.florisboard.ime.nlp.SmolLMClient
 import dev.patrickgold.florisboard.ime.nlp.SymSpellManager
 
 import dev.patrickgold.florisboard.ime.nlp.SpellingResult
@@ -154,14 +155,40 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
 
         // DELEGATE TO NEW ENGINE (Brain Transplant)
         // 1. Retrieve candidates from SymSpell (The Retriever)
-        val rawCandidates = dev.patrickgold.florisboard.ime.nlp.SymSpellManager.findCandidates(currentWordRaw)
+        //    - Prefix candidates: words starting with what user typed (autocomplete)
+        //    - Edit-distance candidates: typo corrections
+        val prefixCandidates = dev.patrickgold.florisboard.ime.nlp.SymSpellManager.findPrefixCandidates(
+            currentWordRaw, previousWord, limit = 10
+        )
+        val editCandidates = dev.patrickgold.florisboard.ime.nlp.SymSpellManager.findCandidates(currentWordRaw)
+        
+        // Merge: prefix candidates first (they're what user is typing toward), then edit corrections
+        // Deduplicate by term
+        val seenTerms = mutableSetOf<String>()
+        val rawCandidates = (prefixCandidates + editCandidates).filter { candidate ->
+            seenTerms.add(candidate.term.lowercase())
+        }
         
         // 2. Rank using NgramEngine (The Judge)
         val engine = ngramEngine
         if (engine != null) {
             // Map SymSpell items to (Term, Distance) pairs
             val mappedCandidates = rawCandidates.map { candidate -> candidate.term to candidate.distance }
-            val rankedSuggestions = engine.rank(mappedCandidates, currentWordRaw, previousWord)
+            val ngramRanked = engine.rank(mappedCandidates, currentWordRaw, previousWord)
+            
+            // DISABLED: SmolLM neural reranking causes multi-second lag due to blocking HTTP calls
+            // TODO: Implement async reranking - show n-gram results instantly, update after SmolLM responds
+            // val candidateTexts = ngramRanked.take(5).mapNotNull { 
+            //     (it as? WordSuggestionCandidate)?.text?.toString() 
+            // }
+            // val contextPrefix = "$textBeforeCurrentWord$currentWordRaw".takeLast(50).let {
+            //     if (it.endsWith(currentWordRaw)) it.dropLast(currentWordRaw.length) else it
+            // }
+            // val neuralRanked = SmolLMClient.rerank(contextPrefix, candidateTexts)
+            
+            // Use n-gram ranking directly (no neural)
+            val rankedSuggestions = ngramRanked
+            
             return rankedSuggestions.map { candidate ->
                 if (candidate is WordSuggestionCandidate) {
                     // Use SymSpellManager's casing logic which handles i→I, proper nouns, sentence start
