@@ -164,8 +164,8 @@ class TextKey(override val data: AbstractKeyData) : Key(data) {
                     KeyCode.VIEW_CHARACTERS,
                     KeyCode.VIEW_SYMBOLS2 -> 1.56f
                     KeyCode.SHIFT,
-                    KeyCode.DELETE,
                     KeyCode.ENTER -> 1.25f
+                    KeyCode.DELETE -> 1.15f
                     KeyCode.ARROW_LEFT,
                     KeyCode.ARROW_RIGHT,
                     KeyCode.ARROW_UP,

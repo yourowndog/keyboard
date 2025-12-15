@@ -529,7 +529,9 @@ class LayoutManager(context: Context) {
                 main = LTN(LayoutType.PHONE2, subtype.layoutMap.phone2)
             }
             KeyboardMode.SYMBOLS -> {
-                extensions.add(LTN(LayoutType.NUMERIC_ROW, subtype.layoutMap.numericRow))
+                if (prefs.keyboard.numberRow.get()) {
+                    extensions.add(LTN(LayoutType.NUMERIC_ROW, subtype.layoutMap.numericRow))
+                }
                 main = LTN(LayoutType.SYMBOLS, subtype.layoutMap.symbols)
                 modifier = LTN(LayoutType.SYMBOLS_MOD, extCoreLayout("default"))
             }
