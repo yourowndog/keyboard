@@ -5,6 +5,7 @@ import java.io.InputStream
 import java.io.InputStreamReader
 import kotlin.math.ln
 import dev.patrickgold.florisboard.ime.nlp.shared.BigramTable
+import dev.patrickgold.florisboard.ime.nlp.shared.CandidateScorer
 
 data class SuggestionRequest(
     val typed: String,
@@ -69,6 +70,7 @@ class NgramSuggestionEngine(
 
     /**
      * Rank spelling candidates by frequency, context, and spatial proximity.
+     * Uses unified CandidateScorer for consistent behavior with autocorrect.
      *
      * @param candidates List of (term, editDistance) pairs from SymSpellManager
      * @param originalInput What the user actually typed
@@ -80,43 +82,34 @@ class NgramSuggestionEngine(
         originalInput: String,
         prevWord: String?
     ): List<SuggestionCandidate> {
-        val typedNoApos = originalInput.replace("'", "").lowercase()
         val typedLower = originalInput.lowercase()
         val scoredCandidates = mutableListOf<WordSuggestionCandidate>()
 
         for ((word, dist) in candidates) {
-            val wordNoApos = word.replace("'", "")
             val wordLower = word.lowercase()
             
-            // Base Score: Log frequency
-            val baseScore = (unigramLogFreq[word] ?: 0.0) * weights.base
+            // Get frequency for this word
+            val frequency = unigramLogFreq[wordLower] ?: 0.0
             
-            // Bigram Bonus: Context from shared BigramTable
-            val bigramBonus = bigramBonus(prevWord, word) * weights.bigram
+            // Use unified scorer (returns penalty-based score: lower = better)
+            val penaltyScore = CandidateScorer.score(
+                typed = typedLower,
+                candidate = wordLower,
+                editDistance = dist,
+                prevWord = prevWord?.lowercase(),
+                isInUserDict = userBoosts.containsKey(wordLower),
+                frequency = frequency,
+            )
             
-            // Penalty: Use SymSpellManager's spatialCost which handles transpositions
-            // This ensures consistent scoring between autocorrect and suggestions
-            val spatialPenalty = SymSpellManager.spatialCost(typedLower, wordLower)
-            val distPenalty = (dist + spatialPenalty) * weights.touchPenalty
+            // Convert to confidence (higher = better) for UI display
+            val confidence = CandidateScorer.toConfidence(penaltyScore)
             
-            val userBonus = (userBoosts[word] ?: 0.0) * weights.user
+            // Apply user boosts on top
+            val totalConfidence = confidence + (userBoosts[wordLower] ?: 0.0) * weights.user
 
-            var total = baseScore + bigramBonus + userBonus - distPenalty
-
-            // Perfect match bonus: Boost exact matches that are valid words
-            // CRITICAL: Only apply if word is in dictionary OR is a known proper noun!
-            // This ensures "sam" (valid override) beats "same", but "teh" still corrects to "the".
-            if (typedNoApos == wordNoApos) {
-                if (unigramLogFreq.containsKey(word) || SymSpellManager.PROPER_OVERRIDES.contains(word)) {
-                    total += 25.0
-                }
-            }
-
-            // Note: Casing is NOT applied here - it's delegated to SymSpellManager.applyPredictedCasing()
-            // which is called by LatinLanguageProvider after ranking.
             val candidate = WordSuggestionCandidate(
                 text = word,
-                confidence = total,
+                confidence = totalConfidence,
                 isEligibleForAutoCommit = false,
                 sourceProvider = null,
             )
@@ -156,34 +149,29 @@ class NgramSuggestionEngine(
 
     /**
      * Score a single word given context. Unified scoring for tap and swipe.
-     * 
-     * Scoring Strategy:
-     * Currently using n-gram scoring (frequency + bigram).
-     * SmolLM integration is disabled until we have a model trained for word scoring.
+     * Uses CandidateScorer for consistency with autocorrect.
      *
      * @param word The candidate word to score
      * @param prevWord Previous word for bigram context
      * @param editDistance Edit distance penalty (0.0 for swipe which has its own geometry penalty)
-     * @return Score where higher is better
+     * @return Score where higher is better (confidence-based)
      */
     override fun scoreWord(word: String, prevWord: String?, editDistance: Double): Double {
         val wordLower = word.lowercase()
+        val frequency = unigramLogFreq[wordLower] ?: 0.0
         
-        // N-gram scoring: frequency + bigram context
-        val baseScore = (unigramLogFreq[wordLower] ?: 0.0) * weights.base
-        val bigramBonus = bigramBonus(prevWord, word) * weights.bigram
-        val userBonus = (userBoosts[wordLower] ?: 0.0) * weights.user
-        val distPenalty = editDistance * weights.touchPenalty
+        // Use unified scorer (returns penalty-based: lower = better)
+        val penaltyScore = CandidateScorer.score(
+            typed = wordLower, // For swipe, typed = candidate (no typos, just path matching)
+            candidate = wordLower,
+            editDistance = editDistance,
+            prevWord = prevWord?.lowercase(),
+            isInUserDict = userBoosts.containsKey(wordLower),
+            frequency = frequency,
+        )
         
-        return baseScore + bigramBonus + userBonus - distPenalty
-    }
-
-    /**
-     * Calculate bigram bonus for context-aware ranking.
-     * Uses shared [BigramTable] singleton for data.
-     */
-    private fun bigramBonus(prev: String?, cand: String): Double {
-        return BigramTable.get()?.bonus(prev, cand) ?: 0.0
+        // Convert to confidence (higher = better)
+        return CandidateScorer.toConfidence(penaltyScore)
     }
 
     companion object {

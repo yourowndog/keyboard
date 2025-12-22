@@ -19,6 +19,7 @@ import kotlin.math.max
 import dev.patrickgold.florisboard.ime.core.KeyboardLayout
 import dev.patrickgold.florisboard.ime.nlp.shared.BigramTable
 import dev.patrickgold.florisboard.ime.nlp.shared.CasingUtils
+import dev.patrickgold.florisboard.ime.nlp.shared.CandidateScorer
 
 object SymSpellManager {
     private var symSpell: SymSpell? = null
@@ -34,8 +35,6 @@ object SymSpellManager {
     private const val DICT_ASSET_PATH = "ime/dict/unified_dictionary.tsv"
     private const val SWIPE_DICT_PATH = "ime/dict/unified_dictionary.tsv"  // Same dict for everything
     private const val BIGRAM_ASSET_PATH = "ime/dict/final_mobile_bigrams.tsv"
-    private const val BIGRAM_WEIGHT = 0.5 // Increased to 0.5 for better context
-    private const val BIGRAM_NO_HIT_PENALTY = 0.2
     private val USER_OVERRIDES = listOf("kiry" to Double.MAX_VALUE)
     // Prefer common contractions before running SymSpell so "im" maps to "I'm" instead of "pm".
     private val CONTRACTION_SHORTCUTS = mapOf(
@@ -66,6 +65,8 @@ object SymSpellManager {
         "hell" to "he'll",
         "shell" to "she'll",
         "its" to "it's",
+        "ac" to "AC",      // air conditioning
+        "itd" to "it'd",   // sloppy it'd typing
     )
     val PROPER_OVERRIDES = setOf(
         "kiry", "kiry's",
@@ -98,7 +99,6 @@ object SymSpellManager {
     private val BLACKLIST = setOf("wont", "hows", "cant", "dont", "isnt", "arent", "didnt", "couldnt", "wouldnt", "shouldnt", "wasnt", "werent", "hasnt", "havent", "hadnt")
 
     // Bigram data now provided by shared BigramTable singleton
-    private data class BigramScore(val bonus: Double, val hasHit: Boolean)
 
     fun init(context: Context, scope: CoroutineScope) {
         scope.launch(Dispatchers.IO) {
@@ -150,61 +150,15 @@ object SymSpellManager {
         return BigramTable.get()?.predictNext(prev, max) ?: emptyList()
     }
 
-    private fun bigramBonus(prev: String?, cand: String?): BigramScore {
-        val table = BigramTable.get() ?: return BigramScore(0.0, false)
-        val c = cand ?: return BigramScore(0.0, false)
-        val bonus = table.bonus(prev, c)
-        val hasHit = table.hasHit(prev, c)
-        return BigramScore(bonus, hasHit)
-    }
-
     // Whitelist for 2-letter words. All others are culled to prevent "si", "da", "yo" etc.
     private val TWO_LETTER_WHITELIST = setOf(
         "am", "an", "as", "at", "be", "by", "do", "go", "ha", "he", "hi", "if", "in", "is", "it", 
         "me", "my", "no", "of", "oh", "ok", "on", "or", "ox", "so", "to", "up", "us", "we", "yo"
     )
 
-    // 0.0 = perfect neighbor match, 2.0 = far away
-    // Made public so NgramSuggestionEngine can use the same scoring
+    // Delegate to CandidateScorer for unified spatial cost calculation
     fun spatialCost(typed: String, candidate: String): Double {
-        var cost = 0.0
-        val len = kotlin.math.min(typed.length, candidate.length)
-        
-        var i = 0
-        while (i < len) {
-            val t = typed[i]
-            val c = candidate[i]
-            if (t == c) {
-                i++
-                continue
-            }
-            
-            // Check for transposition (adjacent swap like ie -> ei)
-            if (i + 1 < len && i + 1 < typed.length && i + 1 < candidate.length) {
-                val t1 = typed[i + 1]
-                val c1 = candidate[i + 1]
-                if (t == c1 && t1 == c) {
-                    // This is a transposition - penalize lightly
-                    cost += 0.3
-                    i += 2  // Skip both characters
-                    continue
-                }
-            }
-            
-            val neighbors = KEYBOARD_NEIGHBORS[t] ?: ""
-            if (neighbors.contains(c)) {
-                cost += 0.5 // Close miss
-            } else {
-                cost += 2.0 // Far miss
-            }
-            i++
-        }
-        
-        // Add penalty for length difference (insertions/deletions)
-        val diff = kotlin.math.abs(typed.length - candidate.length)
-        cost += diff * 0.5
-        
-        return cost
+        return CandidateScorer.spatialCost(typed, candidate)
     }
 
     fun markNextAsUserRejected() {
@@ -279,51 +233,35 @@ object SymSpellManager {
             candLower.contains('\'') && candLower.replace("'", "") == normalizedNoApos
         }
 
-        // Prefer candidates that only differ by a missing apostrophe (treat apostrophes as zero-cost).
+        // Score and rank candidates using unified CandidateScorer
         val scoredCandidates = suggestions.map { candidate ->
             val term = candidate.term
             val lowerTerm = term.lowercase()
-            val candidateNorm = lowerTerm.replace("'", "")
             
             // CULLING: Filter out 2-letter words not in whitelist
             if (lowerTerm.length == 2 && !TWO_LETTER_WHITELIST.contains(lowerTerm)) {
-                return@map Triple(candidate, Double.MAX_VALUE, "2-letter cull")
+                return@map Triple(candidate, CandidateScorer.CULLED_SCORE, "2-letter cull")
             }
             
-            if (dictManager.isUserIgnored(input, term)) return@map Triple(candidate, Double.MAX_VALUE, "ignored")
-            if (BLACKLIST.contains(lowerTerm)) return@map Triple(candidate, Double.MAX_VALUE, "blacklist")
+            // Filter by ignore list and blacklist
+            if (dictManager.isUserIgnored(input, term)) {
+                return@map Triple(candidate, CandidateScorer.CULLED_SCORE, "ignored")
+            }
+            if (BLACKLIST.contains(lowerTerm)) {
+                return@map Triple(candidate, CandidateScorer.CULLED_SCORE, "blacklist")
+            }
             
-            // Check if candidate is in user dictionary -> Boost it to infinity
+            // Use unified scorer for all other scoring
             val isUserWord = userWordsCache.any { it.equals(term, ignoreCase = true) }
-            val userBonus = if (isUserWord) -1000.0 else 0.0
-
-            var apostropheBonus = 0.0
-            if (term.contains('\'')) {
-                if (candidateNorm == normalizedNoApos) {
-                     apostropheBonus = -20.0 // Exact letter match (im -> I'm)
-                } else {
-                     // Allow typo + apostrophe (wint -> won't). 
-                     val spatial = spatialCost(normalizedNoApos, candidateNorm)
-                     if (spatial < 2.0) { // If keys are close
-                         apostropheBonus = -10.0
-                     }
-                }
-            }
-
-            val bigram = bigramBonus(prev, term.lowercase())
-            val bigramBoost = -BIGRAM_WEIGHT * bigram.bonus 
-            val noHitPenalty = if (prev != null && !bigram.hasHit) BIGRAM_NO_HIT_PENALTY else 0.0
+            val score = CandidateScorer.score(
+                typed = normalized,
+                candidate = lowerTerm,
+                editDistance = candidate.distance,
+                prevWord = prev,
+                isInUserDict = isUserWord,
+            )
             
-            // Spatial cost: cheaper if keys are close
-            val spatial = spatialCost(normalized, term.lowercase())
-            
-            // Exact matches (distance 0) must effectively win against everything except explicit user overrides
-            if (candidate.distance == 0.0 && spatial == 0.0) {
-                return@map Triple(candidate, -100.0 + userBonus, "exact")
-            }
-            
-            val score = candidate.distance + apostropheBonus + bigramBoost + noHitPenalty + spatial + userBonus
-            Triple(candidate, score, "d=${candidate.distance} s=$spatial b=$bigramBoost")
+            Triple(candidate, score, "score=${"%.2f".format(score)}")
         }.sortedBy { it.second }
         
         // Log top 3 candidates for debugging
@@ -364,7 +302,6 @@ object SymSpellManager {
          }
 
         val normalized = input.lowercase()
-        val normalizedNoApos = normalized.replace("'", "")
         val upperCount = input.count { it.isUpperCase() }
         val suggestions = instance.lookup(normalized, Verbosity.All, MAX_EDIT_DISTANCE.toDouble())
         val prev = previousWord?.lowercase()
@@ -375,39 +312,29 @@ object SymSpellManager {
             .sortedBy { candidate ->
                 val term = candidate.term
                 val lowerTerm = term.lowercase()
-                val candidateNorm = lowerTerm.replace("'", "")
                 
                 // CULLING: Filter out 2-letter words not in whitelist
                 if (lowerTerm.length == 2 && !TWO_LETTER_WHITELIST.contains(lowerTerm)) {
-                    return@sortedBy Double.MAX_VALUE
+                    return@sortedBy CandidateScorer.CULLED_SCORE
                 }
                 
-                if (ignoreManager.isUserIgnored(input, term)) Double.MAX_VALUE 
-                else if (BLACKLIST.contains(lowerTerm)) Double.MAX_VALUE
-                else {
-                    var apostropheBonus = 0.0
-                    if (term.contains('\'')) {
-                        if (candidateNorm == normalizedNoApos) {
-                             apostropheBonus = -20.0 
-                        } else {
-                             val spatial = spatialCost(normalizedNoApos, candidateNorm)
-                             if (spatial < 2.0) { 
-                                 apostropheBonus = -10.0
-                             }
-                        }
-                    }
-                    
-                    val bigram = bigramBonus(prev, lowerTerm)
-                    val bigramBoost = -BIGRAM_WEIGHT * bigram.bonus // Removed 5.0x multiplier
-                    val noHitPenalty = if (prev != null && !bigram.hasHit) BIGRAM_NO_HIT_PENALTY else 0.0
-                    val spatial = spatialCost(normalized, lowerTerm)
-                    
-                    if (candidate.distance == 0.0 && spatial == 0.0) {
-                        -100.0
-                    } else {
-                        candidate.distance + apostropheBonus + bigramBoost + noHitPenalty + spatial
-                    }
+                // Filter by ignore list and blacklist
+                if (ignoreManager.isUserIgnored(input, term)) {
+                    return@sortedBy CandidateScorer.CULLED_SCORE
                 }
+                if (BLACKLIST.contains(lowerTerm)) {
+                    return@sortedBy CandidateScorer.CULLED_SCORE
+                }
+                
+                // Use unified scorer
+                val isUserWord = userWordsCache.any { it.equals(term, ignoreCase = true) }
+                CandidateScorer.score(
+                    typed = normalized,
+                    candidate = lowerTerm,
+                    editDistance = candidate.distance,
+                    prevWord = prev,
+                    isInUserDict = isUserWord,
+                )
             }
             .mapNotNull { candidate ->
                 val term = candidate.term
@@ -570,12 +497,13 @@ object SymSpellManager {
         val candidates = prefixIndex[lookupKey] ?: return emptyList()
         
         // Filter to exact prefix match and score by bigram
+        val prevLower = previousWord?.lowercase()
         val scored = candidates
             .filter { (word, _) -> word.startsWith(normalizedPrefix) }
             .map { (word, freq) ->
-                val bigram = bigramBonus(previousWord, word)
+                val bigramResult = CandidateScorer.bigramScore(prevLower, word)
                 // Score: base frequency log + bigram boost (higher = better, but we negate for sorting)
-                val score = -(ln(freq.toDouble() + 1.0) + bigram.bonus * 2.0)
+                val score = -(ln(freq.toDouble() + 1.0) + bigramResult.bonus * 2.0)
                 Triple(word, freq, score)
             }
             .sortedBy { it.third }

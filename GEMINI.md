@@ -117,11 +117,19 @@
 - Plain `Text`, `maxLines=1`, `overflow=Visible`, centered. Scroll to see long items; no ellipses.
 
 ## Autocorrect/NLP Snapshot (current)
-- **Architecture:** `SymSpellManager` (logic) + `DictionaryManager` (data) + `EditorInstance` (undo/learn loop).
-- **Logic:** QWERTY adjacency reranking (near=0.5, far=2.0); Backspace-Undo learning (`ignored_autocorrects` table); aggressive apostrophe boosts (-20.0) for contractions.
-- **Dicts:** Cleaned unigrams/bigrams; `BLACKLIST` filters "wont"/"hows"; `CONTRACTION_SHORTCUTS` force-corrects "im"->"I'm", "wint"->"won't".
-- **Status:** "Backspace Revert" handles trailing spaces; undo state persists across space commits.
-- **Pending:** Fine-tuning spatial weights?
+- **Architecture:** Brain Transplant pattern:
+  - `SymSpellManager` = Retriever (finds candidates via edit distance)
+  - `CandidateScorer` = Judge (scores ALL candidates with unified logic)
+  - `CasingUtils` = Caser (applies proper casing)
+  - `EditorInstance` = Undo/learn loop
+- **Scoring Constants (all in `CandidateScorer.kt`):**
+  - BIGRAM_WEIGHT = 0.5
+  - APOSTROPHE_EXACT_BONUS = -20.0, APOSTROPHE_TYPO_BONUS = -10.0
+  - EXACT_MATCH_BONUS = -100.0
+  - USER_WORD_BONUS = -1000.0
+  - Spatial: NEIGHBOR=0.5, FAR=2.0, TRANSPOSITION=0.3
+- **Dicts:** Cleaned unigrams/bigrams; `BLACKLIST` filters "wont"/"hows"; `CONTRACTION_SHORTCUTS` force-corrects "im"→"I'm".
+- **Status:** Unified scoring for autocorrect AND smartbar suggestions. Neural-net-ready interface (flat primitives in/out).
 
 ## Developer Harvest System
 - **Purpose:** Captures real usage data during dev iteration (survives reinstalls via file export).

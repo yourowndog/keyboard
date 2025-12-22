@@ -86,10 +86,11 @@ object HarvestManager {
      * @param typed What the user originally typed
      * @param correctedTo What it was corrected to
      * @param prevWord The word before (context)
+     * @param prevPrevWord The word before that (trigram context)
      */
-    fun logAccepted(typed: String, correctedTo: String, prevWord: String?) {
+    fun logAccepted(typed: String, correctedTo: String, prevWord: String?, prevPrevWord: String? = null) {
         if (typed == correctedTo) return // Not actually a correction
-        append("ACCEPTED", "$typed → $correctedTo", prevWord)
+        append("ACCEPTED", "$typed → $correctedTo", prevWord, prevPrevWord)
     }
     
     /**
@@ -97,9 +98,10 @@ object HarvestManager {
      * @param typed What the user originally typed
      * @param rejectedCorrection What correction they rejected
      * @param prevWord The word before (context)
+     * @param prevPrevWord The word before that (trigram context)
      */
-    fun logRejected(typed: String, rejectedCorrection: String, prevWord: String?) {
-        append("REJECTED", "$typed ← $rejectedCorrection (reverted)", prevWord)
+    fun logRejected(typed: String, rejectedCorrection: String, prevWord: String?, prevPrevWord: String? = null) {
+        append("REJECTED", "$typed ← $rejectedCorrection (reverted)", prevWord, prevPrevWord)
     }
     
     /**
@@ -141,14 +143,17 @@ object HarvestManager {
         }
     }
     
-    private fun append(category: String, content: String, context: String?) {
+    private fun append(category: String, content: String, context: String?, prevPrevWord: String? = null) {
         val file = harvestFile ?: return
         
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val timestamp = dateFormat.format(Date())
                 val ctx = context?.let { " | ctx: \"$it\"" } ?: ""
-                val line = "[$category] $timestamp | $content$ctx"
+                val trigram = if (prevPrevWord != null && context != null) {
+                    " | trigram: \"$prevPrevWord $context\""
+                } else ""
+                val line = "[$category] $timestamp | $content$ctx$trigram"
                 
                 PrintWriter(FileWriter(file, true)).use { out ->
                     out.println(line)

@@ -1,4 +1,15 @@
-### 2025-12-01
+### 2025-12-16
+* **Task:** Created web-based Keyboard Layout Previewer tool for design iteration.
+* **Files:** `tools/previewer/index.html`
+* **Details:**
+    * Ports `mergeLayouts()` algorithm from `LayoutManager.kt` (main + mod merge at placeholder).
+    * Ports row height compression from `TextKeyboard.kt` (75% for extension and bottom 2 rows).
+    * Ports key width factors from `TextKey.kt` (Shift 1.25x, arrows 0.8x, space grows).
+    * Parses Snygg theme stylesheets with `@defines` variable resolution and `key[code=...]` selector matching.
+    * Supports QWERTY, QWERTY Wide, QWERTY Wide Swipe layouts with all LCARS themes.
+    * Enables agent-driven design iteration without APK builds. – Gemini
+
+
 * **Task:** Overhauled Autocorrect architecture (Adjacency, Learning, Revert) & UI Polish.
 * **Files:** `ime/nlp/SymSpellManager.kt`, `ime/editor/EditorInstance.kt`, `ime/editor/AbstractEditorInstance.kt`, `ime/dictionary/UserDictionary.kt`, `ime/dictionary/DictionaryManager.kt`, `ime/smartbar/CandidatesRow.kt`
 * **Details:**
@@ -128,3 +139,13 @@
     * **Punctuation Eats Space:** Fixed iOS/Gboard-style behavior where typing `.` after `word ` now produces `word.` instead of `word .` (checks phantomSpace + punctuation).
     * **getPreviousWord():** Added helper to EditorInstance for context logging.
     * **Workflow:** Use keyboard → `cp /sdcard/Documents/usage_harvest.md ~/vault/projects/keyboard/` → review with agents to update dictionary/ignore lists. – Gemini
+
+### 2025-12-15
+* **Task:** Unified Scoring Architecture — Single source of truth for autocorrect + suggestions
+* **Files:** `CandidateScorer.kt` (NEW), `SymSpellManager.kt`, `SuggestionEngine.kt`
+* **Details:**
+    * **CandidateScorer:** New utility in `ime/nlp/shared/` that consolidates all scoring logic. Flat primitives in/out for future neural net replacement.
+    * **Unified Scoring:** `SymSpellManager.fix()`, `suggest()`, `findPrefixCandidates()`, `NgramSuggestionEngine.rank()`, and `scoreWord()` now all use `CandidateScorer.score()`.
+    * **Magic Numbers Centralized:** All tuning constants (BIGRAM_WEIGHT=0.5, APOSTROPHE_EXACT_BONUS=-20.0, EXACT_MATCH_BONUS=-100.0, etc.) now in one place.
+    * **Dead Code Removed:** Deleted duplicate `bigramBonus()` functions, `BigramScore` class, and inline scoring logic (~100 lines removed).
+    * **Architecture:** "Brain Transplant" pattern: SymSpell=Retriever, CandidateScorer=Judge, CasingUtils=Caser. – Gemini

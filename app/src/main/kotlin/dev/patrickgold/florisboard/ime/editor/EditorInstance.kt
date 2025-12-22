@@ -276,7 +276,7 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
                     // Track the word WITHOUT the space for the undo state, so our "trailing match" logic handles the space.
                     autoCorrectUndoState = AbstractEditorInstance.AutoCorrectUndoState(text, original)
                     // Log accepted autocorrect for harvest
-                    HarvestManager.logAccepted(original, text, prevWord)
+                    HarvestManager.logAccepted(original, text, prevWord, getPreviousPreviousWord())
                 }
             }
         } else {
@@ -623,7 +623,7 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         // Learn the ignore pair so it persists
         dev.patrickgold.florisboard.ime.dictionary.DictionaryManager.default().learnUserIgnore(state.originalText, state.correctedText)
         // Log rejected autocorrect for harvest
-        HarvestManager.logRejected(state.originalText, state.correctedText, getPreviousWord())
+        HarvestManager.logRejected(state.originalText, state.correctedText, getPreviousWord(), getPreviousPreviousWord())
         autoCorrectUndoState = null
         return true
     }
@@ -641,6 +641,17 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
             textBefore
         }
         return lastWord.takeIf { it.isNotEmpty() && it.all { c -> c.isLetter() } }
+    }
+
+    /**
+     * Get the word before the previous word for trigram context in harvest logging.
+     */
+    private fun getPreviousPreviousWord(): String? {
+        val textBefore = activeContent.textBeforeSelection.toString().trimEnd()
+        val words = textBefore.split(' ').filter { it.isNotBlank() }
+        return if (words.size >= 2) {
+            words[words.size - 2].takeIf { it.all { c -> c.isLetter() } }
+        } else null
     }
 
     private fun PhantomSpaceState.determine(text: String, forceActive: Boolean = false): Boolean {

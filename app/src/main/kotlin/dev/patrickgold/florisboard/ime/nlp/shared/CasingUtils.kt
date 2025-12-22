@@ -57,6 +57,8 @@ object CasingUtils {
         "whats" to "what's",
         "whos" to "who's",
         "lets" to "let's",
+        "ac" to "AC",      // air conditioning
+        "itd" to "it'd",   // sloppy it'd typing
     )
 
     /**

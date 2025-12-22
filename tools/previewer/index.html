@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OmniBoard Layout Previewer</title>
+  <style>
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #1a1a1a;
+      --text-primary: #e0e0e0;
+      --text-muted: #888;
+      --accent: #ff6b35;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      color: var(--accent);
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    select,
+    button {
+      padding: 8px 12px;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid #333;
+      border-radius: 4px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    select:hover,
+    button:hover {
+      border-color: var(--accent);
+    }
+
+    .keyboard-frame {
+      background: var(--theme-keyboard-bg, #000);
+      border-radius: 8px;
+      padding: 4px;
+      margin-bottom: 20px;
+    }
+
+    .keyboard {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .row {
+      display: flex;
+      gap: 4px;
+      justify-content: center;
+    }
+
+    .key {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.1s ease;
+      position: relative;
+      overflow: hidden;
+      /* Default styling - overridden by theme */
+      background: #333;
+      color: #fff;
+      border: 1px solid #555;
+    }
+
+    .key:hover {
+      filter: brightness(1.2);
+      transform: scale(1.02);
+    }
+
+    .key:active {
+      filter: brightness(1.4);
+    }
+
+    .key .hint {
+      position: absolute;
+      top: 2px;
+      right: 4px;
+      font-size: 9px;
+      opacity: 0.6;
+    }
+
+    .key.hidden {
+      visibility: hidden;
+    }
+
+    .info-panel {
+      background: var(--bg-secondary);
+      border-radius: 8px;
+      padding: 15px;
+      font-size: 13px;
+    }
+
+    .info-panel h3 {
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .info-panel .stat {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 0;
+      border-bottom: 1px solid #333;
+    }
+
+    .info-panel .stat:last-child {
+      border-bottom: none;
+    }
+
+    .error {
+      background: #3a1515;
+      color: #ff6b6b;
+      padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>⌨️ OmniBoard Previewer</h1>
+
+    <div class="controls">
+      <select id="layoutSelect">
+        <option value="qwerty_wide">QWERTY Wide</option>
+        <option value="qwerty">QWERTY (Standard)</option>
+        <option value="qwerty_wide_swipe">QWERTY Wide Swipe</option>
+      </select>
+
+      <select id="themeSelect">
+        <option value="lcars_tactical">LCARS Tactical</option>
+        <option value="lcars_neon">LCARS Neon</option>
+        <option value="lcars_sickbay">LCARS Sickbay</option>
+      </select>
+
+      <button onclick="render()">🔄 Reload</button>
+    </div>
+
+    <div id="error" class="error" style="display: none;"></div>
+
+    <div class="keyboard-frame">
+      <div id="keyboard" class="keyboard"></div>
+    </div>
+
+    <div class="info-panel">
+      <h3>Layout Info</h3>
+      <div id="stats"></div>
+    </div>
+  </div>
+
+  <script>
+    // ============================================================
+    // KEY CODES (from KeyCode.kt)
+    // ============================================================
+    const KeyCode = {
+      UNSPECIFIED: 0,
+      SPACE: 32,
+      ESCAPE: -15,
+      ENTER: 10,
+      CTRL: -1,
+      DELETE: -7,
+      SHIFT: -11,
+      TAB: -14,
+      ARROW_LEFT: -21,
+      ARROW_RIGHT: -22,
+      ARROW_UP: -23,
+      ARROW_DOWN: -24,
+      MOVE_START_OF_LINE: -27,
+      MOVE_END_OF_LINE: -28,
+      CLIPBOARD_PASTE: -33,
+      UNDO: -131,
+      REDO: -132,
+      VIEW_CHARACTERS: -201,
+      VIEW_SYMBOLS: -202,
+      VIEW_SYMBOLS2: -203,
+      TOGGLE_NUMBER_ROW: -305,
+      TOGGLE_DEV_ROW: -306,
+      AI_GENERATE: -307,
+    };
+
+    // ============================================================
+    // KEY WIDTH FACTORS (from TextKey.kt)
+    // ============================================================
+    const KEY_WIDTH_FACTORS = {
+      [KeyCode.VIEW_CHARACTERS]: 1.56,
+      [KeyCode.VIEW_SYMBOLS2]: 1.56,
+      [KeyCode.SHIFT]: 1.25,
+      [KeyCode.ENTER]: 1.25,
+      [KeyCode.DELETE]: 1.15,
+      [KeyCode.ARROW_LEFT]: 0.8,
+      [KeyCode.ARROW_RIGHT]: 0.8,
+      [KeyCode.ARROW_UP]: 0.8,
+      [KeyCode.ARROW_DOWN]: 0.8,
+      [KeyCode.MOVE_START_OF_LINE]: 0.8,
+      [KeyCode.MOVE_END_OF_LINE]: 0.8,
+      [KeyCode.UNDO]: 0.8,
+      [KeyCode.REDO]: 0.8,
+      [KeyCode.CTRL]: 1.30,
+    };
+
+    // Keys that grow to fill available space
+    const GROW_KEYS = new Set([KeyCode.SPACE, KeyCode.VIEW_SYMBOLS]);
+
+    // ============================================================
+    // ICON MAPPING (special keys get Unicode symbols)
+    // ============================================================
+    const KEY_ICONS = {
+      [KeyCode.DELETE]: '⌫',
+      [KeyCode.SHIFT]: '⇧',
+      [KeyCode.TAB]: '⇥',
+      [KeyCode.ENTER]: '↵',
+      [KeyCode.ARROW_LEFT]: '←',
+      [KeyCode.ARROW_RIGHT]: '→',
+      [KeyCode.ARROW_UP]: '↑',
+      [KeyCode.ARROW_DOWN]: '↓',
+      [KeyCode.MOVE_START_OF_LINE]: '«',
+      [KeyCode.MOVE_END_OF_LINE]: '»',
+      [KeyCode.ESCAPE]: '⎋',
+      [KeyCode.UNDO]: '↶',
+      [KeyCode.REDO]: '↷',
+      [KeyCode.CLIPBOARD_PASTE]: '📋',
+      [KeyCode.VIEW_SYMBOLS]: '⚛',
+      [KeyCode.VIEW_CHARACTERS]: 'ABC',
+      [KeyCode.AI_GENERATE]: 'Ψ',
+      [KeyCode.TOGGLE_NUMBER_ROW]: 'Σ',
+      [KeyCode.TOGGLE_DEV_ROW]: 'λ',
+    };
+
+    // ============================================================
+    // ASSET PATHS (from tools/previewer/ go up 2 levels to project root)
+    // ============================================================
+    const LAYOUT_BASE = '../../app/src/main/assets/ime/keyboard/org.florisboard.layouts/layouts';
+    const THEME_BASE = '../../app/src/main/assets/ime/theme/org.florisboard.themes/stylesheets';
+
+    const LAYOUTS = {
+      qwerty: {
+        main: `${LAYOUT_BASE}/characters/qwerty.json`,
+        mod: `${LAYOUT_BASE}/charactersMod/qwerty_default.json`,
+      },
+      qwerty_wide: {
+        main: `${LAYOUT_BASE}/characters/qwerty_wide.json`,
+        mod: `${LAYOUT_BASE}/charactersMod/qwerty_wide_mod.json`,
+      },
+      qwerty_wide_swipe: {
+        main: `${LAYOUT_BASE}/characters/qwerty_wide.json`,
+        mod: `${LAYOUT_BASE}/charactersMod/qwerty_wide_swipe_mod.json`,
+      },
+    };
+
+    const THEMES = {
+      lcars_tactical: `${THEME_BASE}/lcars_tactical.json`,
+      lcars_neon: `${THEME_BASE}/lcars_neon.json`,
+      lcars_sickbay: `${THEME_BASE}/lcars_sickbay.json`,
+    };
+
+    // ============================================================
+    // LAYOUT MERGING (from LayoutManager.kt)
+    // ============================================================
+    function mergeLayouts(mainLayout, modifierLayout) {
+      if (!modifierLayout || modifierLayout.length === 0) {
+        return mainLayout;
+      }
+
+      const result = [];
+
+      // Main rows (all but last)
+      for (let i = 0; i < mainLayout.length - 1; i++) {
+        result.push([...mainLayout[i]]);
+      }
+
+      // Merge last main row with first mod row at placeholder (code: 0)
+      const lastMainRow = mainLayout[mainLayout.length - 1];
+      const firstModRow = modifierLayout[0] || [];
+      const mergedRow = [];
+
+      for (const modKey of firstModRow) {
+        if (modKey.code === 0 && modKey.type === 'placeholder') {
+          mergedRow.push(...lastMainRow);
+        } else {
+          mergedRow.push(modKey);
+        }
+      }
+      result.push(mergedRow);
+
+      // Remaining mod rows
+      for (let i = 1; i < modifierLayout.length; i++) {
+        result.push([...modifierLayout[i]]);
+      }
+
+      return result;
+    }
+
+    // ============================================================
+    // ROW HEIGHT LOGIC (from TextKeyboard.kt)
+    // ============================================================
+    function getRowHeights(rowCount, totalHeight) {
+      const hasExtraRows = rowCount >= 5;
+
+      if (!hasExtraRows) {
+        const h = totalHeight / rowCount;
+        return Array(rowCount).fill(h);
+      }
+
+      // 5+ rows: compressed heights for extension and bottom rows
+      const effectiveRowCount = 0.75 * (rowCount + 1);
+      const baseHeight = totalHeight / effectiveRowCount;
+      const extensionRowCount = rowCount - 5;
+
+      return Array.from({ length: rowCount }, (_, r) => {
+        const isTopExtensionRow = r < extensionRowCount;
+        const isBottomCompressedRow = r >= rowCount - 2;
+        return (isTopExtensionRow || isBottomCompressedRow)
+          ? baseHeight * 0.75
+          : baseHeight;
+      });
+    }
+
+    // ============================================================
+    // THEME PARSING (Snygg format)
+    // ============================================================
+    function parseTheme(themeData) {
+      const defines = themeData['@defines'] || {};
+      const theme = { defines, rules: [] };
+
+      // Resolve var() references
+      function resolveVar(value) {
+        if (typeof value !== 'string') return value;
+        const match = value.match(/var\(([^)]+)\)/);
+        if (match) {
+          const varName = match[1];
+          return defines[varName] || value;
+        }
+        return value;
+      }
+
+      // Parse selector to determine what it matches
+      function parseSelector(selector) {
+        const result = { element: null, codes: null, state: null };
+
+        // Handle pseudo-states
+        if (selector.includes(':pressed')) {
+          result.state = 'pressed';
+          selector = selector.replace(':pressed', '');
+        }
+        if (selector.includes(':focus')) {
+          result.state = 'focus';
+          selector = selector.replace(':focus', '');
+        }
+
+        // Extract element name (everything before '[' or end of string)
+        const bracketIdx = selector.indexOf('[');
+        const elementName = bracketIdx > 0 ? selector.substring(0, bracketIdx) : selector;
+        result.element = elementName;
+
+        // Handle code selectors like key[code=97..122]
+        const codeMatch = selector.match(/\[code=([^\]]+)\]/);
+        if (codeMatch) {
+          const codeSpec = codeMatch[1];
+          const codes = new Set();
+
+          for (const part of codeSpec.split(',')) {
+            const rangeMatch = part.match(/(-?\d+)\.\.(-?\d+)/);
+            if (rangeMatch) {
+              const start = parseInt(rangeMatch[1]);
+              const end = parseInt(rangeMatch[2]);
+              for (let i = start; i <= end; i++) codes.add(i);
+            } else {
+              codes.add(parseInt(part));
+            }
+          }
+          result.codes = codes;
+        }
+
+        return result;
+      }
+
+      // Process each rule
+      for (const [selector, props] of Object.entries(themeData)) {
+        if (selector.startsWith('@') || selector === '$schema') continue;
+
+        const parsed = parseSelector(selector);
+        const resolvedProps = {};
+        for (const [k, v] of Object.entries(props)) {
+          resolvedProps[k] = resolveVar(v);
+        }
+
+        theme.rules.push({ ...parsed, props: resolvedProps, selector });
+      }
+
+      return theme;
+    }
+
+    // Get styles for a specific key
+    function getKeyStyles(theme, keyCode) {
+      let styles = {};
+
+      for (const rule of theme.rules) {
+        if (rule.element !== 'key') continue;
+        if (rule.state) continue; // Skip :pressed for now
+
+        // Check if rule applies
+        let applies = false;
+        if (rule.codes === null) {
+          applies = true; // Base key rule
+        } else if (rule.codes.has(keyCode)) {
+          applies = true;
+        }
+
+        if (applies) {
+          Object.assign(styles, rule.props);
+        }
+      }
+
+      return styles;
+    }
+
+    function getKeyboardBackground(theme) {
+      for (const rule of theme.rules) {
+        if (rule.element === 'keyboard' && rule.props.background) {
+          return rule.props.background;
+        }
+      }
+      return '#000';
+    }
+
+    // Convert Snygg shape to CSS properties
+    function shapeToCSS(shape, keyHeight) {
+      if (!shape) return {};
+
+      // Handle rounded-corner(Xdp, Ydp, ...)
+      const roundedMatch = shape.match(/rounded-corner\(([^)]+)\)/);
+      if (roundedMatch) {
+        const values = roundedMatch[1].split(',').map(s => parseFloat(s.trim()));
+        // dp to px: ~1.5x on most screens
+        const px = values.map(v => Math.round(v * 1.5));
+        return {
+          borderRadius: `${px[0]}px ${px[1]}px ${px[2]}px ${px[3]}px`
+        };
+      }
+
+      // Handle cut-corner(Xdp, Ydp, ...) - creates chamfered/angled corners
+      const cutMatch = shape.match(/cut-corner\(([^)]+)\)/);
+      if (cutMatch) {
+        const values = cutMatch[1].split(',').map(s => parseFloat(s.trim()));
+        const px = values.map(v => Math.round(v * 2.5)); // dp to px (2.5x for visible corners)
+        const [tl, tr, br, bl] = px;
+
+        // Create proper 8-point polygon for cut corners
+        // Points go clockwise: top-left cut, top-right cut, right-top, right-bottom, 
+        // bottom-right cut, bottom-left cut, left-bottom, left-top
+        return {
+          clipPath: `polygon(
+            ${tl}px 0%, calc(100% - ${tr}px) 0%,
+            100% ${tr}px, 100% calc(100% - ${br}px),
+            calc(100% - ${br}px) 100%, ${bl}px 100%,
+            0% calc(100% - ${bl}px), 0% ${tl}px
+          )`.replace(/\s+/g, ' ')
+        };
+      }
+
+      // Handle rectangle() - no special shape
+      if (shape.includes('rectangle')) {
+        return { borderRadius: '0' };
+      }
+
+      // Handle circle() - full rounding
+      if (shape.includes('circle')) {
+        return { borderRadius: '50%' };
+      }
+
+      return {};
+    }
+
+    // Convert shadow-elevation to CSS box-shadow
+    function shadowToCSS(elevation, shadowColor) {
+      if (!elevation) return {};
+      const dp = parseFloat(elevation);
+      if (dp === 0) return { boxShadow: 'none' };
+
+      // Approximate Android elevation to CSS shadow
+      const blur = Math.round(dp * 2);
+      const spread = Math.round(dp * 0.5);
+      const yOffset = Math.round(dp * 0.75);
+      const color = shadowColor || 'rgba(0,0,0,0.3)';
+
+      return {
+        boxShadow: `0 ${yOffset}px ${blur}px ${spread}px ${color}`
+      };
+    }
+
+    // Apply theme styles to a key element
+    function applyKeyStyles(keyEl, styles, keyHeight) {
+      // Background
+      if (styles.background) keyEl.style.background = styles.background;
+
+      // Foreground (text color)
+      if (styles.foreground) keyEl.style.color = styles.foreground;
+
+      // Border
+      if (styles['border-color']) keyEl.style.borderColor = styles['border-color'];
+      if (styles['border-width']) {
+        const bw = parseFloat(styles['border-width']) * 1.5; // dp to px
+        keyEl.style.borderWidth = `${bw}px`;
+        keyEl.style.borderStyle = 'solid';
+      }
+
+      // Font
+      if (styles['font-size']) {
+        const size = parseFloat(styles['font-size']);
+        keyEl.style.fontSize = `${size}px`;
+      }
+      if (styles['font-weight']) {
+        keyEl.style.fontWeight = styles['font-weight'];
+      }
+
+      // Shape
+      if (styles.shape) {
+        const shapeCss = shapeToCSS(styles.shape, keyHeight);
+        if (shapeCss.clipPath) keyEl.style.clipPath = shapeCss.clipPath;
+        if (shapeCss.borderRadius) keyEl.style.borderRadius = shapeCss.borderRadius;
+      }
+
+      // Shadow
+      if (styles['shadow-elevation']) {
+        const shadowCss = shadowToCSS(styles['shadow-elevation'], styles['shadow-color']);
+        if (shadowCss.boxShadow) keyEl.style.boxShadow = shadowCss.boxShadow;
+      }
+    }
+
+    // ============================================================
+    // RENDERING
+    // ============================================================
+    async function loadJson(url) {
+      const resp = await fetch(url);
+      if (!resp.ok) throw new Error(`Failed to load ${url}: ${resp.status}`);
+      return resp.json();
+    }
+
+    async function render() {
+      const layoutKey = document.getElementById('layoutSelect').value;
+      const themeKey = document.getElementById('themeSelect').value;
+      const errorEl = document.getElementById('error');
+      const keyboardEl = document.getElementById('keyboard');
+      const statsEl = document.getElementById('stats');
+
+      errorEl.style.display = 'none';
+      keyboardEl.innerHTML = '';
+
+      try {
+        // Load assets
+        const [mainLayout, modLayout, themeData] = await Promise.all([
+          loadJson(LAYOUTS[layoutKey].main),
+          loadJson(LAYOUTS[layoutKey].mod).catch(() => []),
+          loadJson(THEMES[themeKey]),
+        ]);
+
+        // Merge layouts
+        const merged = mergeLayouts(mainLayout, modLayout);
+        const theme = parseTheme(themeData);
+
+        // Set keyboard background
+        const kbBg = getKeyboardBackground(theme);
+        document.querySelector('.keyboard-frame').style.background = kbBg;
+
+        // Calculate dimensions
+        const containerWidth = 472; // Phone-like width
+        const totalHeight = 280;
+        const rowHeights = getRowHeights(merged.length, totalHeight);
+
+        // Render rows
+        for (let r = 0; r < merged.length; r++) {
+          const row = merged[r];
+          const rowHeight = rowHeights[r];
+
+          const rowEl = document.createElement('div');
+          rowEl.className = 'row';
+          rowEl.style.height = `${rowHeight}px`;
+
+          // Calculate total width factors for this row
+          let totalFactor = 0;
+          let growCount = 0;
+          for (const key of row) {
+            const code = key.code || 0;
+            const factor = KEY_WIDTH_FACTORS[code] || 1.0;
+            totalFactor += factor;
+            if (GROW_KEYS.has(code)) growCount++;
+          }
+
+          // Base key width
+          const baseKeyWidth = (containerWidth - (row.length - 1) * 4) / totalFactor;
+          // Extra width to distribute to growing keys
+          const extraWidth = growCount > 0 ? (containerWidth - baseKeyWidth * totalFactor) / growCount : 0;
+
+          for (const key of row) {
+            const code = key.code || 0;
+            const factor = KEY_WIDTH_FACTORS[code] || 1.0;
+            let keyWidth = baseKeyWidth * factor;
+            if (GROW_KEYS.has(code)) keyWidth += extraWidth;
+
+            const keyEl = document.createElement('div');
+            keyEl.className = 'key';
+            keyEl.style.width = `${keyWidth}px`;
+            keyEl.style.height = `${rowHeight - 4}px`;
+
+            // Determine label
+            let label = key.label || '';
+            if (KEY_ICONS[code]) {
+              label = KEY_ICONS[code];
+            } else if (code === KeyCode.SPACE) {
+              label = ''; // Space bar blank
+            } else if (!label && code > 0 && code < 128) {
+              label = String.fromCharCode(code);
+            }
+
+            // Apply theme styles using the comprehensive helper
+            const styles = getKeyStyles(theme, code);
+            applyKeyStyles(keyEl, styles, rowHeight - 4);
+
+            keyEl.textContent = label;
+            keyEl.title = `Code: ${code}`;
+
+            rowEl.appendChild(keyEl);
+          }
+
+          keyboardEl.appendChild(rowEl);
+        }
+
+        // Update stats
+        statsEl.innerHTML = `
+          <div class="stat"><span>Layout</span><span>${layoutKey}</span></div>
+          <div class="stat"><span>Theme</span><span>${themeKey}</span></div>
+          <div class="stat"><span>Rows</span><span>${merged.length}</span></div>
+          <div class="stat"><span>Total Keys</span><span>${merged.reduce((a, r) => a + r.length, 0)}</span></div>
+          <div class="stat"><span>Height Mode</span><span>${merged.length >= 5 ? 'Compressed' : 'Standard'}</span></div>
+        `;
+
+      } catch (err) {
+        errorEl.textContent = `Error: ${err.message}`;
+        errorEl.style.display = 'block';
+        console.error(err);
+      }
+    }
+
+    // Initial render
+    render();
+  </script>
+</body>
+
+</html>
