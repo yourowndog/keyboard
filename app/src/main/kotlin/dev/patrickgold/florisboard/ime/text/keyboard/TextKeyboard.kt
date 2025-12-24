@@ -18,6 +18,7 @@ package dev.patrickgold.florisboard.ime.text.keyboard
 
 import dev.patrickgold.florisboard.ime.keyboard.Key
 import dev.patrickgold.florisboard.ime.keyboard.Keyboard
+import dev.patrickgold.florisboard.ime.keyboard.VerticalAlignment
 import dev.patrickgold.florisboard.ime.keyboard.KeyboardMode
 import dev.patrickgold.florisboard.ime.popup.PopupMapping
 import kotlin.math.abs
@@ -48,6 +49,7 @@ class TextKeyboard(
         keyboardHeight: Float,
         desiredKey: Key,
         extendTouchBoundariesDownwards: Boolean,
+        bottomRowHeightFactor: Float,
     ) {
         if (arrangement.isEmpty()) return
 
@@ -62,15 +64,15 @@ class TextKeyboard(
         for ((r, row) in rows().withIndex()) {
             val hasExtraRows = rowCount >= 5
             val rowHeight = if (hasExtraRows) {
-                // Base is 5 rows: 3 alpha (full) + 2 bottom (75%)
-                // Extensions at top also 75%
-                // Total = 3 + (rowCount-3)*0.75 = 0.75*(rowCount+1)
-                val effectiveRowCount = 0.75f * (rowCount + 1)
+                // Base is 5 rows: 3 alpha (full) + 2 bottom (compressed)
+                // Extensions at top also get full height now
+                // Total = 3 + (rowCount-3)*bottomRowHeightFactor
+                val effectiveRowCount = (rowCount - 2) + 2 * bottomRowHeightFactor
                 val baseHeight = keyboardHeight / effectiveRowCount
                 val extensionRowCount = rowCount - 5  // rows beyond base 5
                 val isTopExtensionRow = r < extensionRowCount
                 val isBottomCompressedRow = r >= rowCount - 2
-                if (isTopExtensionRow || isBottomCompressedRow) baseHeight * 0.75f else baseHeight
+                if (isBottomCompressedRow) baseHeight * bottomRowHeightFactor else baseHeight
             } else {
                 desiredTouchBounds.height
             }
@@ -102,11 +104,22 @@ class TextKeyboard(
                         }
                         else -> key.flayWidthFactor + additionalWidth * (key.flayGrow / growSum)
                     }
+                    // Calculate per-key height based on flayHeightFactor
+                    val keyHeight = rowHeight * key.flayHeightFactor
+                    val heightDelta = keyHeight - rowHeight
+                    
+                    // Calculate vertical offset based on alignment
+                    val verticalOffset = when (key.flayVerticalAlignment) {
+                        VerticalAlignment.TOP -> -heightDelta
+                        VerticalAlignment.CENTER -> -heightDelta / 2.0f
+                        VerticalAlignment.BOTTOM -> 0.0f
+                    }
+                    
                     key.touchBounds.apply {
                         left = posX
-                        top = posY
+                        top = posY + verticalOffset
                         right = posX + keyWidth
-                        bottom = posY + rowHeight
+                        bottom = posY + rowHeight + (keyHeight - rowHeight) + verticalOffset
                     }
                     key.visibleBounds.apply {
                         left = key.touchBounds.left + abs(desiredTouchBounds.left - desiredVisibleBounds.left) + when {
@@ -143,11 +156,22 @@ class TextKeyboard(
                     } else {
                         key.flayWidthFactor - clippingWidth * (key.flayShrink / shrinkSum)
                     }
+                    // Calculate per-key height based on flayHeightFactor
+                    val keyHeight = rowHeight * key.flayHeightFactor
+                    val heightDelta = keyHeight - rowHeight
+                    
+                    // Calculate vertical offset based on alignment
+                    val verticalOffset = when (key.flayVerticalAlignment) {
+                        VerticalAlignment.TOP -> -heightDelta
+                        VerticalAlignment.CENTER -> -heightDelta / 2.0f
+                        VerticalAlignment.BOTTOM -> 0.0f
+                    }
+                    
                     key.touchBounds.apply {
                         left = posX
-                        top = posY
+                        top = posY + verticalOffset
                         right = posX + keyWidth
-                        bottom = posY + rowHeight
+                        bottom = posY + rowHeight + (keyHeight - rowHeight) + verticalOffset
                     }
                     key.visibleBounds.apply {
                         left = key.touchBounds.left + abs(desiredTouchBounds.left - desiredVisibleBounds.left)

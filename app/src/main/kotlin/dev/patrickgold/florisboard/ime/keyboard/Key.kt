@@ -23,6 +23,18 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import dev.patrickgold.florisboard.lib.FlorisRect
 
 /**
+ * Enum defining vertical alignment options for keys with custom heights.
+ */
+enum class VerticalAlignment {
+    /** Key extends upward from the row baseline */
+    TOP,
+    /** Key is centered vertically within its extended bounds */
+    CENTER,
+    /** Key extends downward from the row baseline (default) */
+    BOTTOM
+}
+
+/**
  * Abstract class describing the smallest computed unit in a computed keyboard. Each key represents exactly one key
  * displayed in the UI. It allows to save the absolute location within the parent keyboard, save touch and visual
  * bounds, managing the state (enabled, pressed, visibility) as well as layout sizing factors. Each key in this IME
@@ -81,6 +93,18 @@ abstract class Key(open val data: AbstractKeyData) {
      * by the key's compute method and is used in the layout process to determine the real key width.
      */
     open var flayWidthFactor: Float = 0f
+
+    /**
+     * Specifies the relative proportional height this key aims to get in respective to the row's base height.
+     * A value of 1.0 means the key uses the row's full height, values > 1.0 allow the key to extend beyond.
+     * This value should not be set manually, only by the key's compute method.
+     */
+    open var flayHeightFactor: Float = 1.0f
+
+    /**
+     * Specifies how this key should be vertically aligned when its height differs from neighboring keys.
+     */
+    open var flayVerticalAlignment: VerticalAlignment = VerticalAlignment.BOTTOM
 
     /**
      * The computed UI label of this key. This value is used by the keyboard view to temporarily save the label string

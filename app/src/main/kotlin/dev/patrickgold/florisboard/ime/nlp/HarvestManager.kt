@@ -165,6 +165,34 @@ object HarvestManager {
     }
     
     /**
+     * Write a review marker to segment data.
+     * Call this after processing harvest data to mark what's been reviewed.
+     * New events will appear after this marker.
+     */
+    fun logReviewMarker(reviewNote: String = "") {
+        val file = harvestFile ?: return
+        
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val timestamp = dateFormat.format(Date())
+                PrintWriter(FileWriter(file, true)).use { out ->
+                    out.println()
+                    out.println("---")
+                    out.println("<!-- REVIEW MARKER: $timestamp -->")
+                    if (reviewNote.isNotEmpty()) {
+                        out.println("<!-- Note: $reviewNote -->")
+                    }
+                    out.println("<!-- Data below this line is NEW since last review -->")
+                    out.println("---")
+                    out.println()
+                }
+            } catch (e: Exception) {
+                android.util.Log.e("HarvestManager", "Failed to write review marker", e)
+            }
+        }
+    }
+    
+    /**
      * Get the path to the harvest file for display in settings.
      */
     fun getFilePath(): String {

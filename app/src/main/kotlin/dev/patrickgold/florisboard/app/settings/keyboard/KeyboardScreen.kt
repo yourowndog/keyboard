@@ -149,6 +149,14 @@ fun KeyboardScreen() = FlorisScreen {
                 stepIncrement = 0.5f,
             )
             DialogSliderPreference(
+                prefs.keyboard.bottomRowHeightFactor,
+                title = stringRes(R.string.pref__keyboard__bottom_row_height__label),
+                valueLabel = { stringRes(R.string.unit__percent__symbol, "v" to it) },
+                min = 50,
+                max = 100,
+                stepIncrement = 5,
+            )
+            DialogSliderPreference(
                 primaryPref = prefs.keyboard.bottomOffsetPortrait,
                 secondaryPref = prefs.keyboard.bottomOffsetLandscape,
                 title = stringRes(R.string.pref__keyboard__bottom_offset__label),

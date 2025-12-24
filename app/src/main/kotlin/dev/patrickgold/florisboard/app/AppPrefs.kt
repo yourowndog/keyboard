@@ -26,6 +26,7 @@ import dev.patrickgold.florisboard.app.settings.theme.DisplayKbdAfterDialogs
 import dev.patrickgold.florisboard.app.settings.theme.SnyggLevel
 import dev.patrickgold.florisboard.app.setup.MicPermissionState
 import dev.patrickgold.florisboard.app.setup.NotificationPermissionState
+import dev.patrickgold.florisboard.app.setup.StoragePermissionState
 import dev.patrickgold.florisboard.ime.clipboard.CLIPBOARD_HISTORY_NUM_GRID_COLUMNS_AUTO
 import dev.patrickgold.florisboard.ime.clipboard.ClipboardSyncBehavior
 import dev.patrickgold.florisboard.ime.core.DisplayLanguageNamesIn
@@ -492,6 +493,10 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "internal__mic_permission_state",
             default = MicPermissionState.NOT_SET,
         )
+        val storagePermissionState = enum(
+            key = "internal__storage_permission_state",
+            default = StoragePermissionState.NOT_SET,
+        )
     }
 
     val keyboard = Keyboard()
@@ -570,11 +575,15 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
         )
         val keySpacingVertical = float(
             key = "keyboard__key_spacing_vertical",
-            default = 2.0f,
+            default = 5.0f,
         )
         val keySpacingHorizontal = float(
             key = "keyboard__key_spacing_horizontal",
             default = 2.0f,
+        )
+        val bottomRowHeightFactor = int(
+            key = "keyboard__bottom_row_height_factor",
+            default = 75,
         )
         val bottomOffsetPortrait = int(
             key = "keyboard__bottom_offset_portrait",

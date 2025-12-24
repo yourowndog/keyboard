@@ -169,6 +169,12 @@ object CasingUtils {
             return suggestion.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
         }
 
+        // I-contractions MUST always be capitalized (i'd -> I'd, i'm -> I'm, etc.)
+        val lowerSuggestion = suggestion.lowercase()
+        if (lowerSuggestion.startsWith("i'") || lowerSuggestion == "i") {
+            return suggestion.replaceFirstChar { it.titlecase() }
+        }
+
         return suggestion
     }
 

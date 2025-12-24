@@ -189,6 +189,13 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
             // Use n-gram ranking directly (no neural)
             val rankedSuggestions = ngramRanked
             
+            // "Valid Word Immunity": Check if the user's raw input is already a valid dictionary word.
+            // If it is, we should be VERY conservative about auto-correcting it to something else 
+            // (e.g., don't change "baby" -> "Babylon").
+            val isInputValidWord = rankedSuggestions.any { 
+                it.text.toString().equals(currentWordRaw, ignoreCase = true) 
+            }
+            
             return rankedSuggestions.map { candidate ->
                 if (candidate is WordSuggestionCandidate) {
                     // Use SymSpellManager's casing logic which handles i→I, proper nouns, sentence start
@@ -197,10 +204,19 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
                         suggestion = candidate.text.toString(),
                         textBeforeSelection = textBeforeCurrentWord
                     )
-                    val shouldCommit = candidate.isEligibleForAutoCommit || casedText != currentWordRaw
+                    
+                    // Determine if we should auto-commit this candidate
+                    // 1. Must be a "change" (otherwise why commit?)
+                    val isChange = casedText != currentWordRaw
+                    // 2. Is this just a casing fix? (e.g. "english" -> "English")
+                    val isCasingFix = casedText.equals(currentWordRaw, ignoreCase = true)
+                    
+                    // LOGIC: Commit if it's a change AND (it's a typo OR it's just a casing fix)
+                    // If input is valid, we ONLY allow casing fixes. We REJECT different words.
+                    val shouldCommit = isChange && (!isInputValidWord || isCasingFix)
                     
                     // DEBUG: Uncomment to trace casing logic
-                    // android.util.Log.d("LatinProvider", "Input: '$currentWordRaw' | Cased: '$casedText' | Commit: $shouldCommit")
+                    // android.util.Log.d("LatinProvider", "Input: '$currentWordRaw' | Cand: '$casedText' | Valid: $isInputValidWord | Commit: $shouldCommit")
 
                     candidate.copy(
                         text = casedText,
@@ -209,6 +225,25 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
                     )
                 } else {
                     candidate
+                }
+            }.let { suggestions ->
+                // iOS/Gboard style: Always show typed word as first suggestion
+                // When user picks this, it signals they want this exact word (INSISTED)
+                val typedWordCandidate = WordSuggestionCandidate(
+                    text = currentWordRaw,
+                    secondaryText = null,
+                    isEligibleForAutoCommit = false,  // Never auto-commit the typed word
+                    isEligibleForUserRemoval = false,
+                    sourceProvider = this
+                )
+                // Only add if typed word isn't already in suggestions
+                val alreadyPresent = suggestions.any { 
+                    it.text.toString().equals(currentWordRaw, ignoreCase = true) 
+                }
+                if (alreadyPresent || currentWordRaw.isBlank()) {
+                    suggestions
+                } else {
+                    listOf(typedWordCandidate) + suggestions
                 }
             }
         }

@@ -251,8 +251,10 @@ class NlpManager(context: Context) {
     }
 
     fun getAutoCommitCandidate(): SuggestionCandidate? {
-        val top = activeCandidates.firstOrNull() ?: return null
-        return if (top.isEligibleForAutoCommit) top else null
+        // Since we now prepend the raw typed word (which is not eligible for auto-commit)
+        // we must search through the candidates to find the best auto-commit correction.
+        // We typically only want to look at the top few.
+        return activeCandidates.take(3).firstOrNull { it.isEligibleForAutoCommit }
     }
 
     fun removeSuggestion(subtype: Subtype, candidate: SuggestionCandidate): Boolean {

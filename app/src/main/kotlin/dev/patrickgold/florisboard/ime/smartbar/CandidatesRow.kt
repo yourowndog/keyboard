@@ -102,37 +102,8 @@ fun CandidatesRow(modifier: Modifier = Modifier) {
             },
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
-        SnyggIconButton(
-            onClick = {
-                val text = editorInstance.activeContent.composingText.toString().ifBlank {
-                    editorInstance.activeContent.currentWordText
-                }
-                if (text.isNotBlank()) {
-                    val success = dev.patrickgold.florisboard.ime.dictionary.DictionaryManager.default().addToUserDictionary(
-                        text,
-                        subtypeManager.activeSubtype.primaryLocale
-                    )
-                    if (success) {
-                        nlpManager.suggest(subtypeManager.activeSubtype, editorInstance.activeContent)
-                        android.widget.Toast.makeText(context, "Added '$text' to dictionary", android.widget.Toast.LENGTH_SHORT).show()
-                    } else {
-                        android.widget.Toast.makeText(context, "Error: Dictionary disabled or unavailable", android.widget.Toast.LENGTH_LONG).show()
-                    }
-                }
-            },
-            modifier = Modifier.padding(horizontal = 4.dp),
-        ) {
-             androidx.compose.foundation.layout.Box(
-                 contentAlignment = Alignment.Center,
-                 modifier = Modifier.fillMaxSize()
-             ) {
-                 androidx.compose.material3.Icon(
-                     imageVector = Icons.Default.Add,
-                     contentDescription = "Add to dictionary",
-                     tint = androidx.compose.material3.MaterialTheme.colorScheme.onSurface
-                 )
-             }
-        }
+        // NOTE: Removed the "+" button - typed word now appears as first suggestion
+        // When user clicks their typed word, it's logged as INSISTED for dictionary learning
 
         list.forEachIndexed { index, candidate ->
             val candidateModifier = Modifier

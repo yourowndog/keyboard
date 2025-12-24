@@ -149,3 +149,11 @@
     * **Magic Numbers Centralized:** All tuning constants (BIGRAM_WEIGHT=0.5, APOSTROPHE_EXACT_BONUS=-20.0, EXACT_MATCH_BONUS=-100.0, etc.) now in one place.
     * **Dead Code Removed:** Deleted duplicate `bigramBonus()` functions, `BigramScore` class, and inline scoring logic (~100 lines removed).
     * **Architecture:** "Brain Transplant" pattern: SymSpell=Retriever, CandidateScorer=Judge, CasingUtils=Caser. – Gemini
+
+### 2025-12-21
+* **Task:** Dictionary and harvest improvements based on usage_harvest.md analysis
+* **Files:** `unified_dictionary.tsv`, `CasingUtils.kt`, `SymSpellManager.kt`, `HarvestManager.kt`, `EditorInstance.kt`
+* **Changes:**
+  - Added 27 words: 's contractions (what's, he's, etc.), slang (fuckin, meds, bb, rq, fr, idk, idek), tech (termux, sudo, pacman)
+  - Added ac→AC and itd→it'd as contraction shortcuts
+  - Extended harvest logging to capture trigram context on accept/reject events

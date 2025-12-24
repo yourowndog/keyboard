@@ -221,11 +221,12 @@ fun TextKeyboardLayout(
         val keyboardHeight = constraints.maxHeight.toFloat()
         val keyMarginH by prefs.keyboard.keySpacingHorizontal.observeAsTransformingState { it.dp.toPx() }
         val keyMarginV by prefs.keyboard.keySpacingVertical.observeAsTransformingState { it.dp.toPx() }
+        val bottomRowHeightFactor by prefs.keyboard.bottomRowHeightFactor.observeAsTransformingState { it / 100f }
         val keyboardRowBaseHeight = FlorisImeSizing.keyboardRowBaseHeight
 
         val desiredKey = remember(
             keyboard, keyboardWidth, keyboardHeight, keyMarginH, keyMarginV,
-            keyboardRowBaseHeight, evaluator
+            keyboardRowBaseHeight, bottomRowHeightFactor, evaluator
         ) {
             TextKey(data = TextKeyData.UNSPECIFIED).also { desiredKey ->
                 desiredKey.touchBounds.apply {
@@ -242,7 +243,7 @@ fun TextKeyboardLayout(
                     }
                 }
                 desiredKey.visibleBounds.applyFrom(desiredKey.touchBounds).deflateBy(keyMarginH, keyMarginV)
-                keyboard.layout(keyboardWidth, keyboardHeight, desiredKey, true)
+                keyboard.layout(keyboardWidth, keyboardHeight, desiredKey, true, bottomRowHeightFactor)
             }
         }
 

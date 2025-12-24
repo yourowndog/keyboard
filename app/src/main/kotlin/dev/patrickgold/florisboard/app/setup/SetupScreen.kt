@@ -18,6 +18,9 @@ package dev.patrickgold.florisboard.app.setup
 
 import android.content.Context
 import android.content.Intent
+import android.os.Environment
+import android.provider.Settings
+import android.net.Uri
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -79,6 +82,7 @@ fun SetupScreen() = FlorisScreen {
     val isFlorisBoardSelected by InputMethodUtils.observeIsFlorisboardSelected(foregroundOnly = true)
     val hasNotificationPermission by prefs.internal.notificationPermissionState.observeAsState()
     val hasMicPermission by prefs.internal.micPermissionState.observeAsState()
+    val hasStoragePermission by prefs.internal.storagePermissionState.observeAsState()
 
     val requestNotification =
         rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -110,6 +114,8 @@ fun SetupScreen() = FlorisScreen {
         requestMic,
         hasNotificationPermission,
         hasMicPermission,
+        hasStoragePermission,
+        prefs,
         scope,
     )
 }
@@ -124,6 +130,8 @@ private fun FlorisScreenScope.content(
     requestMic: ManagedActivityResultLauncher<String, Boolean>,
     hasNotificationPermission: NotificationPermissionState,
     hasMicPermission: MicPermissionState,
+    hasStoragePermission: StoragePermissionState,
+    prefs: FlorisPreferenceModel,
     scope: CoroutineScope,
 ) {
 
@@ -133,22 +141,38 @@ private fun FlorisScreenScope.content(
             !isFlorisBoardSelected -> Steps.SelectIme.id
             hasNotificationPermission == NotificationPermissionState.NOT_SET && AndroidVersion.ATLEAST_API33_T -> Steps.SelectNotification.id
             hasMicPermission == MicPermissionState.NOT_SET -> Steps.GrantMicPermission.id
+            hasStoragePermission == StoragePermissionState.NOT_SET -> Steps.GrantStoragePermission.id
             else -> Steps.FinishUp.id
         }
         FlorisStepState.new(init = initStep)
     }
 
     content {
-        LaunchedEffect(isFlorisBoardEnabled, isFlorisBoardSelected, hasNotificationPermission, hasMicPermission) {
+        LaunchedEffect(isFlorisBoardEnabled, isFlorisBoardSelected, hasNotificationPermission, hasMicPermission, hasStoragePermission) {
             stepState.setCurrentAuto(
                 when {
                     !isFlorisBoardEnabled -> Steps.EnableIme.id
                     !isFlorisBoardSelected -> Steps.SelectIme.id
                     hasNotificationPermission == NotificationPermissionState.NOT_SET && AndroidVersion.ATLEAST_API33_T -> Steps.SelectNotification.id
                     hasMicPermission == MicPermissionState.NOT_SET -> Steps.GrantMicPermission.id
+                    hasStoragePermission == StoragePermissionState.NOT_SET -> Steps.GrantStoragePermission.id
                     else -> Steps.FinishUp.id
                 }
             )
+        }
+
+        // Poll for storage permission grant (user returns from settings)
+        LaunchedEffect(Unit) {
+            while (true) {
+                delay(500L)
+                if (AndroidVersion.ATLEAST_API30_R && Environment.isExternalStorageManager()) {
+                    if (hasStoragePermission != StoragePermissionState.GRANTED) {
+                        scope.launch {
+                            prefs.internal.storagePermissionState.set(StoragePermissionState.GRANTED)
+                        }
+                    }
+                }
+            }
         }
 
         // Below block allows to return from the system IME enabler activity
@@ -182,7 +206,7 @@ private fun FlorisScreenScope.content(
                 Spacer(modifier = Modifier.height(16.dp))
             },
             steps = steps(
-                context, navController, requestNotification, requestMic, scope
+                context, navController, requestNotification, requestMic, hasStoragePermission, scope
             ),
             footer = {
                 footer(context)
@@ -218,6 +242,7 @@ private fun PreferenceUiScope<FlorisPreferenceModel>.steps(
     navController: NavController,
     requestNotification: ManagedActivityResultLauncher<String, Boolean>,
     requestMic: ManagedActivityResultLauncher<String, Boolean>,
+    hasStoragePermission: StoragePermissionState,
     scope: CoroutineScope,
 ): List<FlorisStep> {
 
@@ -261,6 +286,39 @@ private fun PreferenceUiScope<FlorisPreferenceModel>.steps(
             }
         },
         FlorisStep(
+            id = Steps.GrantStoragePermission.id,
+            title = "Grant Storage Access",
+        ) {
+            StepText("OmniBoard needs storage access to log usage data for dictionary improvements.")
+            if (hasStoragePermission == StoragePermissionState.GRANTED ||
+                (AndroidVersion.ATLEAST_API30_R && Environment.isExternalStorageManager())) {
+                StepText("✓ Storage permission granted!")
+                // Auto-advance if granted
+                scope.launch {
+                    this@steps.prefs.internal.storagePermissionState.set(StoragePermissionState.GRANTED)
+                }
+            } else {
+                StepButton(label = "Open Storage Settings") {
+                    if (AndroidVersion.ATLEAST_API30_R) {
+                        // Android 11+: Need MANAGE_EXTERNAL_STORAGE
+                        val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
+                        intent.data = Uri.parse("package:" + context.packageName)
+                        context.startActivity(intent)
+                    } else {
+                        // Older Android: Regular permission
+                        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                        intent.data = Uri.parse("package:" + context.packageName)
+                        context.startActivity(intent)
+                    }
+                }
+                StepButton(label = "Skip (Not recommended)") {
+                    scope.launch {
+                        this@steps.prefs.internal.storagePermissionState.set(StoragePermissionState.DENIED)
+                    }
+                }
+            }
+        },
+        FlorisStep(
             id = Steps.FinishUp.id,
             title = stringRes(R.string.setup__finish_up__title),
         ) {
@@ -283,5 +341,6 @@ private sealed class Steps(val id: Int) {
     data object SelectIme : Steps(id = 2)
     data object SelectNotification : Steps(id = 3)
     data object GrantMicPermission : Steps(id = 4)
-    data object FinishUp : Steps(id = 5)
+    data object GrantStoragePermission : Steps(id = 5)
+    data object FinishUp : Steps(id = 6)
 }

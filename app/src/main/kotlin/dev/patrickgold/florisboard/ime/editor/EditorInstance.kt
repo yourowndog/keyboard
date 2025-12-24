@@ -277,6 +277,10 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
                     autoCorrectUndoState = AbstractEditorInstance.AutoCorrectUndoState(text, original)
                     // Log accepted autocorrect for harvest
                     HarvestManager.logAccepted(original, text, prevWord, getPreviousPreviousWord())
+                } else if (original.isNotEmpty() && text.equals(original, ignoreCase = true)) {
+                    // User explicitly picked their typed word - log as INSISTED
+                    // This is a strong signal this word should be in the dictionary
+                    HarvestManager.logInsisted(original, prevWord)
                 }
             }
         } else {

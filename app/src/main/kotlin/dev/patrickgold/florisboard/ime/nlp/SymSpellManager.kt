@@ -71,7 +71,7 @@ object SymSpellManager {
     val PROPER_OVERRIDES = setOf(
         "kiry", "kiry's",
         "sam", "sam's",
-        "i'd",
+        "I'd",
         "mike", "mike's",
         "john", "john's",
         "elijah", "elijah's",
@@ -153,7 +153,8 @@ object SymSpellManager {
     // Whitelist for 2-letter words. All others are culled to prevent "si", "da", "yo" etc.
     private val TWO_LETTER_WHITELIST = setOf(
         "am", "an", "as", "at", "be", "by", "do", "go", "ha", "he", "hi", "if", "in", "is", "it", 
-        "me", "my", "no", "of", "oh", "ok", "on", "or", "ox", "so", "to", "up", "us", "we", "yo"
+        "me", "my", "no", "of", "oh", "ok", "on", "or", "ox", "so", "to", "up", "us", "we", "yo",
+        "bb", "rq", "fr", "ac"  // Sam's custom slang/abbreviations
     )
 
     // Delegate to CandidateScorer for unified spatial cost calculation

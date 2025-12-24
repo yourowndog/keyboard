@@ -440,6 +440,7 @@
     <string name="pref__keyboard__landscape_input_ui_mode__label" comment="Preference value">Landscape fullscreen input</string>
     <string name="pref__keyboard__height_factor__label" comment="Preference title">Keyboard height</string>
     <string name="pref__keyboard__key_spacing__label" comment="Preference title">Key spacing</string>
+    <string name="pref__keyboard__bottom_row_height__label" comment="Preference title">Bottom row height</string>
     <string name="pref__keyboard__bottom_offset__label" comment="Preference title">Bottom offset</string>
     <string name="pref__keyboard__group_keypress__label" comment="Preference group title">Key press</string>
     <string name="pref__keyboard__popup_enabled__label" comment="Preference title">Popup Visibility</string>

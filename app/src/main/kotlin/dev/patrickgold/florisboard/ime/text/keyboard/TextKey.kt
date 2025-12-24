@@ -20,6 +20,7 @@ import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.ime.keyboard.AbstractKeyData
 import dev.patrickgold.florisboard.ime.keyboard.ComputingEvaluator
 import dev.patrickgold.florisboard.ime.keyboard.Key
+import dev.patrickgold.florisboard.ime.keyboard.VerticalAlignment
 import dev.patrickgold.florisboard.ime.keyboard.KeyData
 import dev.patrickgold.florisboard.ime.keyboard.KeyboardMode
 import dev.patrickgold.florisboard.ime.keyboard.computeImageVector
@@ -165,7 +166,7 @@ class TextKey(override val data: AbstractKeyData) : Key(data) {
                     KeyCode.VIEW_SYMBOLS2 -> 1.56f
                     KeyCode.SHIFT,
                     KeyCode.ENTER -> 1.25f
-                    KeyCode.DELETE -> 1.15f
+                    KeyCode.DELETE -> 1.00f
                     KeyCode.ARROW_LEFT,
                     KeyCode.ARROW_RIGHT,
                     KeyCode.ARROW_UP,
@@ -177,6 +178,18 @@ class TextKey(override val data: AbstractKeyData) : Key(data) {
                     KeyCode.CTRL -> 1.30f
                     else -> 1.00f
                 }
+            }
+            // Per-key height control: spacebar gets full height even in compressed rows
+            // The factor of 1.33 compensates for the 0.75 row compression (1.0 / 0.75 ≈ 1.33)
+            flayHeightFactor = when (computed.code) {
+                KeyCode.SPACE,
+                KeyCode.CJK_SPACE -> 1.33f
+                else -> 1.0f
+            }
+            flayVerticalAlignment = when (computed.code) {
+                KeyCode.SPACE,
+                KeyCode.CJK_SPACE -> VerticalAlignment.CENTER
+                else -> VerticalAlignment.BOTTOM
             }
         }
     }

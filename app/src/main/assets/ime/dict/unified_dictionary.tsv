@@ -25850,7 +25850,7 @@ HDDs	166
 HDMI	4335
 HDTV	229
 he	2969155
-he'd	800000
+he'd	300000
 he'll	800000
 head	650018
 Head	87392
@@ -27645,7 +27645,7 @@ hysterically	1086
 hysterics	268
 Hyundai	5895
 I	4156864
-I'd	1500000
+I'd	500000
 I'll	1500000
 I'm	3000000
 I've	1200000
@@ -30188,7 +30188,7 @@ isthmus	10494
 Istria	1998
 Isuzu	1776
 it	2642776
-it'd	600000
+it'd	200000
 it'll	800000
 Italia	8705
 Italian	223195
@@ -52085,7 +52085,7 @@ Shay	1576
 Shayne	955
 Shays	229
 she	1487302
-she'd	800000
+she'd	250000
 she'll	800000
 Shea	7183
 sheaf	7913
@@ -58117,7 +58117,7 @@ thanks	121294
 Thanksgiving	12588
 thanksgiving	5329
 that	3587725
-that'd	600000
+that'd	200000
 that'll	600000
 thatch	3143
 thatched	9564
@@ -58262,7 +58262,7 @@ Thessaloniki	7913
 Thessaly	1998
 theta	5329
 they	1762590
-they'd	800000
+they'd	300000
 they'll	800000
 they're	800000
 they've	800000
@@ -63382,7 +63382,7 @@ WBRE	166
 WCBS	6512
 WCTU	640
 we	3000000
-we'd	800000
+we'd	300000
 we'll	800000
 we're	800000
 we've	800000
@@ -63667,7 +63667,7 @@ wharfs	838
 Wharton	7183
 wharves	5895
 what	1092026
-what'd	500000
+what'd	200000
 what'll	500000
 whatever	93438
 Whatley	166
@@ -63830,7 +63830,7 @@ Whitwell	118
 whiz	640
 who	2079310
 WHO	22965
-who'd	500000
+who'd	150000
 who'll	500000
 who've	400000
 whodunit	733
@@ -64795,7 +64795,7 @@ Yosemite	4810
 Yoshi	838
 Yost	1395
 you	1552487
-you'd	800000
+you'd	300000
 you'll	800000
 you're	1200000
 you've	800000
@@ -65009,30 +65009,44 @@ Zwolle	419
 zydeco	838
 zygote	1998
 zygotes	166
-what'settings.gradle.kts' 800000
-that'settings.gradle.kts' 800000
-he'settings.gradle.kts' 600000
-she'settings.gradle.kts' 500000
-it'settings.gradle.kts' 900000
-there'settings.gradle.kts' 600000
-where'settings.gradle.kts' 400000
-here'settings.gradle.kts' 400000
-who'settings.gradle.kts' 400000
-let'settings.gradle.kts' 500000
-fuckin100000
-fuckin'100000
-fuggin50000
-kiddos100000
-meds200000
-bb50000
-rq30000
-fr50000
-ilysfm30000
-idek100000
-idk200000
-termux50000
-pacman50000
-sudo100000
-ambien50000
-ritalin50000
-vaush30000
+what's	800000
+that's	800000
+he's	800000
+she's	700000
+it's	900000
+there's	600000
+where's	400000
+here's	400000
+who's	500000
+let's	500000
+fuckin	100000
+fuckin'	100000
+fuggin	50000
+kiddos	100000
+meds	200000
+bb	50000
+rq	30000
+fr	50000
+ilysfm	30000
+idek	100000
+idk	200000
+termux	50000
+pacman	50000
+sudo	100000
+ambien	50000
+ritalin	50000
+vaush	30000
+AC	150000
+boutta	80000
+lemme	80000
+outta	100000
+spinnin'	50000
+blazin'	50000
+tryna	100000
+Techline	50000
+copay	80000
+copays	60000
+HRA	50000
+where'd	100000
+there'd	100000
+here'd	50000
