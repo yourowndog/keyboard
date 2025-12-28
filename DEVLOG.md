@@ -157,3 +157,12 @@
   - Added 27 words: 's contractions (what's, he's, etc.), slang (fuckin, meds, bb, rq, fr, idk, idek), tech (termux, sudo, pacman)
   - Added ac→AC and itd→it'd as contraction shortcuts
   - Extended harvest logging to capture trigram context on accept/reject events
+
+### 2025-12-27
+* **Task:** Added Bottom Row Height slider and Per-Key Customization system.
+* **Files:** `AppPrefs.kt`, `Key.kt`, `KeyCustomization.kt` (NEW), `KeyCustomizationScreen.kt` (NEW), `TextKeyboard.kt`, `TextKeyboardLayout.kt`, `Routes.kt`, `KeyboardScreen.kt`, `strings.xml`, `Keyboard.kt`
+* **Details:**
+  - **Bottom Row Height:** New slider (50-100%) in Keyboard settings to control compressed row height.
+  - **Per-Key Customization:** New settings screen with dropdown (Space/Enter/Shift/Backspace/Arrows) + sliders for padding (Top/Bottom/Left/Right 0-20dp) and height factor (50-200%).
+  - **Storage:** JSON map in SharedPreferences persists customizations across restarts.
+  - **Integration:** `TextKeyboardLayout` applies padding to `visibleBounds` after layout. – Gemini

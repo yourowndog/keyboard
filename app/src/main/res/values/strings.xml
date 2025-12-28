@@ -442,6 +442,18 @@
     <string name="pref__keyboard__key_spacing__label" comment="Preference title">Key spacing</string>
     <string name="pref__keyboard__bottom_row_height__label" comment="Preference title">Bottom row height</string>
     <string name="pref__keyboard__bottom_offset__label" comment="Preference title">Bottom offset</string>
+    <string name="pref__keyboard__key_customization__title" comment="Preference title">Key customization</string>
+    <string name="pref__keyboard__key_customization__summary" comment="Preference summary">Adjust size and padding for individual keys</string>
+    <string name="pref__keyboard__key_customization__select_key" comment="Preference group title">Select key</string>
+    <string name="pref__keyboard__key_customization__height" comment="Preference group title">Height</string>
+    <string name="pref__keyboard__key_customization__height_factor" comment="Slider label">Height factor: {v}%</string>
+    <string name="pref__keyboard__key_customization__width" comment="Preference group title">Width</string>
+    <string name="pref__keyboard__key_customization__width_factor" comment="Slider label">Width factor: {v}%</string>
+    <string name="pref__keyboard__key_customization__padding" comment="Preference group title">Padding</string>
+    <string name="pref__keyboard__key_customization__padding_top" comment="Slider label">Top: {v} dp</string>
+    <string name="pref__keyboard__key_customization__padding_bottom" comment="Slider label">Bottom: {v} dp</string>
+    <string name="pref__keyboard__key_customization__padding_left" comment="Slider label">Left: {v} dp</string>
+    <string name="pref__keyboard__key_customization__padding_right" comment="Slider label">Right: {v} dp</string>
     <string name="pref__keyboard__group_keypress__label" comment="Preference group title">Key press</string>
     <string name="pref__keyboard__popup_enabled__label" comment="Preference title">Popup Visibility</string>
     <string name="pref__keyboard__popup_enabled__summary" comment="Preference summary">Show popup when you press a key</string>

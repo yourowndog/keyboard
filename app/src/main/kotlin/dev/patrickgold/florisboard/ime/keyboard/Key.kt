@@ -107,6 +107,14 @@ abstract class Key(open val data: AbstractKeyData) {
     open var flayVerticalAlignment: VerticalAlignment = VerticalAlignment.BOTTOM
 
     /**
+     * Per-key padding values in dp. These are applied to the visible bounds during layout.
+     */
+    open var flayPaddingTop: Float = 0f
+    open var flayPaddingBottom: Float = 0f
+    open var flayPaddingLeft: Float = 0f
+    open var flayPaddingRight: Float = 0f
+
+    /**
      * The computed UI label of this key. This value is used by the keyboard view to temporarily save the label string
      * for UI rendering and should not be set manually.
      */

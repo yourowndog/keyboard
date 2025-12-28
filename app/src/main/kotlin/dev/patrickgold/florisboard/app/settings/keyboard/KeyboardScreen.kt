@@ -167,6 +167,11 @@ fun KeyboardScreen() = FlorisScreen {
                 max = 60,
                 stepIncrement = 1,
             )
+            Preference(
+                title = stringRes(R.string.pref__keyboard__key_customization__title),
+                summary = stringRes(R.string.pref__keyboard__key_customization__summary),
+                onClick = { navController.navigate(Routes.Settings.KeyCustomization) },
+            )
         }
 
         PreferenceGroup(title = stringRes(R.string.pref__keyboard__group_keypress__label)) {

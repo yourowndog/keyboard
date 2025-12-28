@@ -152,6 +152,20 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
                 )
             )
         }
+        
+        // Fast-path for contractions: im -> I'm, dont -> don't, etc.
+        // This MUST be checked before SymSpell so missing apostrophes map correctly.
+        val contractionResult = dev.patrickgold.florisboard.ime.nlp.shared.CasingUtils.CONTRACTION_SHORTCUTS[currentWordRaw.lowercase()]
+        if (contractionResult != null) {
+            return listOf(
+                WordSuggestionCandidate(
+                    text = contractionResult,
+                    secondaryText = null,
+                    isEligibleForAutoCommit = true,
+                    sourceProvider = this
+                )
+            )
+        }
 
         // DELEGATE TO NEW ENGINE (Brain Transplant)
         // 1. Retrieve candidates from SymSpell (The Retriever)

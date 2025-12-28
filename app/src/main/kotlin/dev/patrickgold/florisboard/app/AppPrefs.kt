@@ -585,6 +585,10 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "keyboard__bottom_row_height_factor",
             default = 75,
         )
+        val keyCustomizations = string(
+            key = "keyboard__key_customizations",
+            default = "{}",
+        )
         val bottomOffsetPortrait = int(
             key = "keyboard__bottom_offset_portrait",
             default = 0,

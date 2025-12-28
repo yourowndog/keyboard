@@ -202,13 +202,13 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         val isInsertAutoSpaceAfterChar = shouldInsertAutoSpaceAfter(char)
         val isDeletePreviousSpace = isInsertAutoSpaceAfterChar && autoSpace.isActive
         
-        // iOS/Gboard behavior: if phantomSpace is active and we're typing punctuation,
-        // delete the trailing space that was auto-inserted after the last word.
-        // This makes "word " + "." = "word." instead of "word ."
+        // iOS/Gboard behavior: if we're typing punctuation and there's a trailing space,
+        // delete the space. This makes "word " + "." = "word." instead of "word ."
+        // Works for ANY trailing space before punctuation, not just phantom spaces.
         val punctuationRule = nlpManager.getActivePunctuationRule()
         val isPunctuation = char.isNotEmpty() && punctuationRule.symbolsPrecedingAutoSpace.contains(char.first())
-        val shouldEatTrailingSpace = phantomSpace.isActive && isPunctuation && 
-            activeContent.getTextBeforeCursor(1).let { it.isNotEmpty() && it.last() == ' ' }
+        val hasTrailingSpace = activeContent.getTextBeforeCursor(1).let { it.isNotEmpty() && it.last() == ' ' }
+        val shouldEatTrailingSpace = isPunctuation && hasTrailingSpace
         
         if (isInsertAutoSpaceAfterChar) {
             autoSpace.setActive()
