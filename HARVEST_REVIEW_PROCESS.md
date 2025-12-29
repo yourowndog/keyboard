@@ -24,7 +24,7 @@ Each harvest review should result in:
 Marker: `<!-- Data below this line is NEW since last review -->` 
 
 ## Automation Script
-The `process_harvest.py` script handles parsing, locating the marker, processing new entries, and appending a new marker.
+The `harvest.py` script handles parsing, locating the marker, processing new entries, and appending a new marker.
 
 ## Log Entry Format
 `[CATEGORY] timestamp | content | ctx: "word" | trigram: "prev word"`
