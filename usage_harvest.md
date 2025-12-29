@@ -219,9 +219,6 @@ Format of entries:
 [REJECTED] 2025-12-23 22:36:07 | emotionlt ← emotion (reverted) | ctx: "emotionlt"
 [ACCEPTED] 2025-12-23 22:36:48 | avsilable → available | ctx: "avsilable" | trigram: "emotionally avsilable"
 
----
-<!-- REVIEW MARKER: 2025-12-24 05:10:00 -->
-<!-- Note: Contraction frequency calibration complete. Added 'd/'s bigrams. -->
+
 <!-- Data below this line is NEW since last review -->
 ---
-
