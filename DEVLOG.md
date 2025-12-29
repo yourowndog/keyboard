@@ -166,3 +166,15 @@
   - **Per-Key Customization:** New settings screen with dropdown (Space/Enter/Shift/Backspace/Arrows) + sliders for padding (Top/Bottom/Left/Right 0-20dp) and height factor (50-200%).
   - **Storage:** JSON map in SharedPreferences persists customizations across restarts.
   - **Integration:** `TextKeyboardLayout` applies padding to `visibleBounds` after layout. – Gemini
+
+### 2025-12-27
+* **Task:** Created comprehensive Neon Synthwave theme utilizing ALL Snygg styling properties.
+* **Files:** `neon_synthwave.json` (NEW), `extension.json`
+* **Details:**
+  - **Full Property Utilization:** Used every available Snygg property: background, foreground, shadow-elevation, shadow-color, border-width, border-color, shape, padding, margin, font-family, font-size, font-weight, font-style, letter-spacing, text-align, text-max-lines, text-overflow, clip.
+  - **Intelligent Key Groupings:** Alphas 97-122 (cyan glow), Numbers 48-57 (magenta), Navigation -21 to -28 (orange), Modifiers -1 to -6 (blue), Shift -11/-13 (yellow), Delete -7 to -10 (red), Enter (green), Clipboard -31 to -35 (purple), Layout switchers -201 to -207 (pink).
+  - **Glow Effects:** Colored shadows create neon glow effect using rgba() with high alpha values and matching border colors.
+  - **Shape Variety:** Cut-corner shapes for cyber aesthetic (--shape-key, --shape-key-asymm), rounded for pills/popups.
+  - **Big Palette:** 30+ unique colors including primaries, dims, tints, glows, and surface layers.
+  - **Complete UI Coverage:** Styled all elements: keys, hints, popups, smartbar, clipboard, emoji panel, one-handed mode, subtype panel, glide trail, incognito indicator, extracted landscape input. – Gemini
+
