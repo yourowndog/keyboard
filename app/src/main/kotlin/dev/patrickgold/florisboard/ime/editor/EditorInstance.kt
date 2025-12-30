@@ -207,6 +207,14 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         // Works for ANY trailing space before punctuation, not just phantom spaces.
         val punctuationRule = nlpManager.getActivePunctuationRule()
         val isPunctuation = char.isNotEmpty() && punctuationRule.symbolsPrecedingAutoSpace.contains(char.first())
+        
+        // SESSION LOGGING
+        if (isPunctuation || char == "\n") {
+            HarvestManager.flushSession(char)
+        } else {
+            HarvestManager.addToSession(char)
+        }
+        
         val hasTrailingSpace = activeContent.getTextBeforeCursor(1).let { it.isNotEmpty() && it.last() == ' ' }
         val shouldEatTrailingSpace = isPunctuation && hasTrailingSpace
         
@@ -245,6 +253,13 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
             super.commitText("$SPACE$text")
         } else {
             super.commitText(text)
+        }.also {
+            // SESSION LOGGING
+            if (text == "\n") {
+                HarvestManager.flushSession(text)
+            } else {
+                HarvestManager.addToSession(text)
+            }
         }
     }
 
@@ -623,7 +638,10 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
             )
         }
         // Mark that the user rejected the last autocorrect so the next commit of the same token won't be re-corrected.
-        dev.patrickgold.florisboard.ime.nlp.SymSpellManager.markNextAsUserRejected()
+        // Mark that the user rejected the last autocorrect so the next commit of the same token won't be re-corrected.
+        // SMART SESSION: Pass original and corrected text so SymSpellManager can infer intent if user types a new char
+        dev.patrickgold.florisboard.ime.nlp.SymSpellManager.markNextAsUserRejected(state.originalText, state.correctedText)
+        // Learn the ignore pair so it persists
         // Learn the ignore pair so it persists
         dev.patrickgold.florisboard.ime.dictionary.DictionaryManager.default().learnUserIgnore(state.originalText, state.correctedText)
         // Log rejected autocorrect for harvest

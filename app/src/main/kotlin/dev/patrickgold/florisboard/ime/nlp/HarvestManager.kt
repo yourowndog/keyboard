@@ -126,7 +126,12 @@ object HarvestManager {
      * @param prevWord The word before (context)
      */
     fun logInsisted(word: String, prevWord: String?) {
-        append("INSISTED", word, prevWord)
+        // Smart Check: If the user insisted on a word that ISN'T in our dict, it's a NEW_WORD candidate.
+        if (!dev.patrickgold.florisboard.ime.nlp.SymSpellManager.hasWord(word)) {
+            logNewWord(word, prevWord)
+        } else {
+            append("INSISTED", word, prevWord)
+        }
     }
     
     /**
@@ -138,8 +143,54 @@ object HarvestManager {
     fun logPicked(typed: String, picked: String, prevWord: String?) {
         if (typed == picked) {
             logInsisted(typed, prevWord)
+        if (typed == picked) {
+            logInsisted(typed, prevWord)
         } else {
             append("PICKED", "$typed → $picked (manual)", prevWord)
+        }
+    }
+
+    /**
+     * Log the user's intent after a rejection.
+     * @param typed Original typed input (e.g. "s")
+     * @param rejected What it was corrected to (e.g. "so")
+     * @param intent What the user typed after rejecting (e.g. "a")
+     */
+    fun logIntent(typed: String, rejected: String, intent: String) {
+        append("INTENT", "Typed '$typed' → Auto-corrected to '$rejected' → User reverted & typed '$intent'. (Conclusion: '$typed' meant '$intent')", null)
+    }
+
+    private val sessionBuffer = StringBuilder()
+    private var sessionWordCount = 0
+
+    fun addToSession(word: String) {
+        synchronized(sessionBuffer) {
+            if (sessionBuffer.isNotEmpty() && !word.matches(Regex("^[.,?!;:]$"))) {
+                sessionBuffer.append(" ")
+            }
+            sessionBuffer.append(word)
+            
+            // Auto-flush logic for users who don't use punctuation
+            if (!word.matches(Regex("^[.,?!;:]$"))) {
+                sessionWordCount++
+                if (sessionWordCount >= 10) {
+                    flushSession()
+                }
+            }
+        }
+    }
+
+    fun flushSession(terminator: String = "") {
+        synchronized(sessionBuffer) {
+            if (terminator.isNotEmpty()) {
+                sessionBuffer.append(terminator)
+            }
+            if (sessionBuffer.isNotEmpty()) {
+                val sentence = sessionBuffer.toString()
+                sessionBuffer.setLength(0) // clear
+                sessionWordCount = 0
+                append("SESSION", "\"$sentence\"", null)
+            }
         }
     }
     

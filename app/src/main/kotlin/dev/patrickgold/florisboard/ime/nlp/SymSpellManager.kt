@@ -54,14 +54,14 @@ object SymSpellManager {
         "werent" to "weren't",
         "youre" to "you're",
         "theyre" to "they're",
-        "were" to "we're",
+        // "were" to "we're", // Removed: handled by context logic in fix()
         "lets" to "let's",
         "thats" to "that's",
         "whos" to "who's",
         "whats" to "what's",
         "wheres" to "where's",
         "theres" to "there's",
-        "well" to "we'll",
+        // "well" to "we'll", // Removed: handled by context logic in fix()
         "hell" to "he'll",
         "shell" to "she'll",
         "its" to "it's",
@@ -88,13 +88,34 @@ object SymSpellManager {
         "rupert", "rupert's",
         "dan", "dan's",
         "tim", "tim's",
+        "claira", "claira's",
+        "christmas",
+        "aorus",
+        "gpu", "gpu's",
+        "cr",
     )
 
     // Tracks whether the last autocorrect was rejected; if so, skip autocorrect once.
     @Volatile private var skipNextAutocorrect = false
+    
+    // SMART SESSION: Track rejection state to infer intent
+    // Stores: Pair(OriginalTyped, RejectedCorrection-aka-what-it-became)
+    @Volatile private var lastRejectedState: Pair<String, String>? = null
 
     // QWERTY Neighbor Map - now uses shared KeyboardLayout
     private val KEYBOARD_NEIGHBORS get() = KeyboardLayout.QWERTY_NEIGHBORS
+    
+    // Words preceding "were" that imply it should STAY "were" (past tense)
+    // e.g. "they were", "we were", "you were"
+    private val PREV_WORDS_FOR_WERE = setOf(
+        "we", "they", "you", "there", "here", "who", "which", "what", "that", "these", "those"
+    )
+
+    // Words preceding "well" that imply it should STAY "well" (adverb/interjection)
+    // e.g. "oh well", "very well", "doing well"
+    private val PREV_WORDS_FOR_WELL = setOf(
+        "oh", "ah", "very", "quite", "as", "doing", "went", "worked", "done", "known", "start", "damn"
+    )
     
     private val BLACKLIST = setOf("wont", "hows", "cant", "dont", "isnt", "arent", "didnt", "couldnt", "wouldnt", "shouldnt", "wasnt", "werent", "hasnt", "havent", "hadnt")
 
@@ -162,8 +183,24 @@ object SymSpellManager {
         return CandidateScorer.spatialCost(typed, candidate)
     }
 
-    fun markNextAsUserRejected() {
+    fun markNextAsUserRejected(originalTyped: String, rejectedCorrection: String) {
         skipNextAutocorrect = true
+        lastRejectedState = Pair(originalTyped, rejectedCorrection)
+    }
+    
+    /**
+     * Check if a word exists in the dictionary (including user cache).
+     */
+    fun hasWord(word: String): Boolean {
+        if (!isReady) return false
+        val instance = symSpell ?: return false
+        
+        // Check user cache first
+        if (userWordsCache.any { it.equals(word, ignoreCase = true) }) return true
+        
+        // Check main dictionary
+        val matches = instance.lookup(word.lowercase(), Verbosity.Top, 0.0)
+        return matches.isNotEmpty() && matches.first().distance == 0.0
     }
 
     // Cache of user dictionary words for the current locale
@@ -174,9 +211,46 @@ object SymSpellManager {
     }
 
     fun fix(input: String, previousWord: String? = null): String {
+        // SMART SESSION: Check if this input follows a rejection
+        lastRejectedState?.let { (originalTyped, rejectedCorrection) ->
+            // If user typed something new (input) immediately after rejecting,
+            // we assume 'originalTyped' was meant to be 'input'.
+            HarvestManager.logIntent(originalTyped, rejectedCorrection, input)
+            lastRejectedState = null
+        }
+    
+        val lower = input.lowercase()
         // Fast-path for contractions so missing apostrophes don't divert to unrelated words.
-        CONTRACTION_SHORTCUTS[input.lowercase()]?.let { contraction ->
+        CONTRACTION_SHORTCUTS[lower]?.let { contraction ->
             return applyCasingPattern(input, contraction)
+        }
+        
+        // Context-aware contraction logic
+        if (lower == "were") {
+            val prev = previousWord?.lowercase() ?: ""
+            // If prev word is NOT in the list of "words that precede 'were'", assume "we're"
+            // Default to "we're" at start of sentence (prev is empty/null)
+            if (prev.isEmpty() || !PREV_WORDS_FOR_WERE.contains(prev)) {
+                return applyCasingPattern(input, "we're")
+            }
+        }
+        if (lower == "well") {
+            val prev = previousWord?.lowercase() ?: ""
+            // If prev word is NOT in list, assume "we'll"
+            // But "well" is common at start of sentence ("Well, ..."), so if prev is empty, keep "Well"
+            if (prev.isNotEmpty() && !PREV_WORDS_FOR_WELL.contains(prev)) {
+                return applyCasingPattern(input, "we'll")
+            }
+        }
+        
+        // Typo fixes
+        if (lower == "ir") return "it"
+        if (lower == "s") return "a"
+        if (lower == "km") {
+             // 95% case: "km" -> "I'm". Exception: if prev word is a number?
+             // Simple heuristic: if prev word is NOT a number, do correcting.
+             // If we don't have number detection handy, just correct it as requested.
+             return applyCasingPattern(input, "I'm")
         }
 
         if (!isReady) return input

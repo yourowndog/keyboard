@@ -131,6 +131,8 @@ fun TextKeyboardLayout(
             glideTypingManager.setLayout(keys)
         }
     }
+    }
+
     val touchEventChannel = remember { Channel<MotionEvent>(64) }
 
     fun resetAllKeys() {

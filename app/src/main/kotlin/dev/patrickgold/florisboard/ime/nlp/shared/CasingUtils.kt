@@ -59,6 +59,9 @@ object CasingUtils {
         "lets" to "let's",
         "ac" to "AC",      // air conditioning
         "itd" to "it'd",   // sloppy it'd typing
+        "hows" to "how's",
+        "km" to "I'm",     // context-dependent in SymSpell, but added here for safety
+        "moms" to "Mom's",
     )
 
     /**
@@ -83,6 +86,12 @@ object CasingUtils {
         "rupert", "rupert's",
         "dan", "dan's",
         "tim", "tim's",
+        "mom", "mom's",
+        "christmas", "christmas's",
+        "aorus",
+        "gpu", "gpu's",
+        "cr",
+        "claira", "claira's",
     )
 
     /**
