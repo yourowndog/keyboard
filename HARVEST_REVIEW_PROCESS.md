@@ -139,6 +139,26 @@ If present but low frequency and gets rejected → propose boost.
 "sams" to listOf("samson", "samoa"),
 ```
 
+### Step 3b: Special Case - "id" Context Monitoring
+
+**Background:** "id" can mean "is" (spatial typo, d→s) or "I'd" (contraction). Currently using context-aware scoring in `CandidateScorer.kt`:
+- After "this/that/it/he/she/what/which/who/there/here" → prefer "is"
+- After "and/but/so/or/because/if/when/well/yeah/yes/no" → prefer "I'd"
+
+**Agent Responsibility:** Always watch harvest for "id" corrections:
+- Where was it ACCEPTED as "is"? Note the previous word.
+- Where was it ACCEPTED as "I'd"? Note the previous word.
+- Where was it REJECTED? What did Sam really mean?
+
+**Goal:** Build Sam-specific bigram context lists over time. Add new context words to `preferIsContext` or `preferIdContext` sets in CandidateScorer.kt as patterns emerge.
+
+**Example harvest entries to watch:**
+```
+[ACCEPTED] id → is | trigram: "here id"   → Add "here" to preferIsContext
+[REJECTED] id ← I'd | trigram: "maybe id" → Sam wanted "is", add "maybe" to preferIsContext
+[ACCEPTED] id → I'd | trigram: "well id"  → Confirms "well" in preferIdContext
+```
+
 ### Step 4: Extract Bigrams
 
 From SESSION paragraphs, look for:
