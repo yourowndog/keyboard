@@ -44,10 +44,6 @@
       "$": "text_key",
       "code": 95,
       "label": "_"
-    },
-    {
-      "code": -7,
-      "type": "modifier"
     }
   ]
 ]

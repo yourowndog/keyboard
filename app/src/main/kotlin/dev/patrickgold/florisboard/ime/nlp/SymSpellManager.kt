@@ -45,8 +45,15 @@ object SymSpellManager {
         "Mom" to Double.MAX_VALUE,
         "Aorus" to Double.MAX_VALUE,
         "GPU" to Double.MAX_VALUE,
-        "Ony" to Double.MAX_VALUE,  // Pokemon character name
         "Hurray" to Double.MAX_VALUE,  // Exclamation (not "Hurrah")
+        "Sam" to Double.MAX_VALUE,     // Proper noun - always capitalize
+        "Sam's" to Double.MAX_VALUE,   // Possessive form
+        "uh" to Double.MAX_VALUE,      // Common hesitation (not "uhuru")
+        "oof" to Double.MAX_VALUE,     // Exclamation (not "Ok")
+        "bc" to Double.MAX_VALUE,      // Abbreviation for "because"
+        "pls" to Double.MAX_VALUE,     // Abbreviation for "please"
+        "idk" to Double.MAX_VALUE,     // Abbreviation "I don't know"
+        "wtf" to Double.MAX_VALUE,     // Common abbrev
     )
     // Prefer common contractions before running SymSpell so "im" maps to "I'm" instead of "pm".
     private val CONTRACTION_SHORTCUTS = mapOf(

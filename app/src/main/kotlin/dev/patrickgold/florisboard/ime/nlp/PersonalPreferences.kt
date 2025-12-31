@@ -21,6 +21,11 @@ object PersonalPreferences {
         "sams" to listOf("samson", "samoa"),
         "min" to listOf("mine", "mini"),
         "Hurray" to listOf("Hurrah"),
+        "uh" to listOf("uhuru"),        // 2x rejected - common hesitation
+        "bc" to listOf("by", "bye"),    // 4x rejected - abbreviation for "because"
+        "pls" to listOf("Plays", "plus"),  // Common abbrev for "please"
+        "id" to listOf("I'd"),          // Often means noun "ID", not contraction
+        "oof" to listOf("Ok", "of"),    // Exclamation
     )
     
     /**
