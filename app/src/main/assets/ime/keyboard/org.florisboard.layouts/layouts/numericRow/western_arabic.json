@@ -501,10 +501,6 @@
           ]
         }
       }
-    },
-    {
-      "code": -7,
-      "type": "enter_editing"
     }
   ]
 ]

@@ -585,12 +585,16 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "keyboard__bottom_row_height_factor",
             default = 75,
         )
-        val bottomRowPaddingTop = int(
-            key = "keyboard__bottom_row_padding_top",
+        val modRowUpperGap = int(
+            key = "keyboard__mod_row_upper_gap",
             default = 0,
         )
-        val bottomRowPaddingBottom = int(
-            key = "keyboard__bottom_row_padding_bottom",
+        val modRowInnerGap = int(
+            key = "keyboard__mod_row_inner_gap",
+            default = 0,
+        )
+        val modRowLowerGap = int(
+            key = "keyboard__mod_row_lower_gap",
             default = 0,
         )
         val keyCustomizations = string(

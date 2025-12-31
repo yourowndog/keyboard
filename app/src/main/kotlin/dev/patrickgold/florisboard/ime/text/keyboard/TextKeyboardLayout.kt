@@ -221,11 +221,17 @@ fun TextKeyboardLayout(
         val keyboardHeight = constraints.maxHeight.toFloat()
         val keyMarginH by prefs.keyboard.keySpacingHorizontal.observeAsTransformingState { it.dp.toPx() }
         val keyMarginV by prefs.keyboard.keySpacingVertical.observeAsTransformingState { it.dp.toPx() }
+        val bottomRowHeightFactor by prefs.keyboard.bottomRowHeightFactor.observeAsTransformingState { it / 100f }
+        val modRowUpperGap by prefs.keyboard.modRowUpperGap.observeAsTransformingState { it.dp.toPx() }
+        val modRowInnerGap by prefs.keyboard.modRowInnerGap.observeAsTransformingState { it.dp.toPx() }
+        val modRowLowerGap by prefs.keyboard.modRowLowerGap.observeAsTransformingState { it.dp.toPx() }
+        val keyCustomizationsJson by prefs.keyboard.keyCustomizations.observeAsState()
         val keyboardRowBaseHeight = FlorisImeSizing.keyboardRowBaseHeight
 
         val desiredKey = remember(
             keyboard, keyboardWidth, keyboardHeight, keyMarginH, keyMarginV,
-            keyboardRowBaseHeight, evaluator
+            keyboardRowBaseHeight, bottomRowHeightFactor, modRowUpperGap,
+            modRowInnerGap, modRowLowerGap, keyCustomizationsJson, evaluator
         ) {
             TextKey(data = TextKeyData.UNSPECIFIED).also { desiredKey ->
                 desiredKey.touchBounds.apply {
@@ -242,7 +248,71 @@ fun TextKeyboardLayout(
                     }
                 }
                 desiredKey.visibleBounds.applyFrom(desiredKey.touchBounds).deflateBy(keyMarginH, keyMarginV)
-                keyboard.layout(keyboardWidth, keyboardHeight, desiredKey, true)
+                keyboard.layout(keyboardWidth, keyboardHeight, desiredKey, true, bottomRowHeightFactor)
+                
+                // Apply per-key customizations from prefs
+                val customizations = dev.patrickgold.florisboard.ime.keyboard.KeyCustomizationManager.parseFromJson(keyCustomizationsJson)
+                for (key in keyboard.keys()) {
+                    val custom = customizations[(key as? TextKey)?.computedData?.code]
+                    if (custom != null) {
+                        // Apply height factor by scaling visible bounds
+                        if (custom.heightFactor != 1.0f) {
+                            val currentHeight = key.visibleBounds.height
+                            val newHeight = currentHeight * custom.heightFactor
+                            val heightDelta = newHeight - currentHeight
+                            key.visibleBounds.top -= heightDelta / 2
+                            key.visibleBounds.bottom += heightDelta / 2
+                        }
+                        
+                        // Apply width factor by scaling visible bounds
+                        if (custom.widthFactor != 1.0f) {
+                            val currentWidth = key.visibleBounds.width
+                            val newWidth = currentWidth * custom.widthFactor
+                            val widthDelta = newWidth - currentWidth
+                            key.visibleBounds.left -= widthDelta / 2
+                            key.visibleBounds.right += widthDelta / 2
+                        }
+                        
+                        // Apply padding to visible bounds (convert dp to px)
+                        key.visibleBounds.apply {
+                            top += custom.paddingTop.dp.toPx()
+                            bottom -= custom.paddingBottom.dp.toPx()
+                            left += custom.paddingLeft.dp.toPx()
+                            right -= custom.paddingRight.dp.toPx()
+                        }
+                    }
+                }
+                // Apply mod row gaps (upper/inner/lower)
+                val rowCount = keyboard.rowCount
+                if (rowCount >= 2) {
+                    for ((rowIndex, row) in keyboard.arrangement.withIndex()) {
+                        // Upper mod row (N-2)
+                        // Only affected by upperGap (shifting down)
+                        if (rowIndex == rowCount - 2) {
+                            if (modRowUpperGap > 0) {
+                                for (key in row) {
+                                    key.visibleBounds.top += modRowUpperGap
+                                    key.visibleBounds.bottom += modRowUpperGap
+                                }
+                            }
+                        }
+                        // Lower mod row (N-1)
+                        // Affected by upperGap + innerGap (shifting down)
+                        // AND lowerGap (extending down into bezel)
+                        if (rowIndex == rowCount - 1) {
+                            val totalTopShift = modRowUpperGap + modRowInnerGap
+                            for (key in row) {
+                                if (totalTopShift > 0) {
+                                    key.visibleBounds.top += totalTopShift
+                                    key.visibleBounds.bottom += totalTopShift
+                                }
+                                if (modRowLowerGap > 0) {
+                                    key.visibleBounds.bottom += modRowLowerGap
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 
