@@ -131,7 +131,6 @@ fun TextKeyboardLayout(
             glideTypingManager.setLayout(keys)
         }
     }
-    }
 
     val touchEventChannel = remember { Channel<MotionEvent>(64) }
 
@@ -342,16 +341,17 @@ fun TextKeyboardLayout(
         }
 
         popupUiController.RenderPopups()
-    }
 
-    LaunchedEffect(Unit) {
-        for (event in touchEventChannel) {
-            if (!isActive) break
-            controller.onTouchEventInternal(event)
-            event.recycle()
+        LaunchedEffect(Unit) {
+            for (event in touchEventChannel) {
+                if (!isActive) break
+                controller.onTouchEventInternal(event)
+                event.recycle()
+            }
         }
     }
 }
+
 
 @Composable
 private fun TextKeyButton(

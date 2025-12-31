@@ -74,6 +74,11 @@ object CandidateScorer {
         isInUserDict: Boolean = false,
         frequency: Double = 0.0,
     ): Double {
+        // ANTI-CORRECTIONS: Filter out forbidden typed→candidate pairs
+        if (dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isAntiCorrection(typed, candidate)) {
+            return CULLED_SCORE  // Reject this candidate completely
+        }
+        
         val typedNoApos = typed.replace("'", "")
         val candidateNoApos = candidate.replace("'", "")
         

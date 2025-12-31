@@ -29,6 +29,9 @@ object HarvestManager {
     private var harvestFile: File? = null
     private var isInitialized = false
     
+    private val sessionBuffer = StringBuilder()
+    private var sessionWordCount = 0
+    
     /**
      * Initialize the harvest file location.
      * Tries /sdcard/Documents/ first, falls back to app-private storage.
@@ -143,8 +146,6 @@ object HarvestManager {
     fun logPicked(typed: String, picked: String, prevWord: String?) {
         if (typed == picked) {
             logInsisted(typed, prevWord)
-        if (typed == picked) {
-            logInsisted(typed, prevWord)
         } else {
             append("PICKED", "$typed → $picked (manual)", prevWord)
         }
@@ -160,8 +161,6 @@ object HarvestManager {
         append("INTENT", "Typed '$typed' → Auto-corrected to '$rejected' → User reverted & typed '$intent'. (Conclusion: '$typed' meant '$intent')", null)
     }
 
-    private val sessionBuffer = StringBuilder()
-    private var sessionWordCount = 0
 
     fun addToSession(word: String) {
         synchronized(sessionBuffer) {
@@ -173,7 +172,7 @@ object HarvestManager {
             // Auto-flush logic for users who don't use punctuation
             if (!word.matches(Regex("^[.,?!;:]$"))) {
                 sessionWordCount++
-                if (sessionWordCount >= 10) {
+                if (sessionWordCount >= 5) {
                     flushSession()
                 }
             }

@@ -62,6 +62,9 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
     val autoSpace = AutoSpaceState()
     val phantomSpace = PhantomSpaceState()
     val massSelection = MassSelectionState()
+    
+    // Harvest: word buffer to accumulate chars before logging
+    private val currentWordBuffer = StringBuilder()
 
     private fun currentInputConnection() = FlorisImeService.currentInputConnection()
 
@@ -208,11 +211,23 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         val punctuationRule = nlpManager.getActivePunctuationRule()
         val isPunctuation = char.isNotEmpty() && punctuationRule.symbolsPrecedingAutoSpace.contains(char.first())
         
-        // SESSION LOGGING
-        if (isPunctuation || char == "\n") {
-            HarvestManager.flushSession(char)
+        // SESSION LOGGING: accumulate chars into words
+        val isSpace = char == " "
+        val isWordBoundary = isPunctuation || char == "\n" || isSpace
+        
+        if (isWordBoundary) {
+            // Flush accumulated word if any
+            if (currentWordBuffer.isNotEmpty()) {
+                HarvestManager.addToSession(currentWordBuffer.toString())
+                currentWordBuffer.setLength(0)
+            }
+            // Flush session on sentence terminators
+            if (isPunctuation || char == "\n") {
+                HarvestManager.flushSession(char)
+            }
         } else {
-            HarvestManager.addToSession(char)
+            // Accumulate char into current word
+            currentWordBuffer.append(char)
         }
         
         val hasTrailingSpace = activeContent.getTextBeforeCursor(1).let { it.isNotEmpty() && it.last() == ' ' }
@@ -254,11 +269,21 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         } else {
             super.commitText(text)
         }.also {
-            // SESSION LOGGING
+            // SESSION LOGGING: commitText is called for autocorrect, swipe, paste
+            // Text may be multi-word, so parse it
             if (text == "\n") {
+                // Flush word buffer first
+                if (currentWordBuffer.isNotEmpty()) {
+                    HarvestManager.addToSession(currentWordBuffer.toString())
+                    currentWordBuffer.setLength(0)
+                }
                 HarvestManager.flushSession(text)
             } else {
-                HarvestManager.addToSession(text)
+                // Parse text into words and add each
+                val words = text.split(Regex("\\s+")).filter { it.isNotEmpty() }
+                for (word in words) {
+                    HarvestManager.addToSession(word)
+                }
             }
         }
     }

@@ -1,203 +1,344 @@
 # Harvest Review Process
 
-This document defines the systematic process for reviewing `usage_harvest.md` and translating user behavior into dictionary and scoring improvements.
+**Last Updated:** 2025-12-31  
+**Paradigm:** Paragraph-style logging, AI-driven collaborative analysis
 
 ---
 
 ## Overview
 
-The harvest file captures real keyboard usage:
-- **ACCEPTED**: User kept an autocorrection
-- **REJECTED**: User reverted an autocorrection (backspaced)
-- **INSISTED**: User explicitly tapped their typed word in smartbar
-- **PICKED**: User manually selected a different suggestion
-- **NEW_WORD**: Word not in dictionary was typed
+The harvest system captures Sam's real-world keyboard usage to drive hyperpersonalization. Each review is a **collaborative AI-human analysis session** - not automation.
 
-Each harvest review should result in:
-1. **Dictionary additions** (new words)
-2. **Frequency adjustments** (boost/reduce existing words)
-3. **Bigram/Trigram additions** (context patterns)
-4. **Bug identification** (logic issues to fix in code)
+**Key Files:**
+- **Live Log:** `/sdcard/Documents/usage_harvest.md` (on device)
+- **Analysis Copy:** `~/projects/keyboard/usage_harvest.md` (pulled for review)
+- **Mission:** `.gemini/*/KEYBOARD_MISSION.md` (read this first!)
 
-
-## Review Marker
-Marker: `<!-- Data below this line is NEW since last review -->` 
-
-## Automation Script
-The `harvest.py` script handles parsing, locating the marker, processing new entries, and appending a new marker.
-
-## Log Entry Format
-`[CATEGORY] timestamp | content | ctx: "word" | trigram: "prev word"`
+**Review Cadence:** Weekly or after ~1000 words typed
 
 ---
 
-## Pre-Review Checklist
+## Quick Start
 
-Before analyzing harvest data, the agent MUST:
+### 1. Pull Latest Harvest
+```bash
+cd ~/projects/keyboard
+adb pull /sdcard/Documents/usage_harvest.md usage_harvest.md
+```
 
-1. **Pull latest changes**: `git pull` to ensure working with current state
-2. **Check dict for each word**: Cross-reference against `unified_dictionary.tsv`
-3. **Filter already-fixed items**: Skip words that were added in previous commits
-4. **Note timestamps**: Older entries may reflect pre-fix behavior
+### 2. Analyze
+Review the log for:
+- 🎯 Patterns (repeated typos, phrases, rejections)
+- 📝 Missing vocabulary (NEW_WORD, INSISTED events)
+- 🚫 Anti-patterns (corrections rejected 5+ times)
+- 💬 Phrase pairs (common 2-3 word sequences)
+
+### 3. Propose Changes
+Create proposals in artifact (never auto-commit):
+- Dictionary additions
+- Frequency adjustments
+- Bigram additions
+- Anti-corrections
+- Logic fixes
+
+### 4. Get Approval & Deploy
+Sam reviews → approves → agent commits → rebuild
 
 ---
 
-## Word Addition Rules
+## Log Entry Types
 
-### DO Add (with user approval):
-- Words with 2+ REJECTED events for the same correction
-- INSISTED words (strong user signal)
-- Pop culture / proper nouns (Minecraft, Pokemon, etc.)
-- Common slang/internet speak (bc, ur, Wdym, Ily, etc.)
-
-### DO NOT Add:
-- **Apostrophe-less contractions** (`itd`, `dont`, `wont`) - these should be handled by contraction logic
-- **Single letters** (`s`, `a`, `n`) - handle with special-case logic
-- **Typos** - if the word is clearly a fat-finger error, don't add it
-- **Proper nouns without verification** - confirm spelling first
-
-### Frequency Guidelines:
-| Word Type | Suggested Frequency |
-|-----------|-------------------|
-| Common slang (bc, ur, idk) | 150000-200000 |
-| Pop culture (Minecraft, Pokemon) | 100000 |
-| Medical/Technical (ritalin, termux) | 50000 |
-| Less common words | 30000-50000 |
+| Event | Meaning | Actionable |
+|-------|---------|------------|
+| `SESSION` | Paragraph of typed text | Extract vocabulary, phrases, context |
+| `ACCEPTED` | Autocorrect kept | Correction working well, consider boosting |
+| `REJECTED` | Autocorrect reverted | Original word may need adding, or anti-correction |
+| `INSISTED` | User picked their exact word | Strong signal - add to dict if missing |
+| `PICKED` | User picked different suggestion | Preference signal |
+| `NEW_WORD` | Word not in dictionary | Candidate for addition if repeated |
+| `INTENT` | User's true intent after rejection | Learn replacement patterns |
 
 ---
 
-## Frequency Adjustment Rules
+## Current Format (Broken - Being Fixed)
 
-### ACCEPTED Corrections:
-- The correction word is working well
-- Consider **boosting** correction frequency by 10-20%
+**Problem:** Logs individual characters instead of words.
 
-### REJECTED Corrections:
-- The correction was wrong in this context
-- Consider **reducing** correction frequency by 10-20%
-- OR **boosting** the typed word if it's in dict
-
-### INSISTED:
-- User explicitly wants this word
-- **Add to dict** if missing, or **boost** frequency significantly (+50%)
-
-### Example:
+**Example:**
 ```
-[REJECTED] ambien ← ambient (reverted)
+[SESSION] "m e c h s"  ← Should be "mechs"
 ```
-If `ambien` is in dict but keeps getting corrected to `ambient`:
-- Check if `ambien` frequency < `ambient` frequency
-- Boost `ambien` frequency above `ambient`
+
+**Fix in progress:** See task.md
 
 ---
 
-## Bigram/Trigram Integration
+## Target Format (After Fix)
 
-Starting with trigram-enabled harvest entries, extract context patterns:
-
-```
-[ACCEPTED] 2025-12-22 08:19:08 | stredsful → stressful | trigram: "big stredsful"
-```
-
-This tells us:
-- Trigram: `big stressful` - valid pattern
-- Can add to bigram table: `big` → `stressful`
-
-### Proposal Format:
 ```markdown
-## Proposed Bigram Additions:
-| Previous Word | Current Word | Evidence |
-|---------------|--------------|----------|
-| big | stressful | "big stredsful" (typo corrected) |
-| Hard | time | "hard rime" (typo corrected) |
+## Session: 2025-12-31 11:18
+That sounds like the right thing to do. I don't know if they're swapping fuel [injextor→injector✓] around.
+
+**Corrections:**
+- injextor → injector (ACCEPTED, trigram: "fuel injextor")
+- sams → samson (REJECTED 3x)
+
+**Vocabulary:** sounds, believe, swapping, fuel, injector
 ```
 
-**Agent MUST get user approval before committing bigram/trigram additions.**
+**Benefits:**
+- Readable paragraphs show actual thought flow
+- Inline markers show what happened without breaking flow
+- Summary sections for quick scanning
 
 ---
 
-## Bug Identification
+## Analysis Workflow
 
-### Casing Issues:
-If `ac` corrects to `Act` instead of `AC`:
-- Valid Word Immunity should allow casing fixes
-- Check if `AC` is in dict with proper casing
-- May be logic bug in `LatinLanguageProvider` or `CasingUtils`
+### Step 1: Skim for Patterns
 
-### Contraction Issues:
-If `itd` doesn't correct to `it'd`:
-- Check `CONTRACTION_SHORTCUTS` in `SymSpellManager`
-- Check `handleContractionShortcuts` in `CasingUtils`
+**Look for:**
+- Same correction REJECTED multiple times → anti-pattern
+- Same word appearing in INSISTED/NEW_WORD → dictionary add
+- Common 2-word sequences → bigram candidate
+- Spatial typo patterns (e.g., "thr" typed for "the" repeatedly)
 
-### Spatial Typos (e.g., `thud` → `this`):
-- 'u' is adjacent to 'i', 'd' is adjacent to 's'
-- Indicates `spatialCost` in `CandidateScorer` may need higher weight
-- Or spatial neighbors in scoring are misconfigured
+**Tools:**
+```bash
+# Count rejection frequency
+grep "REJECTED" usage_harvest.md | cut -d'|' -f2 | sort | uniq -c | sort -nr
+
+# Find repeated NEW_WORD entries  
+grep "NEW_WORD" usage_harvest.md | cut -d'|' -f2 | sort | uniq -c | sort -nr
+
+# Extract bigrams from sessions (after fix)
+# Will need custom script
+```
+
+### Step 2: Cross-Reference Dictionary
+
+For each candidate word:
+```bash
+grep -i "^wordname" app/src/main/assets/ime/dict/unified_dictionary.tsv
+```
+
+If missing and appears 2+ times → propose addition.  
+If present but low frequency and gets rejected → propose boost.
+
+### Step 3: Identify Anti-Patterns
+
+**Rule:** 5+ REJECTED for same correction = anti-pattern
+
+**Example:**
+```
+[REJECTED] sams ← samson (3x in one session)
+```
+
+**Action:** Add to `PersonalPreferences.kt`:
+```kotlin
+"sams" to listOf("samson", "samoa"),
+```
+
+### Step 4: Extract Bigrams
+
+From SESSION paragraphs, look for:
+- Repeated 2-word pairs ("I'm gonna", "going to", "call you")
+- Frequency threshold: 2+ occurrences
+
+**Process:**
+1. Parse session paragraphs
+2. Extract all 2-word pairs
+3. Rank by frequency
+4. Propose additions to `final_mobile_bigrams.tsv` with modest scores (5,000)
+
+### Step 5: Spot Logic Bugs
+
+**Common issues:**
+- Single-letter corrections (e.g., "s" → "so" when user wanted "a")
+- Casing errors (e.g., "ac" → "Act" vs "AC")
+- Contraction failures (e.g., "itd" not becoming "it'd")
+- Spatial typos not catching (e.g., adjacent keys)
+
+**Action:** Note in Bugs section, create separate issue/PR
 
 ---
 
-## Review Output Format
+## Proposal Format
 
-After analyzing harvest, agent should produce:
+After analysis, create artifact with:
 
-### 1. Dictionary Additions (Pending Approval)
+### Dictionary Additions
 ```markdown
 | Word | Frequency | Evidence |
 |------|-----------|----------|
-| Minecraft | 100000 | 1x REJECTED (corrected to Mineshaft) |
-| Pokemon | 100000 | 1x REJECTED (corrected to pikemen) |
+| Ony | 50,000 | Proper noun, 1x REJECTED(Onyx) |
+| Hurray | 100,000 | Exclamation, 1x REJECTED(Hurrah) |
 ```
 
-### 2. Frequency Adjustments (Pending Approval)
+**Frequency Guidelines:**
+- Family/friends names: 200,000+
+- Common Sam slang: 150,000
+- Technical terms: 100,000
+- Less common but valid: 50,000
+
+### Frequency Adjustments
 ```markdown
 | Word | Current | New | Reason |
 |------|---------|-----|--------|
-| ambien | 50000 | 80000 | 4x REJECTED ambient correction |
+| ambien | 50,000 | 100,000 | 4x REJECTED(ambient) |
 ```
 
-### 3. Bigram Additions (Pending Approval)
+### Bigram Additions
 ```markdown
-| Prev | Word | Source |
-|------|------|--------|
-| Hey | baby | trigram context |
+| Prev Word | Next Word | Frequency | Evidence |
+|-----------|-----------|-----------|----------|
+| fuel | injector | 10,000 | 2x in Session 2025-12-31 |
+| going | to | 50,000 | Common phrase, high usage |
 ```
 
-### 4. Bugs Identified
+**Note:** Always add to bigram table FIRST, then smartbar pulls from table (not directly from harvest).
+
+### Anti-Corrections
 ```markdown
-- [ ] `s` → `so` should be `s` → `a` (special case needed)
-- [ ] `thud` → `this` not catching spatial typo (scoring weight issue)
-- [ ] `ac` → `Act` instead of `ac` → `AC` (casing logic bug)
+| Typed | Never Suggest | Evidence |
+|-------|---------------|----------|
+| sams | samson, samoa | 3x REJECTED in single session |
+| Hurray | Hurrah | 1x REJECTED |
 ```
+
+### Logic Bugs
+```markdown
+- [ ] "s → so" false positive - need better single-letter logic
+- [ ] "Ony → Onyx" - proper noun not in dict
+- [ ] SESSION logging chars not words (critical fix in progress)
+```
+
+---
+
+## File Locations
+
+### Dictionary & Scoring
+- `app/src/main/assets/ime/dict/unified_dictionary.tsv` - Main dictionary
+- `app/src/main/assets/ime/dict/final_mobile_bigrams.tsv` - Bigram table  
+- `app/src/main/kotlin/dev/patrickgold/florisboard/ime/nlp/SymSpellManager.kt` - USER_OVERRIDES (high-priority words)
+- `app/src/main/kotlin/dev/patrickgold/florisboard/ime/nlp/shared/CandidateScorer.kt` - Scoring logic
+- `app/src/main/kotlin/dev/patrickgold/florisboard/ime/nlp/shared/CasingUtils.kt` - PROPER_NOUNS
+
+### Personalization (New)
+- `app/src/main/kotlin/dev/patrickgold/florisboard/ime/nlp/PersonalPreferences.kt` - Anti-corrections, typo patterns
+
+### Logging
+- `app/src/main/kotlin/dev/patrickgold/florisboard/ime/nlp/HarvestManager.kt` - Logging implementation
+- `app/src/main/kotlin/dev/patrickgold/florisboard/ime/editor/EditorInstance.kt` - Session hooks
+- `/sdcard/Documents/usage_harvest.md` - Live device log  
+- `~/projects/keyboard/usage_harvest.md` - Analysis copy
 
 ---
 
 ## Commit Message Format
 
-When committing harvest-driven changes:
-
 ```
-feat(dict): harvest review YYYY-MM-DD
+feat(dict): harvest review 2025-12-31
 
-Additions:
-- Minecraft, Pokemon, Spiderman (pop culture)
-- fave, pic, bc (slang)
+Dictionary additions:
+- Ony, Hurray (proper nouns/exclamations)
 
-Frequency bumps:
-- ambien: 50000 → 80000
+Frequency adjustments:
+- ambien: 50k → 100k (rejected ambient 4x)
 
 Bigrams added:
-- Hey → baby, big → stressful
+- fuel injector, going to
 
-Bugs identified (separate PRs):
-- #123: s→so should be s→a
-- #124: spatial scoring for thud→this
+Anti-corrections:
+- sams → samson (rejected 3x)
+
+Bugs identified:
+- #456: SESSION logging chars not words
+- #457: "s → so" single-letter logic
 ```
 
 ---
 
-## Cadence
+## Agent Responsibilities
 
-Recommended review frequency:
-- **Weekly**: Quick scan for high-impact items
-- **Monthly**: Full review with frequency tuning
-- **After major changes**: Validate fixes are working
+### DO:
+- ✅ Propose all changes (never auto-commit)
+- ✅ Explain rationale and evidence
+- ✅ Generate new ideas for improvement
+- ✅ Push back if Sam's idea is fragile/complex
+- ✅ Think holistically about thought patterns
+- ✅ Create detailed implementation plans
+
+### DO NOT:
+- ❌ Auto-add to dictionary without approval
+- ❌ Modify core SymSpell or adjacency map
+- ❌ Delete vocabulary (only reduce scores)
+- ❌ Skip collaborative review process
+- ❌ Make assumptions (ask clarifying questions)
+
+---
+
+## Success Metrics
+
+### Primary Goal
+- **Rejection Rate:** <5% of all autocorrect events
+- **Measured as:** `REJECTED events / (ACCEPTED + REJECTED events)`
+
+### Leading Indicators
+- INSISTED events decreasing (words already in dict)
+- Same correction not appearing in REJECTED repeatedly
+- Longer session paragraphs (smooth typing flow)
+- Multi-word predictions being used
+
+### Current Baseline
+- **Session 2025-12-31:** ~20% rejection rate (6/30)
+- **Target:** <5% within 6 months of weekly reviews
+
+---
+
+## Troubleshooting
+
+### "Can't pull harvest file"
+```bash
+# Check device connection
+adb devices
+
+# Check file exists
+adb shell ls -l /sdcard/Documents/usage_harvest.md
+
+# Try full path
+adb pull /storage/emulated/0/Documents/usage_harvest.md
+```
+
+### "Logs still showing characters not words"
+- Bug fix not deployed yet - see task.md
+- Temporary workaround: manually reconstruct from char logs
+
+### "Bigrams not showing in smartbar"
+- Check bigrams added to `final_mobile_bigrams.tsv`
+- Check NlpManager loads bigram table
+- Check CandidatesRow UI displays multi-word chips
+- Feature may not be implemented yet - see task.md
+
+---
+
+## Next Steps After Review
+
+1. **Create proposals artifact** (never auto-commit)
+2. **Get Sam's approval** on each change
+3. **Make code changes** (dict, bigrams, logic)
+4. **Commit with descriptive message**
+5. **Rebuild and deploy** to device
+6. **Test changes** in real usage
+7. **Monitor next harvest** for improvement
+
+**Remember:** This is iterative refinement, not one-time fix. Tiny tweaks, constant improvement.
+
+---
+
+## See Also
+
+- **KEYBOARD_MISSION.md** - Overall vision and context (read first!)
+- **HARVESTING.md** - User-facing guide for harvest system
+- **task.md** - Current implementation tasks
+- **harvest_session_*.md** - Reformatted session analyses

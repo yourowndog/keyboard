@@ -35,7 +35,19 @@ object SymSpellManager {
     private const val DICT_ASSET_PATH = "ime/dict/unified_dictionary.tsv"
     private const val SWIPE_DICT_PATH = "ime/dict/unified_dictionary.tsv"  // Same dict for everything
     private const val BIGRAM_ASSET_PATH = "ime/dict/final_mobile_bigrams.tsv"
-    private val USER_OVERRIDES = listOf("kiry" to Double.MAX_VALUE)
+    // User overrides to Ensure these specific words/frequencies are respected
+    private val USER_OVERRIDES = listOf(
+        "kiry" to Double.MAX_VALUE,
+        "congrats" to Double.MAX_VALUE,
+        "Claira" to Double.MAX_VALUE, 
+        "Christmas" to Double.MAX_VALUE,
+        "min" to Double.MAX_VALUE,
+        "Mom" to Double.MAX_VALUE,
+        "Aorus" to Double.MAX_VALUE,
+        "GPU" to Double.MAX_VALUE,
+        "Ony" to Double.MAX_VALUE,  // Pokemon character name
+        "Hurray" to Double.MAX_VALUE,  // Exclamation (not "Hurrah")
+    )
     // Prefer common contractions before running SymSpell so "im" maps to "I'm" instead of "pm".
     private val CONTRACTION_SHORTCUTS = mapOf(
         "im" to "I'm",
@@ -278,12 +290,16 @@ object SymSpellManager {
              return input
         }
 
-        // TRUST REAL WORDS: If the user typed a valid dictionary word, KEEP IT.
+        // TRUST REAL WORDS: If the user typed a valid dictionary word, we generally keep it.
+        // HOWEVER, we must still check if it needs capitalization (christmas -> Christmas).
         val exactMatches = instance.lookup(normalized, Verbosity.Top, 0.0)
         android.util.Log.d("SymSpell", "[$input] exactMatches(dist=0): ${exactMatches.map { "${it.term}:${it.distance}" }}")
+        
         if (exactMatches.isNotEmpty() && exactMatches.first().distance == 0.0) {
-            android.util.Log.d("SymSpell", "[$input] -> TRUST (exact match found)")
-            return input
+            val match = exactMatches.first()
+            android.util.Log.d("SymSpell", "[$input] -> TRUST (exact match found) but applying casing")
+            // Apply casing logic to the exact match (e.g. christmas -> Christmas)
+            return applyCasingPattern(input, match.term)
         }
 
         // Use Verbosity.All to ensure we find distance 2 candidates
