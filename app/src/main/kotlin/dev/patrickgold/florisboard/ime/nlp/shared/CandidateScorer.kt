@@ -123,6 +123,21 @@ object CandidateScorer {
         // Scale factor keeps frequency influence reasonable relative to other factors
         score -= frequency * 0.1
         
+        // CONTEXT-AWARE: "id" → "is" vs "I'd" depending on previous word
+        // After pronouns/determiners → prefer "is" (this is, that is, it is)
+        // At sentence start or after conjunctions → prefer "I'd" (I'd like, And I'd)
+        if (typed.lowercase() == "id" && prevWord != null) {
+            val prevLower = prevWord.lowercase()
+            val preferIsContext = setOf("this", "that", "it", "he", "she", "what", "which", "who", "there", "here")
+            val preferIdContext = setOf("and", "but", "so", "or", "because", "if", "when", "well", "yeah", "yes", "no")
+            
+            if (candidate.lowercase() == "is" && preferIsContext.contains(prevLower)) {
+                score -= 50.0  // Strong bonus for "is" in this context
+            } else if (candidate.lowercase() == "i'd" && preferIdContext.contains(prevLower)) {
+                score -= 50.0  // Strong bonus for "I'd" in this context
+            }
+        }
+        
         return score
     }
     

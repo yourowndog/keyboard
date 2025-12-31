@@ -575,7 +575,7 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
         )
         val keySpacingVertical = float(
             key = "keyboard__key_spacing_vertical",
-            default = 5.0f,
+            default = 2.0f,
         )
         val keySpacingHorizontal = float(
             key = "keyboard__key_spacing_horizontal",
@@ -584,6 +584,14 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
         val bottomRowHeightFactor = int(
             key = "keyboard__bottom_row_height_factor",
             default = 75,
+        )
+        val bottomRowPaddingTop = int(
+            key = "keyboard__bottom_row_padding_top",
+            default = 0,
+        )
+        val bottomRowPaddingBottom = int(
+            key = "keyboard__bottom_row_padding_bottom",
+            default = 0,
         )
         val keyCustomizations = string(
             key = "keyboard__key_customizations",
@@ -798,12 +806,12 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
         )
         val dayThemeId = custom(
             key = "theme__day_theme_id",
-            default = ExtensionComponentName("com.brokentooth.lcars", "vaporwave"),
+            default = extCoreTheme("lcars_neon"),
             serializer = ExtensionComponentName.Serializer,
         )
         val nightThemeId = custom(
             key = "theme__night_theme_id",
-            default = ExtensionComponentName("com.brokentooth.lcars", "vaporwave"),
+            default = extCoreTheme("lcars_neon"),
             serializer = ExtensionComponentName.Serializer,
         )
         val accentColor = custom(

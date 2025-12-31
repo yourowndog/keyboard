@@ -131,7 +131,6 @@ fun TextKeyboardLayout(
             glideTypingManager.setLayout(keys)
         }
     }
-
     val touchEventChannel = remember { Channel<MotionEvent>(64) }
 
     fun resetAllKeys() {
@@ -222,13 +221,11 @@ fun TextKeyboardLayout(
         val keyboardHeight = constraints.maxHeight.toFloat()
         val keyMarginH by prefs.keyboard.keySpacingHorizontal.observeAsTransformingState { it.dp.toPx() }
         val keyMarginV by prefs.keyboard.keySpacingVertical.observeAsTransformingState { it.dp.toPx() }
-        val bottomRowHeightFactor by prefs.keyboard.bottomRowHeightFactor.observeAsTransformingState { it / 100f }
-        val keyCustomizationsJson by prefs.keyboard.keyCustomizations.observeAsState()
         val keyboardRowBaseHeight = FlorisImeSizing.keyboardRowBaseHeight
 
         val desiredKey = remember(
             keyboard, keyboardWidth, keyboardHeight, keyMarginH, keyMarginV,
-            keyboardRowBaseHeight, bottomRowHeightFactor, keyCustomizationsJson, evaluator
+            keyboardRowBaseHeight, evaluator
         ) {
             TextKey(data = TextKeyData.UNSPECIFIED).also { desiredKey ->
                 desiredKey.touchBounds.apply {
@@ -245,42 +242,7 @@ fun TextKeyboardLayout(
                     }
                 }
                 desiredKey.visibleBounds.applyFrom(desiredKey.touchBounds).deflateBy(keyMarginH, keyMarginV)
-                keyboard.layout(keyboardWidth, keyboardHeight, desiredKey, true, bottomRowHeightFactor)
-                
-                // Apply per-key customizations from prefs
-                val customizations = dev.patrickgold.florisboard.ime.keyboard.KeyCustomizationManager.parseFromJson(keyCustomizationsJson)
-                for (key in keyboard.keys()) {
-                    val custom = customizations[(key as? TextKey)?.computedData?.code]
-                    if (custom != null) {
-                        // Apply height factor by scaling visible bounds
-                        if (custom.heightFactor != 1.0f) {
-                            val currentHeight = key.visibleBounds.height
-                            val newHeight = currentHeight * custom.heightFactor
-                            val heightDelta = newHeight - currentHeight
-                            // Center the height change (extend equally up and down)
-                            key.visibleBounds.top -= heightDelta / 2
-                            key.visibleBounds.bottom += heightDelta / 2
-                        }
-                        
-                        // Apply width factor by scaling visible bounds
-                        if (custom.widthFactor != 1.0f) {
-                            val currentWidth = key.visibleBounds.width
-                            val newWidth = currentWidth * custom.widthFactor
-                            val widthDelta = newWidth - currentWidth
-                            // Center the width change (extend equally left and right)
-                            key.visibleBounds.left -= widthDelta / 2
-                            key.visibleBounds.right += widthDelta / 2
-                        }
-                        
-                        // Apply padding to visible bounds (convert dp to px)
-                        key.visibleBounds.apply {
-                            top += custom.paddingTop.dp.toPx()
-                            bottom -= custom.paddingBottom.dp.toPx()
-                            left += custom.paddingLeft.dp.toPx()
-                            right -= custom.paddingRight.dp.toPx()
-                        }
-                    }
-                }
+                keyboard.layout(keyboardWidth, keyboardHeight, desiredKey, true)
             }
         }
 
@@ -341,17 +303,16 @@ fun TextKeyboardLayout(
         }
 
         popupUiController.RenderPopups()
+    }
 
-        LaunchedEffect(Unit) {
-            for (event in touchEventChannel) {
-                if (!isActive) break
-                controller.onTouchEventInternal(event)
-                event.recycle()
-            }
+    LaunchedEffect(Unit) {
+        for (event in touchEventChannel) {
+            if (!isActive) break
+            controller.onTouchEventInternal(event)
+            event.recycle()
         }
     }
 }
-
 
 @Composable
 private fun TextKeyButton(
