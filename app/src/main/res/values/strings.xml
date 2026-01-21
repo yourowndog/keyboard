@@ -441,6 +441,7 @@
     <string name="pref__keyboard__height_factor__label" comment="Preference title">Keyboard height</string>
     <string name="pref__keyboard__key_spacing__label" comment="Preference title">Key spacing</string>
     <string name="pref__keyboard__bottom_row_height__label" comment="Preference title">Bottom row height</string>
+    <string name="pref__keyboard__alpha_row_height__label" comment="Preference title">Alpha row height</string>
     <string name="pref__keyboard__mod_row_upper_gap__label" comment="Preference title">Gap above mod rows</string>
     <string name="pref__keyboard__mod_row_inner_gap__label" comment="Preference title">Gap between mod rows</string>
     <string name="pref__keyboard__mod_row_lower_gap__label" comment="Preference title">Gap below mod rows</string>

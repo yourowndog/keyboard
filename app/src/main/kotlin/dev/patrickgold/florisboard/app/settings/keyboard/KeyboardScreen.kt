@@ -157,6 +157,14 @@ fun KeyboardScreen() = FlorisScreen {
                 stepIncrement = 5,
             )
             DialogSliderPreference(
+                prefs.keyboard.alphaRowHeightFactor,
+                title = stringRes(R.string.pref__keyboard__alpha_row_height__label),
+                valueLabel = { stringRes(R.string.unit__percent__symbol, "v" to it) },
+                min = 50,
+                max = 150,
+                stepIncrement = 5,
+            )
+            DialogSliderPreference(
                 prefs.keyboard.modRowUpperGap,
                 title = stringRes(R.string.pref__keyboard__mod_row_upper_gap__label),
                 valueLabel = { stringRes(R.string.unit__display_pixel__symbol, "v" to it) },

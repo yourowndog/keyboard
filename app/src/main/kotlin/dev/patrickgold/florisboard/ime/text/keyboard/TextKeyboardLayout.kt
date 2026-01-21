@@ -222,6 +222,7 @@ fun TextKeyboardLayout(
         val keyMarginH by prefs.keyboard.keySpacingHorizontal.observeAsTransformingState { it.dp.toPx() }
         val keyMarginV by prefs.keyboard.keySpacingVertical.observeAsTransformingState { it.dp.toPx() }
         val bottomRowHeightFactor by prefs.keyboard.bottomRowHeightFactor.observeAsTransformingState { it / 100f }
+        val alphaRowHeightFactor by prefs.keyboard.alphaRowHeightFactor.observeAsTransformingState { it / 100f }
         val modRowUpperGap by prefs.keyboard.modRowUpperGap.observeAsTransformingState { it.dp.toPx() }
         val modRowInnerGap by prefs.keyboard.modRowInnerGap.observeAsTransformingState { it.dp.toPx() }
         val modRowLowerGap by prefs.keyboard.modRowLowerGap.observeAsTransformingState { it.dp.toPx() }
@@ -230,7 +231,7 @@ fun TextKeyboardLayout(
 
         val desiredKey = remember(
             keyboard, keyboardWidth, keyboardHeight, keyMarginH, keyMarginV,
-            keyboardRowBaseHeight, bottomRowHeightFactor, modRowUpperGap,
+            keyboardRowBaseHeight, bottomRowHeightFactor, alphaRowHeightFactor, modRowUpperGap,
             modRowInnerGap, modRowLowerGap, keyCustomizationsJson, evaluator
         ) {
             TextKey(data = TextKeyData.UNSPECIFIED).also { desiredKey ->
@@ -248,7 +249,7 @@ fun TextKeyboardLayout(
                     }
                 }
                 desiredKey.visibleBounds.applyFrom(desiredKey.touchBounds).deflateBy(keyMarginH, keyMarginV)
-                keyboard.layout(keyboardWidth, keyboardHeight, desiredKey, true, bottomRowHeightFactor)
+                keyboard.layout(keyboardWidth, keyboardHeight, desiredKey, true, bottomRowHeightFactor, alphaRowHeightFactor)
                 
                 // Apply per-key customizations from prefs
                 val customizations = dev.patrickgold.florisboard.ime.keyboard.KeyCustomizationManager.parseFromJson(keyCustomizationsJson)

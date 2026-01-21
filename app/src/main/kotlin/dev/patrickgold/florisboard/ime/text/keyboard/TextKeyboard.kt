@@ -50,6 +50,7 @@ class TextKeyboard(
         desiredKey: Key,
         extendTouchBoundariesDownwards: Boolean,
         bottomRowHeightFactor: Float,
+        alphaRowHeightFactor: Float,
     ) {
         if (arrangement.isEmpty()) return
 
@@ -65,14 +66,14 @@ class TextKeyboard(
             val hasExtraRows = rowCount >= 5
             val rowHeight = if (hasExtraRows) {
                 // Base is 5 rows: 3 alpha (full) + 2 bottom (compressed)
-                // Extensions at top also get full height now
-                // Total = 3 + (rowCount-3)*bottomRowHeightFactor
-                val effectiveRowCount = (rowCount - 2) + 2 * bottomRowHeightFactor
+                // Mod rows are the last 2 rows. Everything else is Alpha/Extension.
+                val modRowCount = 2
+                val alphaRowCount = rowCount - modRowCount
+                val effectiveRowCount = (alphaRowCount * alphaRowHeightFactor) + (modRowCount * bottomRowHeightFactor)
                 val baseHeight = keyboardHeight / effectiveRowCount
-                val extensionRowCount = rowCount - 5  // rows beyond base 5
-                val isTopExtensionRow = r < extensionRowCount
-                val isBottomCompressedRow = r >= rowCount - 2
-                if (isBottomCompressedRow) baseHeight * bottomRowHeightFactor else baseHeight
+                
+                val isBottomCompressedRow = r >= rowCount - modRowCount
+                if (isBottomCompressedRow) baseHeight * bottomRowHeightFactor else baseHeight * alphaRowHeightFactor
             } else {
                 desiredTouchBounds.height
             }
