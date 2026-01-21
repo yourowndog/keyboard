@@ -60,6 +60,7 @@ abstract class Keyboard {
         desiredKey: Key,
         extendTouchBoundariesDownwards: Boolean,
         bottomRowHeightFactor: Float = 0.75f,
+        alphaRowHeightFactor: Float = 1.0f,
     )
 }
 
