@@ -178,3 +178,12 @@
   - **Big Palette:** 30+ unique colors including primaries, dims, tints, glows, and surface layers.
   - **Complete UI Coverage:** Styled all elements: keys, hints, popups, smartbar, clipboard, emoji panel, one-handed mode, subtype panel, glide trail, incognito indicator, extracted landscape input. – Gemini
 
+
+### 2026-01-21
+* **Task:** Implemented independent Alpha/Mod row height controls and Dynamic Keyboard Height.
+* **Files:** `FlorisImeSizing.kt`, `TextKeyboard.kt`, `TextKeyboardLayout.kt`, `KeyboardScreen.kt`, `AppPrefs.kt`, `Keyboard.kt`, `EditRuleDialog.kt`, `strings.xml`
+* **Details:**
+  - **Dynamic Height:** Rewrote `FlorisImeSizing.keyboardUiHeight` to calculate the total frame height as a sum of its parts (`AlphaRows * AlphaFactor + ModRows * ModFactor`) instead of fitting to a fixed percentage. This eliminates the "seesaw" effect where resizing one section distorts the other.
+  - **Alpha Row Slider:** Added `alphaRowHeightFactor` preference and UI slider (50-150%) to control the height of the top 3 rows (QWERTY/ASDF/ZXCV).
+  - **Layout Engine:** Updated `TextKeyboard.layout` and `Keyboard.layout` abstract method to accept `alphaRowHeightFactor`. The engine now lays out rows using exact unit heights derived from the dynamic container size.
+  - **Result:** Users can now shrink the spacebar row to save screen real estate without stretching the alpha keys, or vice-versa. – Gemini
