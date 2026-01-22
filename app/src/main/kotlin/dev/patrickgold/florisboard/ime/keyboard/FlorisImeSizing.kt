@@ -63,6 +63,10 @@ object FlorisImeSizing {
 
     @Composable
     fun keyboardUiHeight(): Dp {
+        val prefs by FlorisPreferenceStore
+        val bottomRowHeightFactor by prefs.keyboard.bottomRowHeightFactor.observeAsTransformingState { it / 100f }
+        val alphaRowHeightFactor by prefs.keyboard.alphaRowHeightFactor.observeAsTransformingState { it / 100f }
+        
         val context = LocalContext.current
         val keyboardManager by context.keyboardManager()
         val evaluator by keyboardManager.activeEvaluator.collectAsState()
@@ -74,14 +78,16 @@ object FlorisImeSizing {
             KeyboardMode.SYMBOLS2 -> lastCharactersEvaluator.keyboard as TextKeyboard
             else -> evaluator.keyboard as TextKeyboard
         }.rowCount.coerceAtLeast(4)
-        return if (rowCount >= 5) {
-            // Base is 5 rows: 3 alpha (full) + 2 bottom (75%)
-            // Extensions at top also 75%
-            // Total = 3 + (rowCount-3)*0.75 = 0.75*(rowCount+1)
-            keyboardRowBaseHeight * (0.75f * (rowCount + 1))
-        } else {
-            keyboardRowBaseHeight * rowCount
-        }
+        
+        // Dynamic Frame Logic: Sum of Parts
+        // We assume the last 2 rows are 'Mod' rows (bottom rows), and the rest are 'Alpha' rows.
+        val modRowsCount = 2
+        val alphaRowsCount = (rowCount - modRowsCount).coerceAtLeast(0)
+        
+        val alphaTotal = keyboardRowBaseHeight * alphaRowsCount * alphaRowHeightFactor
+        val modTotal = keyboardRowBaseHeight * modRowsCount * bottomRowHeightFactor
+        
+        return alphaTotal + modTotal
     }
 
     @Composable
