@@ -148,7 +148,7 @@ class TextKey(override val data: AbstractKeyData) : Key(data) {
                 else -> when (computed.code) {
                     KeyCode.SPACE,
                     KeyCode.CJK_SPACE,
-                    KeyCode.CTRL -> 1.0f
+                    KeyCode.ENTER -> 1.0f
                     else -> 0.0f
                 }
             }
@@ -164,7 +164,7 @@ class TextKey(override val data: AbstractKeyData) : Key(data) {
                 else -> when (computed.code) {
                     KeyCode.VIEW_CHARACTERS,
                     KeyCode.VIEW_SYMBOLS2 -> 1.56f
-                    KeyCode.ENTER -> 1.25f
+                    KeyCode.ENTER -> 1.30f
                     KeyCode.SHIFT,
                     KeyCode.DELETE -> 1.00f
                     KeyCode.ARROW_LEFT,
@@ -175,7 +175,7 @@ class TextKey(override val data: AbstractKeyData) : Key(data) {
                     KeyCode.MOVE_END_OF_LINE -> 0.72f
                     KeyCode.UNDO,
                     KeyCode.REDO -> 0.8f
-                    KeyCode.CTRL -> 1.30f
+                    KeyCode.CTRL -> 1.25f
                     else -> 1.00f
                 }
             }

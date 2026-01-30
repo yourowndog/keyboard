@@ -199,10 +199,9 @@
       "label": "/"
     },
     {
-      "$": "text_key",
-      "code": 10,
-      "label": "↵",
-      "type": "enter_editing"
+      "code": -1,
+      "label": "CTRL",
+      "type": "modifier"
     }
   ]
 ]
