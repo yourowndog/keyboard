@@ -7,14 +7,26 @@
   ],
   [
     {
-      "code": -1,
-      "label": "CTRL",
-      "type": "modifier"
+      "$": "navigation",
+      "code": -21
+    },
+    {
+      "$": "navigation",
+      "code": -24
+    },
+    {
+      "$": "navigation",
+      "code": -22
     },
     {
       "code": -202,
       "label": "⚛",
       "type": "system_gui"
+    },
+    {
+      "$": "text_key",
+      "code": 47,
+      "label": "/"
     },
     {
       "$": "text_key",
@@ -33,24 +45,12 @@
     },
     {
       "$": "text_key",
-      "code": 47,
-      "label": "/"
-    },
-    {
-      "$": "text_key",
       "code": -33
     },
     {
-      "$": "navigation",
-      "code": -21
-    },
-    {
-      "$": "navigation",
-      "code": -24
-    },
-    {
-      "$": "navigation",
-      "code": -22
+      "code": -1,
+      "label": "CTRL",
+      "type": "modifier"
     }
   ]
 ]
