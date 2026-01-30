@@ -152,12 +152,18 @@
   ],
   [
     {
-      "code": -11,
-      "type": "modifier"
+      "$": "text_key",
+      "code": -27,
+      "label": "«"
+    },
+    {
+      "$": "navigation",
+      "code": -23
     },
     {
       "$": "text_key",
-      "code": -131
+      "code": -28,
+      "label": "»"
     },
     {
       "$": "text_key",
@@ -196,17 +202,11 @@
     },
     {
       "$": "text_key",
-      "code": -27,
-      "label": "«"
+      "code": -131
     },
     {
-      "$": "navigation",
-      "code": -23
-    },
-    {
-      "$": "text_key",
-      "code": -28,
-      "label": "»"
+      "code": -11,
+      "type": "modifier"
     }
   ]
 ]
