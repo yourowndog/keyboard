@@ -25,8 +25,8 @@
     },
     {
       "$": "text_key",
-      "code": 47,
-      "label": "/"
+      "code": -14,
+      "label": "⇥"
     },
     {
       "$": "text_key",
