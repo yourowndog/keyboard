@@ -92,7 +92,7 @@ object FlorisImeSizing {
         
         // Add Gaps (only if we have mod rows)
         val gapTotal = if (modRowsCount > 0) {
-            modRowUpperGap + modRowInnerGap + modRowLowerGap
+            (modRowUpperGap + modRowInnerGap + modRowLowerGap).dp
         } else {
             0.dp
         }
