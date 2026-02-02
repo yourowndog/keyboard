@@ -249,7 +249,17 @@ fun TextKeyboardLayout(
                     }
                 }
                 desiredKey.visibleBounds.applyFrom(desiredKey.touchBounds).deflateBy(keyMarginH, keyMarginV)
-                keyboard.layout(keyboardWidth, keyboardHeight, desiredKey, true, bottomRowHeightFactor, alphaRowHeightFactor)
+                
+                // Calculate total gap height to subtract from layout height
+                // This ensures keys are sized based on content height, not including the gaps
+                val rowCount = keyboard.rowCount
+                val totalGaps = if (rowCount >= 2) {
+                    modRowUpperGap + modRowInnerGap + modRowLowerGap
+                } else {
+                    0f
+                }
+                
+                keyboard.layout(keyboardWidth, keyboardHeight - totalGaps, desiredKey, true, bottomRowHeightFactor, alphaRowHeightFactor)
                 
                 // Apply per-key customizations from prefs
                 val customizations = dev.patrickgold.florisboard.ime.keyboard.KeyCustomizationManager.parseFromJson(keyCustomizationsJson)
@@ -284,7 +294,6 @@ fun TextKeyboardLayout(
                     }
                 }
                 // Apply mod row gaps (upper/inner/lower)
-                val rowCount = keyboard.rowCount
                 if (rowCount >= 2) {
                     for ((rowIndex, row) in keyboard.arrangement.withIndex()) {
                         // Upper mod row (N-2)
@@ -312,8 +321,8 @@ fun TextKeyboardLayout(
                                     key.touchBounds.bottom += totalTopShift
                                 }
                                 if (modRowLowerGap > 0) {
-                                    key.visibleBounds.bottom += modRowLowerGap
-                                    // Extend touch area down into bezel
+                                    // Only extend touch bounds into the lower gap/bezel
+                                    // Visible bounds remain at their content size to create a visual gap
                                     key.touchBounds.bottom += modRowLowerGap
                                 }
                             }
