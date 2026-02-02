@@ -66,6 +66,9 @@ object FlorisImeSizing {
         val prefs by FlorisPreferenceStore
         val bottomRowHeightFactor by prefs.keyboard.bottomRowHeightFactor.observeAsTransformingState { it / 100f }
         val alphaRowHeightFactor by prefs.keyboard.alphaRowHeightFactor.observeAsTransformingState { it / 100f }
+        val modRowUpperGap by prefs.keyboard.modRowUpperGap.observeAsState()
+        val modRowInnerGap by prefs.keyboard.modRowInnerGap.observeAsState()
+        val modRowLowerGap by prefs.keyboard.modRowLowerGap.observeAsState()
         
         val context = LocalContext.current
         val keyboardManager by context.keyboardManager()
@@ -87,7 +90,14 @@ object FlorisImeSizing {
         val alphaTotal = keyboardRowBaseHeight * alphaRowsCount * alphaRowHeightFactor
         val modTotal = keyboardRowBaseHeight * modRowsCount * bottomRowHeightFactor
         
-        return alphaTotal + modTotal
+        // Add Gaps (only if we have mod rows)
+        val gapTotal = if (modRowsCount > 0) {
+            modRowUpperGap + modRowInnerGap + modRowLowerGap
+        } else {
+            0.dp
+        }
+        
+        return alphaTotal + modTotal + gapTotal
     }
 
     @Composable
