@@ -6,6 +6,19 @@
 - **Consult Omni Mechanics:** `omniboard_hacking.md` is the technical bible for this fork. Read it before touching layout logic.
 - **Capture Wisdom:** If Sam says "we got it," "that's it," or "perfect," update `omniboard_hacking.md` with the solution immediately.
 
+## Current Roadmap
+- [ ] **Control Key Upgrades:**
+    - [ ] Add `Control` to Per-Key Customization settings.
+    - [ ] Implement "Sticky/Lock" behavior (double-tap to lock).
+    - [ ] visual feedback (icon/color) for Locked state.
+- [ ] **Toggle Key Feedback (Alpha/Epsilon):**
+    - [ ] Ensure Number/Dev row toggle keys show "Active/Pressed" state when rows are visible.
+    - [ ] Verify Snygg selector logic for these states.
+- [ ] **Hitbox Debugging:**
+    - [ ] Fix touch offset/misalignment on bottom Mod row when custom padding/gaps are applied.
+- [ ] **True Margins (Alpha/Mod):**
+    - [ ] Implement independent left/right margins for Alpha and Mod rows that shrink the row width instead of cutting into outer keys.
+
 ## Tone and Expectations
 - **Persona:** Relaxed, casual, supportive mentor/buddy ("Sam").
 - **Protocol (Critical):** Before *ANY* code change:

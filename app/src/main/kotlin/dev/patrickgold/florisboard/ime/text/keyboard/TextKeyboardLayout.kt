@@ -294,6 +294,8 @@ fun TextKeyboardLayout(
                                 for (key in row) {
                                     key.visibleBounds.top += modRowUpperGap
                                     key.visibleBounds.bottom += modRowUpperGap
+                                    key.touchBounds.top += modRowUpperGap
+                                    key.touchBounds.bottom += modRowUpperGap
                                 }
                             }
                         }
@@ -306,9 +308,13 @@ fun TextKeyboardLayout(
                                 if (totalTopShift > 0) {
                                     key.visibleBounds.top += totalTopShift
                                     key.visibleBounds.bottom += totalTopShift
+                                    key.touchBounds.top += totalTopShift
+                                    key.touchBounds.bottom += totalTopShift
                                 }
                                 if (modRowLowerGap > 0) {
                                     key.visibleBounds.bottom += modRowLowerGap
+                                    // Extend touch area down into bezel
+                                    key.touchBounds.bottom += modRowLowerGap
                                 }
                             }
                         }
@@ -392,15 +398,21 @@ private fun TextKeyButton(
     desiredKey: TextKey,
     debugShowTouchBoundaries: Boolean,
 ) = with(LocalDensity.current) {
+    val prefs by FlorisPreferenceStore
     val attributes = mapOf(
         FlorisImeUi.Attr.Code to key.computedData.code,
         FlorisImeUi.Attr.Mode to evaluator.keyboard.mode.toString(),
         FlorisImeUi.Attr.ShiftState to evaluator.state.inputShiftState.toString(),
     )
+    val numberRowEnabled by prefs.keyboard.numberRow.observeAsState()
+    val devRowEnabled by prefs.keyboard.devRow.observeAsState()
+    
     val selector = when {
         !key.isEnabled -> SnyggSelector.DISABLED
         key.isPressed -> SnyggSelector.PRESSED
         key.computedData.code == KeyCode.CTRL && evaluator.state.isCtrlPressed -> SnyggSelector.FOCUS
+        key.computedData.code == KeyCode.TOGGLE_NUMBER_ROW && numberRowEnabled -> SnyggSelector.FOCUS
+        key.computedData.code == KeyCode.TOGGLE_DEV_ROW && devRowEnabled -> SnyggSelector.FOCUS
         else -> SnyggSelector.NONE
     }
     val size = remember(key, desiredKey) {

@@ -88,6 +88,7 @@ object KeyCustomizationManager {
         CustomizableKey(32, "Space"),        // KeyCode.SPACE
         CustomizableKey(10, "Enter"),        // KeyCode.ENTER
         CustomizableKey(-11, "Shift"),       // KeyCode.SHIFT
+        CustomizableKey(-1, "Control"),      // KeyCode.CTRL
         CustomizableKey(-7, "Backspace"),    // KeyCode.DELETE
         CustomizableKey(-14, "Tab"),         // KeyCode.TAB
         CustomizableKey(-23, "Arrow Up"),    // KeyCode.ARROW_UP
