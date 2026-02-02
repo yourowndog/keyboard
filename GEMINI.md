@@ -157,13 +157,10 @@
 - **Integration:** `ime/nlp/GemmaClient.kt` (Note: previously referred to as Bridge, now Client).
 - **Status:** Code exists (`GemmaClient`) but is currently dormant/untested.
 
-## Known Issues / TODOs (Goals)
-- **Backspace icon → text:** follow ENTER pattern (null icon + label in layout).
-- **Gemma/LLM:** planned, not integrated; note when added.
-- **Typo asset path exists** (`org.florisborad...`); be aware when editing assets.
-
 ## Project History (brief)
-- Recent commits: autocorrect/dict cleanup, ctrl attempts, vault permission fix, smartbar tweaks, uninstall stub, Whisper wiring (BuildConfig key missing). Run `git log --oneline` for details.
+- **Jan 2026:** Dynamic Keyboard/Row Height controls; Per-Key Customization; Neon Synthwave theme.
+- **Dec 2025:** Autocorrect "Brain Transplant" (SymSpell+CandidateScorer); HarvestManager for data collection; SmolLM integration; Unified tap/swipe scoring.
+- **Focus:** Autocorrect refinement and Harvest data analysis.
 
 ## Operating Reminders
 - Address Sam casually.
