@@ -179,10 +179,21 @@ class KeyboardManager(
             scope.launch {
                 appContext.showShortToast("Transcribing...")
                 val result = WhisperClient.transcribe(audioFile)
-                result.onSuccess {
-                    editorInstance.commitText(it)
+                result.onSuccess { transcription ->
+                    // Fix "Kiri" -> "Kiry" misspellings from Whisper
+                    val fixed = transcription.replace(Regex("\\bKiri(s|'s)?\\b", RegexOption.IGNORE_CASE)) { m ->
+                        val suffix = m.groupValues[1]
+                        val match = m.value
+                        val base = when {
+                            match.startsWith("KIRI") -> "KIRY"
+                            match.startsWith("Kiri") -> "Kiry"
+                            else -> "kiry"
+                        }
+                        base + suffix
+                    }
+                    editorInstance.commitText(fixed)
                     scope.launch {
-                        appContext.showShortToast("Transcription: $it")
+                        appContext.showShortToast("Transcription: $fixed")
                     }
                 }.onFailure {
                     scope.launch {
