@@ -85,6 +85,17 @@
     "border-color": "var(--cyan-bright)",
     "shape": "cut-corner(8dp, 8dp, 8dp, 8dp)"
   },
+  "key[code=-305,-306]": {
+    "background": "var(--hull-700)",
+    "foreground": "var(--cyan-dim)",
+    "border-color": "var(--cyan-dim)",
+    "shape": "cut-corner(8dp, 8dp, 8dp, 8dp)"
+  },
+  "key[code=-305,-306]:pressed": {
+    "background": "var(--cyan-bright)",
+    "foreground": "var(--text-inverse)",
+    "border-color": "var(--cyan-neon)"
+  },
   "key-popup-box": {
     "background": "var(--void-panel)",
     "foreground": "var(--cyan-bright)",
