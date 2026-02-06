@@ -420,8 +420,8 @@ private fun TextKeyButton(
         !key.isEnabled -> SnyggSelector.DISABLED
         key.isPressed -> SnyggSelector.PRESSED
         key.computedData.code == KeyCode.CTRL && evaluator.state.isCtrlPressed -> SnyggSelector.FOCUS
-        key.computedData.code == KeyCode.TOGGLE_NUMBER_ROW && numberRowEnabled -> SnyggSelector.PRESSED
-        key.computedData.code == KeyCode.TOGGLE_DEV_ROW && devRowEnabled -> SnyggSelector.PRESSED
+        key.computedData.code == KeyCode.TOGGLE_NUMBER_ROW -> SnyggSelector.PRESSED // DEBUG: Force ON
+        key.computedData.code == KeyCode.TOGGLE_DEV_ROW -> SnyggSelector.PRESSED // DEBUG: Force ON
         else -> SnyggSelector.NONE
     }
     val size = remember(key, desiredKey) {
