@@ -60,7 +60,7 @@ object SymSpellManager {
         "im" to "I'm",
         "i'm" to "I'm",
         "ive" to "I've",
-        "id" to "I'd",
+        // "id" removed - now handled by context-aware logic in CandidateScorer
         "ill" to "I'll",
         "dont" to "don't",
         "cant" to "can't",

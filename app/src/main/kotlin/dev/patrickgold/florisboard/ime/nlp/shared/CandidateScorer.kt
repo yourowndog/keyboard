@@ -25,7 +25,7 @@ object CandidateScorer {
     // ═══════════════════════════════════════════════════════════════════
     
     /** Weight for bigram context. Higher = more influence from previous word. */
-    private const val BIGRAM_WEIGHT = 0.5
+    private const val BIGRAM_WEIGHT = 5.0  // Increased from 0.5 to make bigrams actually matter
     
     /** Penalty when previous word exists but no bigram found. */
     private const val BIGRAM_NO_HIT_PENALTY = 0.2
@@ -78,7 +78,37 @@ object CandidateScorer {
         if (dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isAntiCorrection(typed, candidate)) {
             return CULLED_SCORE  // Reject this candidate completely
         }
-        
+
+        // HYBRID CONTEXT-AWARE BLOCKING: Grammar rules + bigram validation
+        if (prevWord != null) {
+            val prevLower = prevWord.lowercase()
+            val candLower = candidate.lowercase()
+
+            // Grammatical blocking: Possessives/determiners never precede contractions
+            // Examples: "my I'd" ✗, "the I'm" ✗, "your I'll" ✗
+            val POSSESSIVE_CONTEXTS = setOf("my", "your", "his", "her", "their", "our", "its")
+            val DETERMINERS = setOf("the", "this", "that", "these", "those", "a", "an", "some", "any", "each", "every")
+            val CONTRACTIONS = setOf("i'm", "i'd", "i'll", "i've", "we're", "we'll", "they're", "you're",
+                                      "he's", "she's", "it's", "that's", "what's", "who's", "here's", "there's")
+
+            if ((POSSESSIVE_CONTEXTS.contains(prevLower) || DETERMINERS.contains(prevLower))
+                && CONTRACTIONS.contains(candLower)) {
+                return CULLED_SCORE  // Grammatically impossible
+            }
+
+            // Bigram validation: If typed word forms stronger bigram than candidate, block correction
+            val bigramTable = BigramTable.get()
+            if (bigramTable != null) {
+                val typedBigramFreq = bigramTable.getFrequency(prevWord, typed)
+                val candidateBigramFreq = bigramTable.getFrequency(prevWord, candidate)
+
+                // If typed word has 2x stronger bigram, keep it (block correction)
+                if (typedBigramFreq > 0 && typedBigramFreq >= candidateBigramFreq * 2) {
+                    return CULLED_SCORE
+                }
+            }
+        }
+
         val typedNoApos = typed.replace("'", "")
         val candidateNoApos = candidate.replace("'", "")
         
