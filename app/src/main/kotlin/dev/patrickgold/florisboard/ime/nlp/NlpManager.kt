@@ -55,10 +55,12 @@ data class NlpStatus(
     val isSymSpellReady: Boolean,
     val symSpellWordCount: Int,
     val symSpellPrefixIndexSize: Int,
+    val symSpellError: String?,
     val isNgramEngineReady: Boolean,
     val ngramUnigramCount: Int,
     val isBigramTableReady: Boolean,
     val bigramFirstWordCount: Int,
+    val bigramError: String?,
 )
 
 data class NlpLogEvent(
@@ -97,10 +99,12 @@ class NlpManager(context: Context) {
             isSymSpellReady = SymSpellManager.isReady(),
             symSpellWordCount = SymSpellManager.getWordCount(),
             symSpellPrefixIndexSize = SymSpellManager.getPrefixIndexSize(),
+            symSpellError = SymSpellManager.getLastError(),
             isNgramEngineReady = latinProvider?.isNgramEngineReady() ?: false,
             ngramUnigramCount = latinProvider?.getNgramUnigramCount() ?: 0,
             isBigramTableReady = dev.patrickgold.florisboard.ime.nlp.shared.BigramTable.get() != null,
-            bigramFirstWordCount = dev.patrickgold.florisboard.ime.nlp.shared.BigramTable.get()?.getBigramCount() ?: 0
+            bigramFirstWordCount = dev.patrickgold.florisboard.ime.nlp.shared.BigramTable.get()?.getBigramCount() ?: 0,
+            bigramError = dev.patrickgold.florisboard.ime.nlp.shared.BigramTable.getLastError()
         )
     }
 

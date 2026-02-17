@@ -67,11 +67,17 @@ class BigramTable private constructor(
 
         @Volatile
         private var instance: BigramTable? = null
+        private var lastError: String? = null
 
         /**
          * Get the singleton instance. Returns null if not yet loaded.
          */
         fun get(): BigramTable? = instance
+
+        /**
+         * Get the last error message if loading failed.
+         */
+        fun getLastError(): String? = lastError
 
         /**
          * Load bigrams from the default asset path. Call once during app init.
@@ -82,6 +88,7 @@ class BigramTable private constructor(
                 instance = fromStream(stream)
                 android.util.Log.i(TAG, "Loaded shared BigramTable with ${instance?.table?.size ?: 0} first-words")
             } catch (e: Exception) {
+                lastError = "${e::class.simpleName}: ${e.message}"
                 android.util.Log.e(TAG, "Failed to load BigramTable", e)
             }
         }

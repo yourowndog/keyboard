@@ -97,9 +97,9 @@ fun NlpDebugScreen() = FlorisScreen {
             Text("Engine Status", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(8.dp))
             
-            StatusRow("SymSpell (Dictionary)", status.isSymSpellReady, "${status.symSpellWordCount} words, ${status.symSpellPrefixIndexSize} prefixes")
-            StatusRow("N-gram Engine", status.isNgramEngineReady, "${status.ngramUnigramCount} unigrams")
-            StatusRow("Bigram Table", status.isBigramTableReady, "${status.bigramFirstWordCount} first-words")
+            StatusRow("SymSpell (Dictionary)", status.isSymSpellReady, "${status.symSpellWordCount} words, ${status.symSpellPrefixIndexSize} prefixes", status.symSpellError)
+            StatusRow("N-gram Engine", status.isNgramEngineReady, "${status.ngramUnigramCount} unigrams", null)
+            StatusRow("Bigram Table", status.isBigramTableReady, "${status.bigramFirstWordCount} first-words", status.bigramError)
             
             Spacer(modifier = Modifier.height(24.dp))
             Text("Recent Suggestion Activity", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
@@ -120,7 +120,7 @@ fun NlpDebugScreen() = FlorisScreen {
 }
 
 @Composable
-fun StatusRow(label: String, isReady: Boolean, details: String) {
+fun StatusRow(label: String, isReady: Boolean, details: String, error: String?) {
     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(vertical = 4.dp)) {
         Icon(
             imageVector = if (isReady) Icons.Default.CheckCircle else Icons.Default.Error,
@@ -131,6 +131,9 @@ fun StatusRow(label: String, isReady: Boolean, details: String) {
         Column {
             Text(label, fontWeight = FontWeight.SemiBold)
             Text(details, style = MaterialTheme.typography.bodySmall)
+            if (error != null) {
+                Text("Error: $error", style = MaterialTheme.typography.bodySmall, color = Color(0xFFF44336))
+            }
         }
     }
 }

@@ -25,6 +25,7 @@ object SymSpellManager {
     private var symSpell: SymSpell? = null
     @Volatile private var isReady = false
     private var loadedWordCount: Int = 0
+    private var lastError: String? = null
 
     fun isReady(): Boolean = isReady
 
@@ -35,6 +36,8 @@ object SymSpellManager {
     fun getPrefixIndexSize(): Int {
         return prefixIndex.size
     }
+
+    fun getLastError(): String? = lastError
 
     // Prefix index for fast autocomplete - maps prefix (1-3 chars) to words starting with it
     private var prefixIndex: Map<String, List<Pair<String, Long>>> = emptyMap()
@@ -193,6 +196,7 @@ object SymSpellManager {
                     android.util.Log.w("SymSpellManager", "Reflexes dictionary is empty; keeping autocorrect disabled")
                 }
             } catch (e: Exception) {
+                lastError = "${e::class.simpleName}: ${e.message}"
                 android.util.Log.e("SymSpellManager", "Reflexes Failed to Load Dictionary", e)
             }
         }
