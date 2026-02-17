@@ -76,10 +76,15 @@ import dev.patrickgold.florisboard.lib.util.InputMethodUtils
 import dev.patrickgold.florisboard.nlpManager
 import dev.patrickgold.florisboard.ime.nlp.GemmaClient
 import dev.patrickgold.florisboard.subtypeManager
+import dev.patrickgold.florisboard.voiceManager
+import java.io.File
 import java.lang.ref.WeakReference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -126,6 +131,10 @@ class KeyboardManager(
 
     private var isRecording = false
     private var recorder: Recorder? = null
+    private var lastAudioFile: File? = null
+    private val _whisperAmplitude = MutableStateFlow(0f)
+    val whisperAmplitude = _whisperAmplitude.asStateFlow()
+    private var amplitudePollingJob: Job? = null
 
     private fun loadInitialLayout(): LayoutPack {
         // Return a blank layout pack to force the KeyboardManager to use the
@@ -165,44 +174,91 @@ class KeyboardManager(
             recorder = Recorder(context)
         }
         recorder?.start()
-        scope.launch {
-            appContext.showShortToast("Recording started")
+        activeState.batchEdit {
+            it.isRecording = true
+            it.isTranscribing = false
+        }
+        amplitudePollingJob?.cancel()
+        amplitudePollingJob = scope.launch(Dispatchers.Default) {
+            while (isActive && activeState.isRecording) {
+                val amp = recorder?.maxAmplitude() ?: 0
+                _whisperAmplitude.value = (amp.toFloat() / 32768f).coerceIn(0f, 1f)
+                delay(50)
+            }
+            _whisperAmplitude.value = 0f
         }
     }
 
     private fun stopVoiceCapture(context: Context) {
-        val audioFile = recorder?.stop()
-        scope.launch {
-            appContext.showShortToast("Recording stopped")
+        val audioFile = try {
+            recorder?.stop()
+        } catch (e: Exception) {
+            null
+        }
+        amplitudePollingJob?.cancel()
+        activeState.batchEdit {
+            it.isRecording = false
         }
         if (audioFile != null) {
-            scope.launch {
-                appContext.showShortToast("Transcribing...")
-                val result = WhisperClient.transcribe(audioFile)
-                result.onSuccess { transcription ->
-                    // Fix "Kiri" -> "Kiry" misspellings from Whisper
-                    val fixed = transcription.replace(Regex("\\bKiri(s|'s)?\\b", RegexOption.IGNORE_CASE)) { m ->
-                        val suffix = m.groupValues[1]
-                        val match = m.value
-                        val base = when {
-                            match.startsWith("KIRI") -> "KIRY"
-                            match.startsWith("Kiri") -> "Kiry"
-                            else -> "kiry"
-                        }
-                        base + suffix
+            lastAudioFile = audioFile
+            performTranscription(audioFile)
+        } else {
+            activeState.imeUiMode = ImeUiMode.TEXT
+        }
+    }
+
+    fun retryTranscription() {
+        val file = lastAudioFile
+        if (file != null && !activeState.isRecording && !activeState.isTranscribing) {
+            performTranscription(file)
+        }
+    }
+
+    fun cancelVoiceInput() {
+        amplitudePollingJob?.cancel()
+        try {
+            if (activeState.isRecording) {
+                recorder?.stop()
+            }
+        } catch (e: Exception) { }
+        activeState.batchEdit {
+            it.isRecording = false
+            it.isTranscribing = false
+            it.imeUiMode = ImeUiMode.TEXT
+        }
+    }
+
+    private fun performTranscription(audioFile: File) {
+        activeState.isTranscribing = true
+        scope.launch {
+            val result = WhisperClient.transcribe(audioFile)
+            result.onSuccess { transcription ->
+                // Fix "Kiri" -> "Kiry" misspellings from Whisper
+                val fixed = transcription.replace(Regex("\\bKiri(s|'s)?\\b", RegexOption.IGNORE_CASE)) { m ->
+                    val suffix = m.groupValues[1]
+                    val match = m.value
+                    val base = when {
+                        match.startsWith("KIRI") -> "KIRY"
+                        match.startsWith("Kiri") -> "Kiry"
+                        else -> "kiry"
                     }
-                    // Tag this as voice input for harvest analysis
-                    dev.patrickgold.florisboard.ime.nlp.HarvestManager.setSessionSource("VOICE")
-                    editorInstance.commitText(fixed)
-                    dev.patrickgold.florisboard.ime.nlp.HarvestManager.flushSession()
-                    dev.patrickgold.florisboard.ime.nlp.HarvestManager.setSessionSource("TYPING")
-                    scope.launch {
-                        appContext.showShortToast("Transcription: $fixed")
-                    }
-                }.onFailure {
-                    scope.launch {
-                        appContext.showShortToast("Transcription failed: ${it.message}")
-                    }
+                    base + suffix
+                }
+                // Tag this as voice input for harvest analysis
+                dev.patrickgold.florisboard.ime.nlp.HarvestManager.setSessionSource("VOICE")
+                editorInstance.commitText(fixed)
+                appContext.voiceManager().value.addTranscription(fixed)
+                dev.patrickgold.florisboard.ime.nlp.HarvestManager.flushSession()
+                dev.patrickgold.florisboard.ime.nlp.HarvestManager.setSessionSource("TYPING")
+
+                activeState.batchEdit {
+                    it.isTranscribing = false
+                    it.imeUiMode = ImeUiMode.TEXT
+                }
+            }.onFailure {
+                activeState.isTranscribing = false
+                scope.launch {
+                    appContext.showShortToast("Transcription failed: ${it.message}")
                 }
             }
         }
@@ -1038,12 +1094,15 @@ class KeyboardManager(
             KeyCode.IME_UI_MODE_CLIPBOARD -> activeState.imeUiMode = ImeUiMode.CLIPBOARD
             KeyCode.VOICE_INPUT -> {
                 requestAudioPermission()
-                if (isRecording) {
-                    stopVoiceCapture(appContext)
-                    isRecording = false
+                if (activeState.imeUiMode == ImeUiMode.VOICE) {
+                    if (activeState.isRecording) {
+                        stopVoiceCapture(appContext)
+                    } else if (!activeState.isTranscribing) {
+                        activeState.imeUiMode = ImeUiMode.TEXT
+                    }
                 } else {
+                    activeState.imeUiMode = ImeUiMode.VOICE
                     startVoiceCapture(appContext)
-                    isRecording = true
                 }
             }
             KeyCode.KANA_SWITCHER -> handleKanaSwitch()

@@ -84,6 +84,7 @@ class FlorisApplication : Application() {
     val nlpManager = lazy { NlpManager(this) }
     val subtypeManager = lazy { SubtypeManager(this) }
     val themeManager = lazy { ThemeManager(this) }
+    val voiceManager = lazy { dev.patrickgold.florisboard.ime.voice.VoiceManager(this) }
     lateinit var layoutPackRepository: LayoutPackRepository
         private set
 
@@ -177,3 +178,5 @@ fun Context.nlpManager() = this.florisApplication().nlpManager
 fun Context.subtypeManager() = this.florisApplication().subtypeManager
 
 fun Context.themeManager() = this.florisApplication().themeManager
+
+fun Context.voiceManager() = this.florisApplication().voiceManager

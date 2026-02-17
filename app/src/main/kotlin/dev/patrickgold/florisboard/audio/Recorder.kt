@@ -54,4 +54,12 @@ class Recorder(private val context: Context) {
         }
         return file
     }
+
+    fun maxAmplitude(): Int {
+        return try {
+            mediaRecorder?.maxAmplitude ?: 0
+        } catch (e: Exception) {
+            0
+        }
+    }
 }

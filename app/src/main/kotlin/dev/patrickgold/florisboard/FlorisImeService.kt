@@ -682,9 +682,10 @@ class FlorisImeService : LifecycleInputMethodService() {
                                 .wrapContentHeight(),
                         ) {
                             when (state.imeUiMode) {
-                                ImeUiMode.TEXT -> TextInputLayout()
+                                ImeUiMode.TEXT, ImeUiMode.VOICE -> TextInputLayout()
                                 ImeUiMode.MEDIA -> MediaInputLayout()
                                 ImeUiMode.CLIPBOARD -> ClipboardInputLayout()
+                                ImeUiMode.VOICE_HISTORY -> dev.patrickgold.florisboard.ime.voice.VoiceTranscriptionInputLayout()
                             }
                         }
                     }

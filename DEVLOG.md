@@ -1,4 +1,17 @@
 ### 2026-02-17
+* **Task:** Overhaul Whisper API integration with new "Whisper Bar" UI, sound wave visualization, and transcription history.
+* **Files:** `ImeUiMode.kt`, `KeyboardState.kt`, \`KeyboardManager.kt\`, `Smartbar.kt`, `FlorisApplication.kt`, `FlorisImeService.kt`, `Recorder.kt`, `VoiceManager.kt`, `VoiceTranscriptionInputLayout.kt`
+* **Details:**
+    * **ImeUiMode:** Added `VOICE` and `VOICE_HISTORY` modes.
+    * **Whisper Bar:** Created a dedicated UI for voice input in the Smartbar. It expands from the Mic button and features:
+        * **VoiceVisualizer:** A dynamic sound wave/bar visualization that reacts to microphone amplitude in real-time.
+        * **States:** Handles recording, transcribing (with a sine-wave animation), and timeout/error states.
+        * **Controls:** Added Cancel (X), Retry (Refresh), and History (Clock) buttons directly in the bar.
+    * **Transcription History:** Implemented a new "Voice History" screen (modeled after the clipboard history) to view and re-insert past transcriptions.
+    * **Resilience:** Added logic to store the `lastAudioFile` for easy retries if the Whisper API times out or fails.
+    * **Integration:** Integrated with the existing `Recorder` (enhanced with amplitude polling) and `WhisperClient`. – Gemini
+
+### 2026-02-17
 * **Task:** Created comprehensive AUTOCORRECT_FLOW.md technical documentation.
 * **Files:** `AUTOCORRECT_FLOW.md`
 * **Details:**
@@ -72,7 +85,7 @@
 
 ### 2025-12-03
 * **Task:** Reshuffled Wide Layout for better ergonomics.
-* **Files:** `qwerty_wide.json`, `qwerty_wide_mod.json`
+* **Files:** `qwerty_wide.json`, \`qwerty_wide_mod.json\`
 * **Notes:**
     *   **Row 3:** Shift | z x c v b n m | Del (Backpsace).
     *   **Row 4:** Tab | , | Space | . | Up | Enter.
@@ -169,16 +182,16 @@
 
 ### 2025-12-27
 * **Task:** Added Bottom Row Height slider and Per-Key Customization system.
-* **Files:** `AppPrefs.kt`, `Key.kt`, `KeyCustomization.kt` (NEW), `KeyCustomizationScreen.kt` (NEW), `TextKeyboard.kt`, `TextKeyboardLayout.kt`, `Routes.kt`, `KeyboardScreen.kt`, `strings.xml`, `Keyboard.kt`
+* **Files:** `AppPrefs.kt`, `Key.kt`, \`KeyCustomization.kt\` (NEW), \`KeyCustomizationScreen.kt\` (NEW), \`TextKeyboard.kt\`, \`TextKeyboardLayout.kt\`, \`Routes.kt\`, \`KeyboardScreen.kt\`, \`strings.xml\`, \`Keyboard.kt\`
 * **Details:**
   - **Bottom Row Height:** New slider (50-100%) in Keyboard settings to control compressed row height.
   - **Per-Key Customization:** New settings screen with dropdown (Space/Enter/Shift/Backspace/Arrows) + sliders for padding (Top/Bottom/Left/Right 0-20dp) and height factor (50-200%).
   - **Storage:** JSON map in SharedPreferences persists customizations across restarts.
-  - **Integration:** `TextKeyboardLayout` applies padding to `visibleBounds` after layout. – Gemini
+  - **Integration:** \`TextKeyboardLayout\` applies padding to \`visibleBounds\` after layout. – Gemini
 
 ### 2025-12-27
 * **Task:** Created comprehensive Neon Synthwave theme utilizing ALL Snygg styling properties.
-* **Files:** `neon_synthwave.json` (NEW), `extension.json`
+* **Files:** \`neon_synthwave.json\` (NEW), \`extension.json\`
 * **Details:**
   - **Full Property Utilization:** Used every available Snygg property: background, foreground, shadow-elevation, shadow-color, border-width, border-color, shape, padding, margin, font-family, font-size, font-weight, font-style, letter-spacing, text-align, text-max-lines, text-overflow, clip.
   - **Intelligent Key Groupings:** Alphas 97-122 (cyan glow), Numbers 48-57 (magenta), Navigation -21 to -28 (orange), Modifiers -1 to -6 (blue), Shift -11/-13 (yellow), Delete -7 to -10 (red), Enter (green), Clipboard -31 to -35 (purple), Layout switchers -201 to -207 (pink).
@@ -190,9 +203,9 @@
 
 ### 2026-01-21
 * **Task:** Implemented independent Alpha/Mod row height controls and Dynamic Keyboard Height.
-* **Files:** `FlorisImeSizing.kt`, `TextKeyboard.kt`, `TextKeyboardLayout.kt`, `KeyboardScreen.kt`, `AppPrefs.kt`, `Keyboard.kt`, `EditRuleDialog.kt`, `strings.xml`
+* **Files:** \`FlorisImeSizing.kt\`, \`TextKeyboard.kt\`, \`TextKeyboardLayout.kt\`, \`KeyboardScreen.kt\`, \`AppPrefs.kt\`, \`Keyboard.kt\`, \`EditRuleDialog.kt\`, \`strings.xml\`
 * **Details:**
-  - **Dynamic Height:** Rewrote `FlorisImeSizing.keyboardUiHeight` to calculate the total frame height as a sum of its parts (`AlphaRows * AlphaFactor + ModRows * ModFactor`) instead of fitting to a fixed percentage. This eliminates the "seesaw" effect where resizing one section distorts the other.
-  - **Alpha Row Slider:** Added `alphaRowHeightFactor` preference and UI slider (50-150%) to control the height of the top 3 rows (QWERTY/ASDF/ZXCV).
-  - **Layout Engine:** Updated `TextKeyboard.layout` and `Keyboard.layout` abstract method to accept `alphaRowHeightFactor`. The engine now lays out rows using exact unit heights derived from the dynamic container size.
+  - **Dynamic Height:** Rewrote \`FlorisImeSizing.keyboardUiHeight\` to calculate the total frame height as a sum of its parts (\`AlphaRows * AlphaFactor + ModRows * ModFactor\`) instead of fitting to a fixed percentage. This eliminates the "seesaw" effect where resizing one section distorts the other.
+  - **Alpha Row Slider:** Added \`alphaRowHeightFactor\` preference and UI slider (50-150%) to control the height of the top 3 rows (QWERTY/ASDF/ZXCV).
+  - **Layout Engine:** Updated \`TextKeyboard.layout\` and \`Keyboard.layout\` abstract method to accept \`alphaRowHeightFactor\`. The engine now lays out rows using exact unit heights derived from the dynamic container size.
   - **Result:** Users can now shrink the spacebar row to save screen real estate without stretching the alpha keys, or vice-versa. – Gemini
