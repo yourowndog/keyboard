@@ -16,6 +16,12 @@
 
 package dev.patrickgold.florisboard.ime.smartbar
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.animation.core.InfiniteRepeatableSpec
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -23,39 +29,29 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.History
-import androidx.compose.material.icons.filled.Mic
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
-import dev.patrickgold.florisboard.ime.ImeUiMode
-import dev.patrickgold.florisboard.ime.keyboard.KeyboardManager
-import kotlinx.coroutines.delay
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.UnfoldLess
 import androidx.compose.material.icons.filled.UnfoldMore
 import androidx.compose.runtime.Composable
@@ -63,11 +59,18 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.isUnspecified
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -76,7 +79,9 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
+import dev.patrickgold.florisboard.ime.ImeUiMode
 import dev.patrickgold.florisboard.ime.keyboard.FlorisImeSizing
+import dev.patrickgold.florisboard.ime.keyboard.KeyboardManager
 import dev.patrickgold.florisboard.ime.nlp.NlpInlineAutofill
 import dev.patrickgold.florisboard.ime.smartbar.quickaction.QuickActionButton
 import dev.patrickgold.florisboard.ime.smartbar.quickaction.QuickActionsRow
@@ -85,6 +90,7 @@ import dev.patrickgold.florisboard.ime.theme.FlorisImeUi
 import dev.patrickgold.florisboard.keyboardManager
 import dev.patrickgold.florisboard.nlpManager
 import dev.patrickgold.jetpref.datastore.model.observeAsState
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.florisboard.lib.android.AndroidVersion
 import org.florisboard.lib.compose.horizontalTween
@@ -94,6 +100,7 @@ import org.florisboard.lib.snygg.ui.SnyggColumn
 import org.florisboard.lib.snygg.ui.SnyggIcon
 import org.florisboard.lib.snygg.ui.SnyggIconButton
 import org.florisboard.lib.snygg.ui.SnyggRow
+import org.florisboard.lib.snygg.ui.SnyggText
 import org.florisboard.lib.snygg.ui.rememberSnyggThemeQuery
 
 const val AnimationDuration = 200
@@ -162,7 +169,8 @@ fun WhisperBar(
     val context = LocalContext.current
     val keyboardManager by context.keyboardManager()
     val state by keyboardManager.activeState.collectAsState()
-    val amplitude by keyboardManager.whisperAmplitude.collectAsState()
+    val amplitudeState = keyboardManager.whisperAmplitude.collectAsState()
+    val amplitude = amplitudeState.value
 
     SnyggRow(
         modifier = modifier
@@ -238,38 +246,33 @@ fun Smartbar() {
                 SnyggColumn(FlorisImeUi.Smartbar.elementName) {
                     SmartbarSecondaryRow()
                     SmartbarMainRow()
-                    SmartbarPhraseRow()
                 }
             }
 
             ExtendedActionsPlacement.BELOW_CANDIDATES -> {
                 SnyggColumn(FlorisImeUi.Smartbar.elementName) {
                     SmartbarMainRow()
-                    SmartbarPhraseRow()
                     SmartbarSecondaryRow()
                 }
             }
 
             ExtendedActionsPlacement.OVERLAY_APP_UI -> {
-                Column {
-                    SnyggBox(FlorisImeUi.Smartbar.elementName,
+                SnyggBox(FlorisImeUi.Smartbar.elementName,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(FlorisImeSizing.smartbarHeight),
+                    allowClip = false,
+                ) {
+                    Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(FlorisImeSizing.smartbarHeight),
-                        allowClip = false,
+                            .height(FlorisImeSizing.smartbarHeight * 2)
+                            .absoluteOffset(y = -FlorisImeSizing.smartbarHeight),
+                        contentAlignment = Alignment.BottomStart,
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(FlorisImeSizing.smartbarHeight * 2)
-                                .absoluteOffset(y = -FlorisImeSizing.smartbarHeight),
-                            contentAlignment = Alignment.BottomStart,
-                        ) {
-                            SmartbarSecondaryRow()
-                        }
-                        SmartbarMainRow()
+                        SmartbarSecondaryRow()
                     }
-                    SmartbarPhraseRow()
+                    SmartbarMainRow()
                 }
             }
         }
@@ -283,6 +286,8 @@ private fun SmartbarMainRow(modifier: Modifier = Modifier) {
     val keyboardManager by context.keyboardManager()
     val nlpManager by context.nlpManager()
     val scope = rememberCoroutineScope()
+
+    val state by keyboardManager.activeState.collectAsState()
 
     val inlineSuggestions by NlpInlineAutofill.suggestions.collectAsState()
     LaunchedEffect(inlineSuggestions) {
@@ -327,7 +332,7 @@ private fun SmartbarMainRow(modifier: Modifier = Modifier) {
             }
             val incognitoIcon = ImageVector.vectorResource(id = R.drawable.ic_incognito)
             val incognitoDisplayMode = prefs.keyboard.incognitoDisplayMode.observeAsState()
-            val isIncognitoMode = keyboardManager.activeState.isIncognitoMode
+            val isIncognitoMode = state.isIncognitoMode
             val icon = if (isIncognitoMode) {
                 when (incognitoDisplayMode.value) {
                     IncognitoDisplayMode.REPLACE_SHARED_ACTIONS_TOGGLE -> incognitoIcon!!
@@ -345,7 +350,7 @@ private fun SmartbarMainRow(modifier: Modifier = Modifier) {
 
     @Composable
     fun RowScope.CenterContent() {
-        val uiMode = keyboardManager.activeState.imeUiMode
+        val uiMode = state.imeUiMode
         val expanded = sharedActionsExpanded && smartbarLayout == SmartbarLayout.SUGGESTIONS_ACTIONS_SHARED
         Box(
             modifier = Modifier
@@ -466,7 +471,7 @@ private fun SmartbarMainRow(modifier: Modifier = Modifier) {
             .fillMaxWidth()
             .height(FlorisImeSizing.smartbarHeight),
     ) {
-        val uiMode = keyboardManager.activeState.imeUiMode
+        val uiMode = state.imeUiMode
         when (smartbarLayout) {
             SmartbarLayout.SUGGESTIONS_ONLY -> {
                 if (uiMode == ImeUiMode.VOICE) {
@@ -509,55 +514,6 @@ private fun SmartbarMainRow(modifier: Modifier = Modifier) {
                     if (uiMode != ImeUiMode.VOICE) StickyAction()
                     CenterContent()
                     if (uiMode != ImeUiMode.VOICE) ExtendedActionsToggle()
-                }
-            }
-        }
-    }
-}
-
-/**
- * Phrase prediction row - shows multi-word continuations below the main SmartBar.
- * Only visible when phrase predictions are available (user just hit space after a word).
- * Uses AnimatedVisibility to smoothly slide in/out.
- */
-@Composable
-private fun SmartbarPhraseRow(modifier: Modifier = Modifier) {
-    val context = LocalContext.current
-    val keyboardManager by context.keyboardManager()
-    val nlpManager by context.nlpManager()
-    val phraseCandidates by nlpManager.phraseCandidatesFlow.collectAsState()
-
-    AnimatedVisibility(
-        visible = phraseCandidates.isNotEmpty(),
-        enter = VerticalEnterTransition,
-        exit = VerticalExitTransition,
-    ) {
-        SnyggRow(
-            elementName = FlorisImeUi.SmartbarCandidatesRow.elementName,
-            modifier = modifier
-                .fillMaxWidth()
-                .height(FlorisImeSizing.smartbarHeight)
-                .padding(horizontal = 4.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-        ) {
-            phraseCandidates.forEach { candidate ->
-                SnyggBox(
-                    elementName = FlorisImeUi.SmartbarCandidateWord.elementName,
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
-                        .padding(horizontal = 4.dp, vertical = 4.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                        .clickable { keyboardManager.commitCandidate(candidate) },
-                    contentAlignment = Alignment.Center,
-                ) {
-                    androidx.compose.material3.Text(
-                        text = candidate.text.toString(),
-                        maxLines = 1,
-                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
-                        textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-                        fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
-                    )
                 }
             }
         }
