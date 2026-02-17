@@ -76,6 +76,7 @@ object CandidateScorer {
     ): Double {
         // ANTI-CORRECTIONS: Filter out forbidden typed→candidate pairs
         if (dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isAntiCorrection(typed, candidate)) {
+            android.util.Log.d("CandidateScorer", "ANTI-CORRECTION: $typed → $candidate")
             return CULLED_SCORE  // Reject this candidate completely
         }
 
@@ -93,6 +94,7 @@ object CandidateScorer {
 
             if ((POSSESSIVE_CONTEXTS.contains(prevLower) || DETERMINERS.contains(prevLower))
                 && CONTRACTIONS.contains(candLower)) {
+                android.util.Log.d("CandidateScorer", "GRAMMAR BLOCK: $prevWord + $candidate")
                 return CULLED_SCORE  // Grammatically impossible
             }
 
@@ -104,6 +106,7 @@ object CandidateScorer {
 
                 // If typed word has 2x stronger bigram, keep it (block correction)
                 if (typedBigramFreq > 0 && typedBigramFreq >= candidateBigramFreq * 2) {
+                    android.util.Log.d("CandidateScorer", "BIGRAM BLOCK: $prevWord + $typed ($typedBigramFreq) > $candidate ($candidateBigramFreq)")
                     return CULLED_SCORE
                 }
             }

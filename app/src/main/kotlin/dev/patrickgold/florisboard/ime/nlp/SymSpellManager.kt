@@ -391,17 +391,27 @@ object SymSpellManager {
     }
 
     fun suggest(input: String, previousWord: String? = null): List<String> {
-         if (!isReady) return emptyList()
-         val instance = symSpell ?: return emptyList()
+         android.util.Log.d("SymSpell_Debug", "suggest() called: input='$input', prev='$previousWord'")
+
+         if (!isReady) {
+             android.util.Log.e("SymSpell_Debug", "NOT READY! isReady=false")
+             return emptyList()
+         }
+         val instance = symSpell ?: run {
+             android.util.Log.e("SymSpell_Debug", "symSpell instance is NULL!")
+             return emptyList()
+         }
 
          if (input.length == 1) {
              // Mirror the fix() behavior: keep exactly what the user typed.
+             android.util.Log.d("SymSpell_Debug", "Single char input, returning as-is: '$input'")
              return listOf(input)
          }
 
         val normalized = input.lowercase()
         val upperCount = input.count { it.isUpperCase() }
         val suggestions = instance.lookup(normalized, Verbosity.All, MAX_EDIT_DISTANCE.toDouble())
+        android.util.Log.d("SymSpell_Debug", "SymSpell.lookup returned ${suggestions.size} raw candidates")
         val prev = previousWord?.lowercase()
         val ignoreManager = dev.patrickgold.florisboard.ime.dictionary.DictionaryManager.default()
 
@@ -410,12 +420,12 @@ object SymSpellManager {
             .sortedBy { candidate ->
                 val term = candidate.term
                 val lowerTerm = term.lowercase()
-                
+
                 // CULLING: Filter out 2-letter words not in whitelist
                 if (lowerTerm.length == 2 && !TWO_LETTER_WHITELIST.contains(lowerTerm)) {
                     return@sortedBy CandidateScorer.CULLED_SCORE
                 }
-                
+
                 // Filter by ignore list and blacklist
                 if (ignoreManager.isUserIgnored(input, term)) {
                     return@sortedBy CandidateScorer.CULLED_SCORE
@@ -423,26 +433,32 @@ object SymSpellManager {
                 if (BLACKLIST.contains(lowerTerm)) {
                     return@sortedBy CandidateScorer.CULLED_SCORE
                 }
-                
+
                 // Use unified scorer
                 val isUserWord = userWordsCache.any { it.equals(term, ignoreCase = true) }
-                CandidateScorer.score(
+                val score = CandidateScorer.score(
                     typed = normalized,
                     candidate = lowerTerm,
                     editDistance = candidate.distance,
                     prevWord = prev,
                     isInUserDict = isUserWord,
                 )
+                if (score >= CandidateScorer.CULLED_SCORE - 0.1) {
+                    android.util.Log.d("SymSpell_Debug", "CULLED: '$lowerTerm' (score=$score)")
+                }
+                score
             }
             .mapNotNull { candidate ->
                 val term = candidate.term
                 if (upperCount >= 2 && term.lowercase() != normalized) {
                     // Skip suggestions that would mangle acronyms/proper nouns
+                    android.util.Log.d("SymSpell_Debug", "Filtered uppercase: '$term'")
                     null
                 } else {
                     applyCasingPattern(input, term)
                 }
             }
+        android.util.Log.d("SymSpell_Debug", "After filtering: ${mapped.size} candidates")
         val withContraction = buildList {
             if (contractionTop != null) {
                 add(contractionTop)
@@ -458,7 +474,10 @@ object SymSpellManager {
                 addAll(mapped)
             }
         }
-        return if (withContraction.isNotEmpty()) withContraction else listOf(input)
+
+        val finalResult = if (withContraction.isNotEmpty()) withContraction else listOf(input)
+        android.util.Log.d("SymSpell_Debug", "suggest() returning ${finalResult.size} suggestions: $finalResult")
+        return finalResult
     }
 
     data class RawCandidate(val term: String, val distance: Double)
