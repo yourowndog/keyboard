@@ -51,7 +51,10 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.UnfoldLess
 import androidx.compose.material.icons.filled.UnfoldMore
 import androidx.compose.runtime.Composable
@@ -102,6 +105,9 @@ import org.florisboard.lib.snygg.ui.SnyggIconButton
 import org.florisboard.lib.snygg.ui.SnyggRow
 import org.florisboard.lib.snygg.ui.SnyggText
 import org.florisboard.lib.snygg.ui.rememberSnyggThemeQuery
+import androidx.compose.material3.Text
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 
 const val AnimationDuration = 200
 
@@ -123,44 +129,75 @@ fun VoiceVisualizer(
     isTranscribing: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    val barCount = 20
     val infiniteTransition = rememberInfiniteTransition(label = "transcribing")
-    val transcribingOffset by infiniteTransition.animateFloat(
+    // Slow sweep for the cascade pulse
+    val cascadePhase by infiniteTransition.animateFloat(
+        initialValue = -0.5f,
+        targetValue = 1.5f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(4000, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart,
+        ),
+        label = "cascadePhase",
+    )
+    // Secondary shimmer for subtle life
+    val shimmer by infiniteTransition.animateFloat(
         initialValue = 0f,
         targetValue = 2f * Math.PI.toFloat(),
         animationSpec = infiniteRepeatable(
-            animation = tween(1000, easing = LinearEasing),
+            animation = tween(2400, easing = LinearEasing),
             repeatMode = RepeatMode.Restart,
         ),
-        label = "transcribingOffset",
+        label = "shimmer",
     )
 
     Canvas(modifier = modifier.fillMaxSize()) {
         val canvasWidth = size.width
         val canvasHeight = size.height
-        val barWidth = (canvasWidth / (barCount * 2f))
         val maxBarHeight = canvasHeight * 0.8f
-        val minBarHeight = canvasHeight * 0.1f
+        val minBarHeight = canvasHeight * 0.05f
+        // High density: 80 bars
+        val barCount = 80
+        val totalUnits = barCount * 1.25f // 1.0 bar + 0.25 gap
+        val unitWidth = canvasWidth / totalUnits
+        val barWidth = unitWidth * 1.0f
+        val gapWidth = unitWidth * 0.25f
 
         for (i in 0 until barCount) {
-            val x = (i * 2f * barWidth) + (barWidth / 2f)
-            val height = if (isTranscribing) {
-                val variation = Math.sin((i.toFloat() / barCount * 2f * Math.PI) + transcribingOffset).toFloat()
-                minBarHeight + (maxBarHeight - minBarHeight) * (0.5f + 0.5f * variation)
+             val x = (i * (barWidth + gapWidth)) + (gapWidth / 2f)
+            val fraction = i.toFloat() / barCount
+
+            if (isTranscribing) {
+                // === CASCADING PULSE WAVE ===
+                // A gaussian-ish pulse that sweeps across the bars
+                val dist = (fraction - cascadePhase).let { it * it }
+                val pulse = Math.exp((-dist * 15.0)).toFloat() // wider gaussian
+                // Add subtle background shimmer so bars don't fully die
+                val backgroundShimmer = 0.08f + 0.06f * Math.sin((fraction * 6.0 * Math.PI) + shimmer).toFloat()
+                val height = minBarHeight + (maxBarHeight - minBarHeight) * (pulse * 0.9f + backgroundShimmer)
+                val alpha = 0.3f + 0.5f * pulse
+
+                val y = (canvasHeight - height) / 2f
+                drawRect(
+                    color = Color.White.copy(alpha = alpha),
+                    topLeft = Offset(x, y),
+                    size = Size(barWidth, height),
+                )
             } else {
-                minBarHeight + (maxBarHeight - minBarHeight) * amplitude * (0.5f + 0.5f * Math.random().toFloat())
+                // === RECORDING: organic noise ===
+                val noise = 0.4f + 0.6f * Math.random().toFloat()
+                val height = minBarHeight + (maxBarHeight - minBarHeight) * amplitude * noise
+                val y = (canvasHeight - height) / 2f
+                drawRect(
+                    color = Color.White.copy(alpha = 0.7f),
+                    topLeft = Offset(x, y),
+                    size = Size(barWidth, height),
+                )
             }
-            
-            val y = (canvasHeight - height) / 2f
-            drawRoundRect(
-                color = Color.White.copy(alpha = 0.7f),
-                topLeft = Offset(x, y),
-                size = Size(barWidth, height),
-                cornerRadius = CornerRadius(barWidth / 2f, barWidth / 2f)
-            )
         }
     }
 }
+
 
 @Composable
 fun WhisperBar(
@@ -176,19 +213,29 @@ fun WhisperBar(
         modifier = modifier
             .fillMaxWidth()
             .height(FlorisImeSizing.smartbarHeight)
-            .padding(horizontal = 8.dp),
+            .padding(horizontal = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(2.dp)
     ) {
-        if (state.isRecording || state.isTranscribing) {
-            Box(modifier = Modifier.weight(1f).fillMaxHeight()) {
-                VoiceVisualizer(
-                    amplitude = amplitude,
-                    isTranscribing = state.isTranscribing,
-                    modifier = Modifier.fillMaxSize()
+        if (state.isRecording) {
+            // === RECORDING STATE ===
+            // Left: Pause/Resume + Cancel
+            SnyggIconButton(
+                elementName = FlorisImeUi.SmartbarSharedActionsToggle.elementName,
+                onClick = {
+                    if (state.isPaused) {
+                        keyboardManager.resumeVoiceCapture()
+                    } else {
+                        keyboardManager.pauseVoiceCapture()
+                    }
+                },
+                modifier = Modifier.sizeIn(maxHeight = FlorisImeSizing.smartbarHeight).aspectRatio(1f)
+            ) {
+                SnyggIcon(
+                    imageVector = if (state.isPaused) Icons.Default.PlayArrow else Icons.Default.Pause
                 )
             }
-            
+
             SnyggIconButton(
                 elementName = FlorisImeUi.SmartbarSharedActionsToggle.elementName,
                 onClick = { keyboardManager.cancelVoiceInput() },
@@ -196,8 +243,36 @@ fun WhisperBar(
             ) {
                 SnyggIcon(imageVector = Icons.Default.Close)
             }
+
+            // Center: Visualizer
+            Box(modifier = Modifier.weight(1f).fillMaxHeight()) {
+                VoiceVisualizer(
+                    amplitude = amplitude,
+                    isTranscribing = false,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+
+            // Right: Submit
+            SnyggIconButton(
+                elementName = FlorisImeUi.SmartbarSharedActionsToggle.elementName,
+                onClick = { keyboardManager.submitVoiceCapture() },
+                modifier = Modifier.sizeIn(maxHeight = FlorisImeSizing.smartbarHeight).aspectRatio(1f)
+            ) {
+                SnyggIcon(imageVector = Icons.Default.Send)
+            }
+        } else if (state.isTranscribing) {
+            // === TRANSCRIBING STATE ===
+            // Full-width sine wave animation
+            Box(modifier = Modifier.weight(1f).fillMaxHeight()) {
+                VoiceVisualizer(
+                    amplitude = 0f,
+                    isTranscribing = true,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
         } else {
-            // Error / Timeout state or just finished
+            // === IDLE/ERROR STATE (voice mode but not recording) ===
             SnyggIconButton(
                 elementName = FlorisImeUi.SmartbarSharedActionsToggle.elementName,
                 onClick = { keyboardManager.activeState.imeUiMode = ImeUiMode.VOICE_HISTORY },
@@ -246,12 +321,14 @@ fun Smartbar() {
                 SnyggColumn(FlorisImeUi.Smartbar.elementName) {
                     SmartbarSecondaryRow()
                     SmartbarMainRow()
+                    SmartbarPhraseRow()
                 }
             }
 
             ExtendedActionsPlacement.BELOW_CANDIDATES -> {
                 SnyggColumn(FlorisImeUi.Smartbar.elementName) {
                     SmartbarMainRow()
+                    SmartbarPhraseRow()
                     SmartbarSecondaryRow()
                 }
             }
@@ -272,7 +349,10 @@ fun Smartbar() {
                     ) {
                         SmartbarSecondaryRow()
                     }
-                    SmartbarMainRow()
+                    Column {
+                        SmartbarMainRow()
+                        SmartbarPhraseRow()
+                    }
                 }
             }
         }
@@ -552,5 +632,55 @@ private fun SmartbarSecondaryRow(modifier: Modifier = Modifier) {
                 .height(FlorisImeSizing.smartbarHeight)
                 .background(background),
         )
+    }
+}
+
+/**
+ * SmartbarPhraseRow — a second suggestion row that shows multi-word phrase predictions.
+ * Animates in when phrase candidates are available (e.g., after typing "what's ").
+ * Tapping a phrase commits the entire phrase with a trailing space.
+ */
+@Composable
+private fun SmartbarPhraseRow(modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+    val nlpManager by context.nlpManager()
+    val keyboardManager by context.keyboardManager()
+    val phraseCandidates by nlpManager.phraseCandidatesFlow.collectAsState()
+
+    AnimatedVisibility(
+        visible = phraseCandidates.isNotEmpty(),
+        enter = VerticalEnterTransition,
+        exit = VerticalExitTransition,
+    ) {
+        SnyggRow(
+            elementName = FlorisImeUi.SmartbarCandidatesRow.elementName,
+            modifier = modifier
+                .fillMaxWidth()
+                .height(FlorisImeSizing.smartbarHeight),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+        ) {
+            phraseCandidates.forEach { candidate ->
+                SnyggBox(
+                    elementName = FlorisImeUi.SmartbarCandidateWord.elementName,
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .padding(horizontal = 4.dp, vertical = 4.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .clickable {
+                            keyboardManager.commitCandidate(candidate)
+                            nlpManager.clearPhraseCandidates()
+                        },
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        text = candidate.text.toString(),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        textAlign = TextAlign.Center,
+                    )
+                }
+            }
+        }
     }
 }

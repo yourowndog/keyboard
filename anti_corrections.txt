@@ -1,7 +1,7 @@
 "id" to listOf("I'd"),  // 13x rejected
 "s" to listOf("so"),  // 10x rejected
+"im" to listOf("I'm"),  // 9x rejected
 "i" to listOf("I"),  // 9x rejected
-"im" to listOf("I'm"),  // 8x rejected
 "min" to listOf("mind"),  // 6x rejected
 "Ya" to listOf("Yale"),  // 6x rejected
 "Hows" to listOf("How"),  // 3x rejected

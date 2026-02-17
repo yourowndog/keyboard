@@ -40,6 +40,8 @@ import dev.patrickgold.florisboard.ime.keyboard.ComputingEvaluator
 import dev.patrickgold.florisboard.ime.keyboard.computeImageVector
 import dev.patrickgold.florisboard.ime.keyboard.computeLabel
 import dev.patrickgold.florisboard.ime.text.keyboard.TextKeyData
+import dev.patrickgold.florisboard.ime.text.key.KeyCode
+import dev.patrickgold.florisboard.keyboardManager
 import dev.patrickgold.florisboard.ime.theme.FlorisImeUi
 import org.florisboard.lib.snygg.SnyggSelector
 import org.florisboard.lib.snygg.ui.SnyggBox
@@ -87,7 +89,9 @@ fun QuickActionButton(
         }
     }
 
-    PlainTooltip(action.computeTooltip(evaluator), enabled = type == QuickActionBarType.INTERACTIVE_BUTTON) {
+    // Disable tooltip for VOICE_INPUT so long-press can trigger voice history
+    val isVoiceInput = action is QuickAction.InsertKey && action.data.code == KeyCode.VOICE_INPUT
+    PlainTooltip(action.computeTooltip(evaluator), enabled = type == QuickActionBarType.INTERACTIVE_BUTTON && !isVoiceInput) {
         SnyggBox(
             elementName = elementName,
             attributes = attributes,
@@ -102,14 +106,27 @@ fun QuickActionButton(
                         down.consume()
                         if (isEnabled && type != QuickActionBarType.EDITOR_TILE) {
                             val press = PressInteraction.Press(down.position)
+                            val pressTime = System.nanoTime()
                             inputFeedbackController?.keyPress(TextKeyData.UNSPECIFIED)
                             interactionSource.tryEmit(press)
                             action.onPointerDown(context)
                             val up = waitForUpOrCancellation()
                             if (up != null) {
                                 up.consume()
+                                val holdMs = (System.nanoTime() - pressTime) / 1_000_000
                                 interactionSource.tryEmit(PressInteraction.Release(press))
-                                action.onPointerUp(context)
+                                // Long-press on mic → voice history
+                                if (action is QuickAction.InsertKey &&
+                                    action.data.code == KeyCode.VOICE_INPUT &&
+                                    holdMs > 400
+                                ) {
+                                    action.onPointerCancel(context)
+                                    val km by context.keyboardManager()
+                                    km.activeState.imeUiMode =
+                                        dev.patrickgold.florisboard.ime.ImeUiMode.VOICE_HISTORY
+                                } else {
+                                    action.onPointerUp(context)
+                                }
                             } else {
                                 interactionSource.tryEmit(PressInteraction.Cancel(press))
                                 action.onPointerCancel(context)

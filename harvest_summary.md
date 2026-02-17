@@ -1,17 +1,17 @@
 # Harvest Analysis Summary
-Generated: 2026-02-16 23:31:03
+Generated: 2026-02-17 15:31:16
 
 ## 📊 Statistics
 
 ### Data Volume
-- **Typing Sessions**: 11237 sessions, 53,752 words
-- **Voice Sessions**: 0 sessions, 0 words
-- **Total Words**: 53,752
+- **Typing Sessions**: 11493 sessions, 54,893 words
+- **Voice Sessions**: 816 sessions, 3,892 words
+- **Total Words**: 58,785
 
 ### Autocorrect Performance
-- **Accepted Corrections**: 310
-- **Rejected Corrections**: 295
-- **Accuracy Rate**: 51.2%
+- **Accepted Corrections**: 329
+- **Rejected Corrections**: 299
+- **Accuracy Rate**: 52.4%
 
 ### Issues Detected
 - **No Suggestions**: 0 instances
@@ -26,8 +26,8 @@ Generated: 2026-02-16 23:31:03
 
 - `"id" → "I'd"` (13x rejected)
 - `"s" → "so"` (10x rejected)
+- `"im" → "I'm"` (9x rejected)
 - `"i" → "I"` (9x rejected)
-- `"im" → "I'm"` (8x rejected)
 - `"min" → "mind"` (6x rejected)
 - `"Ya" → "Yale"` (6x rejected)
 - `"Hows" → "How"` (3x rejected)
@@ -52,20 +52,20 @@ Generated: 2026-02-16 23:31:03
 
 ### 3. New Bigrams
 
-#### From Typing (4407 bigrams, freq ≥2):
-- `you know` (282x)
-- `to be` (106x)
-- `want to` (105x)
-- `and then` (103x)
+#### From Typing (4479 bigrams, freq ≥2):
+- `you know` (283x)
+- `to be` (107x)
+- `want to` (106x)
+- `and then` (104x)
 - `of the` (98x)
 - `going to` (95x)
 - `like the` (89x)
+- `to the` (88x)
 - `in the` (86x)
-- `to the` (86x)
 - `this is` (81x)
 - `to do` (76x)
 - `kind of` (75x)
-- `on the` (73x)
+- `on the` (75x)
 - `it's like` (72x)
 - `don't know` (69x)
 - `need to` (69x)
@@ -74,10 +74,54 @@ Generated: 2026-02-16 23:31:03
 - `you to` (57x)
 - `all of` (57x)
 
-#### From Voice (0 bigrams, freq ≥2):
+#### From Voice (314 bigrams, freq ≥2):
+- `you know` (19x)
+- `in the` (15x)
+- `of the` (14x)
+- `to be` (14x)
+- `going on` (12x)
+- `and you` (10x)
+- `trying to` (9x)
+- `to do` (9x)
+- `on with` (8x)
+- `this is` (8x)
+- `have to` (8x)
+- `and the` (8x)
+- `don't know` (7x)
+- `and so` (7x)
+- `right now` (7x)
+- `able to` (7x)
+- `you have` (7x)
+- `so we` (6x)
+- `don't have` (6x)
+- `be able` (6x)
 
-#### Combined Total: 4407 unique bigrams
+#### Combined Total: 4558 unique bigrams
 
 ### 4. Autocorrect Failures
 
 *No autocorrect failures detected.*
+
+### 5. Personal Phrases (837 learned)
+*Multi-word phrases from your typing history (for phrase prediction):*
+
+- `i don't` → `know` (52x)
+- `i want` → `to` (39x)
+- `be able` → `to` (30x)
+- `and you` → `know` (23x)
+- `you know` → `i` (22x)
+- `like i` → `don't` (21x)
+- `you know` → `and` (21x)
+- `i need` → `to` (21x)
+- `want you` → `to` (21x)
+- `to be` → `able` (21x)
+- `going to` → `be` (19x)
+- `i want` → `you` (19x)
+- `go ahead` → `and` (18x)
+- `a little` → `bit` (17x)
+- `i mean` → `i` (16x)
+- `i have` → `a` (16x)
+- `i want` → `you to` (16x)
+- `i don't` → `want` (15x)
+- `we're going` → `to` (15x)
+- `you know` → `like` (15x)

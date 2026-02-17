@@ -98,6 +98,7 @@ open class KeyboardState protected constructor(open var rawValue: ULong) {
         const val F_IS_SUBTYPE_SELECTION_VISIBLE: ULong =   0x1_0000_0000u
         const val F_IS_RECORDING: ULong =                   0x2_0000_0000u
         const val F_IS_TRANSCRIBING: ULong =                0x4_0000_0000u
+        const val F_IS_PAUSED: ULong =                      0x8_0000_0000u
 
         const val F_DEBUG_SHOW_DRAG_AND_DROP_HELPERS =      0x01_00_00_00_00_00_00_00uL
 
@@ -211,6 +212,10 @@ open class KeyboardState protected constructor(open var rawValue: ULong) {
     var isTranscribing: Boolean
         get() = getFlag(F_IS_TRANSCRIBING)
         set(v) { setFlag(F_IS_TRANSCRIBING, v) }
+
+    var isPaused: Boolean
+        get() = getFlag(F_IS_PAUSED)
+        set(v) { setFlag(F_IS_PAUSED, v) }
 
     var isComposingEnabled: Boolean
         get() = getFlag(F_IS_COMPOSING_ENABLED)

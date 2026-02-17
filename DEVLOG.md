@@ -1,4 +1,21 @@
 ### 2026-02-17
+* **Task:** Implemented SmartbarPhraseRow UI + Harvest Analysis Pipeline
+* **Files:** `Smartbar.kt`, `NlpManager.kt`, `PersonalPreferences.kt`, `personal_phrases.tsv`, `final_mobile_bigrams.tsv`
+* **Details:**
+    * **SmartbarPhraseRow:** Created composable that reads `phraseCandidatesFlow` and renders phrase predictions in a second Smartbar row. Animates in/out via `AnimatedVisibility`. Integrated into all 3 layout modes (above/below/overlay).
+    * **Phrase Bug Fix:** Fixed `getPreviousWord()` to allow apostrophes; fixed `suggest()` to extract phrases from `content` param directly.
+    * **Harvest:** Pulled device data, ran `harvest_analyze.py`. Applied 20+ anti-corrections to `PersonalPreferences.kt`, merged 4,558 bigrams, installed 837 personal phrases. – Gemini
+
+### 2026-02-17
+* **Task:** Enhanced Voice Session — pause/resume, WhisperBar redesign, persistent history, pending queue.
+* **Files:** `Recorder.kt`, `KeyboardState.kt`, `KeyboardManager.kt`, `Smartbar.kt`, `VoiceManager.kt`
+* **Details:**
+    * **Pause/Resume:** `Recorder.kt` now supports `pause()`/`resume()` (API 24+). Visualizer flatlines when paused.
+    * **WhisperBar:** Redesigned recording UI: [⏸ Pause] [✕ Cancel] | Visualizer | [➤ Submit]. Separate transcribing and idle states.
+    * **Persistent History:** `VoiceManager` upgraded from in-memory to SharedPreferences-backed JSON storage (survives restarts).
+    * **Pending Queue:** Failed transcriptions auto-queue with cached audio files. `retryAllPending()` processes the queue. – Gemini
+
+### 2026-02-17
 * **Task:** Overhaul Whisper API integration with new "Whisper Bar" UI, sound wave visualization, and transcription history.
 * **Files:** `ImeUiMode.kt`, `KeyboardState.kt`, \`KeyboardManager.kt\`, `Smartbar.kt`, `FlorisApplication.kt`, `FlorisImeService.kt`, `Recorder.kt`, `VoiceManager.kt`, `VoiceTranscriptionInputLayout.kt`
 * **Details:**

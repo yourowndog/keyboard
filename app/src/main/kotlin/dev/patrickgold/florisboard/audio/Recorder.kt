@@ -9,9 +9,19 @@ import java.io.IOException
 class Recorder(private val context: Context) {
     private var mediaRecorder: MediaRecorder? = null
     private var outputFile: File? = null
+    var isPaused: Boolean = false
+        private set
+
+    private fun voiceDir(): File {
+        val dir = File(context.cacheDir, "voice_recordings")
+        if (!dir.exists()) dir.mkdirs()
+        return dir
+    }
 
     fun start(): File {
-        val file = File.createTempFile("whisper", ".mp4", context.cacheDir)
+        isPaused = false
+        val timestamp = System.currentTimeMillis()
+        val file = File(voiceDir(), "whisper_${timestamp}.mp4")
         outputFile = file
 
         mediaRecorder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -36,7 +46,30 @@ class Recorder(private val context: Context) {
         return file
     }
 
+    fun pause() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && !isPaused) {
+            try {
+                mediaRecorder?.pause()
+                isPaused = true
+            } catch (e: Exception) {
+                // Handle exception — recorder may not be in a valid state
+            }
+        }
+    }
+
+    fun resume() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && isPaused) {
+            try {
+                mediaRecorder?.resume()
+                isPaused = false
+            } catch (e: Exception) {
+                // Handle exception
+            }
+        }
+    }
+
     fun stop(): File {
+        isPaused = false
         try {
             mediaRecorder?.apply {
                 stop()
@@ -56,6 +89,7 @@ class Recorder(private val context: Context) {
     }
 
     fun maxAmplitude(): Int {
+        if (isPaused) return 0
         return try {
             mediaRecorder?.maxAmplitude ?: 0
         } catch (e: Exception) {

@@ -19,13 +19,29 @@ object PersonalPreferences {
      */
     val ANTI_CORRECTIONS = mapOf(
         "sams" to listOf("samson", "samoa"),
-        "min" to listOf("mine", "mini"),
+        "min" to listOf("mine", "mini", "mind"),
         "Hurray" to listOf("Hurrah"),
         "uh" to listOf("uhuru"),        // 2x rejected - common hesitation
         "bc" to listOf("by", "bye"),    // 4x rejected - abbreviation for "because"
         "pls" to listOf("Plays", "plus"),  // Common abbrev for "please"
-        // NOTE: "id" removed - needs context-aware handling (is vs I'd)
         "oof" to listOf("Ok", "of"),    // Exclamation
+        "id" to listOf("i'd", "I'd"),
+        "s" to listOf("so", "see"),
+        "im" to listOf("I'm"),
+        "i" to listOf("I"),
+        "Ya" to listOf("Yale"),
+        "Hows" to listOf("How"),
+        "minecraft" to listOf("mineshaft"),
+        "hesd" to listOf("he'd"),
+        "d" to listOf("don't"),
+        "ai" to listOf("Ain't"),
+        "snd" to listOf("and"),
+        "t" to listOf("to"),
+        "gor" to listOf("gore"),
+        "snf" to listOf("sncf"),
+        "ir" to listOf("iron"),
+        "Congrats" to listOf("Contrast"),
+        "domething" to listOf("something"),
     )
     
     /**

@@ -295,11 +295,15 @@ class NlpManager(context: Context) {
             // Generate phrase predictions when user just hit space (blank composing text)
             val composingText = content.composingText.toString().trim()
             if (composingText.isBlank()) {
-                val prevWord = getPreviousWord(subtype)
+                // Extract previous word from content parameter (same approach as LatinLanguageProvider)
+                val textBefore = content.textBeforeSelection.toString()
+                val trimmedBefore = textBefore.trimEnd()
+                val prevWordMatch = Regex("([A-Za-z']+)[^A-Za-z']*$").find(trimmedBefore)
+                val prevWord = prevWordMatch?.groupValues?.getOrNull(1)
+
                 val phraseTable = dev.patrickgold.florisboard.ime.nlp.shared.PhraseTable.get()
                 // Get the second-to-last word for trigram context
-                val textBefore = content.textBeforeSelection.toString().trimEnd()
-                val words = textBefore.split("\\s+".toRegex()).filter { it.isNotEmpty() }
+                val words = trimmedBefore.split("\\s+".toRegex()).filter { it.isNotEmpty() }
                 val word2 = if (words.size >= 2) words[words.size - 2] else null
                 val word1 = if (words.size >= 1) words[words.size - 1] else null
 
@@ -434,7 +438,7 @@ class NlpManager(context: Context) {
             trimmed
         }
         
-        return lastWord.takeIf { it.isNotEmpty() && it.all { c -> c.isLetter() } }
+        return lastWord.takeIf { it.isNotEmpty() && it.all { c -> c.isLetter() || c == '\'' } }
     }
 
     private fun assembleCandidates() {

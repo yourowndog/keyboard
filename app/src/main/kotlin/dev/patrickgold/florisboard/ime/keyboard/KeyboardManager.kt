@@ -177,6 +177,7 @@ class KeyboardManager(
         activeState.batchEdit {
             it.isRecording = true
             it.isTranscribing = false
+            it.isPaused = false
         }
         amplitudePollingJob?.cancel()
         amplitudePollingJob = scope.launch(Dispatchers.Default) {
@@ -189,6 +190,23 @@ class KeyboardManager(
         }
     }
 
+    fun pauseVoiceCapture() {
+        if (!activeState.isRecording || activeState.isPaused) return
+        recorder?.pause()
+        activeState.isPaused = true
+    }
+
+    fun resumeVoiceCapture() {
+        if (!activeState.isRecording || !activeState.isPaused) return
+        recorder?.resume()
+        activeState.isPaused = false
+    }
+
+    fun submitVoiceCapture() {
+        if (!activeState.isRecording) return
+        stopVoiceCapture(appContext)
+    }
+
     private fun stopVoiceCapture(context: Context) {
         val audioFile = try {
             recorder?.stop()
@@ -198,6 +216,7 @@ class KeyboardManager(
         amplitudePollingJob?.cancel()
         activeState.batchEdit {
             it.isRecording = false
+            it.isPaused = false
         }
         if (audioFile != null) {
             lastAudioFile = audioFile
@@ -224,12 +243,14 @@ class KeyboardManager(
         activeState.batchEdit {
             it.isRecording = false
             it.isTranscribing = false
+            it.isPaused = false
             it.imeUiMode = ImeUiMode.TEXT
         }
     }
 
     private fun performTranscription(audioFile: File) {
         activeState.isTranscribing = true
+        val voiceManager = appContext.voiceManager().value
         scope.launch {
             val result = WhisperClient.transcribe(audioFile)
             result.onSuccess { transcription ->
@@ -247,7 +268,8 @@ class KeyboardManager(
                 // Tag this as voice input for harvest analysis
                 dev.patrickgold.florisboard.ime.nlp.HarvestManager.setSessionSource("VOICE")
                 editorInstance.commitText(fixed)
-                appContext.voiceManager().value.addTranscription(fixed)
+                voiceManager.addTranscription(fixed)
+                voiceManager.removePending(audioFile.absolutePath)
                 dev.patrickgold.florisboard.ime.nlp.HarvestManager.flushSession()
                 dev.patrickgold.florisboard.ime.nlp.HarvestManager.setSessionSource("TYPING")
 
@@ -257,12 +279,31 @@ class KeyboardManager(
                 }
             }.onFailure {
                 activeState.isTranscribing = false
+                // Queue for later retry
+                voiceManager.addPending(audioFile)
+                // Keep in VOICE mode so user can retry
                 scope.launch {
-                    appContext.showShortToast("Transcription failed: ${it.message}")
+                    appContext.showShortToast("Transcription failed — saved for retry")
                 }
             }
         }
     }
+
+    fun retryAllPending() {
+        val voiceManager = appContext.voiceManager().value
+        val pending = voiceManager.getPendingFiles()
+        if (pending.isEmpty() || activeState.isTranscribing) return
+        // Retry the first pending item
+        val first = pending.first()
+        val file = File(first.filePath)
+        if (file.exists()) {
+            lastAudioFile = file
+            performTranscription(file)
+        } else {
+            voiceManager.removePending(first.filePath)
+        }
+    }
+
 
 
 
