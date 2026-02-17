@@ -98,6 +98,7 @@ fun NlpDebugScreen() = FlorisScreen {
             Spacer(modifier = Modifier.height(8.dp))
             
             StatusRow("SymSpell (Dictionary)", status.isSymSpellReady, "${status.symSpellWordCount} words, ${status.symSpellPrefixIndexSize} prefixes", status.symSpellError)
+            Text("  Init: ${status.symSpellInitStatus}", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
             StatusRow("N-gram Engine", status.isNgramEngineReady, "${status.ngramUnigramCount} unigrams", null)
             StatusRow("Bigram Table", status.isBigramTableReady, "${status.bigramFirstWordCount} first-words", status.bigramError)
             

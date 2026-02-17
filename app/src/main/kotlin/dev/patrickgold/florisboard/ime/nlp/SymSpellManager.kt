@@ -26,6 +26,7 @@ object SymSpellManager {
     @Volatile private var isReady = false
     private var loadedWordCount: Int = 0
     private var lastError: String? = null
+    private var initStatus: String = "NOT_STARTED"
 
     fun isReady(): Boolean = isReady
 
@@ -38,6 +39,8 @@ object SymSpellManager {
     }
 
     fun getLastError(): String? = lastError
+
+    fun getInitStatus(): String = initStatus
 
     // Prefix index for fast autocomplete - maps prefix (1-3 chars) to words starting with it
     private var prefixIndex: Map<String, List<Pair<String, Long>>> = emptyMap()
@@ -157,29 +160,41 @@ object SymSpellManager {
     fun init(context: Context, scope: CoroutineScope) {
         scope.launch(Dispatchers.IO) {
             try {
+                initStatus = "STEP1_DICT_MGR"
                 // Ensure DictionaryManager is ready
                 dev.patrickgold.florisboard.ime.dictionary.DictionaryManager.init(context)
 
+                initStatus = "STEP2_SETTINGS"
                 // 1. Initialize Engine Configuration
                 val settings = SpellCheckSettings(
-                    maxEditDistance = MAX_EDIT_DISTANCE.toDouble(), // FIX: Compiler wants Double
+                    maxEditDistance = MAX_EDIT_DISTANCE.toDouble(),
                     prefixLength = PREFIX_LENGTH,
-                    countThreshold = 1L                             // FIX: Compiler wants Long
+                    countThreshold = 1L
                 )
 
+                initStatus = "STEP3_CREATE_SYMSPELL"
                 // 2. Create Instance with explicit holder so we can load unigrams + bigrams
                 val holder = InMemoryDictionaryHolder(settings, Murmur3HashFunction())
-                // Constructor order is (SpellCheckSettings, StringDistance, DictionaryHolder)
                 val instance = SymSpell(settings, DamerauLevenshteinDistance(), holder)
 
+                initStatus = "STEP4_LOAD_UNIGRAMS"
                 // 3. Load Real Dictionary from Assets (unigram + bigram)
-                holder.loadUnigramTxtFile(context.assets.open(DICT_ASSET_PATH).use { it.readBytes() })
-                holder.loadBigramTxtFile(context.assets.open(BIGRAM_ASSET_PATH).use { it.readBytes() })
-                BigramTable.load(context)  // Load shared bigram table once
+                val unigramBytes = context.assets.open(DICT_ASSET_PATH).use { it.readBytes() }
+                initStatus = "STEP4b_UNIGRAM_READ(${unigramBytes.size}bytes)"
+                holder.loadUnigramTxtFile(unigramBytes)
+                initStatus = "STEP4c_UNIGRAM_DONE(wc=${holder.wordCount})"
 
+                initStatus = "STEP5_LOAD_BIGRAMS"
+                holder.loadBigramTxtFile(context.assets.open(BIGRAM_ASSET_PATH).use { it.readBytes() })
+
+                initStatus = "STEP6_BIGRAM_TABLE"
+                BigramTable.load(context)
+
+                initStatus = "STEP7_USER_OVERRIDES"
                 // Inject must-win personal words until we wire user dictionary
                 USER_OVERRIDES.forEach { (word, freq) -> instance.createDictionaryEntry(word, freq) }
 
+                initStatus = "STEP8_PREFIX_INDEX"
                 // 4. Build prefix index for autocomplete
                 appContextRef = context
                 buildPrefixIndex(context)
@@ -188,15 +203,18 @@ object SymSpellManager {
                 loadedWordCount = loadedWords
                 symSpell = instance
                 isReady = loadedWords > 0
+                initStatus = if (isReady) "DONE($loadedWords words, ${prefixIndex.size} prefixes)" else "DONE_EMPTY"
                 android.util.Log.i(
                     "SymSpellManager",
                     "Reflexes Ready: Loaded $loadedWords words from $DICT_ASSET_PATH with bigrams from $BIGRAM_ASSET_PATH, prefix index: ${prefixIndex.size} prefixes"
                 )
                 if (!isReady) {
+                    lastError = "Dictionary loaded 0 words (file was ${unigramBytes.size} bytes)"
                     android.util.Log.w("SymSpellManager", "Reflexes dictionary is empty; keeping autocorrect disabled")
                 }
             } catch (e: Exception) {
                 lastError = "${e::class.simpleName}: ${e.message}"
+                initStatus = "FAILED@$initStatus"
                 android.util.Log.e("SymSpellManager", "Reflexes Failed to Load Dictionary", e)
             }
         }
