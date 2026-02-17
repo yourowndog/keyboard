@@ -185,7 +185,12 @@ object SymSpellManager {
                 initStatus = "STEP4c_UNIGRAM_DONE(wc=${holder.wordCount})"
 
                 initStatus = "STEP5_LOAD_BIGRAMS"
-                holder.loadBigramTxtFile(context.assets.open(BIGRAM_ASSET_PATH).use { it.readBytes() })
+                try {
+                    holder.loadBigramTxtFile(context.assets.open(BIGRAM_ASSET_PATH).use { it.readBytes() })
+                } catch (bigramEx: Exception) {
+                    android.util.Log.w("SymSpellManager", "Bigram loading into SymSpell failed (non-fatal): ${bigramEx.message}")
+                    // Non-fatal: SymSpell can work without bigrams loaded into its holder
+                }
 
                 initStatus = "STEP6_BIGRAM_TABLE"
                 BigramTable.load(context)
