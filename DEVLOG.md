@@ -1,3 +1,12 @@
+### 2026-02-17
+* **Task:** Created comprehensive AUTOCORRECT_FLOW.md technical documentation.
+* **Files:** `AUTOCORRECT_FLOW.md`
+* **Details:**
+    * Maps the complete "Brain Transplant" suggestion pipeline: Retrieval (SymSpell) -> Ranking (Ngram/CandidateScorer) -> Casing (CasingUtils).
+    * Documents initialization sequence, early-return logic, and auto-commit criteria.
+    * Includes debugging hypotheses for the "zero corrections" bug.
+    * Provides a file reference map for the core NLP codebase. – Gemini
+
 ### 2025-12-16
 * **Task:** Created web-based Keyboard Layout Previewer tool for design iteration.
 * **Files:** `tools/previewer/index.html`

@@ -139,6 +139,12 @@ fun HomeScreen() = FlorisScreen {
             onClick = { navController.navigate(Routes.Settings.Typing) },
         )
         Preference(
+            icon = Icons.Outlined.Build,
+            title = "NLP Debug & Logs",
+            summary = "View status of autocorrect and suggestion engines",
+            onClick = { navController.navigate(Routes.Settings.NlpDebug) },
+        )
+        Preference(
             icon = Icons.Default.Gesture,
             title = stringRes(R.string.settings__gestures__title),
             onClick = { navController.navigate(Routes.Settings.Gestures) },

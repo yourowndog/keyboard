@@ -59,6 +59,8 @@ class BigramTable private constructor(
         return maxByPrev[prev.lowercase()] ?: 0
     }
 
+    fun getBigramCount(): Int = table.size
+
     companion object {
         private const val TAG = "BigramTable"
         private const val BIGRAM_ASSET_PATH = "ime/dict/final_mobile_bigrams.tsv"

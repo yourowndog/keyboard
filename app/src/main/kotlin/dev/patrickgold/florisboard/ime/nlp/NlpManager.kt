@@ -51,8 +51,58 @@ import kotlin.properties.Delegates
 
 private const val BLANK_STR_PATTERN = "^\\s*$"
 
+data class NlpStatus(
+    val isSymSpellReady: Boolean,
+    val symSpellWordCount: Int,
+    val symSpellPrefixIndexSize: Int,
+    val isNgramEngineReady: Boolean,
+    val ngramUnigramCount: Int,
+    val isBigramTableReady: Boolean,
+    val bigramFirstWordCount: Int,
+)
+
+data class NlpLogEvent(
+    val timestamp: Long,
+    val typed: String,
+    val prevWord: String?,
+    val suggestions: List<String>,
+)
+
 class NlpManager(context: Context) {
     private val blankStrRegex = Regex(BLANK_STR_PATTERN)
+
+    private val _nlpLogs = MutableStateFlow<List<NlpLogEvent>>(emptyList())
+    val nlpLogs = _nlpLogs.asStateFlow()
+
+    fun addLogEvent(typed: String, prevWord: String?, suggestions: List<SuggestionCandidate>) {
+        val event = NlpLogEvent(
+            timestamp = System.currentTimeMillis(),
+            typed = typed,
+            prevWord = prevWord,
+            suggestions = suggestions.map { it.text.toString() }
+        )
+        val currentLogs = _nlpLogs.value.toMutableList()
+        currentLogs.add(0, event)
+        if (currentLogs.size > 50) {
+            currentLogs.removeAt(currentLogs.size - 1)
+        }
+        _nlpLogs.value = currentLogs
+    }
+
+    fun getStatus(): NlpStatus {
+        val latinProvider = runBlocking {
+            providers.withLock { it[LatinLanguageProvider.ProviderId]?.provider as? LatinLanguageProvider }
+        }
+        return NlpStatus(
+            isSymSpellReady = SymSpellManager.isReady(),
+            symSpellWordCount = SymSpellManager.getWordCount(),
+            symSpellPrefixIndexSize = SymSpellManager.getPrefixIndexSize(),
+            isNgramEngineReady = latinProvider?.isNgramEngineReady() ?: false,
+            ngramUnigramCount = latinProvider?.getNgramUnigramCount() ?: 0,
+            isBigramTableReady = dev.patrickgold.florisboard.ime.nlp.shared.BigramTable.get() != null,
+            bigramFirstWordCount = dev.patrickgold.florisboard.ime.nlp.shared.BigramTable.get()?.getBigramCount() ?: 0
+        )
+    }
 
     private val prefs by FlorisPreferenceStore
     private val clipboardManager by context.clipboardManager()
@@ -231,6 +281,7 @@ class NlpManager(context: Context) {
                         addAll(emojiSuggestions)
                         addAll(suggestions)
                     }
+                    addLogEvent(content.composingText.toString(), getPreviousWord(subtype), suggestions)
                 }
             }
         }

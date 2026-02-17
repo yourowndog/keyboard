@@ -25,6 +25,16 @@ object SymSpellManager {
     private var symSpell: SymSpell? = null
     @Volatile private var isReady = false
     
+    fun isReady(): Boolean = isReady
+
+    fun getWordCount(): Int {
+        return symSpell?.wordCount ?: 0
+    }
+
+    fun getPrefixIndexSize(): Int {
+        return prefixIndex.size
+    }
+
     // Prefix index for fast autocomplete - maps prefix (1-3 chars) to words starting with it
     private var prefixIndex: Map<String, List<Pair<String, Long>>> = emptyMap()
     private var appContextRef: Context? = null

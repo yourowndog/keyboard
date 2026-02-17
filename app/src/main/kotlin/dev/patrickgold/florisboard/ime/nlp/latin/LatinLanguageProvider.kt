@@ -45,6 +45,9 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
 
     private var ngramEngine: dev.patrickgold.florisboard.ime.nlp.NgramSuggestionEngine? = null
 
+    fun isNgramEngineReady(): Boolean = ngramEngine != null
+    fun getNgramUnigramCount(): Int = ngramEngine?.unigramLogFreq?.size ?: 0
+
     override val providerId = ProviderId
 
     private fun String.isDigitsOnly(): Boolean = this.all { it.isDigit() }
