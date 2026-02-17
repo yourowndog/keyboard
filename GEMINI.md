@@ -145,19 +145,75 @@
 - **Status:** Unified scoring for autocorrect AND smartbar suggestions. Neural-net-ready interface (flat primitives in/out).
 
 ## Developer Harvest System
-- **Purpose:** Captures real usage data during dev iteration (survives reinstalls via file export).
+- **Purpose:** Comprehensive usage data collection for autocorrect refinement. Survives reinstalls (external file).
 - **File:** `HarvestManager.kt` writes to `/sdcard/Documents/usage_harvest.md`
-- **Events Logged:**
-  - `ACCEPTED` – autocorrect stood (user continued)
-  - `REJECTED` – autocorrect reverted (user backspaced)
-  - `NEW_WORD` – typed word not in dictionary
-  - `INSISTED` – user picked their typed word over suggestions
-  - `PICKED` – user manually picked a different suggestion
-- **Workflow:**
-  1. Use keyboard normally
-  2. `cp /sdcard/Documents/usage_harvest.md ~/vault/projects/keyboard/`
-  3. Review with agents to update dictionary/ignore lists
-- **UX Fix:** Punctuation now eats trailing space (iOS/Gboard style). Type `word ` then `.` → `word.`
+- **Status:** Multi-source tracking (typing vs voice), comprehensive failure detection
+
+### Event Types Logged
+
+**Autocorrect Effectiveness:**
+- `ACCEPTED` – autocorrect stood (user continued)
+- `REJECTED` – autocorrect reverted (user backspaced)
+- `INSISTED` – user picked their typed word over suggestions
+- `PICKED` – user manually picked a different suggestion
+
+**Critical Failure Detection (NEW):**
+- `NO_SUGGESTION` – typed word with NO autocorrect offered (dictionary gap!)
+- `MULTI_ATTEMPT` – multiple backspace/retype cycles (user struggling)
+- `IGNORED_SUGGESTIONS` – suggestions shown but all ignored (wrong or invisible)
+- `BACKSPACE_STORM` – high backspace count on single word (high-effort word)
+
+**Session Tracking:**
+- `SESSION:TYPING` – 5-word chunks from manual keyboard input
+- `SESSION:VOICE` – transcribed text from Whisper (voice dictation)
+- `NEW_WORD` – typed word not in dictionary
+
+### Data Separation Strategy
+**TYPING data** (SESSION:TYPING, autocorrect events) →
+- Autocorrect effectiveness metrics
+- Typo pattern analysis
+- Dictionary gap detection
+- Suggestion quality analysis
+
+**VOICE data** (SESSION:VOICE) →
+- Bigram extraction (natural speech patterns)
+- Dictionary vocabulary expansion
+- NOT used for autocorrect metrics (already correct text)
+
+### Workflow
+
+**1. Collect Data:**
+Use keyboard normally - all events auto-logged to `/sdcard/Documents/usage_harvest.md`
+
+**2. Sync to Repo:**
+```bash
+cd ~/keyboard-local
+python3 harvest.py  # Pulls new data from phone
+```
+
+**3. Analyze:**
+```bash
+python3 harvest_analyze.py  # Generates actionable reports
+```
+
+**4. Review Outputs:**
+- `harvest_summary.md` - Statistics and recommendations
+- `anti_corrections.txt` - Corrections to block (PersonalPreferences.kt)
+- `dictionary_additions.txt` - Words to add (unified_dictionary.tsv)
+- `bigrams_combined.tsv` - New bigrams (final_mobile_bigrams.tsv)
+- `problem_patterns.txt` - Autocorrect failures needing fixes
+
+**5. Apply Changes:**
+- Add anti-corrections to `PersonalPreferences.kt`
+- Merge bigrams into `final_mobile_bigrams.tsv`
+- Add words to `unified_dictionary.tsv`
+- Review autocorrect logic for NO_SUGGESTION patterns
+
+### Analyzer Configuration
+Edit `harvest_analyze.py` to adjust thresholds:
+- `MIN_WORD_FREQ = 3` - Dictionary addition threshold
+- `MIN_REJECTION_COUNT = 5` - Anti-correction threshold
+- `MIN_BIGRAM_FREQ = 3` - Bigram inclusion threshold
 
 ## Voice/Whisper Snapshot
 - **Status:** Logic is PERFECT. Online and working.

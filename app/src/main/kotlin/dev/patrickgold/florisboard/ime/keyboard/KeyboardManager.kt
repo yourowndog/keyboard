@@ -191,7 +191,11 @@ class KeyboardManager(
                         }
                         base + suffix
                     }
+                    // Tag this as voice input for harvest analysis
+                    dev.patrickgold.florisboard.ime.nlp.HarvestManager.setSessionSource("VOICE")
                     editorInstance.commitText(fixed)
+                    dev.patrickgold.florisboard.ime.nlp.HarvestManager.flushSession()
+                    dev.patrickgold.florisboard.ime.nlp.HarvestManager.setSessionSource("TYPING")
                     scope.launch {
                         appContext.showShortToast("Transcription: $fixed")
                     }

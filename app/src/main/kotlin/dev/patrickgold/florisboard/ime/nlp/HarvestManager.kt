@@ -31,6 +31,11 @@ object HarvestManager {
     
     private val sessionBuffer = StringBuilder()
     private var sessionWordCount = 0
+    private var currentSessionSource = "TYPING"  // Track session source: "TYPING" or "VOICE"
+
+    // Track multi-attempt sequences
+    private var currentAttemptSequence = mutableListOf<String>()
+    private var lastTypedWord: String? = null
     
     /**
      * Initialize the harvest file location.
@@ -161,6 +166,78 @@ object HarvestManager {
         append("INTENT", "Typed '$typed' → Auto-corrected to '$rejected' → User reverted & typed '$intent'. (Conclusion: '$typed' meant '$intent')", null)
     }
 
+    /**
+     * Log when autocorrect offers NO suggestions for a typed word.
+     * Critical for identifying dictionary gaps and autocorrect blind spots.
+     */
+    fun logNoSuggestion(typed: String, prevWord: String? = null) {
+        append("NO_SUGGESTION", "typed: \"$typed\" | no corrections offered", prevWord)
+    }
+
+    /**
+     * Log when user makes multiple attempts to type the same word.
+     * Indicates struggle - either dictionary gap or poor suggestion quality.
+     *
+     * @param attempts List of typing attempts (e.g. ["wrng", "worng", "wrong"])
+     * @param finalWord What user finally settled on
+     * @param prevWord Context
+     */
+    fun logMultiAttempt(attempts: List<String>, finalWord: String, prevWord: String? = null) {
+        val attemptsStr = attempts.joinToString(" → ")
+        append("MULTI_ATTEMPT", "attempts: [$attemptsStr] | final: \"$finalWord\"", prevWord)
+    }
+
+    /**
+     * Log when suggestions are shown but user ignores ALL of them.
+     * Indicates either: wrong suggestions, or user didn't see/trust them.
+     *
+     * @param typed What user typed
+     * @param suggestions What was offered in smartbar
+     * @param finalTyped What user ended up with (after ignoring suggestions)
+     */
+    fun logSuggestionsIgnored(typed: String, suggestions: List<String>, finalTyped: String, prevWord: String? = null) {
+        val suggestionsStr = suggestions.joinToString(", ")
+        append("IGNORED_SUGGESTIONS", "typed: \"$typed\" | offered: [$suggestionsStr] | ignored all | final: \"$finalTyped\"", prevWord)
+    }
+
+    /**
+     * Log when user makes many backspaces on a single word (struggle indicator).
+     * High-effort words should get better suggestions or be added to dictionary.
+     */
+    fun logBackspaceStorm(word: String, backspaceCount: Int, finalWord: String) {
+        append("BACKSPACE_STORM", "word: \"$word\" | backspaces: $backspaceCount | final: \"$finalWord\"", null)
+    }
+
+    /**
+     * Start tracking a multi-attempt sequence for a word position.
+     * Call when user starts typing after backspacing.
+     */
+    fun startAttemptTracking(word: String) {
+        currentAttemptSequence.clear()
+        currentAttemptSequence.add(word)
+        lastTypedWord = word
+    }
+
+    /**
+     * Add attempt to current sequence.
+     */
+    fun addAttempt(word: String) {
+        if (word != lastTypedWord) {
+            currentAttemptSequence.add(word)
+            lastTypedWord = word
+        }
+    }
+
+    /**
+     * Finalize attempt sequence and log if multiple attempts were made.
+     */
+    fun finalizeAttemptSequence(finalWord: String, prevWord: String? = null) {
+        if (currentAttemptSequence.size > 1) {
+            logMultiAttempt(currentAttemptSequence.toList(), finalWord, prevWord)
+        }
+        currentAttemptSequence.clear()
+        lastTypedWord = null
+    }
 
     fun addToSession(word: String) {
         synchronized(sessionBuffer) {
@@ -179,6 +256,14 @@ object HarvestManager {
         }
     }
 
+    /**
+     * Set the source of upcoming session data.
+     * Call before voice input commits, reset to TYPING after.
+     */
+    fun setSessionSource(source: String) {
+        currentSessionSource = source
+    }
+
     fun flushSession(terminator: String = "") {
         synchronized(sessionBuffer) {
             if (terminator.isNotEmpty()) {
@@ -188,7 +273,8 @@ object HarvestManager {
                 val sentence = sessionBuffer.toString()
                 sessionBuffer.setLength(0) // clear
                 sessionWordCount = 0
-                append("SESSION", "\"$sentence\"", null)
+                // Tag session with source (TYPING or VOICE)
+                append("SESSION:$currentSessionSource", "\"$sentence\"", null)
             }
         }
     }
