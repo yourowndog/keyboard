@@ -24,11 +24,12 @@ import dev.patrickgold.florisboard.ime.nlp.shared.CandidateScorer
 object SymSpellManager {
     private var symSpell: SymSpell? = null
     @Volatile private var isReady = false
-    
+    private var loadedWordCount: Int = 0
+
     fun isReady(): Boolean = isReady
 
     fun getWordCount(): Int {
-        return symSpell?.wordCount ?: 0
+        return loadedWordCount
     }
 
     fun getPrefixIndexSize(): Int {
@@ -181,6 +182,7 @@ object SymSpellManager {
                 buildPrefixIndex(context)
 
                 val loadedWords = holder.wordCount
+                loadedWordCount = loadedWords
                 symSpell = instance
                 isReady = loadedWords > 0
                 android.util.Log.i(

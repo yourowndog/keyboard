@@ -77,8 +77,7 @@ fun NlpDebugScreen() = FlorisScreen {
             Icon(Icons.Default.Refresh, contentDescription = "Refresh Status")
         }
         IconButton(onClick = {
-            val logText = logs.joinToString("
-") { log ->
+            val logText = logs.joinToString("\n") { log ->
                 val time = SimpleDateFormat("HH:mm:ss.SSS", Locale.US).format(Date(log.timestamp))
                 "[$time] Typed: '${log.typed}' | Prev: '${log.prevWord}' | Suggestions: ${log.suggestions.joinToString(", ")}"
             }
@@ -87,10 +86,7 @@ fun NlpDebugScreen() = FlorisScreen {
                 Ngram Ready: ${status.isNgramEngineReady} (${status.ngramUnigramCount} unigrams)
                 Bigrams Ready: ${status.isBigramTableReady} (${status.bigramFirstWordCount} first-words)
             """.trimIndent()
-            clipboardManager.setText(AnnotatedString("$statusText
-
-Logs:
-$logText"))
+            clipboardManager.setText(AnnotatedString("$statusText\n\nLogs:\n$logText"))
         }) {
             Icon(Icons.Default.ContentCopy, contentDescription = "Copy all info")
         }
