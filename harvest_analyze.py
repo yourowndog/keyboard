@@ -53,6 +53,9 @@ class HarvestAnalyzer:
         self.ignored_suggestions = []
         self.backspace_storms = []
 
+        self.trigram_contexts = []  # (word1, word2, continuation) from trigram fields
+        self.insisted_words = []   # Words user insisted on (INSISTED events)
+
         # Statistics
         self.stats = {
             'total_typing_words': 0,
@@ -77,6 +80,7 @@ class HarvestAnalyzer:
             'multi_attempt': re.compile(r'^\[MULTI_ATTEMPT\] .* \| attempts: \[(.*)\] \| final: "(.*)"'),
             'ignored_suggestions': re.compile(r'^\[IGNORED_SUGGESTIONS\] .* \| typed: "(.*)" \| offered: \[(.*)\]'),
             'backspace_storm': re.compile(r'^\[BACKSPACE_STORM\] .* \| word: "(.*)" \| backspaces: (\d+)'),
+            'trigram': re.compile(r'trigram: "([^"]+)"'),
         }
 
         with open(self.harvest_file, 'r', encoding='utf-8') as f:
@@ -95,11 +99,17 @@ class HarvestAnalyzer:
                 elif m := patterns['session_legacy'].match(line):
                     self.typing_sessions.append(m.group(1))
 
-                # ACCEPTED
+                # ACCEPTED (also extract trigram context if present)
                 elif m := patterns['accepted'].match(line):
                     typed, corrected = m.group(1), m.group(2)
                     self.accepted_corrections.append((typed, corrected))
                     self.stats['total_accepted'] += 1
+                    # Extract trigram field if present
+                    tm = patterns['trigram'].search(line)
+                    if tm:
+                        trigram_words = tm.group(1).strip().split()
+                        if len(trigram_words) >= 3:
+                            self.trigram_contexts.append(tuple(trigram_words))
 
                 # REJECTED
                 elif m := patterns['rejected'].match(line):
@@ -154,6 +164,50 @@ class HarvestAnalyzer:
                 bigrams.append(f"{words[i]} {words[i+1]}")
 
         return Counter(bigrams)
+
+    def extract_phrases(self):
+        """Extract personal phrases (trigrams and longer) for phrase prediction.
+
+        Sources:
+        1. Trigram fields from ACCEPTED/INSISTED events
+        2. Consecutive word sequences from VOICE and TYPING sessions
+
+        Output format: {("word1 word2", "continuation"): frequency}
+        """
+        phrase_counts = Counter()
+
+        # Source 1: Trigram contexts from harvest events
+        for words in self.trigram_contexts:
+            if len(words) >= 3:
+                context = f"{words[0].lower()} {words[1].lower()}"
+                continuation = " ".join(w.lower() for w in words[2:])
+                phrase_counts[(context, continuation)] += 1
+
+        # Source 2: Extract consecutive word sequences from sessions
+        MIN_PHRASE_LEN = 3  # Minimum words for a phrase
+        MAX_PHRASE_LEN = 6  # Maximum words for a phrase
+
+        all_sessions = self.typing_sessions + self.voice_sessions
+        for session_text in all_sessions:
+            words = [w.lower().strip('.,!?;:\'"()[]{}') for w in session_text.split()]
+            words = [w for w in words if len(w) >= 1 and not w.isdigit()]
+
+            # Extract all n-grams from 3 to MAX_PHRASE_LEN
+            for n in range(MIN_PHRASE_LEN, MAX_PHRASE_LEN + 1):
+                for i in range(len(words) - n + 1):
+                    ngram = words[i:i+n]
+                    context = f"{ngram[0]} {ngram[1]}"
+                    continuation = " ".join(ngram[2:])
+                    phrase_counts[(context, continuation)] += 1
+
+        # Filter by minimum frequency (3 occurrences for personal phrases)
+        MIN_PHRASE_FREQ = 3
+        filtered = {
+            k: v for k, v in phrase_counts.items()
+            if v >= MIN_PHRASE_FREQ
+        }
+
+        return filtered
 
     def analyze_rejected_corrections(self):
         """Find patterns in rejected corrections."""
@@ -213,9 +267,10 @@ class HarvestAnalyzer:
         for bg, freq in voice_bigrams_filtered.items():
             combined_bigrams[bg] += freq
 
-        # Analyze rejections and dictionary gaps
+        # Analyze rejections, dictionary gaps, and personal phrases
         frequent_rejections = self.analyze_rejected_corrections()
         dictionary_gaps = self.analyze_dictionary_gaps()
+        personal_phrases = self.extract_phrases()
 
         # Generate report
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -284,9 +339,17 @@ Generated: {timestamp}
             for word, count in sorted(self.backspace_storms, key=lambda x: x[1], reverse=True)[:10]:
                 report += f"- `{word}` ({count} backspaces)\n"
 
-        return report, typing_bigrams_filtered, voice_bigrams_filtered, combined_bigrams, frequent_rejections, dictionary_gaps
+        report += f"\n### 5. Personal Phrases ({len(personal_phrases)} learned)\n"
+        report += "*Multi-word phrases from your typing history (for phrase prediction):*\n\n"
+        if personal_phrases:
+            for (context, continuation), freq in sorted(personal_phrases.items(), key=lambda x: x[1], reverse=True)[:20]:
+                report += f"- `{context}` → `{continuation}` ({freq}x)\n"
+        else:
+            report += "*Not enough data yet. Keep typing!*\n"
 
-    def write_outputs(self, report, typing_bigrams, voice_bigrams, combined_bigrams, rejections, dictionary_gaps):
+        return report, typing_bigrams_filtered, voice_bigrams_filtered, combined_bigrams, frequent_rejections, dictionary_gaps, personal_phrases
+
+    def write_outputs(self, report, typing_bigrams, voice_bigrams, combined_bigrams, rejections, dictionary_gaps, personal_phrases=None):
         """Write all output files."""
         print("\n💾 Writing output files...")
 
@@ -325,6 +388,15 @@ Generated: {timestamp}
                 f.write(f"{bg}\t{freq * 10}\n")
         print("   ✅ bigrams_combined.tsv")
 
+        # Personal phrases for PhraseTable
+        if personal_phrases:
+            with open("personal_phrases.tsv", 'w', encoding='utf-8') as f:
+                for (context, continuation), freq in sorted(personal_phrases.items(), key=lambda x: x[1], reverse=True):
+                    f.write(f"{context}\t{continuation}\t{freq}\n")
+            print(f"   ✅ personal_phrases.tsv ({len(personal_phrases)} phrases)")
+        else:
+            print("   ⏭️  personal_phrases.tsv (skipped - no phrases yet)")
+
         # Problem patterns
         with open("problem_patterns.txt", 'w', encoding='utf-8') as f:
             f.write("# Autocorrect Failures - No Suggestions Offered\n\n")
@@ -340,8 +412,8 @@ def main():
     analyzer = HarvestAnalyzer(HARVEST_FILE)
     analyzer.parse_harvest_file()
 
-    report, typing_bigrams, voice_bigrams, combined_bigrams, rejections, dictionary_gaps = analyzer.generate_summary()
-    analyzer.write_outputs(report, typing_bigrams, voice_bigrams, combined_bigrams, rejections, dictionary_gaps)
+    report, typing_bigrams, voice_bigrams, combined_bigrams, rejections, dictionary_gaps, personal_phrases = analyzer.generate_summary()
+    analyzer.write_outputs(report, typing_bigrams, voice_bigrams, combined_bigrams, rejections, dictionary_gaps, personal_phrases)
 
     print("\n" + "=" * 60)
     print("✅ ANALYSIS COMPLETE")
@@ -353,12 +425,14 @@ def main():
     print("   • bigrams_typing.tsv - Bigrams from manual typing")
     print("   • bigrams_voice.tsv - Bigrams from voice input")
     print("   • bigrams_combined.tsv - Merged bigrams for dictionary")
+    print("   • personal_phrases.tsv - Personal phrase predictions for PhraseTable")
     print("   • problem_patterns.txt - Autocorrect failures")
     print("\n📖 Next Steps:")
     print("   1. Review harvest_summary.md for insights")
     print("   2. Apply recommended changes to PersonalPreferences.kt")
     print("   3. Merge bigrams_combined.tsv into final_mobile_bigrams.tsv")
     print("   4. Add words from dictionary_additions.txt to unified_dictionary.tsv")
+    print("   5. Copy personal_phrases.tsv to app/src/main/assets/ime/dict/ for phrase prediction")
     print()
 
 if __name__ == "__main__":

@@ -191,7 +191,7 @@ object CandidateScorer {
     fun spatialCost(typed: String, candidate: String): Double {
         var cost = 0.0
         val len = kotlin.math.min(typed.length, candidate.length)
-        
+
         var i = 0
         while (i < len) {
             val t = typed[i]
@@ -200,7 +200,7 @@ object CandidateScorer {
                 i++
                 continue
             }
-            
+
             // Check for transposition (adjacent swap like ie → ei)
             if (i + 1 < len && i + 1 < typed.length && i + 1 < candidate.length) {
                 val t1 = typed[i + 1]
@@ -212,20 +212,17 @@ object CandidateScorer {
                     continue
                 }
             }
-            
-            val neighbors = KeyboardLayout.QWERTY_NEIGHBORS[t] ?: ""
-            if (neighbors.contains(c)) {
-                cost += SPATIAL_NEIGHBOR_COST // Close miss
-            } else {
-                cost += SPATIAL_FAR_COST // Far miss
-            }
+
+            // Use continuous Euclidean distance (0.0 - 2.0 range)
+            // Adjacent keys ≈ 0.5-1.0, same-row-skip ≈ 1.4, cross-keyboard ≈ 2.0
+            cost += KeyboardLayout.keyDistance(t, c)
             i++
         }
-        
+
         // Add penalty for length difference (insertions/deletions)
         val diff = kotlin.math.abs(typed.length - candidate.length)
         cost += diff * SPATIAL_LENGTH_DIFF_COST
-        
+
         return cost
     }
     

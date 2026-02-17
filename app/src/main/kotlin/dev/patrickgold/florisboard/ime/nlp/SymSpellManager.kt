@@ -195,6 +195,13 @@ object SymSpellManager {
                 initStatus = "STEP6_BIGRAM_TABLE"
                 BigramTable.load(context)
 
+                initStatus = "STEP6b_PHRASE_TABLE"
+                try {
+                    dev.patrickgold.florisboard.ime.nlp.shared.PhraseTable.load(context)
+                } catch (e: Exception) {
+                    android.util.Log.w("SymSpellManager", "PhraseTable loading failed (non-fatal): ${e.message}")
+                }
+
                 initStatus = "STEP7_USER_OVERRIDES"
                 // Inject must-win personal words until we wire user dictionary
                 USER_OVERRIDES.forEach { (word, freq) -> instance.createDictionaryEntry(word, freq) }

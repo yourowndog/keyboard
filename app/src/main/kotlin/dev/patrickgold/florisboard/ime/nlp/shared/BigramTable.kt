@@ -61,6 +61,50 @@ class BigramTable private constructor(
 
     fun getBigramCount(): Int = table.size
 
+    /**
+     * Predict multi-word phrase continuations by chaining bigram lookups.
+     * E.g., "what's" → "up" → "man" → phrase = "up man"
+     *
+     * Uses frequency decay: each link must have freq > 10% of the initial max
+     * to prevent nonsensical chains like "the of and".
+     *
+     * @param prev The previous word to start chaining from
+     * @param maxPhrases Maximum number of phrase candidates to return
+     * @param maxWords Maximum words per phrase chain
+     * @return List of multi-word phrase strings, e.g. ["up man", "going on", "the deal"]
+     */
+    fun predictPhrases(prev: String?, maxPhrases: Int = 3, maxWords: Int = 6): List<String> {
+        val p = prev?.lowercase() ?: return emptyList()
+        val starters = topFollowers[p] ?: return emptyList()
+        val initialMax = maxByPrev[p] ?: return emptyList()
+        if (initialMax <= 0) return emptyList()
+
+        val threshold = initialMax * 0.10  // 10% frequency decay floor
+
+        val phrases = mutableListOf<String>()
+        for (starter in starters.take(maxPhrases)) {
+            val chain = mutableListOf(starter)
+            var current = starter
+            for (depth in 1 until maxWords) {
+                val row = table[current] ?: break
+                // Find the best follower that meets the threshold
+                val best = row.entries
+                    .filter { it.value >= threshold }
+                    .maxByOrNull { it.value }
+                    ?: break
+                // Avoid loops
+                if (best.key in chain) break
+                chain.add(best.key)
+                current = best.key
+            }
+            // Only include if we got at least 2 words (otherwise it's just a next-word prediction)
+            if (chain.size >= 2) {
+                phrases.add(chain.joinToString(" "))
+            }
+        }
+        return phrases
+    }
+
     companion object {
         private const val TAG = "BigramTable"
         private const val BIGRAM_ASSET_PATH = "ime/dict/final_mobile_bigrams.tsv"

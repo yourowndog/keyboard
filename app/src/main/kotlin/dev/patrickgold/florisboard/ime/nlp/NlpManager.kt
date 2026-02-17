@@ -141,6 +141,17 @@ class NlpManager(context: Context) {
             _activeCandidatesFlow.value = v
         }
 
+    private val _phraseCandidatesFlow = MutableStateFlow(listOf<SuggestionCandidate>())
+    val phraseCandidatesFlow = _phraseCandidatesFlow.asStateFlow()
+
+    fun updatePhraseCandidates(candidates: List<SuggestionCandidate>) {
+        _phraseCandidatesFlow.value = candidates
+    }
+
+    fun clearPhraseCandidates() {
+        _phraseCandidatesFlow.value = emptyList()
+    }
+
     val debugOverlaySuggestionsInfos = LruCache<Long, Pair<String, SpellingResult>>(10)
     var debugOverlayVersion = MutableLiveData(0)
     private val debugOverlayVersionSource = AtomicInteger(0)
@@ -281,6 +292,48 @@ class NlpManager(context: Context) {
                     )
                 }
             }
+            // Generate phrase predictions when user just hit space (blank composing text)
+            val composingText = content.composingText.toString().trim()
+            if (composingText.isBlank()) {
+                val prevWord = getPreviousWord(subtype)
+                val phraseTable = dev.patrickgold.florisboard.ime.nlp.shared.PhraseTable.get()
+                // Get the second-to-last word for trigram context
+                val textBefore = content.textBeforeSelection.toString().trimEnd()
+                val words = textBefore.split("\\s+".toRegex()).filter { it.isNotEmpty() }
+                val word2 = if (words.size >= 2) words[words.size - 2] else null
+                val word1 = if (words.size >= 1) words[words.size - 1] else null
+
+                // Try PhraseTable first (personal phrases), then BigramTable chaining
+                val personalPhrases = if (phraseTable != null && word2 != null && word1 != null) {
+                    phraseTable.predictContinuation(word2, word1)
+                } else emptyList()
+
+                val bigramPhrases = dev.patrickgold.florisboard.ime.nlp.shared.BigramTable.get()
+                    ?.predictPhrases(prevWord) ?: emptyList()
+
+                // Merge: personal first, then bigram-chained, dedup
+                val seen = mutableSetOf<String>()
+                val allPhrases = (personalPhrases + bigramPhrases).filter { seen.add(it.lowercase()) }.take(3)
+
+                if (allPhrases.isNotEmpty()) {
+                    val phraseCandidates = allPhrases.map { phrase ->
+                        WordSuggestionCandidate(
+                            text = phrase,
+                            secondaryText = null,
+                            isEligibleForAutoCommit = false,
+                            isEligibleForUserRemoval = false,
+                            sourceProvider = null,
+                        )
+                    }
+                    updatePhraseCandidates(phraseCandidates)
+                } else {
+                    clearPhraseCandidates()
+                }
+            } else {
+                // User is mid-word typing - hide phrase row
+                clearPhraseCandidates()
+            }
+
             internalSuggestionsGuard.withLock {
                 if (internalSuggestions.first < reqTime) {
                     internalSuggestions = reqTime to buildList {
@@ -305,6 +358,7 @@ class NlpManager(context: Context) {
         runBlocking {
             internalSuggestions = reqTime to emptyList()
         }
+        clearPhraseCandidates()
     }
 
     fun getAutoCommitCandidate(): SuggestionCandidate? {
