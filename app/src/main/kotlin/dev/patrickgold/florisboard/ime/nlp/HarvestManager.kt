@@ -22,6 +22,17 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+/**
+ * Context information about the app/field where typing is occurring.
+ * Used for per-app dictionary learning and behavior customization.
+ */
+data class AppContext(
+    val packageName: String,
+    val fieldId: Int,
+    val inputVariation: String,
+    val flags: String,
+)
+
 object HarvestManager {
     private const val FILENAME = "usage_harvest.md"
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
@@ -95,10 +106,11 @@ object HarvestManager {
      * @param correctedTo What it was corrected to
      * @param prevWord The word before (context)
      * @param prevPrevWord The word before that (trigram context)
+     * @param appContext App/field context for per-app learning
      */
-    fun logAccepted(typed: String, correctedTo: String, prevWord: String?, prevPrevWord: String? = null) {
+    fun logAccepted(typed: String, correctedTo: String, prevWord: String?, prevPrevWord: String? = null, appContext: AppContext? = null) {
         if (typed == correctedTo) return // Not actually a correction
-        append("ACCEPTED", "$typed → $correctedTo", prevWord, prevPrevWord)
+        append("ACCEPTED", "$typed → $correctedTo", prevWord, prevPrevWord, appContext)
     }
     
     /**
@@ -107,9 +119,10 @@ object HarvestManager {
      * @param rejectedCorrection What correction they rejected
      * @param prevWord The word before (context)
      * @param prevPrevWord The word before that (trigram context)
+     * @param appContext App/field context for per-app learning
      */
-    fun logRejected(typed: String, rejectedCorrection: String, prevWord: String?, prevPrevWord: String? = null) {
-        append("REJECTED", "$typed ← $rejectedCorrection (reverted)", prevWord, prevPrevWord)
+    fun logRejected(typed: String, rejectedCorrection: String, prevWord: String?, prevPrevWord: String? = null, appContext: AppContext? = null) {
+        append("REJECTED", "$typed ← $rejectedCorrection (reverted)", prevWord, prevPrevWord, appContext)
     }
     
     /**
@@ -117,14 +130,15 @@ object HarvestManager {
      * These are candidates for dictionary addition.
      * @param word The word that wasn't recognized
      * @param prevWord The word before (context)
+     * @param appContext App/field context for per-app learning
      */
-    fun logNewWord(word: String, prevWord: String?) {
+    fun logNewWord(word: String, prevWord: String?, appContext: AppContext? = null) {
         // Skip very short words and obvious garbage
         if (word.length < 2) return
         if (word.all { it.isDigit() }) return
         if (word.contains("@") || word.contains("://")) return // URLs/emails
-        
-        append("NEW_WORD", word, prevWord)
+
+        append("NEW_WORD", word, prevWord, null, appContext)
     }
     
     /**
@@ -132,13 +146,14 @@ object HarvestManager {
      * This is a strong signal that this word should be in the dictionary.
      * @param word The word user insisted on
      * @param prevWord The word before (context)
+     * @param appContext App/field context for per-app learning
      */
-    fun logInsisted(word: String, prevWord: String?) {
+    fun logInsisted(word: String, prevWord: String?, appContext: AppContext? = null) {
         // Smart Check: If the user insisted on a word that ISN'T in our dict, it's a NEW_WORD candidate.
         if (!dev.patrickgold.florisboard.ime.nlp.SymSpellManager.hasWord(word)) {
-            logNewWord(word, prevWord)
+            logNewWord(word, prevWord, appContext)
         } else {
-            append("INSISTED", word, prevWord)
+            append("INSISTED", word, prevWord, null, appContext)
         }
     }
     
@@ -239,13 +254,20 @@ object HarvestManager {
         lastTypedWord = null
     }
 
-    fun addToSession(word: String) {
+    private var currentAppContext: AppContext? = null  // Track active field context
+
+    fun addToSession(word: String, appContext: AppContext? = null) {
         synchronized(sessionBuffer) {
+            // Update context if provided
+            if (appContext != null) {
+                currentAppContext = appContext
+            }
+
             if (sessionBuffer.isNotEmpty() && !word.matches(Regex("^[.,?!;:]$"))) {
                 sessionBuffer.append(" ")
             }
             sessionBuffer.append(word)
-            
+
             // Auto-flush logic for users who don't use punctuation
             if (!word.matches(Regex("^[.,?!;:]$"))) {
                 sessionWordCount++
@@ -264,7 +286,7 @@ object HarvestManager {
         currentSessionSource = source
     }
 
-    fun flushSession(terminator: String = "") {
+    fun flushSession(terminator: String = "", appContext: AppContext? = null) {
         synchronized(sessionBuffer) {
             if (terminator.isNotEmpty()) {
                 sessionBuffer.append(terminator)
@@ -273,15 +295,18 @@ object HarvestManager {
                 val sentence = sessionBuffer.toString()
                 sessionBuffer.setLength(0) // clear
                 sessionWordCount = 0
+                // Use provided context or fall back to tracked context
+                val ctx = appContext ?: currentAppContext
                 // Tag session with source (TYPING or VOICE)
-                append("SESSION:$currentSessionSource", "\"$sentence\"", null)
+                append("SESSION:$currentSessionSource", "\"$sentence\"", null, null, ctx)
+                currentAppContext = null  // Clear after flush
             }
         }
     }
     
-    private fun append(category: String, content: String, context: String?, prevPrevWord: String? = null) {
+    private fun append(category: String, content: String, context: String?, prevPrevWord: String? = null, appContext: AppContext? = null) {
         val file = harvestFile ?: return
-        
+
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val timestamp = dateFormat.format(Date())
@@ -289,8 +314,14 @@ object HarvestManager {
                 val trigram = if (prevPrevWord != null && context != null) {
                     " | trigram: \"$prevPrevWord $context\""
                 } else ""
-                val line = "[$category] $timestamp | $content$ctx$trigram"
-                
+
+                // Append app context if available
+                val appCtx = if (appContext != null) {
+                    " | app: \"${appContext.packageName}\" | field: ${appContext.fieldId} | inputType: ${appContext.inputVariation} | flags: ${appContext.flags}"
+                } else ""
+
+                val line = "[$category] $timestamp | $content$ctx$trigram$appCtx"
+
                 PrintWriter(FileWriter(file, true)).use { out ->
                     out.println(line)
                 }

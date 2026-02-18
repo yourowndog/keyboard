@@ -45,6 +45,7 @@ import java.util.concurrent.atomic.AtomicInteger
 import kotlinx.coroutines.runBlocking
 import org.florisboard.lib.android.showShortToastSync
 import dev.patrickgold.florisboard.ime.nlp.HarvestManager
+import dev.patrickgold.florisboard.ime.nlp.AppContext
 
 class EditorInstance(context: Context) : AbstractEditorInstance(context) {
     companion object {
@@ -62,11 +63,35 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
     val autoSpace = AutoSpaceState()
     val phantomSpace = PhantomSpaceState()
     val massSelection = MassSelectionState()
-    
+
     // Harvest: word buffer to accumulate chars before logging
     private val currentWordBuffer = StringBuilder()
 
     private fun currentInputConnection() = FlorisImeService.currentInputConnection()
+
+    /**
+     * Build AppContext from current EditorInfo for harvest logging.
+     */
+    private fun buildAppContext(): AppContext? {
+        val info = activeInfo
+        val pkg = info.packageName ?: return null
+
+        // Build flags string
+        val flags = buildList {
+            if (info.inputAttributes.flagTextNoSuggestions) add("noSuggestions")
+            if (info.inputAttributes.flagTextAutoCorrect) add("autoCorrect")
+            if (info.inputAttributes.flagTextAutoComplete) add("autoComplete")
+            if (info.imeOptions.flagNoPersonalizedLearning) add("noPersonalizedLearning")
+            if (info.imeOptions.flagForceAscii) add("forceAscii")
+        }.joinToString(",").ifEmpty { "none" }
+
+        return AppContext(
+            packageName = pkg,
+            fieldId = info.base.fieldId,
+            inputVariation = info.inputAttributes.variation.toString(),
+            flags = flags,
+        )
+    }
 
     override fun handleStartInputView(editorInfo: FlorisEditorInfo, isRestart: Boolean) {
         if (!prefs.correction.rememberCapsLockState.get()) {
@@ -218,12 +243,12 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         if (isWordBoundary) {
             // Flush accumulated word if any
             if (currentWordBuffer.isNotEmpty()) {
-                HarvestManager.addToSession(currentWordBuffer.toString())
+                HarvestManager.addToSession(currentWordBuffer.toString(), buildAppContext())
                 currentWordBuffer.setLength(0)
             }
             // Flush session on sentence terminators
             if (isPunctuation || char == "\n") {
-                HarvestManager.flushSession(char)
+                HarvestManager.flushSession(char, buildAppContext())
             }
         } else {
             // Accumulate char into current word
@@ -271,18 +296,19 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         }.also {
             // SESSION LOGGING: commitText is called for autocorrect, swipe, paste
             // Text may be multi-word, so parse it
+            val ctx = buildAppContext()
             if (text == "\n") {
                 // Flush word buffer first
                 if (currentWordBuffer.isNotEmpty()) {
-                    HarvestManager.addToSession(currentWordBuffer.toString())
+                    HarvestManager.addToSession(currentWordBuffer.toString(), ctx)
                     currentWordBuffer.setLength(0)
                 }
-                HarvestManager.flushSession(text)
+                HarvestManager.flushSession(text, ctx)
             } else {
                 // Parse text into words and add each
                 val words = text.split(Regex("\\s+")).filter { it.isNotEmpty() }
                 for (word in words) {
-                    HarvestManager.addToSession(word)
+                    HarvestManager.addToSession(word, ctx)
                 }
             }
         }
@@ -310,17 +336,18 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         return if (content.composing.isValid) {
             val original = content.composingText
             val prevWord = getPreviousWord()
+            val ctx = buildAppContext()
             phantomSpace.setActive(showComposingRegion = false, candidate = candidate)
             super.finalizeComposingText(textWithSpace).also {
                 if (original.isNotEmpty() && text != original) {
                     // Track the word WITHOUT the space for the undo state, so our "trailing match" logic handles the space.
                     autoCorrectUndoState = AbstractEditorInstance.AutoCorrectUndoState(text, original)
                     // Log accepted autocorrect for harvest
-                    HarvestManager.logAccepted(original, text, prevWord, getPreviousPreviousWord())
+                    HarvestManager.logAccepted(original, text, prevWord, getPreviousPreviousWord(), ctx)
                 } else if (original.isNotEmpty() && text.equals(original, ignoreCase = true)) {
                     // User explicitly picked their typed word - log as INSISTED
                     // This is a strong signal this word should be in the dictionary
-                    HarvestManager.logInsisted(original, prevWord)
+                    HarvestManager.logInsisted(original, prevWord, ctx)
                 }
             }
         } else {
@@ -670,7 +697,7 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         // Learn the ignore pair so it persists
         dev.patrickgold.florisboard.ime.dictionary.DictionaryManager.default().learnUserIgnore(state.originalText, state.correctedText)
         // Log rejected autocorrect for harvest
-        HarvestManager.logRejected(state.originalText, state.correctedText, getPreviousWord(), getPreviousPreviousWord())
+        HarvestManager.logRejected(state.originalText, state.correctedText, getPreviousWord(), getPreviousPreviousWord(), buildAppContext())
         autoCorrectUndoState = null
         return true
     }
