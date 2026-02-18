@@ -67,12 +67,18 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
     // Harvest: word buffer to accumulate chars before logging
     private val currentWordBuffer = StringBuilder()
 
+    // Cached AppContext — rebuilt on each new input view, reused per keystroke
+    private var cachedAppContext: AppContext? = null
+
     private fun currentInputConnection() = FlorisImeService.currentInputConnection()
 
     /**
      * Build AppContext from current EditorInfo for harvest logging.
+     * Caches the result so it's only computed once per input session.
      */
     private fun buildAppContext(): AppContext? {
+        cachedAppContext?.let { return it }
+
         val info = activeInfo
         val pkg = info.packageName ?: return null
 
@@ -85,12 +91,14 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
             if (info.imeOptions.flagForceAscii) add("forceAscii")
         }.joinToString(",").ifEmpty { "none" }
 
-        return AppContext(
+        val ctx = AppContext(
             packageName = pkg,
             fieldId = info.base.fieldId,
             inputVariation = info.inputAttributes.variation.toString(),
             flags = flags,
         )
+        cachedAppContext = ctx
+        return ctx
     }
 
     override fun handleStartInputView(editorInfo: FlorisEditorInfo, isRestart: Boolean) {
@@ -99,6 +107,7 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         }
         activeState.isActionsOverflowVisible = false
         activeState.isActionsEditorVisible = false
+        cachedAppContext = null  // Invalidate cache on new input view
         super.handleStartInputView(editorInfo, isRestart)
         val keyboardMode = when (editorInfo.inputAttributes.type) {
             InputAttributes.Type.NUMBER -> {

@@ -100,9 +100,17 @@ object SymSpellManager {
         // "well" to "we'll", // Removed: handled by context logic in fix()
         "hell" to "he'll",
         "shell" to "she'll",
-        "its" to "it's",
+        // "its" removed - now handled by context-aware logic in fix()
         "ac" to "AC",      // air conditioning
         "itd" to "it'd",   // sloppy it'd typing
+    )
+
+    // Words preceding "its" that imply possessive (should STAY "its")
+    // e.g. "lost its", "on its", "at its", "the cat its" (rare but possible)
+    private val PREV_WORDS_FOR_ITS_POSSESSIVE = setOf(
+        "lost", "on", "at", "in", "of", "with", "by", "for", "from",
+        "the", "a", "an", "this", "that", "these", "those",
+        "my", "your", "his", "her", "their", "our",
     )
     val PROPER_OVERRIDES = setOf(
         "kiry", "kiry's",
@@ -137,6 +145,9 @@ object SymSpellManager {
     // SMART SESSION: Track rejection state to infer intent
     // Stores: Pair(OriginalTyped, RejectedCorrection-aka-what-it-became)
     @Volatile private var lastRejectedState: Pair<String, String>? = null
+
+    // Cached distance calculator — avoid allocating per lookup
+    private val distanceCalculator = DamerauLevenshteinDistance()
 
     // QWERTY Neighbor Map - now uses shared KeyboardLayout
     private val KEYBOARD_NEIGHBORS get() = KeyboardLayout.QWERTY_NEIGHBORS
@@ -307,6 +318,16 @@ object SymSpellManager {
                 return applyCasingPattern(input, "we'll")
             }
         }
+        // Context-aware "its" vs "it's"
+        if (lower == "its") {
+            val prev = previousWord?.lowercase() ?: ""
+            // After possessives/determiners/prepositions → keep "its" (possessive)
+            // Otherwise → "it's" (contraction, the 95% case in casual texting)
+            if (prev.isNotEmpty() && PREV_WORDS_FOR_ITS_POSSESSIVE.contains(prev)) {
+                return input // Keep "its"
+            }
+            return applyCasingPattern(input, "it's")
+        }
         
         // Typo fixes
         if (lower == "ir") return "it"
@@ -361,7 +382,7 @@ object SymSpellManager {
         
         // Also check if any user dictionary word is a close match and should win
         val bestUserMatch = userWordsCache.firstOrNull { userWord ->
-            val dist = DamerauLevenshteinDistance().getDistance(normalized, userWord.lowercase())
+            val dist = distanceCalculator.getDistance(normalized, userWord.lowercase())
             dist <= MAX_EDIT_DISTANCE
         }
         if (bestUserMatch != null) {

@@ -1,3 +1,15 @@
+### 2026-02-18
+* **Task:** Code review fixes — beam search dedup, `its`/`it's` context, frequency scoring, bigram spam cleanup
+* **Files:** `BigramTable.kt`, `SymSpellManager.kt`, `EditorInstance.kt`, `final_mobile_bigrams.tsv`, `personal_phrases.tsv`, `inject_anchors.py`, `rescale_bigrams.py`
+* **Details:**
+    * **Beam Search Dedup:** Fixed `predictPhrases()` to only add terminated paths and post-filter strict prefixes, preventing slots wasted on overlapping phrases.
+    * **Context-Aware `its`:** Moved from blind `its→it's` shortcut to context-aware logic (possessive after determiners/prepositions).
+    * **Frequency Scoring:** Now passes `ln(candidate.count + 1)` to `CandidateScorer.score()` so common words win tiebreaks.
+    * **Bigram Spam:** Cleaned 184 SMS/telecom spam entries (`sptv`, `smsrewards`, `wq`, `ntt`, etc.) that caused garbage phrase predictions like "w wq norm p min ntt".
+    * **Phrase Jargon:** Removed 11 dev jargon entries from `personal_phrases.tsv` (`mod row`, `gemini.md`, `vault slash`, etc.).
+    * **Perf:** Cached `DamerauLevenshteinDistance()` and `buildAppContext()` to avoid per-keystroke allocation.
+    * **Script Paths:** Fixed `inject_anchors.py` and `rescale_bigrams.py` to use correct repo-relative asset paths. – Gemini
+
 ### 2026-02-17
 * **Task:** Implemented SmartbarPhraseRow UI + Harvest Analysis Pipeline
 * **Files:** `Smartbar.kt`, `NlpManager.kt`, `PersonalPreferences.kt`, `personal_phrases.tsv`, `final_mobile_bigrams.tsv`

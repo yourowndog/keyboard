@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import math
 
-BIGRAM_FILE = "keyboard-local/app/src/main/assets/ime/dict/final_mobile_bigrams.tsv"
+BIGRAM_FILE = "app/src/main/assets/ime/dict/final_mobile_bigrams.tsv"
 GAMMA = 0.4
 TARGET_MAX = 10000
 

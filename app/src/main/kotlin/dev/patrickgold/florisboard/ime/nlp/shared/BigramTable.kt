@@ -94,30 +94,43 @@ class BigramTable private constructor(
                 val pathMax = maxByPrev[lastWord]?.toDouble() ?: 0.0
 
                 if (followers == null || pathMax <= 0.0) {
+                    // Path terminated — no further expansion possible
                     if (path.words.size >= 2) results.add(path)
                     continue
                 }
 
+                var expanded = false
                 for ((word, freq) in followers) {
                     val newScore = path.score * (freq / pathMax)
                     // Threshold to kill weak paths early
                     if (newScore > 0.05) {
                         nextBeam.add(Path(path.words + word, newScore))
+                        expanded = true
                     }
                 }
-                
-                if (path.words.size >= 2) results.add(path)
+
+                // Only add to results if no expansions passed threshold (dead end)
+                if (!expanded && path.words.size >= 2) {
+                    results.add(path)
+                }
             }
             beam = nextBeam.sortedByDescending { it.score }.take(beamWidth)
         }
         
-        results.addAll(beam)
+        // Add remaining beam paths (reached max depth)
+        results.addAll(beam.filter { it.words.size >= 2 })
 
-        return results.filter { it.words.size >= 2 }
+        val ranked = results
             .sortedByDescending { it.score }
             .map { it.words.joinToString(" ") }
             .distinct()
-            .take(maxPhrases)
+
+        // Remove phrases that are strict prefixes of longer phrases in results
+        val filtered = ranked.filter { phrase ->
+            ranked.none { other -> other != phrase && other.startsWith("$phrase ") }
+        }
+
+        return filtered.take(maxPhrases)
     }
 
     companion object {

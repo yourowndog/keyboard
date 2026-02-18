@@ -29,6 +29,10 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.foundation.Canvas
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -129,23 +133,44 @@ fun VoiceVisualizer(
     isTranscribing: Boolean,
     modifier: Modifier = Modifier,
 ) {
+    // Rolling buffer for oscilloscope waveform (recording mode)
+    val sampleBuffer = remember { mutableListOf<Float>() }
+    val bufferSize = 200
+
+    // Push new amplitude samples during recording
+    LaunchedEffect(amplitude, isTranscribing) {
+        if (!isTranscribing) {
+            sampleBuffer.add(amplitude)
+            if (sampleBuffer.size > bufferSize) {
+                sampleBuffer.removeAt(0)
+            }
+        }
+    }
+
+    // Clear buffer when switching to transcribing
+    LaunchedEffect(isTranscribing) {
+        if (isTranscribing) {
+            sampleBuffer.clear()
+        }
+    }
+
     val infiniteTransition = rememberInfiniteTransition(label = "transcribing")
-    // Slow sweep for the cascade pulse
+    // Very slow, graceful sweep for processing cascade
     val cascadePhase by infiniteTransition.animateFloat(
-        initialValue = -0.5f,
-        targetValue = 1.5f,
+        initialValue = -0.4f,
+        targetValue = 1.4f,
         animationSpec = infiniteRepeatable(
-            animation = tween(4000, easing = LinearEasing),
+            animation = tween(6000, easing = LinearEasing),
             repeatMode = RepeatMode.Restart,
         ),
         label = "cascadePhase",
     )
-    // Secondary shimmer for subtle life
+    // Gentle shimmer
     val shimmer by infiniteTransition.animateFloat(
         initialValue = 0f,
         targetValue = 2f * Math.PI.toFloat(),
         animationSpec = infiniteRepeatable(
-            animation = tween(2400, easing = LinearEasing),
+            animation = tween(4000, easing = LinearEasing),
             repeatMode = RepeatMode.Restart,
         ),
         label = "shimmer",
@@ -154,28 +179,27 @@ fun VoiceVisualizer(
     Canvas(modifier = modifier.fillMaxSize()) {
         val canvasWidth = size.width
         val canvasHeight = size.height
-        val maxBarHeight = canvasHeight * 0.8f
-        val minBarHeight = canvasHeight * 0.05f
-        // High density: 80 bars
-        val barCount = 80
-        val totalUnits = barCount * 1.25f // 1.0 bar + 0.25 gap
-        val unitWidth = canvasWidth / totalUnits
-        val barWidth = unitWidth * 1.0f
-        val gapWidth = unitWidth * 0.25f
+        val centerY = canvasHeight / 2f
 
-        for (i in 0 until barCount) {
-             val x = (i * (barWidth + gapWidth)) + (gapWidth / 2f)
-            val fraction = i.toFloat() / barCount
+        if (isTranscribing) {
+            // === PROCESSING: Slow graceful bar cascade ===
+            val maxBarHeight = canvasHeight * 0.8f
+            val minBarHeight = canvasHeight * 0.05f
+            val barCount = 80
+            val totalUnits = barCount * 1.25f
+            val unitWidth = canvasWidth / totalUnits
+            val barWidth = unitWidth * 1.0f
+            val gapWidth = unitWidth * 0.25f
 
-            if (isTranscribing) {
-                // === CASCADING PULSE WAVE ===
-                // A gaussian-ish pulse that sweeps across the bars
+            for (i in 0 until barCount) {
+                val x = (i * (barWidth + gapWidth)) + (gapWidth / 2f)
+                val fraction = i.toFloat() / barCount
+
                 val dist = (fraction - cascadePhase).let { it * it }
-                val pulse = Math.exp((-dist * 15.0)).toFloat() // wider gaussian
-                // Add subtle background shimmer so bars don't fully die
-                val backgroundShimmer = 0.08f + 0.06f * Math.sin((fraction * 6.0 * Math.PI) + shimmer).toFloat()
-                val height = minBarHeight + (maxBarHeight - minBarHeight) * (pulse * 0.9f + backgroundShimmer)
-                val alpha = 0.3f + 0.5f * pulse
+                val pulse = Math.exp((-dist * 12.0)).toFloat()
+                val bg = 0.06f + 0.04f * Math.sin((fraction * 4.0 * Math.PI) + shimmer).toFloat()
+                val height = minBarHeight + (maxBarHeight - minBarHeight) * (pulse * 0.85f + bg)
+                val alpha = 0.25f + 0.55f * pulse
 
                 val y = (canvasHeight - height) / 2f
                 drawRect(
@@ -183,17 +207,44 @@ fun VoiceVisualizer(
                     topLeft = Offset(x, y),
                     size = Size(barWidth, height),
                 )
-            } else {
-                // === RECORDING: organic noise ===
-                val noise = 0.4f + 0.6f * Math.random().toFloat()
-                val height = minBarHeight + (maxBarHeight - minBarHeight) * amplitude * noise
-                val y = (canvasHeight - height) / 2f
-                drawRect(
-                    color = Color.White.copy(alpha = 0.7f),
-                    topLeft = Offset(x, y),
-                    size = Size(barWidth, height),
+            }
+        } else {
+            // === RECORDING: Oscilloscope waveform ===
+            val samples = sampleBuffer.toList()
+            if (samples.size >= 2) {
+                val path = Path()
+                val maxDeflection = canvasHeight * 0.4f
+
+                // First point
+                val stepX = canvasWidth / (bufferSize - 1).toFloat()
+                val startIndex = bufferSize - samples.size
+                val firstY = centerY - samples[0] * maxDeflection
+                path.moveTo(startIndex * stepX, firstY)
+
+                // Connect all samples with lines
+                for (j in 1 until samples.size) {
+                    val x = (startIndex + j) * stepX
+                    val y = centerY - samples[j] * maxDeflection
+                    path.lineTo(x, y)
+                }
+
+                drawPath(
+                    path = path,
+                    color = Color.White.copy(alpha = 0.85f),
+                    style = Stroke(
+                        width = 2.5f,
+                        cap = StrokeCap.Round,
+                        join = StrokeJoin.Round,
+                    ),
                 )
             }
+
+            // Flat baseline when no/low amplitude
+            drawRect(
+                color = Color.White.copy(alpha = 0.15f),
+                topLeft = Offset(0f, centerY - 0.5f),
+                size = Size(canvasWidth, 1f),
+            )
         }
     }
 }

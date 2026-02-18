@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import os
 
-PHRASE_FILE = "keyboard-local/personal_phrases.tsv"
+PHRASE_FILE = "app/src/main/assets/ime/dict/personal_phrases.tsv"
 
 GOLDEN_PHRASES = [
     ("what are", "you doing"), ("what are", "you thinking"), ("what do", "you think"),
