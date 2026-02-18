@@ -62,47 +62,62 @@ class BigramTable private constructor(
     fun getBigramCount(): Int = table.size
 
     /**
-     * Predict multi-word phrase continuations by chaining bigram lookups.
-     * E.g., "what's" → "up" → "man" → phrase = "up man"
+     * Predict multi-word phrase continuations using Beam Search.
+     * Explores multiple paths simultaneously to find the most coherent phrases.
      *
-     * Uses frequency decay: each link must have freq > 10% of the initial max
-     * to prevent nonsensical chains like "the of and".
-     *
-     * @param prev The previous word to start chaining from
-     * @param maxPhrases Maximum number of phrase candidates to return
-     * @param maxWords Maximum words per phrase chain
-     * @return List of multi-word phrase strings, e.g. ["up man", "going on", "the deal"]
+     * @param prev The word to start from.
+     * @param maxPhrases How many unique phrases to return.
+     * @param beamWidth How many paths to explore at each step.
      */
-    fun predictPhrases(prev: String?, maxPhrases: Int = 3, maxWords: Int = 6): List<String> {
+    fun predictPhrases(prev: String?, maxPhrases: Int = 3, beamWidth: Int = 3): List<String> {
         val p = prev?.lowercase() ?: return emptyList()
-        val starters = topFollowers[p] ?: return emptyList()
-        val initialMax = maxByPrev[p] ?: return emptyList()
-        if (initialMax <= 0) return emptyList()
+        val initialMax = maxByPrev[p]?.toDouble() ?: return emptyList()
+        if (initialMax <= 0.0) return emptyList()
 
-        val threshold = initialMax * 0.10  // 10% frequency decay floor
+        // A "Candidate Path" in our beam
+        data class Path(val words: List<String>, val score: Double)
 
-        val phrases = mutableListOf<String>()
-        for (starter in starters.take(maxPhrases)) {
-            val chain = mutableListOf(starter)
-            var current = starter
-            for (depth in 1 until maxWords) {
-                val row = table[current] ?: break
-                // Find the best follower that meets the threshold
-                val best = row.entries
-                    .filter { it.value >= threshold }
-                    .maxByOrNull { it.value }
-                    ?: break
-                // Avoid loops
-                if (best.key in chain) break
-                chain.add(best.key)
-                current = best.key
+        // Initialize beam with top followers of the starting word
+        var beam = table[p]?.map { (word, freq) ->
+            Path(listOf(word), freq / initialMax)
+        }?.sortedByDescending { it.score }?.take(beamWidth) ?: return emptyList()
+
+        val results = mutableListOf<Path>()
+        val maxWords = 4 // Generic chains stay short for quality
+
+        // Expand the beam
+        repeat(maxWords - 1) {
+            val nextBeam = mutableListOf<Path>()
+            for (path in beam) {
+                val lastWord = path.words.last()
+                val followers = table[lastWord]
+                val pathMax = maxByPrev[lastWord]?.toDouble() ?: 0.0
+
+                if (followers == null || pathMax <= 0.0) {
+                    if (path.words.size >= 2) results.add(path)
+                    continue
+                }
+
+                for ((word, freq) in followers) {
+                    val newScore = path.score * (freq / pathMax)
+                    // Threshold to kill weak paths early
+                    if (newScore > 0.05) {
+                        nextBeam.add(Path(path.words + word, newScore))
+                    }
+                }
+                
+                if (path.words.size >= 2) results.add(path)
             }
-            // Only include if we got at least 2 words (otherwise it's just a next-word prediction)
-            if (chain.size >= 2) {
-                phrases.add(chain.joinToString(" "))
-            }
+            beam = nextBeam.sortedByDescending { it.score }.take(beamWidth)
         }
-        return phrases
+        
+        results.addAll(beam)
+
+        return results.filter { it.words.size >= 2 }
+            .sortedByDescending { it.score }
+            .map { it.words.joinToString(" ") }
+            .distinct()
+            .take(maxPhrases)
     }
 
     companion object {
