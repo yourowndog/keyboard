@@ -295,32 +295,37 @@ class NlpManager(context: Context) {
             // Generate phrase predictions when user just hit space (blank composing text)
             val composingText = content.composingText.toString().trim()
             if (composingText.isBlank()) {
-                // Extract previous word from content parameter (same approach as LatinLanguageProvider)
+                // Extract context words from text before cursor
                 val textBefore = content.textBeforeSelection.toString()
                 val trimmedBefore = textBefore.trimEnd()
-                val prevWordMatch = Regex("([A-Za-z']+)[^A-Za-z']*$").find(trimmedBefore)
-                val prevWord = prevWordMatch?.groupValues?.getOrNull(1)
+                val words = trimmedBefore.split("\\s+".toRegex()).filter { it.isNotEmpty() }
+                val word1 = if (words.isNotEmpty()) words.last() else null
+                val word2 = if (words.size >= 2) words[words.size - 2] else null
 
                 val phraseTable = dev.patrickgold.florisboard.ime.nlp.shared.PhraseTable.get()
-                // Get the second-to-last word for trigram context
-                val words = trimmedBefore.split("\\s+".toRegex()).filter { it.isNotEmpty() }
-                val word2 = if (words.size >= 2) words[words.size - 2] else null
-                val word1 = if (words.size >= 1) words[words.size - 1] else null
-
-                // Try PhraseTable first (personal phrases), then BigramTable chaining
-                val personalPhrases = if (phraseTable != null && word2 != null && word1 != null) {
-                    phraseTable.predictContinuation(word2, word1)
-                } else emptyList()
-
-                val bigramPhrases = dev.patrickgold.florisboard.ime.nlp.shared.BigramTable.get()
-                    ?.predictPhrases(prevWord) ?: emptyList()
-
-                // Merge: personal first, then bigram-chained, dedup
                 val seen = mutableSetOf<String>()
-                val allPhrases = (personalPhrases + bigramPhrases).filter { seen.add(it.lowercase()) }.take(3)
+                val allPhrases = mutableListOf<String>()
+
+                // TIER 1: PhraseTable with 2-word context (highest quality)
+                if (phraseTable != null && word2 != null && word1 != null) {
+                    val personalPhrases = phraseTable.predictContinuation(word2, word1)
+                    for (p in personalPhrases) {
+                        if (seen.add(p.lowercase())) allPhrases.add(p)
+                    }
+                }
+
+                // TIER 2: BigramTable beam search fills remaining slots (fallback)
+                if (allPhrases.size < 3 && word1 != null) {
+                    val bigramPhrases = dev.patrickgold.florisboard.ime.nlp.shared.BigramTable.get()
+                        ?.predictPhrases(word1, maxPhrases = 3 - allPhrases.size) ?: emptyList()
+                    for (p in bigramPhrases) {
+                        if (seen.add(p.lowercase())) allPhrases.add(p)
+                        if (allPhrases.size >= 3) break
+                    }
+                }
 
                 if (allPhrases.isNotEmpty()) {
-                    val phraseCandidates = allPhrases.map { phrase ->
+                    val phraseCandidates = allPhrases.take(3).map { phrase ->
                         WordSuggestionCandidate(
                             text = phrase,
                             secondaryText = null,

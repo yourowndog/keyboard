@@ -1,4 +1,28 @@
 ### 2026-02-18
+* **Task:** Fixed looping/gibberish phrase predictions
+* **Files:** `BigramTable.kt`, `NlpManager.kt`
+* **Details:**
+    * **Cycle Detection:** Added `visited` set to beam search — words can't repeat in a path, killing `you→are→you→are` loops.
+    * **Quality Threshold:** Raised from 0.05 to 0.15 to cut incoherent chains.
+    * **Depth Cap:** Reduced from 4 to 3 words — bigram chains degrade fast.
+    * **Priority Restructure:** PhraseTable (curated) is now Tier 1; beam search only fills remaining empty slots as fallback. – Gemini
+
+### 2026-02-18
+* **Task:** Always-on SmartbarPhraseRow with settings toggle
+* **Files:** `Smartbar.kt`, `AppPrefs.kt`, `SmartbarScreen.kt`
+* **Details:**
+    * **Always-On:** Replaced `AnimatedVisibility` (height pop) with permanent height reservation + `animateFloatAsState` alpha fade. Row is always present when enabled; content fades in/out smoothly.
+    * **Settings Toggle:** Added `phraseRowEnabled` boolean pref (`smartbar__phrase_row_enabled`, default true). Toggle appears in Smartbar settings screen. Disabling removes the entire second row. – Gemini
+
+### 2026-02-18
+* **Task:** Oscilloscope waveform for recording, slow cascade bars for processing.
+* **Files:** `Smartbar.kt`, `SymSpellManager.kt`
+* **Details:**
+    * **Recording:** Replaced bar visualizer with oscilloscope/EKG-style waveform — rolling buffer of 200 amplitude samples drawn as a continuous `Path`, scrolling left like a heartbeat monitor.
+    * **Processing:** 80 high-density bars, slow graceful gaussian cascade (6s sweep), gentle shimmer, sharp rectangular corners.
+    * **Bug fix:** Fixed `candidate.count` compile error in `SymSpellManager.kt`. – Gemini
+
+### 2026-02-18
 * **Task:** Code review fixes — beam search dedup, `its`/`it's` context, frequency scoring, bigram spam cleanup
 * **Files:** `BigramTable.kt`, `SymSpellManager.kt`, `EditorInstance.kt`, `final_mobile_bigrams.tsv`, `personal_phrases.tsv`, `inject_anchors.py`, `rescale_bigrams.py`
 * **Details:**

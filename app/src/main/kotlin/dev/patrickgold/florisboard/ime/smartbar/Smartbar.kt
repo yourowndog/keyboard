@@ -133,37 +133,33 @@ fun VoiceVisualizer(
     isTranscribing: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    // Rolling buffer for oscilloscope waveform (recording mode)
-    val sampleBuffer = remember { mutableListOf<Float>() }
-    val bufferSize = 200
+    // Smooth the amplitude for organic feel
+    val smoothAmplitude by animateFloatAsState(
+        targetValue = amplitude,
+        animationSpec = tween(80),
+        label = "smoothAmplitude",
+    )
 
-    // Push new amplitude samples during recording
-    LaunchedEffect(amplitude, isTranscribing) {
-        if (!isTranscribing) {
-            sampleBuffer.add(amplitude)
-            if (sampleBuffer.size > bufferSize) {
-                sampleBuffer.removeAt(0)
-            }
-        }
-    }
-
-    // Clear buffer when switching to transcribing
-    LaunchedEffect(isTranscribing) {
-        if (isTranscribing) {
-            sampleBuffer.clear()
-        }
-    }
-
-    val infiniteTransition = rememberInfiniteTransition(label = "transcribing")
-    // Very slow, graceful sweep for processing cascade
-    val cascadePhase by infiniteTransition.animateFloat(
-        initialValue = -0.4f,
-        targetValue = 1.4f,
+    val infiniteTransition = rememberInfiniteTransition(label = "visualizer")
+    // Phase drift so standing wave gently moves even at constant amplitude
+    val phase by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 2f * Math.PI.toFloat(),
+        animationSpec = infiniteRepeatable(
+            animation = tween(3000, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart,
+        ),
+        label = "phase",
+    )
+    // Center-out ripple radius: 0 → 0.6 (covers center to edge)
+    val rippleRadius by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 0.6f,
         animationSpec = infiniteRepeatable(
             animation = tween(6000, easing = LinearEasing),
             repeatMode = RepeatMode.Restart,
         ),
-        label = "cascadePhase",
+        label = "rippleRadius",
     )
     // Gentle shimmer
     val shimmer by infiniteTransition.animateFloat(
@@ -182,7 +178,7 @@ fun VoiceVisualizer(
         val centerY = canvasHeight / 2f
 
         if (isTranscribing) {
-            // === PROCESSING: Slow graceful bar cascade ===
+            // === PROCESSING: Center-out ripple ===
             val maxBarHeight = canvasHeight * 0.8f
             val minBarHeight = canvasHeight * 0.05f
             val barCount = 80
@@ -195,11 +191,14 @@ fun VoiceVisualizer(
                 val x = (i * (barWidth + gapWidth)) + (gapWidth / 2f)
                 val fraction = i.toFloat() / barCount
 
-                val dist = (fraction - cascadePhase).let { it * it }
-                val pulse = Math.exp((-dist * 12.0)).toFloat()
-                val bg = 0.06f + 0.04f * Math.sin((fraction * 4.0 * Math.PI) + shimmer).toFloat()
+                // Distance from center (0 at center, 0.5 at edges)
+                val distFromCenter = Math.abs(fraction - 0.5f).toFloat()
+                // Gaussian pulse centered on the expanding ripple radius
+                val dist = (distFromCenter - rippleRadius).let { it * it }
+                val pulse = Math.exp((-dist * 25.0)).toFloat()
+                val bg = 0.06f + 0.03f * Math.sin((fraction * 4.0 * Math.PI) + shimmer).toFloat()
                 val height = minBarHeight + (maxBarHeight - minBarHeight) * (pulse * 0.85f + bg)
-                val alpha = 0.25f + 0.55f * pulse
+                val alpha = 0.2f + 0.6f * pulse
 
                 val y = (canvasHeight - height) / 2f
                 drawRect(
@@ -209,39 +208,51 @@ fun VoiceVisualizer(
                 )
             }
         } else {
-            // === RECORDING: Oscilloscope waveform ===
-            val samples = sampleBuffer.toList()
-            if (samples.size >= 2) {
-                val path = Path()
-                val maxDeflection = canvasHeight * 0.4f
+            // === RECORDING: Standing wave (jagged heartbeat monitor) ===
+            val maxDeflection = canvasHeight * 0.45f
+            val pointCount = 200
+            val path = Path()
 
-                // First point
-                val stepX = canvasWidth / (bufferSize - 1).toFloat()
-                val startIndex = bufferSize - samples.size
-                val firstY = centerY - samples[0] * maxDeflection
-                path.moveTo(startIndex * stepX, firstY)
-
-                // Connect all samples with lines
-                for (j in 1 until samples.size) {
-                    val x = (startIndex + j) * stepX
-                    val y = centerY - samples[j] * maxDeflection
-                    path.lineTo(x, y)
-                }
-
-                drawPath(
-                    path = path,
-                    color = Color.White.copy(alpha = 0.85f),
-                    style = Stroke(
-                        width = 2.5f,
-                        cap = StrokeCap.Round,
-                        join = StrokeJoin.Round,
-                    ),
-                )
+            // Triangle wave helper: produces range [-1, 1] for input x
+            val triangle = { x: Float ->
+                val t = (x % 1f + 1f) % 1f // normalize to [0, 1] even for negative x
+                if (t < 0.5f) 4f * t - 1f else 3f - 4f * t
             }
 
-            // Flat baseline when no/low amplitude
+            // Calculate starting point
+            val startY = centerY - smoothAmplitude * maxDeflection * (
+                0.7f * triangle(0.0f + phase) +
+                0.3f * triangle(0.0f + phase * 1.3f) +
+                0.15f * triangle(0.0f + phase * 0.7f)
+            )
+            path.moveTo(0f, startY)
+
+            for (i in 1..pointCount) {
+                val fraction = i.toFloat() / pointCount
+                val x = fraction * canvasWidth
+                // Layered triangle waves at higher frequencies for jaggedy look
+                val wave = (
+                    0.7f * triangle(fraction * 5.0f + phase) +
+                    0.3f * triangle(fraction * 11.0f + phase * 1.3f) +
+                    0.15f * triangle(fraction * 23.0f + phase * 0.7f)
+                )
+                val y = centerY - smoothAmplitude * maxDeflection * wave
+                path.lineTo(x, y)
+            }
+
+            drawPath(
+                path = path,
+                color = Color.White.copy(alpha = 0.9f),
+                style = Stroke(
+                    width = 3.0f,
+                    cap = StrokeCap.Round,
+                    join = StrokeJoin.Miter,
+                ),
+            )
+
+            // Subtle baseline
             drawRect(
-                color = Color.White.copy(alpha = 0.15f),
+                color = Color.White.copy(alpha = 0.1f),
                 topLeft = Offset(0f, centerY - 0.5f),
                 size = Size(canvasWidth, 1f),
             )
@@ -358,51 +369,73 @@ fun WhisperBar(
 
 @Composable
 fun Smartbar() {
+    val context = LocalContext.current
+    val keyboardManager by context.keyboardManager()
+    val activeState by keyboardManager.activeState.collectAsState()
     val prefs by FlorisPreferenceStore
     val smartbarEnabled by prefs.smartbar.enabled.observeAsState()
     val extendedActionsPlacement by prefs.smartbar.extendedActionsPlacement.observeAsState()
+    val phraseRowEnabled by prefs.smartbar.phraseRowEnabled.observeAsState()
 
     AnimatedVisibility(
         visible = smartbarEnabled,
         enter = VerticalEnterTransition,
         exit = VerticalExitTransition,
     ) {
-        when (extendedActionsPlacement) {
-            ExtendedActionsPlacement.ABOVE_CANDIDATES -> {
-                SnyggColumn(FlorisImeUi.Smartbar.elementName) {
-                    SmartbarSecondaryRow()
-                    SmartbarMainRow()
-                    SmartbarPhraseRow()
-                }
+        if (activeState.imeUiMode == ImeUiMode.VOICE) {
+            // Full-height Voice Visualizer
+            val totalHeight = if (phraseRowEnabled == true) {
+                FlorisImeSizing.smartbarHeight * 2
+            } else {
+                FlorisImeSizing.smartbarHeight
             }
-
-            ExtendedActionsPlacement.BELOW_CANDIDATES -> {
-                SnyggColumn(FlorisImeUi.Smartbar.elementName) {
-                    SmartbarMainRow()
-                    SmartbarPhraseRow()
-                    SmartbarSecondaryRow()
-                }
+            SnyggBox(
+                elementName = FlorisImeUi.Smartbar.elementName,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(totalHeight),
+            ) {
+                WhisperBar(modifier = Modifier.fillMaxSize())
             }
+        } else {
+            when (extendedActionsPlacement) {
+                ExtendedActionsPlacement.ABOVE_CANDIDATES -> {
+                    SnyggColumn(FlorisImeUi.Smartbar.elementName) {
+                        SmartbarSecondaryRow()
+                        SmartbarMainRow()
+                        if (phraseRowEnabled) SmartbarPhraseRow()
+                    }
+                }
 
-            ExtendedActionsPlacement.OVERLAY_APP_UI -> {
-                SnyggBox(FlorisImeUi.Smartbar.elementName,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(FlorisImeSizing.smartbarHeight),
-                    allowClip = false,
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(FlorisImeSizing.smartbarHeight * 2)
-                            .absoluteOffset(y = -FlorisImeSizing.smartbarHeight),
-                        contentAlignment = Alignment.BottomStart,
-                    ) {
+                ExtendedActionsPlacement.BELOW_CANDIDATES -> {
+                    SnyggColumn(FlorisImeUi.Smartbar.elementName) {
+                        SmartbarMainRow()
+                        if (phraseRowEnabled) SmartbarPhraseRow()
                         SmartbarSecondaryRow()
                     }
-                    Column {
-                        SmartbarMainRow()
-                        SmartbarPhraseRow()
+                }
+
+                ExtendedActionsPlacement.OVERLAY_APP_UI -> {
+                    SnyggBox(
+                        FlorisImeUi.Smartbar.elementName,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(FlorisImeSizing.smartbarHeight),
+                        allowClip = false,
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(FlorisImeSizing.smartbarHeight * 2)
+                                .absoluteOffset(y = -FlorisImeSizing.smartbarHeight),
+                            contentAlignment = Alignment.BottomStart,
+                        ) {
+                            SmartbarSecondaryRow()
+                        }
+                        Column {
+                            SmartbarMainRow()
+                            if (phraseRowEnabled) SmartbarPhraseRow()
+                        }
                     }
                 }
             }
@@ -687,9 +720,9 @@ private fun SmartbarSecondaryRow(modifier: Modifier = Modifier) {
 }
 
 /**
- * SmartbarPhraseRow — a second suggestion row that shows multi-word phrase predictions.
- * Animates in when phrase candidates are available (e.g., after typing "what's ").
- * Tapping a phrase commits the entire phrase with a trailing space.
+ * SmartbarPhraseRow — "always-on" second suggestion row for phrase predictions.
+ * Always reserves its height (no keyboard size jump). Content fades in/out smoothly.
+ * Tapping a phrase commits the entire phrase.
  */
 @Composable
 private fun SmartbarPhraseRow(modifier: Modifier = Modifier) {
@@ -698,18 +731,23 @@ private fun SmartbarPhraseRow(modifier: Modifier = Modifier) {
     val keyboardManager by context.keyboardManager()
     val phraseCandidates by nlpManager.phraseCandidatesFlow.collectAsState()
 
-    AnimatedVisibility(
-        visible = phraseCandidates.isNotEmpty(),
-        enter = VerticalEnterTransition,
-        exit = VerticalExitTransition,
+    val hasContent = phraseCandidates.isNotEmpty()
+    val contentAlpha by animateFloatAsState(
+        targetValue = if (hasContent) 1f else 0f,
+        animationSpec = tween(durationMillis = 200),
+        label = "phraseRowAlpha",
+    )
+
+    // Always reserve the row height — content fades in/out
+    SnyggRow(
+        elementName = FlorisImeUi.SmartbarCandidatesRow.elementName,
+        modifier = modifier
+            .fillMaxWidth()
+            .height(FlorisImeSizing.smartbarHeight)
+            .alpha(contentAlpha),
+        horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
-        SnyggRow(
-            elementName = FlorisImeUi.SmartbarCandidatesRow.elementName,
-            modifier = modifier
-                .fillMaxWidth()
-                .height(FlorisImeSizing.smartbarHeight),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-        ) {
+        if (hasContent) {
             phraseCandidates.forEach { candidate ->
                 SnyggBox(
                     elementName = FlorisImeUi.SmartbarCandidateWord.elementName,

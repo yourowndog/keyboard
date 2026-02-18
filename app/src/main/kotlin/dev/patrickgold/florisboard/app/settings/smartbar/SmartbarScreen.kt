@@ -85,5 +85,12 @@ fun SmartbarScreen() = FlorisScreen {
                 visibleIf = { prefs.smartbar.layout isEqualTo SmartbarLayout.SUGGESTIONS_ACTIONS_EXTENDED },
             )
         }
+
+        SwitchPreference(
+            prefs.smartbar.phraseRowEnabled,
+            title = "Phrase prediction row",
+            summary = "Show a second row with multi-word phrase predictions",
+            enabledIf = { prefs.smartbar.enabled isEqualTo true },
+        )
     }
 }

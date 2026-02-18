@@ -759,6 +759,10 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "smartbar__extended_actions_placement",
             default = ExtendedActionsPlacement.ABOVE_CANDIDATES,
         )
+        val phraseRowEnabled = boolean(
+            key = "smartbar__phrase_row_enabled",
+            default = true,
+        )
     }
 
     val spelling = Spelling()

@@ -65,25 +65,28 @@ class BigramTable private constructor(
      * Predict multi-word phrase continuations using Beam Search.
      * Explores multiple paths simultaneously to find the most coherent phrases.
      *
+     * IMPORTANT: This is a fallback when PhraseTable has no match.
+     * Bigram chaining is inherently noisy — keep phrases short and quality high.
+     *
      * @param prev The word to start from.
      * @param maxPhrases How many unique phrases to return.
      * @param beamWidth How many paths to explore at each step.
      */
-    fun predictPhrases(prev: String?, maxPhrases: Int = 3, beamWidth: Int = 3): List<String> {
+    fun predictPhrases(prev: String?, maxPhrases: Int = 3, beamWidth: Int = 4): List<String> {
         val p = prev?.lowercase() ?: return emptyList()
         val initialMax = maxByPrev[p]?.toDouble() ?: return emptyList()
         if (initialMax <= 0.0) return emptyList()
 
         // A "Candidate Path" in our beam
-        data class Path(val words: List<String>, val score: Double)
+        data class Path(val words: List<String>, val visited: Set<String>, val score: Double)
 
         // Initialize beam with top followers of the starting word
         var beam = table[p]?.map { (word, freq) ->
-            Path(listOf(word), freq / initialMax)
+            Path(listOf(word), setOf(p, word), freq / initialMax)
         }?.sortedByDescending { it.score }?.take(beamWidth) ?: return emptyList()
 
         val results = mutableListOf<Path>()
-        val maxWords = 4 // Generic chains stay short for quality
+        val maxWords = 3 // Keep short — bigram chains degrade fast past 2-3 words
 
         // Expand the beam
         repeat(maxWords - 1) {
@@ -101,10 +104,17 @@ class BigramTable private constructor(
 
                 var expanded = false
                 for ((word, freq) in followers) {
+                    // CYCLE DETECTION: skip words already in this path
+                    if (word in path.visited) continue
+
                     val newScore = path.score * (freq / pathMax)
-                    // Threshold to kill weak paths early
-                    if (newScore > 0.05) {
-                        nextBeam.add(Path(path.words + word, newScore))
+                    // Higher threshold — bigram chains get noisy fast
+                    if (newScore > 0.15) {
+                        nextBeam.add(Path(
+                            path.words + word,
+                            path.visited + word,
+                            newScore
+                        ))
                         expanded = true
                     }
                 }
