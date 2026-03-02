@@ -6,6 +6,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **OmniBoard** is a customized fork of FlorisBoard, an open-source Android keyboard (IME - Input Method Editor). This fork adds advanced autocorrect capabilities, OpenAI Whisper voice integration, personal typing pattern learning, and special Linux/Termux control keys.
 
+## Hard Constraints — Read Before Suggesting Anything
+
+- **Single user only.** OmniBoard is built exclusively for Sam. Do not generalize analysis to "other users", "common typing patterns", or "average frequency distributions". The only patterns that matter are Sam's.
+
+- **Dictionary is hand-curated.** The word list was built from scratch drawing on AOSP and personally assembled sources. Do not suggest replacing or supplementing it with generic corpora or frequency lists from other projects.
+
+- **Android user dictionary is not a solution.** The system user dictionary is wiped on every rebuild/reinstall. This is a structural incompatibility with the dev workflow, not a configuration problem. The harvest system exists precisely because persistent on-device learning cannot be relied on. Never suggest the user dictionary as a workaround for any learning or personalization problem.
+
+- **On-device sessions mean no ADB.** When working in Termux on the device, ADB commands are unavailable. Use `python3 harvest.py` to sync harvest data, not `adb pull`.
+
+---
+
 ## Build Commands
 
 ### Building APKs

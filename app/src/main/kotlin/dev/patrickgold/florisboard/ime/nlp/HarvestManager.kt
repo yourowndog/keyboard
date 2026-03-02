@@ -142,6 +142,21 @@ object HarvestManager {
     }
     
     /**
+     * Log when user manually backspaced and retyped a word differently.
+     * This captures missed autocorrect opportunities — the keyboard offered no suggestion
+     * for a typo and the user had to fix it themselves.
+     * @param original What was committed before the user backspaced
+     * @param corrected What the user retyped (their intended word)
+     * @param prevWord Context word before the corrected word
+     * @param appContext App/field context for per-app learning
+     */
+    fun logManualCorrection(original: String, corrected: String, prevWord: String?, appContext: AppContext? = null) {
+        if (original.isEmpty() || corrected.isEmpty()) return
+        if (original.equals(corrected, ignoreCase = true)) return
+        append("MANUAL_FIX", "\"$original\" → \"$corrected\"", prevWord, null, appContext)
+    }
+
+    /**
      * Log when user explicitly picked their typed word over a suggestion.
      * This is a strong signal that this word should be in the dictionary.
      * @param word The word user insisted on

@@ -67,6 +67,9 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
     // Harvest: word buffer to accumulate chars before logging
     private val currentWordBuffer = StringBuilder()
 
+    // Harvest: tracks the word the user started backspacing into (missed autocorrect detection)
+    private var pendingManualCorrect: String? = null
+
     // Cached AppContext — rebuilt on each new input view, reused per keystroke
     private var cachedAppContext: AppContext? = null
 
@@ -107,7 +110,8 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         }
         activeState.isActionsOverflowVisible = false
         activeState.isActionsEditorVisible = false
-        cachedAppContext = null  // Invalidate cache on new input view
+        cachedAppContext = null       // Invalidate cache on new input view
+        pendingManualCorrect = null  // Clear any in-progress manual correction tracking
         super.handleStartInputView(editorInfo, isRestart)
         val keyboardMode = when (editorInfo.inputAttributes.type) {
             InputAttributes.Type.NUMBER -> {
@@ -252,11 +256,21 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         if (isWordBoundary) {
             // Flush accumulated word if any
             if (currentWordBuffer.isNotEmpty()) {
-                HarvestManager.addToSession(currentWordBuffer.toString(), buildAppContext())
+                val retyped = currentWordBuffer.toString()
+                // Log manual correction if user backspaced into committed text and retyped differently
+                val original = pendingManualCorrect
+                if (original != null) {
+                    if (!retyped.equals(original, ignoreCase = true)) {
+                        HarvestManager.logManualCorrection(original, retyped, getPreviousWord(), buildAppContext())
+                    }
+                    pendingManualCorrect = null
+                }
+                HarvestManager.addToSession(retyped, buildAppContext())
                 currentWordBuffer.setLength(0)
             }
             // Flush session on sentence terminators
             if (isPunctuation || char == "\n") {
+                pendingManualCorrect = null  // Abandon tracking at sentence boundary
                 HarvestManager.flushSession(char, buildAppContext())
             }
         } else {
@@ -448,6 +462,14 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         // iOS-style undo: if the last commit auto-corrected, a single backspace restores the original word.
         if (unit == OperationUnit.CHARACTERS && tryRevertLastAutoCorrect()) {
             return true
+        }
+        // Harvest: detect when user is backspacing into committed (non-composing) text.
+        // composingText is empty when the cursor is between committed words — this is the
+        // "missed autocorrect" window: the user has to manually fix what the system should have caught.
+        if (unit == OperationUnit.CHARACTERS && pendingManualCorrect == null) {
+            if (content.composingText.isEmpty()) {
+                pendingManualCorrect = getPreviousWord()
+            }
         }
         if (unit == OperationUnit.CHARACTERS) {
             if (phantomSpace.isActive && content.currentWord.isValid && prefs.glide.immediateBackspaceDeletesWord.get()) {
@@ -653,6 +675,7 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         autoSpace.setInactive()
         phantomSpace.setInactive()
         massSelection.reset()
+        pendingManualCorrect = null
     }
 
     private fun tryRevertLastAutoCorrect(): Boolean {
