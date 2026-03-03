@@ -14,7 +14,7 @@
     { "$": "text_key", "code": 33, "label": "!" },
     { "$": "text_key", "code": 34, "label": "\"" },
     { "$": "text_key", "code": 64, "label": "@" },
-    { "$": "text_key", "code": -307, "label": "Ψ" },
+    { "$": "text_key", "code": 47, "label": "/" },
     { "code": -1, "label": "CTRL", "type": "modifier" }
   ],
   [
@@ -25,7 +25,7 @@
     { "code": -202, "label": "⚛", "type": "system_gui" },
     { "$": "text_key", "code": -305, "label": "Σ" },
     { "$": "text_key", "code": -306, "label": "λ" },
-    { "$": "text_key", "code": 47, "label": "/" },
+    { "$": "text_key", "code": -307, "label": "Ψ" },
     { "$": "text_key", "code": -33 },
     { "$": "text_key", "code": 10, "label": "↵", "type": "enter_editing" }
   ]
