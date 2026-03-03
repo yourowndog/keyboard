@@ -9,6 +9,12 @@
     { "$": "navigation", "code": -27, "label": "«" },
     { "$": "navigation", "code": -23 },
     { "$": "navigation", "code": -28, "label": "»" },
+    { "$": "text_key", "code": 45, "label": "-" },
+    { "$": "text_key", "code": 95, "label": "_" },
+    { "$": "text_key", "code": 33, "label": "!" },
+    { "$": "text_key", "code": 34, "label": "\"" },
+    { "$": "text_key", "code": 64, "label": "@" },
+    { "$": "text_key", "code": -307, "label": "Ψ" },
     { "code": -1, "label": "CTRL", "type": "modifier" }
   ],
   [

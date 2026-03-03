@@ -137,6 +137,7 @@ class TextKey(override val data: AbstractKeyData) : Key(data) {
                     else -> 1.0f
                 }
             }
+            val hasSlimSpaceRow = keyboard.bottomModRowCount >= 3
             flayGrow = when (keyboardMode) {
                 KeyboardMode.NUMERIC,
                 KeyboardMode.PHONE,
@@ -147,7 +148,7 @@ class TextKey(override val data: AbstractKeyData) : Key(data) {
                 }
                 else -> when (computed.code) {
                     KeyCode.SPACE,
-                    KeyCode.CJK_SPACE,
+                    KeyCode.CJK_SPACE -> if (hasSlimSpaceRow) 0.0f else 1.0f
                     KeyCode.ENTER -> 1.0f
                     else -> 0.0f
                 }
@@ -162,6 +163,8 @@ class TextKey(override val data: AbstractKeyData) : Key(data) {
                     else -> 1.56f
                 }
                 else -> when (computed.code) {
+                    KeyCode.SPACE,
+                    KeyCode.CJK_SPACE -> if (hasSlimSpaceRow) 5.00f else 1.00f
                     KeyCode.VIEW_CHARACTERS,
                     KeyCode.VIEW_SYMBOLS2 -> 1.56f
                     KeyCode.ENTER -> 1.30f
