@@ -265,3 +265,6 @@
 ### 2026-03-03
 * **Task:** Updated NLP dictionary and anti-corrections from March harvest; verified clean remote build.
 * **Files:** `anti_corrections.txt`, `unified_dictionary.tsv`, `PersonalPreferences.kt`, `bigrams_combined.tsv`, `harvest_summary.md`
+### 2026-03-03
+* **Task:** Synchronized toggleable row heights (Number/Dev) with the Mod row height factor.
+* **Files:** `FlorisImeSizing.kt`, `TextKeyboard.kt`
