@@ -83,8 +83,11 @@ object FlorisImeSizing {
         }.rowCount.coerceAtLeast(4)
         
         // Dynamic Frame Logic: Sum of Parts
-        // We assume the last 2 rows are 'Mod' rows (bottom rows), and the rest are 'Alpha' rows.
-        val modRowsCount = 2
+        // We assume the last 2 rows are 'Mod' rows (bottom rows).
+        // Any rows beyond the standard 5 (3 alpha + 2 mod) are 'Extension' rows at the top.
+        // Both Extension and Mod rows should use the bottomRowHeightFactor.
+        val topModCount = (rowCount - 5).coerceAtLeast(0)
+        val modRowsCount = 2 + topModCount
         val alphaRowsCount = (rowCount - modRowsCount).coerceAtLeast(0)
         
         val alphaTotal = keyboardRowBaseHeight * alphaRowsCount * alphaRowHeightFactor

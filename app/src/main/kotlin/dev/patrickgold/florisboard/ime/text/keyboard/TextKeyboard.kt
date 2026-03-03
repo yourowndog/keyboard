@@ -65,15 +65,17 @@ class TextKeyboard(
         for ((r, row) in rows().withIndex()) {
             val hasExtraRows = rowCount >= 5
             val rowHeight = if (hasExtraRows) {
-                // Base is 5 rows: 3 alpha (full) + 2 bottom (compressed)
-                // Mod rows are the last 2 rows. Everything else is Alpha/Extension.
-                val modRowCount = 2
+                // Standard base is 5 rows: 3 alpha (full) + 2 mod (bottom).
+                // Toggleable extension rows at the top (r < topModCount) and mod rows
+                // at the bottom (r >= rowCount - 2) use bottomRowHeightFactor.
+                val topModCount = (rowCount - 5).coerceAtLeast(0)
+                val modRowCount = 2 + topModCount
                 val alphaRowCount = rowCount - modRowCount
                 val effectiveRowCount = (alphaRowCount * alphaRowHeightFactor) + (modRowCount * bottomRowHeightFactor)
                 val baseHeight = keyboardHeight / effectiveRowCount
                 
-                val isBottomCompressedRow = r >= rowCount - modRowCount
-                if (isBottomCompressedRow) baseHeight * bottomRowHeightFactor else baseHeight * alphaRowHeightFactor
+                val isModHeightRow = r < topModCount || r >= rowCount - 2
+                if (isModHeightRow) baseHeight * bottomRowHeightFactor else baseHeight * alphaRowHeightFactor
             } else {
                 desiredTouchBounds.height
             }

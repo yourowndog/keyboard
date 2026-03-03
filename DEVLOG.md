@@ -262,3 +262,6 @@
   - **Alpha Row Slider:** Added \`alphaRowHeightFactor\` preference and UI slider (50-150%) to control the height of the top 3 rows (QWERTY/ASDF/ZXCV).
   - **Layout Engine:** Updated \`TextKeyboard.layout\` and \`Keyboard.layout\` abstract method to accept \`alphaRowHeightFactor\`. The engine now lays out rows using exact unit heights derived from the dynamic container size.
   - **Result:** Users can now shrink the spacebar row to save screen real estate without stretching the alpha keys, or vice-versa. – Gemini
+### 2026-03-03
+* **Task:** Updated NLP dictionary and anti-corrections from March harvest; verified clean remote build.
+* **Files:** `anti_corrections.txt`, `unified_dictionary.tsv`, `PersonalPreferences.kt`, `bigrams_combined.tsv`, `harvest_summary.md`
