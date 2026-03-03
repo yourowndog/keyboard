@@ -268,3 +268,6 @@
 ### 2026-03-03
 * **Task:** Synchronized toggleable row heights (Number/Dev) with the Mod row height factor.
 * **Files:** `FlorisImeSizing.kt`, `TextKeyboard.kt`
+### 2026-03-03
+* **Task:** Restructured mod rows in qwerty_wide_mod: moved Escape and Tab to left corners, added Home/End cluster, replaced PSI with Slash.
+* **Files:** `qwerty_wide_mod.json`

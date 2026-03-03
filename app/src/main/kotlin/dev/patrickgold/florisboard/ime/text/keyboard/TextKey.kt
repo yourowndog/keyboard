@@ -167,12 +167,16 @@ class TextKey(override val data: AbstractKeyData) : Key(data) {
                     KeyCode.ENTER -> 1.30f
                     KeyCode.SHIFT,
                     KeyCode.DELETE -> 1.00f
+                    KeyCode.TAB,
+                    KeyCode.ESCAPE -> 1.00f
                     KeyCode.ARROW_LEFT,
                     KeyCode.ARROW_RIGHT,
                     KeyCode.ARROW_UP,
                     KeyCode.ARROW_DOWN,
                     KeyCode.MOVE_START_OF_LINE,
-                    KeyCode.MOVE_END_OF_LINE -> 0.72f
+                    KeyCode.MOVE_END_OF_LINE,
+                    KeyCode.MOVE_START_OF_PAGE,
+                    KeyCode.MOVE_END_OF_PAGE -> 0.72f
                     KeyCode.UNDO,
                     KeyCode.REDO -> 0.8f
                     KeyCode.CTRL -> 1.25f

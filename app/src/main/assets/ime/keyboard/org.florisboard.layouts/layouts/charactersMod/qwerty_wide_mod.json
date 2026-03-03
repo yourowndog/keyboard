@@ -2,10 +2,12 @@
   [
     { "$": "text_key", "code": -14, "label": "⇥" },
     { "$": "navigation", "code": -27, "label": "«" },
+    { "$": "navigation", "code": -23 },
     { "$": "navigation", "code": -28, "label": "»" },
-    { "$": "navigation", "code": -25 },
-    { "$": "navigation", "code": -26 },
-    { "code": 0, "type": "placeholder" }
+    { "$": "text_key", "code": 44, "label": "," },
+    { "$": "text_key", "code": 32, "label": "space" },
+    { "$": "text_key", "code": 46, "label": "." },
+    { "code": -1, "label": "CTRL", "type": "modifier" }
   ],
   [
     { "$": "navigation", "code": -15, "label": "⎋" },
