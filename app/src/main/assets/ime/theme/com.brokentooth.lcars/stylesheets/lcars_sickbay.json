@@ -85,7 +85,25 @@
     "foreground": "#FFFFFF",
     "shape": "var(--shape-med-sharp)"
   },
-  
+  "key[code=-1][ctrlstate=`active`]": {
+    "background": "var(--med-accent-teal)",
+    "foreground": "#FFFFFF"
+  },
+  "key[code=-1][ctrlstate=`locked`]": {
+    "background": "var(--med-accent-teal)",
+    "foreground": "#FFFFFF",
+    "shadow-elevation": "4dp",
+    "shadow-color": "var(--med-accent-teal)"
+  },
+  "key[code=-305][numberrowstate=`active`]": {
+    "background": "var(--med-accent-teal)",
+    "foreground": "#FFFFFF"
+  },
+  "key[code=-306][devrowstate=`active`]": {
+    "background": "var(--med-accent-teal)",
+    "foreground": "#FFFFFF"
+  },
+
   "key-popup-box": {
     "background": "var(--med-key)",
     "foreground": "var(--med-text)",

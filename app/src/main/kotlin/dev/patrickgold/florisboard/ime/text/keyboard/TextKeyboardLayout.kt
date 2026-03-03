@@ -408,20 +408,24 @@ private fun TextKeyButton(
     debugShowTouchBoundaries: Boolean,
 ) = with(LocalDensity.current) {
     val prefs by FlorisPreferenceStore
+    val numberRowEnabled by prefs.keyboard.numberRow.observeAsState()
+    val devRowEnabled by prefs.keyboard.devRow.observeAsState()
     val attributes = mapOf(
         FlorisImeUi.Attr.Code to key.computedData.code,
         FlorisImeUi.Attr.Mode to evaluator.keyboard.mode.toString(),
         FlorisImeUi.Attr.ShiftState to evaluator.state.inputShiftState.toString(),
+        FlorisImeUi.Attr.CtrlState to when {
+            evaluator.state.isCtrlLocked -> "locked"
+            evaluator.state.isCtrlPressed -> "active"
+            else -> "none"
+        },
+        FlorisImeUi.Attr.NumberRowState to if (numberRowEnabled) "active" else "none",
+        FlorisImeUi.Attr.DevRowState to if (devRowEnabled) "active" else "none",
     )
-    val numberRowEnabled by prefs.keyboard.numberRow.observeAsState()
-    val devRowEnabled by prefs.keyboard.devRow.observeAsState()
-    
+
     val selector = when {
         !key.isEnabled -> SnyggSelector.DISABLED
         key.isPressed -> SnyggSelector.PRESSED
-        key.computedData.code == KeyCode.CTRL && evaluator.state.isCtrlPressed -> SnyggSelector.FOCUS
-        key.computedData.code == KeyCode.TOGGLE_NUMBER_ROW -> SnyggSelector.PRESSED // DEBUG: Force ON
-        key.computedData.code == KeyCode.TOGGLE_DEV_ROW -> SnyggSelector.PRESSED // DEBUG: Force ON
         else -> SnyggSelector.NONE
     }
     val size = remember(key, desiredKey) {

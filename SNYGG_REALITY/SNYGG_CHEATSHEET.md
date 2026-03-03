@@ -10,7 +10,12 @@
 | **Enter Key** | `key[code=10]` |
 | **Backspace** | `key[code=-4]` |
 | **Shift Key** | `key[code=-11]` |
-| **Shift (Active)** | `key[code=-11][shiftstate=shifted]` |
+| **Shift (Active)** | `key[code=-11][shiftstate=`shifted`]` |
+| **Caps Lock (Active)** | `key[code=-11][shiftstate=`caps_lock`]` |
+| **Ctrl (Active)** | `key[code=-1][ctrlstate=`active`]` |
+| **Ctrl (Locked)** | `key[code=-1][ctrlstate=`locked`]` |
+| **Number Row Toggle (On)** | `key[code=-305][numberrowstate=`active`]` |
+| **Dev Row Toggle (On)** | `key[code=-306][devrowstate=`active`]` |
 | **All Alphabets** | `key[code=97..122]` |
 | **Specific Keys** | `key[code=44,46]` (Comma, Period) |
 | **Smartbar** | `smartbar` |
@@ -47,6 +52,10 @@
 *   **Symbol 2 Layout**: `-203`
 *   **Num Layout**: `-204`
 *   **Emoticon Layout**: `-231` (Check specific implementation)
+
+### Toggle Keys
+*   **Toggle Number Row**: `-305`
+*   **Toggle Dev Row**: `-306`
 
 ## Common Variable Defines
 Place these in `"@defines": { ... }` to reuse colors.

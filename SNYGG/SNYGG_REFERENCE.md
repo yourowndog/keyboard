@@ -204,59 +204,65 @@ Valid `shiftstate` values: `shifted`, `caps_lock`
 | `code` | `key`, `smartbar-action-*` | Key codes (-306, 10, etc.) |
 | `mode` | Various | Keyboard mode identifiers |
 | `shiftstate` | `key` | `shifted`, `caps_lock` |
+| `ctrlstate` | `key` | `none`, `active`, `locked` |
+| `numberrowstate` | `key` | `none`, `active` |
+| `devrowstate` | `key` | `none`, `active` |
 
 ---
 
-## 5a. Custom Toggle States (Advanced)
+## 5a. Toggle State Attributes
 
-> **⚠️ This requires code changes** – not just theme edits.
+All toggle-state attributes are wired up in `TextKeyboardLayout.kt` and passed to every key's attribute map. Theme selectors match against these values.
 
-The `shiftstate` attribute works because the keyboard engine passes the current shift state when evaluating styles. To add similar behavior for custom toggles (dev row, number row), you need to wire up the state:
+### How It Works
+1. State attributes (`shiftstate`, `ctrlstate`, `numberrowstate`, `devrowstate`) are passed when drawing keys
+2. Theme selectors like `key[code=-1][ctrlstate=`locked`]` match when the attribute value equals the selector value
+3. More specific selectors (with more attributes) take priority over less specific ones
 
-### How Shift State Works
-1. `shiftstate` is passed as an attribute when drawing keys
-2. Theme selectors like `key[code=-11][shiftstate=`caps_lock`]` match when caps is active
-3. This makes the shift key "light up" while caps lock is on
+### Ctrl Key (`code=-1`)
+- **`ctrlstate=none`** — default, no Ctrl active
+- **`ctrlstate=active`** — single-tap sticky Ctrl (clears after next key)
+- **`ctrlstate=locked`** — double-tap locked Ctrl (stays until toggled off)
 
-### To Add Dev Row / Number Row Toggle Theming
-
-**Step 1: Add attribute names** in `FlorisImeUi.Attr`:
-```kotlin
-// In FlorisImeUi.kt
-object Attr {
-    const val Code = "code"
-    const val Mode = "mode"
-    const val ShiftState = "shiftstate"
-    const val DevRowState = "devrowstate"       // NEW
-    const val NumberRowState = "numberrowstate" // NEW
-}
-```
-
-**Step 2: Pass state during key evaluation** (in the rendering/evaluation layer):
-```kotlin
-// When building attributes for the toggle key
-var attributes = SnyggAttributes()
-if (key.code == KeyCode.TOGGLE_DEV_ROW && keyboardState.isDevRowVisible) {
-    attributes = attributes.including("devrowstate" to "active")
-}
-```
-
-**Step 3: Theme it:**
 ```json
-"key[code=-306]": {
-  "background": "var(--surface)",
-  "foreground": "var(--on-surface)"
+"key[code=-1][ctrlstate=`active`]": {
+  "background": "var(--secondary)",
+  "foreground": "var(--on-primary)"
 },
-"key[code=-306][devrowstate=`active`]": {
-  "background": "var(--primary)",
+"key[code=-1][ctrlstate=`locked`]": {
+  "background": "var(--primary-variant)",
+  "foreground": "var(--secondary)"
+}
+```
+
+### Toggle Number Row (`code=-305`)
+- **`numberrowstate=none`** — number row hidden
+- **`numberrowstate=active`** — number row visible
+
+```json
+"key[code=-305][numberrowstate=`active`]": {
+  "background": "var(--secondary)",
   "foreground": "var(--on-primary)"
 }
 ```
 
-### Current State
-- ✅ `shiftstate` works for Shift/Caps Lock
-- ❌ `devrowstate` / `numberrowstate` need the code changes above
-- Once implemented, use: `key[code=-306][devrowstate=`active`]`
+### Toggle Dev Row (`code=-306`)
+- **`devrowstate=none`** — dev row hidden
+- **`devrowstate=active`** — dev row visible
+
+```json
+"key[code=-306][devrowstate=`active`]": {
+  "background": "var(--secondary)",
+  "foreground": "var(--on-primary)"
+}
+```
+
+### Source
+- Attributes defined in `FlorisImeUi.Attr` (`FlorisImeUi.kt`)
+- State wired in `TextKeyButton` (`TextKeyboardLayout.kt`)
+- `ctrlstate` reads from `evaluator.state.isCtrlPressed` / `isCtrlLocked`
+- `numberrowstate` reads from `prefs.keyboard.numberRow`
+- `devrowstate` reads from `prefs.keyboard.devRow`
 
 ---
 

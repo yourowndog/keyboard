@@ -271,3 +271,10 @@
 ### 2026-03-03
 * **Task:** Restructured mod rows in qwerty_wide_mod: moved Escape and Tab to left corners, added Home/End cluster, replaced PSI with Slash.
 * **Files:** `qwerty_wide_mod.json`
+### 2026-03-03
+* **Task:** Fixed mod row restructure and synchronized Escape/Tab widths.
+* **Files:** `TextKey.kt`, `qwerty_wide_mod.json`
+
+### 2026-03-03
+* **Task:** Fixed 'black-on-black' visibility issues in LCARS Neon, Tactical, and Ops themes by adding missing SNYGG selectors for Clipboard, Smartbar, and Media sections.
+* **Files:** `app/src/main/assets/ime/theme/org.florisboard.themes/stylesheets/lcars_neon.json`, `app/src/main/assets/ime/theme/org.florisboard.themes/stylesheets/lcars_tactical.json`, `app/src/main/assets/ime/theme/org.florisboard.themes/stylesheets/lcars.json`
