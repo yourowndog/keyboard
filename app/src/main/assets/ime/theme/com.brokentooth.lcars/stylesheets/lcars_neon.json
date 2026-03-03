@@ -92,26 +92,20 @@
     "shape": "cut-corner(8dp, 8dp, 8dp, 8dp)"
   },
   "key[code=-1][ctrlstate=`active`]": {
-    "background": "var(--cyan-bright)",
-    "foreground": "var(--text-inverse)",
-    "border-color": "var(--cyan-neon)"
+    "background": "#00FF00",
+    "foreground": "#000000"
   },
   "key[code=-1][ctrlstate=`locked`]": {
-    "background": "var(--cyan-bright)",
-    "foreground": "var(--text-inverse)",
-    "border-color": "var(--cyan-neon)",
-    "shadow-elevation": "12dp",
-    "shadow-color": "var(--cyan-neon)"
+    "background": "#FF00FF",
+    "foreground": "#000000"
   },
   "key[code=-305][numberrowstate=`active`]": {
-    "background": "var(--cyan-bright)",
-    "foreground": "var(--text-inverse)",
-    "border-color": "var(--cyan-neon)"
+    "background": "#FF0000",
+    "foreground": "#FFFFFF"
   },
   "key[code=-306][devrowstate=`active`]": {
-    "background": "var(--cyan-bright)",
-    "foreground": "var(--text-inverse)",
-    "border-color": "var(--cyan-neon)"
+    "background": "#FF0000",
+    "foreground": "#FFFFFF"
   },
   "key-popup-box": {
     "background": "var(--void-panel)",
