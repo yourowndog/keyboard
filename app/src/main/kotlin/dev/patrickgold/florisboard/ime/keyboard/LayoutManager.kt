@@ -394,6 +394,7 @@ class LayoutManager(context: Context) {
         }
 
         val array = Array(computedArrangement.size) { computedArrangement[it] }
+        val bottomModRows = modifierLayout?.arrangement?.size ?: 0
         return TextKeyboard(
             arrangement = array,
             mode = keyboardMode,
@@ -402,7 +403,8 @@ class LayoutManager(context: Context) {
             }.getOrNull()?.mapping,
             extendedPopupMappingDefault = extendedPopupsDefault.await().onFailure {
                 flogWarning(LogTopic.LAYOUT_MANAGER) { it.toString() }
-            }.getOrNull()?.mapping
+            }.getOrNull()?.mapping,
+            bottomModRowCount = bottomModRows,
         )
     }
 

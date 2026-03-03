@@ -28,6 +28,7 @@ class TextKeyboard(
     override val mode: KeyboardMode,
     val extendedPopupMapping: PopupMapping?,
     val extendedPopupMappingDefault: PopupMapping?,
+    val bottomModRowCount: Int = 2,
 ) : Keyboard() {
     val rowCount: Int
         get() = arrangement.size
@@ -65,16 +66,15 @@ class TextKeyboard(
         for ((r, row) in rows().withIndex()) {
             val hasExtraRows = rowCount >= 5
             val rowHeight = if (hasExtraRows) {
-                // Standard base is 5 rows: 3 alpha (full) + 2 mod (bottom).
-                // Toggleable extension rows at the top (r < topModCount) and mod rows
-                // at the bottom (r >= rowCount - 2) use bottomRowHeightFactor.
-                val topModCount = (rowCount - 5).coerceAtLeast(0)
-                val modRowCount = 2 + topModCount
+                // Standard base is 3 alpha rows + bottomModRowCount mod rows at the bottom.
+                // Toggleable extension rows at the top (r < topModCount) also use mod height.
+                val topModCount = (rowCount - 3 - bottomModRowCount).coerceAtLeast(0)
+                val modRowCount = bottomModRowCount + topModCount
                 val alphaRowCount = rowCount - modRowCount
                 val effectiveRowCount = (alphaRowCount * alphaRowHeightFactor) + (modRowCount * bottomRowHeightFactor)
                 val baseHeight = keyboardHeight / effectiveRowCount
-                
-                val isModHeightRow = r < topModCount || r >= rowCount - 2
+
+                val isModHeightRow = r < topModCount || r >= rowCount - bottomModRowCount
                 if (isModHeightRow) baseHeight * bottomRowHeightFactor else baseHeight * alphaRowHeightFactor
             } else {
                 desiredTouchBounds.height

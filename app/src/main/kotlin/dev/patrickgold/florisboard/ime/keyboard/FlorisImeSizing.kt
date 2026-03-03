@@ -74,20 +74,22 @@ object FlorisImeSizing {
         val keyboardManager by context.keyboardManager()
         val evaluator by keyboardManager.activeEvaluator.collectAsState()
         val lastCharactersEvaluator by keyboardManager.lastCharactersEvaluator.collectAsState()
-        val rowCount = when (evaluator.keyboard.mode) {
+        val keyboard = when (evaluator.keyboard.mode) {
             KeyboardMode.CHARACTERS,
             KeyboardMode.NUMERIC_ADVANCED,
             KeyboardMode.SYMBOLS,
             KeyboardMode.SYMBOLS2 -> lastCharactersEvaluator.keyboard as TextKeyboard
             else -> evaluator.keyboard as TextKeyboard
-        }.rowCount.coerceAtLeast(4)
-        
+        }
+        val rowCount = keyboard.rowCount.coerceAtLeast(4)
+        val bottomModCount = keyboard.bottomModRowCount
+
         // Dynamic Frame Logic: Sum of Parts
-        // We assume the last 2 rows are 'Mod' rows (bottom rows).
-        // Any rows beyond the standard 5 (3 alpha + 2 mod) are 'Extension' rows at the top.
-        // Both Extension and Mod rows should use the bottomRowHeightFactor.
-        val topModCount = (rowCount - 5).coerceAtLeast(0)
-        val modRowsCount = 2 + topModCount
+        // Bottom mod rows come from the keyboard's bottomModRowCount.
+        // Any rows beyond the standard (3 alpha + bottomModCount) are 'Extension' rows at the top.
+        // Both Extension and Mod rows use the bottomRowHeightFactor.
+        val topModCount = (rowCount - 3 - bottomModCount).coerceAtLeast(0)
+        val modRowsCount = bottomModCount + topModCount
         val alphaRowsCount = (rowCount - modRowsCount).coerceAtLeast(0)
         
         val alphaTotal = keyboardRowBaseHeight * alphaRowsCount * alphaRowHeightFactor
