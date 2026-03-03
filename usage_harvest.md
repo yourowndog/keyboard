@@ -13271,3 +13271,3154 @@ Copy to repo: `cp /sdcard/Documents/usage_harvest.md ~/vault/projects/keyboard/`
 [SESSION:VOICE] 2026-02-17 15:29:24 | "See here's the thing. These"
 [SESSION:VOICE] 2026-02-17 15:29:24 | "that great."
 [SESSION:VOICE] 2026-02-17 15:29:24 | "like little dots don't look"
+
+<!-- HARVEST BATCH: 2026-03-02 19:51:40 -->
+[SESSION:VOICE] 2026-02-17 15:39:38 | "This and that and the"
+[SESSION:VOICE] 2026-02-17 15:39:38 | "other thing."
+[SESSION:VOICE] 2026-02-17 15:41:36 | "Do you know how much"
+[SESSION:VOICE] 2026-02-17 15:41:36 | "I love you?"
+[SESSION:TYPING] 2026-02-17 15:48:06 | "Its4/3now."
+[ACCEPTED] 2026-02-17 15:48:21 | Scientisr → Scientists | ctx: "Scientisr"
+[REJECTED] 2026-02-17 16:56:16 | thd ← the (reverted) | ctx: "thd" | trigram: "I thd"
+[REJECTED] 2026-02-17 16:56:40 | dont ← don't (reverted) | ctx: "dont" | trigram: "I dont"
+[SESSION:VOICE] 2026-02-17 16:56:48 | "This is pretty weird, huh?"
+[SESSION:TYPING] 2026-02-17 17:04:42 | "TheScientisrdidntthinkjtwaspossibleIthdIdontgoaheadandsyncuuswithdevorigin,"
+[SESSION:TYPING] 2026-02-17 17:04:54 | "rebaseorwhTeverykuouneed."
+[SESSION:VOICE] 2026-02-17 17:43:19 | "You're supposed to be showing"
+[SESSION:VOICE] 2026-02-17 17:43:19 | "me this."
+[SESSION:VOICE] 2026-02-17 17:44:44 | "intensity detector but you can"
+[SESSION:VOICE] 2026-02-17 17:44:44 | "pause it"
+[SESSION:VOICE] 2026-02-17 17:44:44 | "it like is like an"
+[SESSION:VOICE] 2026-02-17 17:44:44 | "but you know like this"
+[SESSION:TYPING] 2026-02-17 18:59:07 | "thisistbehemostcurrentThenoneedtofactoryrule34video?"
+[SESSION:TYPING] 2026-02-17 18:59:09 | "."
+[SESSION:TYPING] 2026-02-17 18:59:23 | "comrule34video."
+[SESSION:TYPING] 2026-02-18 03:22:01 | "comAnalmightymightyboosh4chan."
+[SESSION:VOICE] 2026-02-18 04:46:43 | "What are Friends and Gary"
+[SESSION:VOICE] 2026-02-18 04:46:43 | "Neumann's replicas album?"
+[SESSION:TYPING] 2026-02-18 05:19:21 | "org/binacblowshotbothhoodebrokenoff."
+[SESSION:TYPING] 2026-02-18 05:19:30 | "removeditandputitknshowp."
+[SESSION:VOICE] 2026-02-18 05:49:29 | "like how that is derived"
+[SESSION:VOICE] 2026-02-18 05:49:29 | "but we got the animation"
+[SESSION:VOICE] 2026-02-18 05:49:29 | "have out from the existing"
+[SESSION:VOICE] 2026-02-18 05:49:29 | "and like the whole like"
+[SESSION:VOICE] 2026-02-18 05:49:29 | "into how the second smart"
+[SESSION:VOICE] 2026-02-18 05:49:29 | "sophisticated predictions because currently those"
+[SESSION:VOICE] 2026-02-18 05:49:29 | "functionality working but why don't"
+[SESSION:VOICE] 2026-02-18 05:49:29 | "and calculated and how we"
+[SESSION:VOICE] 2026-02-18 05:49:29 | "you lay out for me"
+[SESSION:VOICE] 2026-02-18 05:49:29 | "figured all that we currently"
+[SESSION:VOICE] 2026-02-18 05:49:29 | "Okay we need to dive"
+[SESSION:VOICE] 2026-02-18 05:49:29 | "predictions are like totally insane"
+[SESSION:VOICE] 2026-02-18 05:49:29 | "bar drop-down works for more"
+[SESSION:VOICE] 2026-02-18 05:49:29 | "logs"
+[SESSION:VOICE] 2026-02-18 05:56:31 | "Okay, so in the interest"
+[SESSION:VOICE] 2026-02-18 05:56:31 | "we're not excluding the voice"
+[SESSION:VOICE] 2026-02-18 05:56:31 | "give to Gemini to run"
+[SESSION:VOICE] 2026-02-18 05:56:31 | "these Python scripts. But let's"
+[SESSION:VOICE] 2026-02-18 05:56:31 | "let's prepare a prompt to"
+[SESSION:VOICE] 2026-02-18 05:56:31 | "of preserving our usage limits,"
+[SESSION:VOICE] 2026-02-18 05:56:31 | "So that will be one"
+[SESSION:VOICE] 2026-02-18 05:56:31 | "and consider it like this"
+[SESSION:VOICE] 2026-02-18 05:56:31 | "I'll have an additional Gemini"
+[SESSION:VOICE] 2026-02-18 05:56:31 | "results at face value. Let's"
+[SESSION:VOICE] 2026-02-18 05:56:31 | "recording data from the logs."
+[SESSION:VOICE] 2026-02-18 05:56:31 | "tell me what you would"
+[SESSION:VOICE] 2026-02-18 05:56:31 | "suggest to normalize our bigrams"
+[SESSION:VOICE] 2026-02-18 05:56:31 | "and then the other is"
+[SESSION:VOICE] 2026-02-18 05:56:31 | "prompt should contextualize them so"
+[SESSION:VOICE] 2026-02-18 05:56:31 | "sense. Advise."
+[SESSION:VOICE] 2026-02-18 05:56:31 | "instance where we can analyze"
+[SESSION:VOICE] 2026-02-18 05:56:31 | "have him actually think about"
+[SESSION:VOICE] 2026-02-18 05:56:31 | "need to be sure that"
+[SESSION:VOICE] 2026-02-18 05:56:31 | "he knows like what we're"
+[SESSION:VOICE] 2026-02-18 05:56:31 | "not have him take the"
+[SESSION:VOICE] 2026-02-18 05:56:31 | "or figure out if you"
+[SESSION:VOICE] 2026-02-18 05:56:31 | "in an intelligible way. I"
+[SESSION:VOICE] 2026-02-18 05:56:31 | "think that would also make"
+[SESSION:VOICE] 2026-02-18 05:56:31 | "up to and we also"
+[SESSION:VOICE] 2026-02-18 06:08:08 | "not want, uh... ...literalizing punctuation."
+[SESSION:VOICE] 2026-02-18 06:08:08 | "Okay, well, we absolutely did"
+[SESSION:VOICE] 2026-02-18 06:09:07 | "Explain to me what the"
+[SESSION:VOICE] 2026-02-18 06:09:07 | "frequency distribution is and a"
+[SESSION:VOICE] 2026-02-18 06:09:07 | "to 52 words or what"
+[SESSION:VOICE] 2026-02-18 06:09:07 | "range. Is that three words"
+[SESSION:VOICE] 2026-02-18 06:09:07 | "exactly does that mean?"
+[SESSION:VOICE] 2026-02-18 06:09:57 | "Also, do we have anything"
+[SESSION:VOICE] 2026-02-18 06:09:57 | "more than just a total"
+[SESSION:VOICE] 2026-02-18 06:09:57 | "that is common but also"
+[SESSION:VOICE] 2026-02-18 06:09:57 | "of four words? Because if"
+[SESSION:VOICE] 2026-02-18 06:09:57 | "there are sentences in my"
+[SESSION:VOICE] 2026-02-18 06:09:57 | "times, I don't see a"
+[SESSION:VOICE] 2026-02-18 06:09:57 | "be predicted."
+[SESSION:VOICE] 2026-02-18 06:09:57 | "complete thoughts in there to"
+[SESSION:VOICE] 2026-02-18 06:09:57 | "with having full sentences or"
+[SESSION:VOICE] 2026-02-18 06:09:57 | "our logs like I'm fine"
+[SESSION:VOICE] 2026-02-18 06:09:57 | "reason why we should limit"
+[SESSION:VOICE] 2026-02-18 06:09:57 | "logs that are uttered multiple"
+[SESSION:VOICE] 2026-02-18 06:13:16 | "noise from it. So like"
+[SESSION:VOICE] 2026-02-18 06:13:16 | "definitely want to remove the"
+[SESSION:VOICE] 2026-02-18 06:13:16 | "to be pruned out of"
+[SESSION:VOICE] 2026-02-18 06:13:16 | "it."
+[SESSION:VOICE] 2026-02-18 06:13:16 | "to get automatically injected into"
+[SESSION:VOICE] 2026-02-18 06:13:16 | "typos or weird spaces need"
+[SESSION:VOICE] 2026-02-18 06:13:16 | "our brain then yeah I"
+[SESSION:VOICE] 2026-02-18 06:13:16 | "If this stuff is going"
+[SESSION:VOICE] 2026-02-18 06:16:53 | "or our bigram stuff?"
+[SESSION:VOICE] 2026-02-18 06:16:53 | "does the logic work compared"
+[SESSION:VOICE] 2026-02-18 06:16:53 | "Are these ranked or scored"
+[SESSION:VOICE] 2026-02-18 06:16:53 | "to, like, our frequency dictionary"
+[SESSION:VOICE] 2026-02-18 06:16:53 | "we copy them, like, how"
+[SESSION:VOICE] 2026-02-18 06:16:53 | "in any way? Like, before"
+[SESSION:VOICE] 2026-02-18 06:20:38 | "or something. I'm just trying"
+[SESSION:VOICE] 2026-02-18 06:20:38 | "is we don't exactly rank"
+[SESSION:VOICE] 2026-02-18 06:20:38 | "show up when there is"
+[SESSION:VOICE] 2026-02-18 06:20:38 | "the personal phrases. They just"
+[SESSION:VOICE] 2026-02-18 06:20:38 | "a word that precedes them"
+[SESSION:VOICE] 2026-02-18 06:20:38 | "to figure out how we"
+[SESSION:VOICE] 2026-02-18 06:20:38 | "So essentially what you're saying"
+[SESSION:VOICE] 2026-02-18 06:20:38 | "figure out the order they're"
+[SESSION:VOICE] 2026-02-18 06:20:38 | "displayed."
+[SESSION:VOICE] 2026-02-18 06:22:34 | "ahead and, uh, copy them."
+[SESSION:VOICE] 2026-02-18 06:22:34 | "Okay, yeah, you can go"
+[SESSION:VOICE] 2026-02-18 06:29:26 | "Yeah, go ahead and push"
+[SESSION:VOICE] 2026-02-18 06:29:26 | "it to the factory and"
+[SESSION:VOICE] 2026-02-18 06:29:26 | "let's see what it does."
+[SESSION:VOICE] 2026-02-18 06:31:13 | "predictions work in Termux? Like,"
+[SESSION:VOICE] 2026-02-18 06:31:13 | "Can you tell me why"
+[SESSION:VOICE] 2026-02-18 06:31:13 | "really detect this as like"
+[SESSION:VOICE] 2026-02-18 06:31:13 | "know whether you're in like"
+[SESSION:VOICE] 2026-02-18 06:31:13 | "a normal text field. And"
+[SESSION:VOICE] 2026-02-18 06:31:13 | "I'm also curious how keyboards"
+[SESSION:VOICE] 2026-02-18 06:31:13 | "a messaging app or an"
+[SESSION:VOICE] 2026-02-18 06:31:13 | "determining by associating the particular"
+[SESSION:VOICE] 2026-02-18 06:31:13 | "we're in when we log"
+[SESSION:VOICE] 2026-02-18 06:31:13 | "we boost our intelligence by"
+[SESSION:VOICE] 2026-02-18 06:31:13 | "everything?"
+[SESSION:VOICE] 2026-02-18 06:31:13 | "it's as if it doesn't"
+[SESSION:VOICE] 2026-02-18 06:31:13 | "a URL bar or like"
+[SESSION:VOICE] 2026-02-18 06:31:13 | "entering in login credentials or"
+[SESSION:VOICE] 2026-02-18 06:31:13 | "none of my suggestions or"
+[SESSION:VOICE] 2026-02-18 06:31:13 | "app like Termux, like how"
+[SESSION:VOICE] 2026-02-18 06:31:13 | "does it know? And could"
+[SESSION:VOICE] 2026-02-18 06:31:13 | "app or text field that"
+[REJECTED] 2026-02-18 09:37:27 | what ← What (reverted) | ctx: "what"
+[SESSION:VOICE] 2026-02-18 09:38:48 | "You"
+[SESSION:VOICE] 2026-02-18 09:39:11 | "You"
+[SESSION:VOICE] 2026-02-18 09:39:27 | "So, what's going on?"
+[SESSION:VOICE] 2026-02-18 09:40:28 | "it's giving me a bunch"
+[SESSION:VOICE] 2026-02-18 09:40:28 | "of these weird suggestions like"
+[SESSION:VOICE] 2026-02-18 09:40:28 | "came from or why it's"
+[SESSION:VOICE] 2026-02-18 09:40:28 | "So when I type what,"
+[SESSION:VOICE] 2026-02-18 09:40:28 | "Can you explain where these"
+[SESSION:VOICE] 2026-02-18 09:40:28 | "suggesting these? Because these seem"
+[SESSION:VOICE] 2026-02-18 09:40:28 | "pretty insane."
+[SESSION:VOICE] 2026-02-18 09:40:28 | "in between the slashes here."
+[SESSION:VOICE] 2026-02-18 09:40:53 | "It's as if it's trying"
+[SESSION:VOICE] 2026-02-18 09:40:53 | "but it's doing it unintelligibly"
+[SESSION:VOICE] 2026-02-18 09:40:53 | "and this is not exactly"
+[SESSION:VOICE] 2026-02-18 09:40:53 | "to tie two different sets"
+[SESSION:VOICE] 2026-02-18 09:40:53 | "going to be useful as"
+[SESSION:VOICE] 2026-02-18 09:40:53 | "it stands."
+[SESSION:VOICE] 2026-02-18 09:40:53 | "of three together or something,"
+[SESSION:VOICE] 2026-02-18 09:44:05 | "do this more intelligently like"
+[SESSION:VOICE] 2026-02-18 09:44:05 | "if we are I mean"
+[SESSION:VOICE] 2026-02-18 09:44:05 | "shit I don't know man"
+[SESSION:VOICE] 2026-02-18 09:44:05 | "realistic so you know it"
+[SESSION:VOICE] 2026-02-18 09:44:05 | "how can we make the"
+[SESSION:VOICE] 2026-02-18 09:44:05 | "suggestion seem simple or like"
+[SESSION:VOICE] 2026-02-18 09:44:05 | "is there a way to"
+[SESSION:VOICE] 2026-02-18 09:44:05 | "has like a pool of"
+[SESSION:VOICE] 2026-02-18 09:44:05 | "in the text fields or"
+[SESSION:VOICE] 2026-02-18 09:44:05 | "sentence structure or perhaps it"
+[SESSION:VOICE] 2026-02-18 09:44:05 | "whatever"
+[SESSION:VOICE] 2026-02-18 09:44:05 | "looks at the other words"
+[SESSION:TYPING] 2026-02-18 09:44:07 | "whatgwhatare////4."
+[SESSION:VOICE] 2026-02-18 09:44:22 | "but I want to optimize"
+[SESSION:VOICE] 2026-02-18 09:44:22 | "with the coolest ideas we"
+[SESSION:VOICE] 2026-02-18 09:44:22 | "and try and come up"
+[SESSION:VOICE] 2026-02-18 09:44:22 | "I do like your ideas"
+[SESSION:VOICE] 2026-02-18 09:44:22 | "can come up with."
+[SESSION:VOICE] 2026-02-18 09:46:09 | "to implement a feature like"
+[SESSION:VOICE] 2026-02-18 09:46:09 | "what would be really cool"
+[SESSION:VOICE] 2026-02-18 09:46:09 | "I'm in my messaging app"
+[SESSION:VOICE] 2026-02-18 09:46:09 | "is like my wife Kiry,"
+[SESSION:VOICE] 2026-02-18 09:46:09 | "So ideally, I would like"
+[SESSION:VOICE] 2026-02-18 09:46:09 | "if the keyboard detects that"
+[SESSION:VOICE] 2026-02-18 09:46:09 | "talking to her in that"
+[SESSION:VOICE] 2026-02-18 09:46:09 | "particular conversation, it has these"
+[SESSION:VOICE] 2026-02-18 09:46:09 | "automatically toggles my number row"
+[SESSION:VOICE] 2026-02-18 09:46:09 | "particular suggestions. If I'm in"
+[SESSION:VOICE] 2026-02-18 09:46:09 | "Termux, it detects that and"
+[SESSION:VOICE] 2026-02-18 09:46:09 | "a high priority of suggested"
+[SESSION:VOICE] 2026-02-18 09:46:09 | "for me. If I am,"
+[SESSION:VOICE] 2026-02-18 09:46:09 | "if I'm in like a"
+[SESSION:VOICE] 2026-02-18 09:46:09 | "too, it will automatically like"
+[SESSION:VOICE] 2026-02-18 09:46:09 | "you know, typing a URL"
+[SESSION:VOICE] 2026-02-18 09:46:09 | "things there like an individual"
+[SESSION:VOICE] 2026-02-18 09:46:09 | "toggle the number row or"
+[SESSION:VOICE] 2026-02-18 09:46:09 | "to identify particular conversations or"
+[SESSION:VOICE] 2026-02-18 09:46:09 | "that and each app that"
+[SESSION:VOICE] 2026-02-18 09:46:09 | "understand what I'm saying? Is"
+[SESSION:VOICE] 2026-02-18 09:46:09 | "this possible, you know, like"
+[SESSION:VOICE] 2026-02-18 09:46:09 | "I use, it has like"
+[SESSION:VOICE] 2026-02-18 09:46:09 | "credential login place, it'll toggle"
+[SESSION:VOICE] 2026-02-18 09:46:09 | "dictionary per or... Do you"
+[SESSION:VOICE] 2026-02-18 09:46:09 | "only the whatever, only the"
+[SESSION:VOICE] 2026-02-18 09:46:09 | "apps themselves?"
+[SESSION:VOICE] 2026-02-18 09:53:16 | "1-2 combo like you suggested."
+[SESSION:VOICE] 2026-02-18 09:53:16 | "Yeah, let's go with the"
+[SESSION:VOICE] 2026-02-18 09:53:50 | "trying to attempt before I"
+[SESSION:VOICE] 2026-02-18 09:53:50 | "redirected you?"
+[SESSION:VOICE] 2026-02-18 09:53:50 | "the logic like you were"
+[SESSION:VOICE] 2026-02-18 09:53:50 | "that we need to edit"
+[SESSION:VOICE] 2026-02-18 09:53:50 | "And does this also mean"
+[SESSION:VOICE] 2026-02-18 09:55:17 | "I think a good place"
+[SESSION:VOICE] 2026-02-18 09:55:17 | "our logging to just start"
+[SESSION:VOICE] 2026-02-18 09:55:17 | "go in there and edit"
+[SESSION:VOICE] 2026-02-18 09:55:17 | "to start would be to"
+[SESSION:VOICE] 2026-02-18 09:55:17 | "dictate and everything that I"
+[SESSION:VOICE] 2026-02-18 09:55:17 | "logging each thing. So we're"
+[SESSION:VOICE] 2026-02-18 09:55:17 | "already logging everything that I"
+[SESSION:VOICE] 2026-02-18 09:55:17 | "type. Now I think we"
+[SESSION:VOICE] 2026-02-18 09:55:17 | "should associate it with the"
+[SESSION:VOICE] 2026-02-18 09:55:17 | "identifiers we have to start"
+[SESSION:VOICE] 2026-02-18 09:55:17 | "app, the package name, whatever"
+[SESSION:VOICE] 2026-02-18 09:55:17 | "to collate this information to"
+[SESSION:VOICE] 2026-02-18 09:55:17 | "structure it a little better,"
+[SESSION:VOICE] 2026-02-18 09:55:17 | "a little smarter. I think"
+[SESSION:VOICE] 2026-02-18 09:55:17 | "that would be a good"
+[SESSION:VOICE] 2026-02-18 09:55:17 | "place to start. What do"
+[SESSION:VOICE] 2026-02-18 09:55:17 | "you think?"
+[SESSION:VOICE] 2026-02-18 09:57:01 | "calculate these probabilities and how"
+[SESSION:VOICE] 2026-02-18 09:57:01 | "Explain to me how beam"
+[SESSION:VOICE] 2026-02-18 09:57:01 | "does it know? And do"
+[SESSION:VOICE] 2026-02-18 09:57:01 | "phrases? Why not four or"
+[SESSION:VOICE] 2026-02-18 09:57:01 | "six? And also..."
+[SESSION:VOICE] 2026-02-18 09:57:01 | "search works. How does it"
+[SESSION:VOICE] 2026-02-18 09:57:01 | "we want to limit it"
+[SESSION:VOICE] 2026-02-18 09:57:01 | "to three words? Three word"
+[SESSION:VOICE] 2026-02-18 09:57:51 | "generate these? Why would you"
+[SESSION:VOICE] 2026-02-18 09:57:51 | "How do you plan on"
+[SESSION:VOICE] 2026-02-18 09:57:51 | "generating a Python script to"
+[SESSION:VOICE] 2026-02-18 09:57:51 | "do that as opposed to"
+[SESSION:VOICE] 2026-02-18 09:57:51 | "do? Critique our plan and"
+[SESSION:VOICE] 2026-02-18 09:57:51 | "do what we're trying to"
+[SESSION:VOICE] 2026-02-18 09:57:51 | "this the optimal way to"
+[SESSION:VOICE] 2026-02-18 09:57:51 | "suggest three courses of action."
+[SESSION:VOICE] 2026-02-18 09:57:51 | "looking it up? And is"
+[SESSION:VOICE] 2026-02-18 10:02:39 | "the anchor pool scripts plus"
+[SESSION:VOICE] 2026-02-18 10:02:39 | "Wait a minute. I thought"
+[SESSION:VOICE] 2026-02-18 10:02:39 | "I mean if trigrams is"
+[SESSION:VOICE] 2026-02-18 10:02:39 | "beam search logic was trigrams."
+[SESSION:VOICE] 2026-02-18 10:02:39 | "more robust why isn't that"
+[SESSION:VOICE] 2026-02-18 10:02:39 | "part of our plan? Is"
+[SESSION:VOICE] 2026-02-18 10:02:39 | "it going to be a"
+[SESSION:VOICE] 2026-02-18 10:02:39 | "massive rewrite?"
+[SESSION:VOICE] 2026-02-18 11:27:49 | "feel good at all. I'm"
+[SESSION:VOICE] 2026-02-18 11:27:49 | "feel real shitty and defeated"
+[SESSION:VOICE] 2026-02-18 11:27:49 | "miss you and being a"
+[SESSION:VOICE] 2026-02-18 11:27:49 | "human."
+[SESSION:VOICE] 2026-02-18 11:27:49 | "just fucking taking Adderall and"
+[SESSION:VOICE] 2026-02-18 11:27:49 | "I love you and I"
+[SESSION:VOICE] 2026-02-18 11:27:49 | "prop myself up. I just"
+[SESSION:VOICE] 2026-02-18 11:27:49 | "I'm fucking sick. I don't"
+[SESSION:VOICE] 2026-02-18 11:27:49 | "and listless and empty. But"
+[SESSION:VOICE] 2026-02-18 11:27:49 | "Adderall and Adderall to fucking"
+[SESSION:VOICE] 2026-02-18 11:32:14 | "throat thing, but it's mostly"
+[SESSION:VOICE] 2026-02-18 11:32:14 | "just super fucking fatigue."
+[SESSION:VOICE] 2026-02-18 11:32:14 | "It's like a sinus sore"
+[SESSION:VOICE] 2026-02-18 11:32:32 | "energy drinks I drink or"
+[SESSION:VOICE] 2026-02-18 11:32:32 | "Like no matter how much"
+[SESSION:VOICE] 2026-02-18 11:32:32 | "how much Adderall I take,"
+[SESSION:VOICE] 2026-02-18 11:32:32 | "the fucking groove."
+[SESSION:VOICE] 2026-02-18 11:32:32 | "I just can't get in"
+[SESSION:VOICE] 2026-02-18 11:32:43 | "And your car was totally"
+[SESSION:VOICE] 2026-02-18 11:32:43 | "fine. The check engine light"
+[SESSION:VOICE] 2026-02-18 11:32:43 | "wasn't even on. At all."
+[SESSION:TYPING] 2026-02-18 11:43:15 | "74Imjusttsotiredbaby."
+[SESSION:TYPING] 2026-02-18 11:43:15 | "."
+[SESSION:TYPING] 2026-02-18 11:43:15 | "."
+[SESSION:TYPING] 2026-02-18 11:43:36 | "idontknowshdnifilleverbealright."
+[SESSION:TYPING] 2026-02-18 11:43:52 | "Allthejoyisgone."
+[SESSION:VOICE] 2026-02-18 11:53:38 | "call it quits."
+[SESSION:VOICE] 2026-02-18 11:53:38 | "I'm so ready to just"
+[SESSION:VOICE] 2026-02-18 11:53:54 | "was."
+[SESSION:VOICE] 2026-02-18 11:53:54 | "what we were, and who"
+[SESSION:VOICE] 2026-02-18 11:53:54 | "we were, and who I"
+[SESSION:VOICE] 2026-02-18 11:53:54 | "I miss you, though. I"
+[SESSION:VOICE] 2026-02-18 11:53:54 | "miss what we had, and"
+[SESSION:TYPING] 2026-02-18 14:01:20 | "3 0 0 9 6"
+[SESSION:TYPING] 2026-02-18 14:19:46 | "9 0 5 0 6"
+[INSISTED] 2026-02-18 14:30:53 | I | ctx: "I"
+[INSISTED] 2026-02-18 14:31:01 | I | ctx: "I"
+[ACCEPTED] 2026-02-18 14:31:02 | Ill → I'll | ctx: "Ill" | trigram: "guess Ill"
+[ACCEPTED] 2026-02-18 14:31:14 | and → And | ctx: "and"
+[INSISTED] 2026-02-18 14:31:20 | I | ctx: "I"
+[INSISTED] 2026-02-18 14:37:46 | I | ctx: "I"
+[INSISTED] 2026-02-18 14:37:48 | I | ctx: "I"
+[ACCEPTED] 2026-02-18 14:37:51 | bc → be | ctx: "bc" | trigram: "shitty bc"
+[INSISTED] 2026-02-18 14:37:55 | bc | ctx: "bc"
+[INSISTED] 2026-02-18 14:38:19 | I | ctx: "I"
+[ACCEPTED] 2026-02-18 14:38:20 | Im → I'm | ctx: "Im" | trigram: "like Im"
+[ACCEPTED] 2026-02-18 14:38:33 | but → But | ctx: "but"
+[INSISTED] 2026-02-18 14:38:33 | I | ctx: "I"
+[INSISTED] 2026-02-18 14:38:38 | I | ctx: "I"
+[ACCEPTED] 2026-02-18 14:38:49 | absense → absence | ctx: "absense" | trigram: "utter absense"
+[SESSION:VOICE] 2026-02-18 15:07:48 | "Hey, what's going on? I" | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-18 15:07:48 | "don't see anything." | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[REJECTED] 2026-02-18 15:08:23 | im ← I'm (reverted) | ctx: "im" | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[ACCEPTED] 2026-02-18 15:08:36 | y → You | ctx: "y" | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-18 15:09:02 | "what is this" | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-18 15:12:01 | "hey hey hey whoa okay" | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-18 15:12:01 | "that's pretty cool" | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-18 15:12:12 | "So... Heh." | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-02-18 15:13:11 | "what." | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[REJECTED] 2026-02-18 15:13:43 | im ← I'm (reverted) | ctx: "im" | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-02-18 15:13:43 | "im." | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[REJECTED] 2026-02-18 15:14:17 | you ← You (reverted) | ctx: "you" | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-02-18 15:14:18 | "you." | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[REJECTED] 2026-02-18 15:14:26 | my ← My (reverted) | ctx: "my" | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[ACCEPTED] 2026-02-18 15:14:30 | wo → Work | ctx: "wo" | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-18 15:20:39 | "What are you thinking about?" | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-18 15:20:39 | "This is pretty cool." | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-18 15:31:08 | "Let me think..." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-18 15:34:24 | "Something about this is pretty..." | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-18 15:34:24 | "funky. Hmm... Let's see..." | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-18 15:38:39 | "This is pretty cool, right?" | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-18 15:38:39 | "What do you think now?" | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[ACCEPTED] 2026-02-18 15:38:45 | h → Here | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[ACCEPTED] 2026-02-18 15:38:54 | were → we're | ctx: "were" | trigram: "for were" | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-18 15:45:45 | "What happens now?" | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-18 16:12:17 | "What are you thinking?" | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-18 16:14:12 | "Do you want me to" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-18 16:14:12 | "get alcohol?" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-18 16:20:34 | "I also need to get" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-18 16:20:34 | "Kratom, so wish me luck." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-18 16:49:16 | "0 5 0 6 0" | app: "com.samsung.android.biometrics.app.setting" | field: 2131362098 | inputType: PASSWORD | flags: forceAscii
+[SESSION:TYPING] 2026-02-18 18:39:18 | "billnyeElijahisbeingadickWontsitwithmeKeeepswhiningCanutalkto." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-19 05:20:45 | "himSomuchforthe0hourshoursigertospendwithhimblufeelingskipleaasegitbpullpullaianal4chan." | app: "com.android.chrome" | field: 2130775490 | inputType: URI | flags: noSuggestions,noPersonalizedLearning
+[SESSION:VOICE] 2026-02-19 06:13:34 | "Excellent." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:14:24 | "happened..." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:14:24 | "navigate to keyboard-dev, and we're" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:14:24 | "gonna need to do a" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:14:24 | "Okay, I need you to" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:14:24 | "little bit of a git" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:14:24 | "investigation, because what should have" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:15:57 | "to be kind of wonky" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:15:57 | "of the smart bar but" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:15:57 | "I created a new branch" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:15:57 | "which is why I created" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:15:57 | "to do some UI editing" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:15:57 | "a whole new branch. I" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:15:57 | "I knew it was going" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:15:57 | "was doing all of this" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:15:57 | "I'm just on my phone" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:15:57 | "from my laptop right now" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:15:57 | "but I created a new" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:15:57 | "branch to do the smart" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:15:57 | "bar edit. I couldn't get" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:15:57 | "it to work it kept" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:15:57 | "acting like wonky or whatever" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:15:57 | "and then I was like" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:15:57 | "all right well I'm just" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:15:57 | "gonna leave that there for" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:15:57 | "to my regular dev branch" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:15:57 | "and then rebuilt and repushed" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:15:57 | "to the smart bar persists" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:15:57 | "so I don't know I" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:15:57 | "the APK and the weirdness" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:15:57 | "now. I swapped back over" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:15:57 | "build and so I don't" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:15:57 | "know what's going on with" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:15:57 | "it but I kind of" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:15:57 | "want a fresh slate as" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:15:57 | "far as trying to do" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:15:57 | "even did like a clean" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:15:57 | "smart bar UI edits is" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:15:57 | "concerned" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:16:29 | "That's the one we're looking" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:16:29 | "Sorry, it was the keyboard-local." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:16:29 | "at." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:18:49 | "I think like the branch" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:18:49 | "that's actually all legit stuff" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:18:49 | "an L cars UI branch" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:18:49 | "style so it was like" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:18:49 | "dash something but that's a" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:18:49 | "lot of work lately but" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:18:49 | "okay we have done a" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:18:49 | "name is LC ARS underscore" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:18:49 | "style L cars is the" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:18:49 | "is just changes that I" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:18:49 | "UI element and I really" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:18:49 | "really like what we have" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:18:49 | "or whatever the whisper bar" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:18:49 | "now with our like little" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:18:49 | "oscillating scope and you know" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:18:49 | "the height of the smart" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:18:49 | "this UI edit of trying" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:18:49 | "to create like rails and" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:18:49 | "of shit okay but specifically" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:18:49 | "we've doubled the width or" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:18:49 | "elbow border for the smart" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:18:49 | "bar itself is what's fucking" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:18:49 | "me up" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:18:49 | "made to the whisper API" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:18:49 | "bar we've done a bunch" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:19:50 | "all of the various branches" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:19:50 | "and their respective commits. Look" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:19:50 | "git history and status of" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:19:50 | "Search all of like the" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:19:50 | "for that lcars1." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:24:46 | "I want a list of" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:24:46 | "I'm looking for my most" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:24:46 | "recent branches." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:24:46 | "time finding out what's going" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:24:46 | "on. So we'll start here." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:24:46 | "what branches exist. I should" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:24:46 | "have a recent branch created." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:24:46 | "And then investigate all branches." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:24:46 | "But I'm having a hard" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:27:28 | "Nice one." | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-19 06:29:03 | "do work in, and then" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:29:03 | "new feature branch when I" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:29:03 | "wasn't able to finish what" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:29:03 | "what happened. I'm still new" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:29:03 | "to this. I created a" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:29:03 | "I needed to in time." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:29:03 | "Okay, I think I know" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:29:03 | "was on my laptop to" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:29:03 | "Decided, all right, fuck this," | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:29:03 | "I changed branches back after" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:29:03 | "like how it worked, and" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:29:03 | "I built it and didn't" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:29:03 | "switched back to my dev" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:29:03 | "don't think. I just, like," | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:29:03 | "and I put it back." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:29:03 | "it to, like, anywhere. I" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:29:03 | "compiled it and ADB pushed" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:29:03 | "it to my device, but" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:29:03 | "branch, but I never pushed" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:29:03 | "I, when you create a" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:29:03 | "doesn't do shit unless you" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:29:03 | "whatever. Can you walk me" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:29:03 | "through this and why it's" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:29:03 | "create a remote origin or" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:29:03 | "not, like, accessible to me" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:29:03 | "right now?" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:29:03 | "new branch locally, it really" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:33:00 | "edit of like the Smart" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:33:00 | "was I was doing an" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:33:00 | "like a border rail, like" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:33:00 | "I created the new branch" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:33:00 | "because lots of times big" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:33:00 | "edits like this will break" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:33:00 | "Okay, well, so what happened" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:33:00 | "a LCARS themed business and" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:33:00 | "Bar UI. I was adding" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:33:00 | "and not look good. So" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:33:00 | "I'm like, all right, I'm" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:33:00 | "just going to start a" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:33:00 | "new branch. And I did" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:33:00 | "all that. I built it" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:33:00 | "like I suspected it was" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:33:00 | "messed up. And then so" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:33:00 | "I went back to the" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:33:00 | "other branch, my dev branch," | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:33:00 | "I did a rebase or" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:33:00 | "something and then recompiled it" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:33:00 | "and pushed it to my" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:33:00 | "device. But the changes were" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:33:00 | "fucked up, even though I" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:33:00 | "still there. The fucked up" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:33:00 | "Smart Bar UI is still" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:33:00 | "what could have happened with" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:33:00 | "did a clean build. So" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:33:00 | "that?" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:36:35 | "commit that we do have?" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:36:35 | "Okay, well, if you can't" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:36:35 | "did stuff with logging and" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:36:35 | "animation and other stuff. Like" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:36:35 | "ton, a ton of work." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:36:35 | "off because I did a" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:36:35 | "whole bunch of stuff. I" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:36:35 | "of like where we're left" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:36:35 | "Like, what do we... Give" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:36:35 | "find it, that's fine. It" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:36:35 | "autocorrect and dictionaries and phrases" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:36:35 | "I did a ton, a" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:36:35 | "was broken anyway. So... What" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:36:35 | "and, you know, whisper bar" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:36:35 | "I can't... I can't lose" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:36:35 | "me like a short description" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:36:35 | "it." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:36:35 | "You know what I mean?" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:36:35 | "is the most recent like" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:39:06 | "like I had like the" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:39:06 | "okay well hang on because" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:39:06 | "changed it to like a" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:39:06 | "80 bars for the voice" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:39:06 | "and down like a heartbeat" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:39:06 | "recording animation but then I" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:39:06 | "monitor type deal this is" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:39:06 | "single line that goes up" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:39:06 | "like the third type of" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:39:06 | "design edit there and I" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:39:06 | "also made it take up" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:39:06 | "both smart bar rows is" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:39:06 | "that do you see that" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:39:23 | "toggle in the settings screen" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:39:23 | "of toggling the phase prediction" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:39:23 | "on and off." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:39:23 | "We should also have a" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:47:12 | "commit. Don't pull it yet," | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:47:12 | "Okay, look at the new" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:47:12 | "but just look at it." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-19 06:47:30 | "0 8 5 0 6" | app: "com.samsung.android.biometrics.app.setting" | field: 2131362098 | inputType: PASSWORD | flags: forceAscii
+[SESSION:VOICE] 2026-02-19 06:49:23 | "Can you isolate all changes" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:49:23 | "except, like, we don't need" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:49:23 | "the... whatever it was, the..." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:49:23 | "Elkar's frame, right? Like, other" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:49:23 | "that the only thing in" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:49:23 | "the suspicious commit? Or, you" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:49:23 | "know, because essentially everything else" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:49:23 | "is okay other than that?" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:49:23 | "than that, you know, is" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:53:44 | "this the whole time like" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:53:44 | "why because I just went" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:53:44 | "that it somehow was all" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:53:44 | "going to be there when" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:53:44 | "really it's looking like there" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:53:44 | "did you not see them" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:53:44 | "were these other commits this" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:53:44 | "didn't see at all why" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:53:44 | "made that suspicious commit thinking" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:53:44 | "me you could have done" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:53:44 | "logged on a laptop and" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:53:44 | "whole time that you just" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:53:44 | "like you're are you telling" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:57:34 | "that's how that's the state" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:57:34 | "Okay, well in that case" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:57:34 | "last one with the rails" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:57:34 | "that I want to be" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:57:34 | "I guess Yeah, I mean" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:57:34 | "everything else and You verify" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:57:34 | "in is everything except that" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:57:34 | "in the settings menu as" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:57:34 | "that this has the toggle" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:57:34 | "that looks good then that's" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:57:34 | "well And if all of" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:57:34 | "have it build on my" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:57:34 | "droplet" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:57:34 | "it to the factory to" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:57:34 | "and then you can Push" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:57:34 | "structure locally to look like" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 06:57:34 | "what I want my repo" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 07:16:33 | "Both hood shocks are broken." | app: "nz.co.whiparound.app" | field: 2131362643 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 07:17:02 | "Added two quarts of oil." | app: "nz.co.whiparound.app" | field: 2131362228 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-19 09:10:09 | "org3exitcc2geminicdkeyboard-localacblowshottruceGivemeatldrtoshar." | app: "com.openai.chatgpt" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[ACCEPTED] 2026-02-19 09:10:09 | shar → share | ctx: "shar" | trigram: "to shar" | app: "com.openai.chatgpt" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[REJECTED] 2026-02-19 09:10:10 | shar ← share (reverted) | app: "com.openai.chatgpt" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-02-19 13:26:56 | "0 5 0 6 momsonanalchlorasep399e320^" | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-02-19 13:26:56 | "]" | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-02-19 13:34:53 | "{4^^^%" | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[REJECTED] 2026-02-19 13:35:55 | gcdvv ← gcvo (reverted) | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-02-19 13:56:14 | "🫣 gcdvvgvjwhats15hif5910102525500550^=]" | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-19 14:13:25 | "What's that song? By Nine" | app: "com.android.chrome" | field: 2130775490 | inputType: URI | flags: noSuggestions
+[SESSION:VOICE] 2026-02-19 14:13:25 | "Inch Nails. That's like, uh," | app: "com.android.chrome" | field: 2130775490 | inputType: URI | flags: noSuggestions
+[SESSION:VOICE] 2026-02-19 14:13:25 | "how's the lyrics? I'm losing" | app: "com.android.chrome" | field: 2130775490 | inputType: URI | flags: noSuggestions
+[SESSION:VOICE] 2026-02-19 14:13:25 | "ground." | app: "com.android.chrome" | field: 2130775490 | inputType: URI | flags: noSuggestions
+[SESSION:VOICE] 2026-02-19 14:18:26 | "well. Although, to tell you" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:18:26 | "the truth, my memory of" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:18:26 | "that I relapsed again." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:18:26 | "this year. That was really" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:18:26 | "And I feel really bad" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:18:26 | "last night isn't the greatest." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:18:26 | "I loved our bath together" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:18:26 | "in all, yesterday went really" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:18:26 | "sweet. I feel like all" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:23:55 | "Today has been a rough" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:23:55 | "except for this morning when" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:23:55 | "day. I'm just feeling so" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:23:55 | "I took the other half" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:23:55 | "sick and I've just been" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:23:55 | "of that fucking pill." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:23:55 | "in a bad fucking mood" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:29:23 | "don't know, like, with the" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:29:23 | "some time tonight, but I" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:29:23 | "way that things are going" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:29:23 | "I was looking forward to" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:29:23 | "today, shit just keeps fucking" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:29:23 | "going wrong, it feels like." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:30:02 | "and capable and content when" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:30:02 | "so like happy and engaged" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:30:02 | "And I just feel like" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:30:02 | "I'm on the fucking 7-Eleven," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:30:02 | "feel... Not utterly fucking miserable." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:30:02 | "dude. It fucking... Pisses me" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:30:02 | "off, honestly. That... That's the" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:30:02 | "only time that I ever" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:30:02 | "That's the only time." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:31:03 | "It's like, maybe one day" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:31:03 | "if I ever get off" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:31:03 | "won't be how it is," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:31:03 | "of it, I won't. This" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:31:03 | "but for the foreseeable future," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:31:03 | "this is it. And it's" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:31:03 | "like, I don't know, maybe" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:31:03 | "I should bite the bullet" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:31:03 | "and just fucking go like" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:31:03 | "plane leaf, I don't know." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:31:03 | "cold turkey off of the" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:41:45 | "Yeah, but then it's like" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:41:45 | "just got a call out" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:41:45 | "for tomorrow." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:41:45 | "fucking 2.30 in the morning" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:42:00 | "So fuck my time with" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:42:00 | "you, fuck the fucking hearts" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:42:00 | "Elijah, fuck my time with" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:42:00 | "that we are gonna do." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:42:08 | "Fuck my entire fucking life." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:42:15 | "I should just get more" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 14:42:15 | "7-Eleven." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-19 16:41:19 | "0 2 0 0 4" | app: "nz.co.whiparound.app" | field: 2131362228 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 16:42:33 | "6 1 0 The truck" | app: "nz.co.whiparound.app" | field: 2131362643 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 16:42:33 | "idles itself down when idled" | app: "nz.co.whiparound.app" | field: 2131362643 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-19 16:42:33 | "up from rear control." | app: "nz.co.whiparound.app" | field: 2131362643 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-19 17:50:31 | "WHAToBonham182quartsacblowsho5tnone4chan." | app: "com.android.chrome" | field: 2130775490 | inputType: URI | flags: noSuggestions,noPersonalizedLearning
+[SESSION:TYPING] 2026-02-19 18:10:28 | "https://gofile.io/ d/GEl4DC org/be-hentai." | app: "com.android.chrome" | field: 2130775490 | inputType: URI | flags: noSuggestions,noPersonalizedLearning
+[SESSION:TYPING] 2026-02-19 18:10:41 | "orgIce9killz!" | app: "com.android.chrome" | field: -1 | inputType: WEB_EDIT_TEXT | flags: autoCorrect,noPersonalizedLearning
+[SESSION:TYPING] 2026-02-19 18:10:56 | "Ice9killz?" | app: "com.android.chrome" | field: -1 | inputType: WEB_PASSWORD | flags: noPersonalizedLearning
+[SESSION:TYPING] 2026-02-19 18:10:58 | "!" | app: "com.android.chrome" | field: -1 | inputType: WEB_PASSWORD | flags: noPersonalizedLearning
+[SESSION:TYPING] 2026-02-19 18:11:19 | "ice9killz!" | app: "com.android.chrome" | field: -1 | inputType: WEB_PASSWORD | flags: noPersonalizedLearning
+[SESSION:TYPING] 2026-02-19 18:12:48 | "exhentai." | app: "com.android.chrome" | field: 2130775490 | inputType: URI | flags: noSuggestions,noPersonalizedLearning
+[SESSION:TYPING] 2026-02-19 18:57:54 | "0 5 0 6 organalWhereyouayt" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-19 18:57:54 | "?" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-19 18:57:59 | "Yougood?" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-20 08:08:51 | "0 5 0 6 The" | app: "nz.co.whiparound.app" | field: 2131362643 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-20 08:08:51 | "yesterday." | app: "nz.co.whiparound.app" | field: 2131362643 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-20 08:08:51 | "truck kept idling itself down" | app: "nz.co.whiparound.app" | field: 2131362643 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-20 11:17:29 | "acblowsho5tbothhoodshocksbrokennonebatterylightonthedashsignsofthecr2410and100elephonemaphrawikiWorking
+" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-20 11:17:37 | Thx ← The (reverted) | ctx: "Thx" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-20 11:21:36 | "No hope for the future." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-20 11:21:54 | "multi-dimensional collapse" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-20 11:22:16 | "Can't escape drugs." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-20 11:27:01 | "It is what it is" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-20 11:27:03 | "YaThxfforthepaymentDoingrealbadSuicidal
+" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-20 11:27:22 | "life." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-20 11:27:22 | "It has certainly been a" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-20 11:27:24 | "
+" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-20 11:55:37 | "I select the default names" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-20 11:55:37 | "use emojis for whatever reason," | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-20 11:55:37 | "that I inherited, the emojis" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-20 11:55:37 | "are empty? Like, I can" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-20 11:55:37 | "work just fine." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-20 11:55:37 | "on the names that I" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-20 11:55:37 | "but when I go and" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-20 11:55:37 | "for whatever reason, my emojis" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-20 11:55:37 | "🎖️ Can you investigate why" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-20 11:55:37 | "use, mostly my LCARS names," | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-20 12:18:13 | "me with a transparent background?" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-20 12:18:13 | "Being a developer on a" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-20 12:18:13 | "They fight me on everything." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-20 12:18:13 | "shitshow." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-20 12:18:13 | "to fight me here. What's" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-20 12:18:13 | "Samsung is just an absolute" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-20 12:18:13 | "Of course Samsung is going" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-20 12:18:13 | "the point in them fighting" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-20 12:26:10 | "of why I feel so" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-20 12:26:10 | "get out of debt. Everything" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-20 12:26:10 | "drowning in it. That's part" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-20 12:26:10 | "No dude, we have to" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-20 12:26:10 | "is piling up. I'm fucking" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-20 12:26:10 | "fucking hopeless." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-20 12:32:13 | "snyggflorisboard^^Imatworkudude4%" | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-02-20 12:38:39 | "e39gjv]" | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[ACCEPTED] 2026-02-20 12:38:39 | gjv → Go | ctx: "gjv" | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-20 12:39:40 | "Explain to me what chip" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-20 12:39:40 | "means here." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-02-20 13:11:16 | "76[20205^Leonard20Bonham18passwordpassword5020^hhhhh51^#8i^^hgdscghjmbf%" | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-02-20 13:11:29 | "^^$%" | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-02-20 13:11:32 | "&" | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-02-20 13:11:32 | "]" | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[ACCEPTED] 2026-02-20 13:11:39 | h6ñ → he | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-02-20 13:12:36 | "[h6ñ^5^^&" | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-02-20 13:12:48 | "^&" | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-02-20 13:12:50 | "$]" | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-02-20 13:12:54 | "7&" | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-02-20 13:15:48 | "^^{^287^}" | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[ACCEPTED] 2026-02-20 13:15:53 | b → by | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-02-20 13:15:53 | "b]" | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[REJECTED] 2026-02-20 13:16:07 | b ← by (reverted) | app: "dev.patrickgold.florisboard.debug" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-02-20 16:09:21 | "3 8 0 1 0" | app: "nz.co.whiparound.app" | field: 2131362228 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-21 05:57:10 | dif ← did (reverted) | ctx: "dif" | trigram: "it dif" | app: "com.openai.chatgpt" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[REJECTED] 2026-02-21 05:58:56 | Ppl ← Pop (reverted) | ctx: "Ppl" | app: "com.openai.chatgpt" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[REJECTED] 2026-02-21 05:59:01 | llms ← alms (reverted) | ctx: "llms" | trigram: "complain llms" | app: "com.openai.chatgpt" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[REJECTED] 2026-02-21 05:59:07 | bc ← be (reverted) | ctx: "bc" | trigram: "drives bc" | app: "com.openai.chatgpt" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-02-21 06:02:20 | "6 8 9999200acblowshotnonetransanaldaisyWhatkWhatispowershellandhowisitdifthanbashPplcomplainllmsnukedwholedrivesbcpowershell4chan." | app: "com.android.chrome" | field: 2130775490 | inputType: URI | flags: noSuggestions,noPersonalizedLearning
+[SESSION:TYPING] 2026-02-21 06:12:48 | "org/be-hentai." | app: "com.android.chrome" | field: 2130775490 | inputType: URI | flags: noSuggestions,noPersonalizedLearning
+[SESSION:TYPING] 2026-02-21 06:13:04 | "orhgice9killz!" | app: "com.android.chrome" | field: -1 | inputType: WEB_PASSWORD | flags: noPersonalizedLearning
+[SESSION:TYPING] 2026-02-21 06:13:23 | "exhebtntai." | app: "com.android.chrome" | field: 2130775490 | inputType: URI | flags: noSuggestions,noPersonalizedLearning
+[NEW_WORD] 2026-02-21 11:20:36 | kratom | ctx: "kratom" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-21 11:20:56 | ton ← top (reverted) | ctx: "ton" | trigram: "a ton" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-21 11:20:58 | ton ← top (reverted) | ctx: "ton" | trigram: "a ton" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-21 11:21:09 | caps → capsule | ctx: "caps" | trigram: "leaf caps" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-21 11:21:10 | caps ← capsule (reverted) | ctx: "caps" | trigram: "leaf caps" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-21 11:21:16 | "." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-21 11:21:16 | "0 5 0 6 orgmapDidnttakeanykratomlastnightortodayIbaveatonofofplainleafcaps" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-21 11:21:20 | g ← go (reverted) | ctx: "g" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-21 11:21:43 | "5geachTryingtotaperbutirelapsedonthe70alittlewhileago." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-21 11:21:53 | Tbey ← The (reverted) | ctx: "Tbey" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-21 11:22:10 | tbose → those | ctx: "tbose" | trigram: "of tbose" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-21 11:22:27 | untapered ← untapped (reverted) | ctx: "untapered" | trigram: "I untapered" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-21 11:22:30 | bc ← be (reverted) | ctx: "bc" | trigram: "untapered bc" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-21 11:25:22 | "JustboughtTbeysheysellsinglewrappefpillssoijudtgotoneoftboseAndthentogerofftbatiuntaperedbcoofwhatthatdidtomeThesearestra70isliterallyjustaseresearchchemImissyoutoomanImabouttoflushallofitIcanttakeitanymoreColdturkeyIaminhellAndwithwhatsgoingoninthiscountryandtheuncertainfutjrelllnfutureidonthaveanywiggleroomwithmysanityIhavetogo." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-21 11:25:24 | go.it ← got (reverted) | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-21 11:25:36 | strsighr → straight | ctx: "strsighr" | trigram: "just strsighr" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-21 11:25:42 | abqndo → abandon | ctx: "abqndo" | trigram: "up abqndo" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-21 11:25:42 | abqndo ← abandon (reverted) | ctx: "abqndo" | trigram: "up abqndo" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-21 11:25:46 | abqndo → abandon | ctx: "abqndo" | trigram: "up abqndo" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-21 11:25:48 | s ← she (reverted) | ctx: "s" | trigram: "abandon s" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-21 11:26:11 | "italoitaloneKiryjuststrsighrupabqndonssmeatmymyworstEverytime." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-21 11:26:17 | 8t → it | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-21 11:28:03 | "Setyourwatchto8tColdturkeyisafuckyoutoherasmuchasanythingImahumanbrinwithfeelingsDrugsmutethatforherMucheasiertogetalongwithAnd." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-21 11:28:03 | "." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-21 11:28:03 | "." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-21 11:28:13 | annivers → Anniversary | ctx: "annivers" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-21 11:28:14 | "anniversry," | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-21 11:28:19 | bday ← by (reverted) | ctx: "bday" | trigram: "her bday" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-21 11:28:28 | "hrrbdayandvelentinesday," | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-21 11:28:35 | tbem → them | ctx: "tbem" | trigram: "of tbem" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-21 11:28:39 | 7o → to | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-21 11:28:39 | "relapsedonalloftbemon7o." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-21 11:28:40 | 7o ← to (reverted) | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-21 11:28:44 | Bc ← Be (reverted) | ctx: "Bc" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-21 11:31:40 | "BciwantthingstogosmoothTellmeicandoitShakethisshitDudeicantbelieveimstillhere." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-21 11:32:00 | im ← I'm (reverted) | ctx: "im" | trigram: "believe im" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-21 11:32:35 | thid ← the (reverted) | ctx: "thid" | trigram: "god thid" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:34:33 | "In the first picture you" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:34:33 | "One group is pouring on" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:34:33 | "a dam that's being constructed." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:34:33 | "can see the bridge that" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:34:33 | "form once it's formed." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:34:33 | "lake that the dam will" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:34:33 | "will take you across the" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:35:57 | "we literally built a new" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:35:57 | "there on the property so" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:35:57 | "The other one is a" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:35:57 | "new water treatment plant that" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:35:57 | "Plant to service Like right" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:35:57 | "that we can bring them" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:35:57 | "concrete and lots of it" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:35:57 | "It's like a whole fucking" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:35:57 | "compound Like it's an insane" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:35:57 | "amount of concrete like these" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:35:57 | "structures are absolutely insane And" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:35:57 | "with the engineers who will" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:35:57 | "fucking want to test my" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:35:57 | "I'm constantly having to fuck" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:35:57 | "load and Tell me That" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:35:57 | "dry or the air content" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:35:57 | "is wrong and blah blah" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:35:57 | "it's too wet or too" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:35:57 | "blah. I fucking hate engineers" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:35:57 | "But I mean, I'm glad" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:35:57 | "they exist out of principle" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:37:13 | "mile compound with all manner" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:37:13 | "It's like a two square" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:37:13 | "of pipes and tubes and" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:37:13 | "reservoirs and this crazy thing" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:37:13 | "that we're building that I" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:37:13 | "those pictures but essentially that" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:37:13 | "is that we're pouring in" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:37:13 | "don't even know what it" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:37:13 | "whole big hole in the" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:37:13 | "ground is getting its walls" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:37:13 | "with these electric vibrator dildo" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:37:13 | "poured in and there's guys" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:37:13 | "things that go and get" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:37:13 | "all the air out of" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:37:13 | "it and just get the" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:37:13 | "stuff it's a whole thing" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:37:13 | "cracks of the forms and" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 15:37:13 | "concrete into all of the" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 17:00:45 | "Those are strong but those" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 17:00:45 | "are not what I'm talking" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 17:00:45 | "a research chemical that's like" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 17:00:45 | "a very extremely potent opiate" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 17:00:45 | "that feels exactly like bacterial" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 17:00:45 | "about. 7-0 is literally like" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-21 17:00:45 | "heroin." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-21 18:24:28 | "IthNogodthidstimearoundOurbabblingbrookaftertherajnmThefoxYupA&" | app: "com.ultimateguitar.tabs" | field: 126 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-21 18:38:33 | ajj ← A (reverted) | ctx: "ajj" | app: "com.google.android.youtube" | field: 2131431995 | inputType: FILTER | flags: none
+[REJECTED] 2026-02-21 22:04:12 | def ← be (reverted) | ctx: "def" | trigram: "Will def" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-21 22:04:46 | inthe ← into (reverted) | ctx: "inthe" | trigram: "sedate inthe" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 08:36:48 | "Bro, I can't fucking believe" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 08:36:48 | "that." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 08:37:10 | "I just saw your message." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 08:37:10 | "when you can." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 08:37:10 | "Give me a call back" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 09:23:29 | "jjjajjpPeakwithdrawalrnWilldefshakeontintbenext36hoursStayingstrongHaveplentytobluntthepainandsedateinthethemeantimeWhatsupbro," | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-22 09:23:35 | im → I'm | ctx: "im" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-22 09:23:52 | i ← I (reverted) | ctx: "i" | trigram: "COULD i" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-22 09:23:54 | CO ← COULD (reverted) | ctx: "CO" | trigram: "from CO" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-22 09:25:08 | yester → yesterday | ctx: "yester" | trigram: "keaton yester" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 09:25:10 | "imoneofKaylynsoldhomiesfromCOicicantbelieveshesfuckinggoneImsosorrymanEverythinfisbrightertodayFeverbrokeNokratomyesteratall." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-22 09:26:01 | morn → morning | ctx: "morn" | trigram: "this morn" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-22 09:26:07 | Kaylyn ← Kayla (reverted) | ctx: "Kaylyn" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 09:48:19 | "I heard some people on" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 09:48:19 | "young kids won't realize it" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 09:48:19 | "time" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 09:48:19 | "of the Trump of his" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 09:48:19 | "but Ronald Reagan was kind" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 09:48:19 | "Reddit basically being like you" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 09:51:25 | "way out of this I" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 09:51:25 | "hate the whole ruling of" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 09:51:25 | "mean as much as I" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 09:51:25 | "easily circumvented it's all a" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 09:51:25 | "consequence of Congress ceding its" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 09:51:25 | "the Supreme Court being so" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 09:51:25 | "I honestly don't see a" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 09:51:25 | "power to the executive over" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 09:51:25 | "the course of five generations" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 09:51:25 | "the executive having the power" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 09:51:25 | "founding fathers never dreamed of" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 09:51:25 | "that it has today so" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 09:51:25 | "it's not even necessarily like" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 09:51:25 | "Trump's fault at this point" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 09:51:25 | "or more I mean the" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 09:51:25 | "that he's using all of" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 09:51:25 | "the levers that have been" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 09:51:25 | "handed over to the presidency" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 09:51:25 | "over many years I just" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 09:51:25 | "don't see a way out" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 09:51:59 | "You're not going to put" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 09:51:59 | "the cat back in the" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 09:51:59 | "bag." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 09:52:34 | "used to be, and same" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 09:52:34 | "Like, declaring war is exclusively" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 09:52:34 | "like something of Congress, or" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 09:52:34 | "with taxation and designation of" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 09:52:34 | "tax dollars." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 09:53:13 | "this morning, but I'm not" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 09:53:13 | "trying to get into anything," | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 09:53:13 | "think was funny." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 09:53:13 | "I'm saying off of politics" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 09:53:13 | "but that chart I did" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 10:39:41 | "song was like her fucking" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 10:39:41 | "anthem." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 10:39:41 | "There was a song that" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 10:39:41 | "like every day. I'm trying" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 10:39:41 | "I don't know, but his" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 10:39:41 | "she and I listened to" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 10:39:41 | "so fucking hard to remember" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 10:39:41 | "what that song was. I" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 10:39:41 | "think there's like an artist" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 10:39:41 | "called like Russ or something." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 10:40:04 | "much when we were together" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 10:40:04 | "that it kind of grew" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 10:40:04 | "I don't even like that" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 10:40:04 | "on me." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 10:40:04 | "type of music but she" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-22 10:40:04 | "would listen to it so" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-22 10:40:45 | reaso → reason | ctx: "reaso" | trigram: "some reaso" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 10:40:45 | "WithdrawalbrokecrestedyesterdayLastnightTalkedtomeganthismornngKaylyndiedlastnightShewasmyrunningpartnerinlafayetteforalongtimeYouknewherFentExplaintbishisFuckyeahmanrusskayIknowItfeelsreallyimportanytoremembrritrightnowforsomereaso." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-22 11:21:45 | Lmk ← Ok (reverted) | ctx: "Lmk" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 11:22:19 | "GotitLmkifyouknowaboutmemorialplansorifyouwantanypicsoranything." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-22 11:22:39 | were ← we're (reverted) | ctx: "were" | trigram: "but were" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-22 11:24:09 | msg ← is (reverted) | ctx: "msg" | trigram: "last msg" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 11:24:28 | "Idcontribute$ificouodbutwereourfamof5ispaychecktopaycheckItscrazythatshesgoneLikeiopenedupmessengertoourlastconversationanditslikeNeveragainIcanonlyimaginewhatyouregoingthruHerlastmsgtomewasaskingifiwasokandtellingmeshehad10monthsclean." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 11:24:33 | "Breaksmyheartman." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 11:24:40 | "Nottryibgtodumponyou." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-22 14:12:39 | were ← we're (reverted) | ctx: "were" | trigram: "We were" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[NEW_WORD] 2026-02-22 14:12:45 | aveda | ctx: "aveda" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-22 14:13:07 | schpol → school | ctx: "schpol" | trigram: "Beauty schpol" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-22 14:13:46 | raken ← rake (reverted) | ctx: "raken" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-22 14:14:04 | ton ← to (reverted) | ctx: "ton" | trigram: "shit ton" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-22 14:28:53 | kn → on | ctx: "kn" | trigram: "her kn" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-22 14:29:54 | Uou → You | ctx: "Uou" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-22 14:29:59 | ca → call | ctx: "ca" | trigram: "can ca" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-22 14:30:05 | anyt → anytime | ctx: "anyt" | trigram: "me anyt" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 14:30:15 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 14:30:15 | "0 5 0 6 ShewasarealoneItsbrutalMegIwenttocrybutbyttbythetimeifiguredoutwherethebathroomwasitshutoffanditsjustnumbagainWewereebothavedadropoutslolShewastheonlyoneitrustedtodomyhairBeautyschpoldropoutslolWhythetensiondoyouthinkThefunniestpartisthesewererakentakenONMYPHONEshewoupdtakemyphoneandtakeashittonofofselfiesYeahifeelthatidonthaveanonlinepresenceanymorebutiwilpmakeapostIsawyoursandstartedcryingImliterallyatmtchildsbirthdaypartytryingtoholdittogetherkidspompaJIhaveatknonmorepicsofherknmyiphonetooOfherplayingukeReallywanntthoseifimgonnadoamemorialpostUoucancaanyt" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-22 14:30:22 | anyt ← anytime (reverted) | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-22 14:30:24 | anyt → anytime | ctx: "anyt" | trigram: "me anyt" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 14:40:33 | "7 2 7 8 8" | app: "com.android.chrome" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 15:17:19 | "2 ifuneediclouskayJesusShelooklooksso." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-22 15:17:34 | thinf → thing | ctx: "thinf" | trigram: "Poor thinf" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 15:17:43 | "rougroughomgPoorthinffuckmamnWhatwasshelike?" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-22 16:52:12 | Bruh ← Brut (reverted) | ctx: "Bruh" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 16:52:28 | "ItdoesntlooklikeshesshesallthereVerycoolparispalReallyfuckedupaboutkaylynkayYoBruhthisshitishardwrerthanithought." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 16:52:29 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 16:52:29 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 16:52:35 | "takingithard." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 16:53:01 | "Wereherandabbyclose?" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 17:04:56 | "Bestrong." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 17:07:21 | "Imeuthwithyou4chan." | app: "com.android.chrome" | field: 2130775490 | inputType: URI | flags: noSuggestions,noPersonalizedLearning
+[SESSION:TYPING] 2026-02-22 17:11:15 | "org/bWeallSaweachother." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 17:11:15 | "." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 17:11:15 | "." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 17:13:00 | "nobodyseesatallanymoreSGoingtohercamp." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 17:13:01 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 17:13:01 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-22 17:13:05 | imsgine → imagine | ctx: "imsgine" | trigram: "even imsgine" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 17:13:06 | "icantevenimsgine." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 17:13:06 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 17:13:07 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-22 17:13:11 | dyde → dude | ctx: "dyde" | trigram: "that dyde" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 17:13:12 | "andtbatdyde." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 17:13:12 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 17:13:12 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 17:13:13 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 17:13:18 | "wakingupnexttoher." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 17:13:18 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 17:13:18 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-22 17:13:21 | cols → Cold | ctx: "cols" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 17:13:22 | "cols." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 17:13:22 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 17:13:22 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 18:56:05 | "icantWhoevenisthat," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 18:56:10 | "hermomhersister?" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 18:58:13 | "MaybeshesfuckedupherselfIcantimageinetaktakingthatsobrrerOrmaybeshesdissociatedentirelyYourebeinfsuchagoodpersoninallofthis." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-22 18:58:13 | ofthis → this | ctx: "ofthis" | trigram: "all ofthis" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 20:46:43 | "iihopeyouknowthatHeyitdidnttakelong." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-22 20:46:45 | didnt ← didn't (reverted) | ctx: "didnt" | trigram: "it didnt" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-22 20:46:51 | tjem → them | ctx: "tjem" | trigram: "put tjem" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 20:46:53 | "weputtjemdown." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 20:46:53 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 20:46:53 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-22 20:47:04 | facetime ← peacetime (reverted) | ctx: "facetime" | trigram: "or facetime" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[NEW_WORD] 2026-02-22 20:47:07 | facetime | ctx: "facetime" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-22 20:47:21 | dobe → done | ctx: "dobe" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-22 22:47:56 | "imfreeforacallorfacetimeoreviamessengerorwhateveronceyouredobee-hentai." | app: "com.android.chrome" | field: 2130775490 | inputType: URI | flags: noSuggestions,noPersonalizedLearning
+[SESSION:TYPING] 2026-02-22 22:48:12 | "orgice9killz!" | app: "com.android.chrome" | field: -1 | inputType: WEB_PASSWORD | flags: noPersonalizedLearning
+[SESSION:TYPING] 2026-02-22 22:48:30 | "wxexhentai." | app: "com.android.chrome" | field: 2130775490 | inputType: URI | flags: noSuggestions,noPersonalizedLearning
+[SESSION:TYPING] 2026-02-23 03:35:55 | "orgMotheranalMotheranalMotherfocusanalhiddenhillsvapeflazhes5." | app: "com.android.chrome" | field: -1 | inputType: WEB_EDIT_TEXT | flags: noSuggestions,autoCorrect
+[SESSION:TYPING] 2026-02-23 03:44:51 | "diffiferentcolorsandwonthititgotdroppdinedintbetubbutitshitacoupletimessincenoproblemandactslikeitschargingjustfinehowcanitakeapartandfizxitstbismodelgreendisposablewaterhasdriedtbiswasdaysagoe-hentai." | app: "com.android.chrome" | field: 2130775490 | inputType: URI | flags: noSuggestions,noPersonalizedLearning
+[SESSION:TYPING] 2026-02-23 03:45:12 | "orgice9killz!" | app: "com.android.chrome" | field: -1 | inputType: WEB_PASSWORD | flags: noPersonalizedLearning
+[SESSION:TYPING] 2026-02-23 03:45:29 | "exhentai." | app: "com.android.chrome" | field: 2130775490 | inputType: URI | flags: noSuggestions,noPersonalizedLearning
+[SESSION:TYPING] 2026-02-23 04:56:06 | "orgScatScatScatanal4chan." | app: "com.android.chrome" | field: 2130775490 | inputType: URI | flags: noSuggestions,noPersonalizedLearning
+[ACCEPTED] 2026-02-23 05:27:21 | 5his → this | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-23 08:34:23 | ake ← are (reverted) | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-23 08:34:26 | "org/bjasonpajohndieIlllch3ckitoutStilplistento5hisnonebatterylightcomesoninthemorningsYoudontneedpermissionPlease#aketakecare." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 10:20:00 | "know who to invite or" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 10:20:00 | "who to let know about" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 10:20:00 | "Caitlin's friends or she doesn't" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 10:20:00 | "She's saying she doesn't know" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 10:20:00 | "the memorial" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 10:34:15 | "really hurts But I don't" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 10:34:15 | "of body really hurting over" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 10:34:15 | "some shitty couple days, but" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 10:34:15 | "means like I'm through I'm" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 10:34:15 | "super super raw and mourning" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 10:34:15 | "it'll be It'll be done" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 10:34:15 | "before you know it" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 10:34:15 | "I'm doing okay, I guess." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 10:34:15 | "I'm like really emotional today" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 10:34:15 | "I'll take a thousand days" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 10:34:15 | "or less. I'm gonna have" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 10:34:15 | "the upside down days Which" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 10:34:15 | "and grieving you know more" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 10:34:15 | "feel like I'm in like" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 10:34:15 | "Everything I just am feeling" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 10:34:15 | "the upside down anymore So" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 10:34:15 | "the withdrawal is like pretty" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 10:34:15 | "than just Kalen, but Like" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 10:34:15 | "through I'm through it more" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 10:34:15 | "bad like my body really" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-23 11:58:30 | "2 0 0 5 2" | app: "nz.co.whiparound.app" | field: 2131362228 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-23 12:11:51 | "5 0 4 0 3" | app: "com.android.chrome" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:11:32 | "these days given the climate" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:11:32 | "songs that Mind in a" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:11:32 | "trying to get through today." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:11:32 | "what I gotta do but" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:11:32 | "appreciate the reaching out and" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:11:32 | "I'm not like a real" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:11:32 | "I love you, and I" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:11:32 | "Responding and listening to the" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:11:32 | "how I'm doing Intermittently" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:11:32 | "box song is rather prescient" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:11:32 | "but I'll let you know" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:11:32 | "human being. I'm just Doing" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:11:32 | "love you, man. I'm just" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:11:32 | "1 9 9 1 I" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:12:41 | "baby. I look forward to" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:12:41 | "off work already. I have" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:12:41 | "and I picked up my" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:12:41 | "us more tequila." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:12:41 | "say. I am just trying" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:12:41 | "gave me plenty of time" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:12:41 | "Ambient and I also got" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:12:41 | "though but at least they" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:12:41 | "I love you so much" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:12:41 | "hearing what you have to" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:12:41 | "to be back at 1230" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:12:41 | "to hold it together. I'm" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:13:14 | "worried about me I'm okay" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:13:14 | "that's fine I'm kind of" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:13:14 | "I'm on another planet but" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:13:14 | "with you in case you're" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:13:14 | "like dissociated" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:13:14 | "just trying to touch base" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:14:04 | "there's not going to be" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:14:04 | "she can't possibly mean that" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:14:04 | "than I thought it would" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:14:04 | "and bro this shit is" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:14:04 | "hitting me way fucking harder" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:14:04 | "a memorial like no way" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:14:04 | "like I'm like totally out" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:14:04 | "of it like dissociating really" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:14:04 | "got moon boots on and" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:14:04 | "I'm fucking walking in low" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:14:04 | "little bit like I'm just" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:14:04 | "honestly feels like ketamine a" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:14:04 | "gravity" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:14:30 | "How are you doing?" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:30:18 | "just wants to know about" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:30:18 | "her daughter like it sucks" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:30:18 | "that it's like falling on" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:30:18 | "You're doing great like she" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:30:18 | "think that you're sharing like" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:30:18 | "you but like I don't" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:30:18 | "too much at all. I" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:30:18 | "think that you're doing great." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-23 13:38:11 | "ofmeganformetelephonebap0nonee-hentai." | app: "com.android.chrome" | field: 2130775490 | inputType: URI | flags: noSuggestions,noPersonalizedLearning
+[SESSION:TYPING] 2026-02-23 13:38:27 | "orgice9killz!" | app: "com.android.chrome" | field: -1 | inputType: WEB_PASSWORD | flags: noPersonalizedLearning
+[SESSION:TYPING] 2026-02-23 13:38:49 | "exhentai." | app: "com.android.chrome" | field: 2130775490 | inputType: URI | flags: noSuggestions,noPersonalizedLearning
+[SESSION:VOICE] 2026-02-23 13:39:47 | "baby?" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 13:39:47 | "What are you panicking about," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-23 13:58:33 | babu → baby | ctx: "babu" | trigram: "bullshit babu" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-23 13:58:46 | tf ← to (reverted) | ctx: "tf" | trigram: "Who tf" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-23 13:59:11 | "orgThatsoundslikebullshitbabuWhotfisthedirectorAndyouwontbelievethisbsbroIjusttookashotwithdownedmy." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-23 13:59:19 | "ambienambienwitha." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-23 13:59:27 | tequile → tequila | ctx: "tequile" | trigram: "of tequile" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-23 14:00:24 | un → under | ctx: "un" | trigram: "just un" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-23 14:00:25 | un ← under (reverted) | ctx: "un" | trigram: "just un" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-23 14:00:26 | un → under | ctx: "un" | trigram: "just un" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-23 14:00:27 | un ← under (reverted) | ctx: "un" | trigram: "just un" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-23 14:00:29 | un → under | ctx: "un" | trigram: "just un" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-23 14:00:31 | un ← under (reverted) | ctx: "un" | trigram: "just un" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-23 14:00:39 | untake ← intake (reverted) | ctx: "untake" | trigram: "just untake" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-23 14:00:44 | slerpingp → sleeping | ctx: "slerpingp" | trigram: "my slerpingp" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-23 14:00:47 | pill → pills | ctx: "pill" | trigram: "sleeping pill" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-23 14:04:10 | deadhead ← deadbeat (reverted) | ctx: "deadhead" | trigram: "am deadhead" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 16:08:42 | "less whether or not her" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 16:08:42 | "we can come up with." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 16:08:42 | "mom is doing it. Like," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 16:08:42 | "ever find out about if" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 16:08:42 | "at all? And I really" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 16:08:42 | "doing whatever celebration of life" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 16:08:42 | "type of shit that like" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 16:08:42 | "punk rock, right?" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 16:08:42 | "0 5 0 6 How" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 16:08:42 | "did it go? Did you" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 16:08:42 | "they're doing a memorial like" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 16:08:42 | "Like, fuck dude, like, we're" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 16:08:42 | "could honestly give a fuck" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 16:08:42 | "I wouldn't mind essentially just" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 16:12:10 | "about making a trip down" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 16:12:10 | "you I know you are" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 16:12:10 | "it and process that when" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 16:12:10 | "you have some time and" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 16:12:10 | "some stuff to throw at" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 16:12:10 | "handling a lot but consider" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 16:12:10 | "there even if it doesn't" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 16:12:10 | "could also meet you and" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 16:12:10 | "official Kalin Memorial maybe we" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 16:12:10 | "we could drive yeah it's" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 16:12:10 | "Kiry and I are talking" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 16:12:10 | "like line up with the" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 16:12:10 | "could have something and Kiry" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 16:12:10 | "that we could use or" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 16:12:10 | "we have frequent flyer miles" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 16:12:10 | "give me back" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-23 19:40:32 | "sdoubleshotoftequileLetmejustun---ltakemyslerpingppillBruh630amdeadheadtotoleonard630neworImsorryifthaywasoverwhelmingIdktellmewhatto." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-23 19:42:46 | fu ← full (reverted) | ctx: "fu" | trigram: "I fu" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-23 19:43:08 | "You" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-23 19:56:36 | Nugs ← Bugs (reverted) | ctx: "Nugs" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-23 20:26:51 | prep → prepared | ctx: "prep" | trigram: "all prep" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-23 20:26:57 | tbis → this | ctx: "tbis" | trigram: "for tbis" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-23 20:29:00 | fwlt → felt | ctx: "fwlt" | trigram: "has fwlt" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-23 20:30:05 | "doiguessTodoIdkwhatwehaveorwhatyourplansareoranythintImgonnafreakoutificantgetthisweedtohitifukinuckingfixeditiamnotreadyfortheagitstionthatcomeseithstoppingabruptlyNugsinfryerYoutotallybailedonme100WasnotallprepyhtbisYeahtodayhasfwltlikeafeverdreamYeahbutthatwas45minagoThatsawaistdown." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-23 21:17:24 | imaginr → imagine | ctx: "imaginr" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-23 21:17:39 | withdraeal → withdrawal | ctx: "withdraeal" | trigram: "This withdraeal" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-23 21:17:50 | "showshower5minAtIfyoueverneedtotalkhitmeupimhereYeahbroicantimaginrrawdoggingitTbiswithdraealislikedraggingoutbroitsucks." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-23 21:18:04 | "Myheadisnotlightintheupsidedownsomuchanymorebutmy." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-23 21:18:14 | uncomfoetabl → uncomfortable | ctx: "uncomfoetabl" | trigram: "so uncomfoetabl" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-23 21:18:33 | dopesick ← homesick (reverted) | ctx: "dopesick" | trigram: "familiar dopesick" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-23 21:18:46 | horomonr → hormone | ctx: "horomonr" | trigram: "dopesick horomonr" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-23 21:19:01 | flashbscks → flashbacks | ctx: "flashbscks" | trigram: "powered flashbscks" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-23 21:28:44 | duh ← oh (reverted) | ctx: "duh" | trigram: "Lol duh" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-23 21:28:51 | "bodybodyisjustsouncomfoetablandcoldanditsthatsameexactfamiliardopesickphoromonrsmellorwhateveritsgivingmenosepowetedflashbscksNotintheupsidedown*TryingtodrinkandsmokethroughitandfeelingsomehowblessedtobethisrawforKaylynspassingglasshearttorawTorawdogginitlolLolduhikwymduhh." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-23 21:29:06 | "Itsroughbutithastkbedoneandiswortbitintheend." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-23 21:29:12 | "Cantbelievenocaffeine." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-23 21:29:16 | "Soproudofu." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-23 21:29:33 | "WelltalktomLetstouchbasetomorrow." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 04:22:23 | "Ninie-hentai." | app: "com.android.chrome" | field: 2130775490 | inputType: URI | flags: noSuggestions,noPersonalizedLearning
+[SESSION:TYPING] 2026-02-24 04:22:47 | "otgrfgice9killz!" | app: "com.android.chrome" | field: -1 | inputType: WEB_PASSWORD | flags: noPersonalizedLearning
+[SESSION:TYPING] 2026-02-24 04:23:10 | "exbentai." | app: "com.android.chrome" | field: 2130775490 | inputType: URI | flags: noSuggestions,noPersonalizedLearning
+[SESSION:TYPING] 2026-02-24 04:23:23 | "orgexhentai." | app: "com.android.chrome" | field: 2130775490 | inputType: URI | flags: noSuggestions,noPersonalizedLearning
+[SESSION:TYPING] 2026-02-24 06:35:36 | "orgjas10-4illstartmytruckllltruckthengofillitoutiCe9killz!" | app: "com.android.chrome" | field: -1 | inputType: WEB_PASSWORD | flags: none
+[SESSION:TYPING] 2026-02-24 06:35:46 | "Deadbeat2214!" | app: "com.android.chrome" | field: -1 | inputType: WEB_PASSWORD | flags: none
+[SESSION:TYPING] 2026-02-24 06:35:58 | "iCe9killz!" | app: "com.android.chrome" | field: -1 | inputType: WEB_PASSWORD | flags: none
+[SESSION:TYPING] 2026-02-24 06:36:06 | "iCe9killz!" | app: "com.android.chrome" | field: -1 | inputType: WEB_PASSWORD | flags: none
+[SESSION:TYPING] 2026-02-24 06:36:32 | "iCe9killz!" | app: "com.android.chrome" | field: -1 | inputType: WEB_PASSWORD | flags: none
+[SESSION:VOICE] 2026-02-24 07:55:38 | "been a rough morning" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:55:38 | "0 5 0 6 It's" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:56:33 | "There wasn't coffee or lunch," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:56:33 | "problem with the way that" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:56:33 | "jacket, your fucking car heats" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:56:33 | "I couldn't find my second" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:56:33 | "really cold it like never" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:56:33 | "there you have like a" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:56:33 | "up so poorly when it's" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:56:33 | "your air conditioner funnels heat" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:56:33 | "to your feet" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:57:23 | "running around your fucking seat" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:57:23 | "So the only way to" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:57:23 | "and somehow still cold I" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:57:23 | "is still frozen cold it" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:57:23 | "ass is like all fucking" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:57:23 | "that like gets like too" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:57:23 | "poorly insulated that you just" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:57:23 | "stay warm is to have" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:57:23 | "your heat seater is so" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:57:23 | "your upper body sweating and" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:57:23 | "swampy and sweating and clammy" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:57:23 | "hot in some places and" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:57:23 | "have like a hot wire" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:57:23 | "just like now like my" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:57:23 | "doesn't expand out so it's" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:57:23 | "fucking hate your car" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:57:58 | "something about the alcohol in" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:57:58 | "like I may must have" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:57:58 | "the house like I feel" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:57:58 | "I know I'm feeling like" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:57:58 | "more tequila" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:57:58 | "made a mistake bringing home" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:57:58 | "I got to fucking do" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:58:33 | "Like, instead of going to" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:58:33 | "to do the chores, like" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:58:33 | "sleep with me, you left" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:58:33 | "make lunches for everybody ostensibly," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:58:33 | "and I wake up and" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:58:33 | "you're on the floor of" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:58:33 | "the bathroom." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:59:22 | "You" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:59:57 | "you still drunk? Are you" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:59:57 | "to school?" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:59:57 | "able to get the kids" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 07:59:57 | "0 5 0 6 Are" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 08:07:33 | "I don't know what's going" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 08:07:33 | "know what to do, baby" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 08:07:33 | "don't know what I don't" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 08:07:33 | "I love you, too, but" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 08:07:33 | "we need to like I" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 08:07:33 | "on with this like if" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 08:22:19 | "out the alcohol?" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 08:22:19 | "Do I need to pour" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:48:54 | "on tape because I can't." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:48:54 | "It's like a one-minute drive" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:48:54 | "fucking second. Like, I can't" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:48:54 | "even listen to my book" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:48:54 | "is insane." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:48:54 | "plant and it's like I'm" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:48:54 | "from the pump to the" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:48:54 | "had one that is this" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:48:54 | "fucking balls-to-the-wall. Like, not a" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:48:54 | "This is the most brutal" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:48:54 | "tenth load today. Like, this" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:48:54 | "day I've had. I haven't" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:48:54 | "just going. I'm on my" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:49:39 | "an hour fucking winds dude" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:49:39 | "it's like a 70 mile" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:49:39 | "the batch man" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:49:39 | "shards of glass went flying" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:49:39 | "in through the window at" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:49:39 | "wind literally broke the window" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:49:39 | "wind it's so bad the" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:49:39 | "all the fucking machines my" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:49:39 | "everything like the roar of" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:49:39 | "engineers out here saying if" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:49:39 | "it gets any windier the" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:49:39 | "whole thing's getting shut down" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:49:39 | "like it's to the point" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:49:39 | "where it's like they got" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:49:39 | "head it's just fucking pounding" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:49:39 | "of the batch house and" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:49:39 | "because this pump can't this" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:49:39 | "pump will tip in the" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:50:31 | "been too fucking cocky about" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:50:31 | "of it, I'm just so" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:50:31 | "world is like a canvas" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:50:31 | "fucking Through like the worst" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:50:31 | "I can see like the" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:50:31 | "look up at the sky" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:50:31 | "this withdrawal thinking that I'm" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:50:31 | "bad today It's like The" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:50:31 | "like Starting to tear and" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:50:31 | "painting and If I like" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:50:31 | "And I feel like I've" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:50:31 | "texture of like the canvas" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:50:31 | "behind it. It's just the" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:50:31 | "great fucking void" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:51:11 | "Everything is already over, and" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:51:11 | "I fucking can. Like, everything," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:51:11 | "I'm just fucking riding it" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:51:11 | "the greatest ambition that I" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:51:11 | "to do whatever the fuck" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:51:11 | "like, ultimately, like, pointless. Like," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:51:11 | "have in my life is" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:51:11 | "up nothing like me. Like," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:51:11 | "that is my greatest ambition." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:51:11 | "that my fucking children end" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:51:11 | "I can to make sure" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 12:51:11 | "out for as long as" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:08:14 | "the question?" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:08:14 | "Yeah, ask mom. What's even" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:10:15 | "yeah I mean I would" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:10:15 | "ask my mom I mean" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:10:15 | "dude I don't care like" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:10:15 | "the less time we have" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:10:15 | "to do it like I" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:10:15 | "with the kids the better" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:10:15 | "the kids I'd rather not" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:10:15 | "mean as far for me" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:10:15 | "ask somebody like somebody's got" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:10:15 | "any of the kids all" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:10:15 | "have any kids at all" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:10:15 | "and fuck our life and" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:10:15 | "and power lines and society" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:10:15 | "elementary schools and concrete mixers" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:10:15 | "fuck Oklahoma and Texas and" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:10:15 | "enterprise is just bunk the" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:10:15 | "and like the whole fucking" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:10:15 | "period like fuck those kids" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:10:15 | "better if we were never" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:10:15 | "born all of us together" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:10:15 | "juice is not worth the" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:10:15 | "squeeze it would have been" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:10:15 | "I cannot wait until it's" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:10:15 | "all fucking over any day" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:10:15 | "now" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:11:07 | "Fuck using a gun. I'll" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:11:07 | "And fuck a gun dude" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:11:07 | "say what's up to Kalen" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:11:07 | "like I can find fentanyl" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:11:07 | "anywhere like I'll fucking go" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:11:07 | "good at" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:11:07 | "do what I'm a fucking" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:12:17 | "you like there's no joy" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:12:17 | "Like I don't care and" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:12:17 | "anywhere There's not even like" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:12:17 | "fucking meaning at all You" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:12:17 | "my little fucking keyboard like" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:12:17 | "who actually gives a fuck" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:12:17 | "that I do Like what" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:12:17 | "the glimpse of there's no" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:12:17 | "about any of the shit" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:12:17 | "even knows who I am" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:12:17 | "is fucking thousands and thousands" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:12:17 | "does any of it fucking" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:12:17 | "matter to anybody? Anybody who" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:12:17 | "of miles away" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:16:28 | "that shit is so fucking" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:16:28 | "I'm never fucking doing the" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:16:28 | "over" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:16:28 | "I'll tell you one thing" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 13:16:28 | "Jesus thing ever fucking again" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 14:49:26 | "my meds. Put me on" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 14:49:26 | "something I haven't fucking done" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 14:49:26 | "the earth is dog shit." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 14:49:26 | "The hours still suck. The" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 14:49:26 | "More to dull me. And" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 14:49:26 | "More heavy sedatives. More numbing" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 14:49:26 | "meds. Heavier meds. More anti-psychotics." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 14:49:26 | "agents. More to mute me." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 14:49:26 | "before. Get me off all" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 14:49:26 | "then I'm right back. Nothing's" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 14:49:26 | "changed. The life still sucks." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 14:49:26 | "a whole bunch of new" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 14:49:26 | "space still sucks. Like everything," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 14:49:26 | "Same song and dance. It's" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 14:50:09 | "Dude, I used to fucking" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 14:50:09 | "be somebody." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 15:12:25 | "or something." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 15:12:25 | "She would probably have to" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 15:12:25 | "give you, like, written permission" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 15:12:36 | "her with her mom." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 15:12:36 | "Unless you're trying to see" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 15:42:50 | "How are you actually doing" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 15:42:50 | "today though?" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 15:43:00 | "I'm in like a fucking" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 15:43:00 | "bad spot" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 17:07:03 | ", 3 0 0 5 4" | app: "nz.co.whiparound.app" | field: 2131362228 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:40:18 | "1 0 Kaelin is gone." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:40:33 | "And I'm really sad" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:41:42 | "car since the bottom." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:41:42 | "I've been bawling in the" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-24 17:41:51 | sin → since | ctx: "sin" | trigram: "car sin" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:41:57 | "I got the car" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:44:25 | "a bipolar episode full-blown. And" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:44:25 | "it's really, really scary." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:44:25 | "I recognize that I've been" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:45:23 | "after I cold turkey'd the" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:45:23 | "I was teetering before, but" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:45:23 | "Kratom, it has just gone" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:45:23 | "off the rails in like" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:45:23 | "remember ever being off the" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:45:23 | "a way that I can't" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:45:23 | "rails like this." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:46:26 | "And now Kayla is dead" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:46:26 | "couple dope years of which" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:46:26 | "huge part of me died" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:46:26 | "and it feels like a" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:46:26 | "but not all of the" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:46:26 | "dope years only the last" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:46:26 | "It's like the years of" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:46:26 | "think of my memory. I" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:46:26 | "my life that I actually" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:46:26 | "remember Are the dope years" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:46:26 | "don't think of elementary school" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:46:26 | "she was Like what I" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:46:26 | "that I do have she" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:46:26 | "on the street And I" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:46:26 | "was in most of them" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:46:26 | "or middle school or high" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:46:26 | "Like my memories are Drugs" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:46:26 | "don't have a lot of" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:46:26 | "them and of the ones" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:46:26 | "school or any of that" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:52:18 | "you don't understand like this" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:52:18 | "least then there was some" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:52:18 | "isn't like party time this" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:52:18 | "relief" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:52:18 | "years is what I remember" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:52:18 | "that's only comparable to what" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:52:18 | "only the difference is at" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:52:18 | "is drugs on the street" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:52:18 | "I'm going through right now" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:52:18 | "and those are a hell" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:53:48 | "but it's like it's not" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:53:48 | "like on a day-to-day like" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:53:48 | "normal for me to not" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:53:48 | "remember anything like you don't" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:53:48 | "nobody here who knows it" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:53:48 | "understand like I these people" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:53:48 | "I don't even remember I'm" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:53:48 | "are the keepers of these" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:53:48 | "parts of me like there's" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:53:48 | "year-over-year basis I'm like losing" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:53:48 | "myself like I don't remember" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:53:48 | "here I can get told" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:53:48 | "who I am anymore like" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:53:48 | "truly like I have nothing" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:53:48 | "who I am but I" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:53:48 | "don't feel seen or recognized" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:53:48 | "losing myself I really feel" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:53:48 | "and it's like what my" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:53:48 | "left of me because I" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:53:48 | "not gonna be hardly anything" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:53:48 | "don't remember because I'm literally" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:53:48 | "losing my mind and my" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:53:48 | "dad eventually dies like there's" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:53:48 | "memory and that's part of" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:53:48 | "why being severed from my" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:53:48 | "aggressively deteriorating of my health" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:53:48 | "home has been extremely and" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:53:48 | "mentally" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:54:25 | "the hell that those years" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:54:25 | "But yeah, in spite of" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:54:25 | "were, like, people fucking clucked" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:54:25 | "what it was. It was" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:54:25 | "the same." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:54:25 | "together and we shared each" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:54:25 | "other's pain and we saw" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:54:25 | "the feeling of, we are" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:54:25 | "each other, like, that's, like," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:54:44 | "And they understand you, and" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:54:44 | "you understand them, and you" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:54:44 | "suffer together." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:56:18 | "but I don't want you" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:56:18 | "to think I like outright" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:56:18 | "reject everything that you said" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:56:18 | "there was a lot of" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:56:18 | "like good stuff in there" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:56:18 | "about on its own but" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:56:18 | "we could have a conversation" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:56:18 | "and a lot of things" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:56:18 | "the same level of accountability" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:56:18 | "I am not mentally stable" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:56:18 | "don't like hold me to" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:56:18 | "right now so I please" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:56:18 | "sharp and together and I've" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:56:18 | "tried to like rain in" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:56:18 | "you would if I was" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:56:18 | "the tears before I you" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:56:18 | "know drive down our street" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:56:18 | "home for fewer people to" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:56:18 | "I literally have taken routes" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:56:18 | "see me because I have" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:56:18 | "obviously like ugly crying" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:58:42 | "that other shit is just," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:58:41 | "every part of me and" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:58:41 | "like, it feels like this" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:58:41 | "it's that, like, I don't" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:58:41 | "being the dad identity. But" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:58:41 | "It's not that I don't," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:58:41 | "recognize it as mine. Like," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:58:41 | "is completely... I'm a fuckin'" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:58:41 | "like, external stuff. And between" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:58:41 | "person, whose life I've stepped" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:58:41 | "I don't know who this" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:58:41 | "like, recognize it as amazing," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:58:41 | "you and me, after work," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:58:41 | "intellectual thought and my, you" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:58:41 | "that's all I know. Is," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:58:42 | "like, completely withered and died." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:58:41 | "my artistry and my deeper" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:58:42 | "music and art and all" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:58:41 | "like, working a job and" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:58:41 | "know, need for that kind" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:58:41 | "plus, like, the kids, like," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:58:41 | "isolated island. Like, with no," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:58:41 | "into, is. That's, like, what," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:58:41 | "engagements and, you know... Making" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:58:41 | "of intellectual stimulating conversation and," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:58:41 | "you know, like, deeper, like," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 17:59:46 | "I have work at 4.30." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:01:02 | "We've literally had like a" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:01:02 | "couple's art project in a" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:01:02 | "box for like six months." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:01:12 | "No creative inspiration required. Literally," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:01:12 | "here guys, follow these instructions." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:01:35 | "I didn't eat today." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:01:35 | "Yeah, I didn't help that" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:01:42 | "bag." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:01:42 | "Another 12-hour day in the" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:02:39 | "me." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:02:39 | "symbols are very meaningful to" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:02:39 | "Yeah, but it is a" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:02:39 | "symbol, and a symbol in" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:02:39 | "more ways than one, and" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:03:16 | "mutual desire to engage in" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:03:16 | "I could look at and" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:03:16 | "It's symbolic of like a" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:03:16 | "remind me of our bond." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:03:16 | "as the obvious. It's something" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:03:16 | "art and creativity as well" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:03:55 | "as like a chip on" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:03:55 | "Whatever, I have to shut" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:03:55 | "sick. That is no fun." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:03:55 | "step in the door and" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:03:55 | "Please don't fucking use that" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:03:55 | "off now. I'm about to" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:03:55 | "I am sorry for her." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:03:55 | "I just can't anymore. I'm" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:03:55 | "now." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:03:55 | "very sorry that Violet is" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:03:55 | "your shoulder against me right" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 18:21:57 | bc ← be (reverted) | ctx: "bc" | trigram: "do bc" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-24 18:22:13 | circumdtance → circumstance | ctx: "circumdtance" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-24 18:22:23 | Duh → Dug | ctx: "Duh" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 18:22:24 | Duh ← Dug (reverted) | ctx: "Duh" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-24 18:22:40 | circumsrance → circumstance | ctx: "circumsrance" | trigram: "This circumsrance" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:22:56 | "pfingnone0noneWhylolImeanwellduhbcadderallissucjakillerresourcebutwhyintbicircumdtanceDuh:*Thiscircumsrance*Anddamnbroijustlikeuglycried." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 18:23:05 | mim ← mime (reverted) | ctx: "mim" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-24 18:23:26 | uh → u | ctx: "uh" | trigram: "like uh" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:23:26 | "mmywholeco45mimncommutelolItslikeuh." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:23:26 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:23:27 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 18:23:28 | uh ← u (reverted) | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:23:29 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:23:29 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 18:23:42 | the ← The (reverted) | ctx: "the" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-24 18:24:10 | qell → well | ctx: "qell" | trigram: "remember qell" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 18:24:28 | junkie ← junk (reverted) | ctx: "junkie" | trigram: "of junkie" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:24:29 | "theforsomereasonmybraindoesntupdateandforsmeomereasontheonlytimeperiodthatireallyrememberqellevenmorethanmychildhoodoradolesenceisthelastcoupleyearsofjunkiellife." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:24:34 | "Notthefunones." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:24:43 | "Andshewaslikethere." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:24:46 | "Everyday." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:25:04 | "Shewtakesupahugepartofmyubh." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-24 18:25:04 | uh → u | ctx: "uh" | trigram: "my uh" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:25:04 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:25:04 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 18:25:05 | uh ← u (reverted) | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:25:11 | "Mentalgeography." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:25:19 | "Andontopofwhich," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:25:37 | "isortofcobsiderheroneofthekeepersofmyhistory." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 18:25:39 | i ← I (reverted) | ctx: "i" | trigram: "Be i" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 18:25:42 | Bc ← Be (reverted) | ctx: "Bc" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 18:26:03 | cuz ← cuzco (reverted) | ctx: "cuz" | trigram: "shit cuz" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:26:24 | "Bciecidoreallybehavingalzearlyonsetalzhemimersbrainorsomeshitcuzidontrememberdickaboutmtlifesoirslikethisprofoundlossofselfandidebtittbeing." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-24 18:26:36 | tomcat → tosca | ctx: "tomcat" | trigram: "knew tomcat" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:26:36 | "cutofffromcoloradoandthepeoplewhoknewtomcat." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 18:26:37 | tomcat ← tosca (reverted) | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-24 18:26:53 | co → to | ctx: "co" | trigram: "left co" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 18:26:55 | co ← to (reverted) | ctx: "co" | trigram: "left co" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:27:06 | "Inevrehavebeencalledsamunpiuntilileftco(oradoolorado." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 18:29:15 | ot ← other (reverted) | ctx: "ot" | trigram: "And ot" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 18:29:22 | suckd ← suck (reverted) | ctx: "suckd" | trigram: "REALLY suckd" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-24 18:29:24 | suck → sucks | ctx: "suck" | trigram: "REALLY suck" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:29:45 | "Soitslikehonestlyahugepattart9fofm3andmyh8stori@torystoryd8ediedwithherAndotitREALLYsuckdthatsheneverknewtgathat." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:29:46 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:29:47 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:29:50 | "
+" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:29:50 | "
+" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:29:55 | "Andyes100%" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-24 18:30:04 | tbat → that | ctx: "tbat" | trigram: "feel tbat" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:30:13 | "ifeeltbattooiknowexactlywhatyoumean." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 18:30:18 | i ← I (reverted) | ctx: "i" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 18:30:50 | groggy ← grog (reverted) | ctx: "groggy" | trigram: "being groggy" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:30:53 | "IkindofItformeItslikebeinginadreamorbeinfgroggyinawaywhere." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 18:31:02 | arousal ← spousal (reverted) | ctx: "arousal" | trigram: "full arousal" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-24 18:31:08 | menral → mental | ctx: "menral" | trigram: "Of menral" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-24 18:31:11 | qcuity → acuity | ctx: "qcuity" | trigram: "mental qcuity" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 18:31:18 | didbr ← did (reverted) | ctx: "didbr" | trigram: "I didbr" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 18:31:30 | redbull ← redhill (reverted) | ctx: "redbull" | trigram: "drank redbull" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:31:50 | "youneverreachthatfullarousalKfmenralqcuityFormebroididbrkntknowwhatwasupwithmeidrankredbullANSANDcoffeeandstillwounduptakeinghslaldandthenhalfandthen." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 18:31:51 | hald ← half (reverted) | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 18:32:36 | emo ← Mom (reverted) | ctx: "emo" | trigram: "my emo" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-24 18:32:47 | broje → broke | ctx: "broje" | trigram: "finally broje" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 18:32:58 | def ← defeat (reverted) | ctx: "def" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:38:11 | "halfhalfofanadderallAndneverfelrstillfeltthatheavinessItwasntuntilihadsometiketolistentomyemomusicmusicthatifianallybrojedownImdeflifelineMetooYouknowivebeeninacrwzazybipolarepisodereaaaaalouttherethinkingcrazythoughtsorwhatever." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 18:38:28 | kratom ← keaton (reverted) | ctx: "kratom" | trigram: "off kratom" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 18:38:35 | Kaylyn ← Kayla (reverted) | ctx: "Kaylyn" | trigram: "plus Kaylyn" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:38:43 | "ThecoldturkeyoffkratomplusKaylynreallyspikeditthough." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:39:11 | "Itslikemaniabutdespaiblrrandparanoiaandsuicidalideationrealrealintenselike." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-24 18:39:43 | aeound → around | ctx: "aeound" | trigram: "shit aeound" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:39:44 | "ButkirysaidsomethingtomeShewaslikeyouandandmeganBOTHturnedyourshitaeound." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:40:07 | "Iwastalkingtoheraboutyouquittinfcaffeineandshewasimpressedanditslike." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:40:07 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:40:07 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:40:17 | "crazythatwebothmadeitout." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:40:17 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:40:17 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 18:40:33 | je ← jet (reverted) | ctx: "je" | trigram: "same je" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 18:40:34 | ne ← new (reverted) | ctx: "ne" | trigram: "je ne" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 18:40:37 | se ← set (reverted) | ctx: "se" | trigram: "ne se" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 18:40:57 | Bc ← Be (reverted) | ctx: "Bc" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-24 18:41:03 | uh → u | ctx: "uh" | trigram: "real uh" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:41:03 | "AndwebothhacethesamesomethingjenesequoisBcihavearealuh." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 18:41:05 | uh ← u (reverted) | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:41:18 | "Drivetoselfdestructionrn." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-24 18:41:18 | rn → rnase | ctx: "rn" | trigram: "destruction rn" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 18:41:19 | rn ← rnase (reverted) | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:41:26 | "Istscrazydude." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:41:26 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:41:27 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 18:41:40 | Kaylyn ← Kayla (reverted) | ctx: "Kaylyn" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 18:41:53 | dont ← don't (reverted) | ctx: "dont" | trigram: "literally dont" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 18:42:04 | ro ← road (reverted) | ctx: "ro" | trigram: "mattered ro" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:42:07 | "Kaylynwassomebodywhoiliterallydontidntknowhowmuchshematteredrotome." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:42:11 | "Likedeepdown." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:42:15 | "I," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-24 18:42:19 | ecen → even | ctx: "ecen" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:42:20 | "ididnrecenknow." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:42:36 | "ThereissomuchIwannaspeakathercelebrationoflife," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:42:49 | "evenifitirisnothinfmoeethanyouandiandwhoever." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 18:43:03 | Obut ← Out (reverted) | ctx: "Obut" | trigram: "call Obut" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 18:43:14 | "oonagoddamnedzoomcallObuthope(buthopefullynot)" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:54:56 | "you have in mind?" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:54:56 | "and give a little respect" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:54:56 | "Megan you are one of" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:54:56 | "Can we do like a" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:54:56 | "your plans for her memorial?" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:54:56 | "of the role of being" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:54:56 | "to straight-up inquire what are" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:54:56 | "celebration of life? What do" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:54:56 | "to your own grief and" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:54:56 | "like within your right to" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:54:56 | "knows you. You are completely" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:54:56 | "like supportive to the mom" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:54:56 | "I don't think for you" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:54:56 | "entire world and her mother" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:54:56 | "sort of step out outside" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:54:56 | "not unusual necessarily or inappropriate" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:54:56 | "Kaylin's best friends in the" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:54:56 | "straight-up ask like straightforwardly it's" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:57:17 | "I mean I get it" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:57:17 | "are so shut down like" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:57:17 | "it's like frustrating when people" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:57:17 | "that but like your other" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:57:17 | "like you spoke similar to" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:57:17 | "messages were really really good" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:57:17 | "how I would have spoken" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:59:17 | "of them and support them" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:59:17 | "out their feelings, like, out" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:59:17 | "delicate balance that I think" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:59:17 | "Trying to walk that line" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:59:17 | "respecting their space and grieving" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:59:17 | "process, and it is a" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:59:17 | "you engage with correctly." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:59:17 | "between, you know, offering your" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:59:17 | "help and wanting to draw" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 18:59:17 | "at the same time while" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:00:51 | "someone who has stuff to" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:00:51 | "whether or not you think" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:00:51 | "Whether or not to say" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:00:51 | "more kind of depends on" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:00:51 | "wants to hear or that" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:00:51 | "that given everything that you" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:00:51 | "say but feels like nobody" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:00:51 | "to process the very insanely" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:00:51 | "know about her is she" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:00:51 | "complicated cocktail of emotions that" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:00:51 | "is she private and wants" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:00:51 | "and life with her daughter" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:00:51 | "is her relationship and history" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:00:51 | "it isn't worth hearing or" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:02:38 | "such a way that spiked" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:02:38 | "like a little reminder. I'd" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:02:38 | "if it were me, I" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:02:38 | "light-hearted nudge, letting her know," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:02:38 | "try and phrase it in" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:02:38 | "her receiving it authentically and" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:02:38 | "Either way, I think, like," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:02:38 | "brief invitation to open and" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:02:38 | "part. But just another little" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:02:38 | "can share some stuff with" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:02:38 | "one thing that you can" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:02:38 | "do is ask if you" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:02:38 | "not something mechanical on my" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:02:38 | "might give one more friendly," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:02:38 | "share with me. In fact," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:02:38 | "Jedi mind trick that actually" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:02:38 | "her, some of your feelings" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:02:38 | "gets through some closed people." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:02:38 | "with her. That's like a" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 19:05:41 | Ugh ← Up (reverted) | ctx: "Ugh" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:08:01 | "she's not willing to engage." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:08:01 | "boundary where unless Katelyn is" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:08:01 | "is that she totally is" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:08:01 | "trying to set like a" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:08:01 | "sober, apparently entirely sober, then" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:08:01 | "I think the thing about" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:08:01 | "it from what I've gathered" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:08:21 | "that is people trying to" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:08:21 | "judge right like that's something" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:08:21 | "which is common and not" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:08:21 | "like who am I to" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:08:21 | "not be enablers right" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:10:52 | "who you like respect like" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:10:52 | "bunch of like Buddhist people" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:10:52 | "like the Buddhist take on" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:10:52 | "what would they say what's" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:10:52 | "don't you like know a" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:10:52 | "the situation I wonder" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 19:22:09 | Ya ← Yale (reverted) | ctx: "Ya" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 19:22:21 | its ← it's (reverted) | ctx: "its" | trigram: "what its" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 19:22:31 | "FuckUghyeahmanfrpoorkaylynYaandshezisrighticantimahinewhatitsdbeliketoseekneofmkne." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-24 19:22:31 | mkne → mine | ctx: "mkne" | trigram: "of mkne" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[INSISTED] 2026-02-24 19:22:55 | enact | ctx: "enact" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 19:23:33 | "IdhandleirbetterprobablybutsrkllwoouldendupwithboundariesthatifounditpainfultoenactThatssocool." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 19:24:02 | "Iwizhihadbuddistpeopletohelpmeinmyinsanityhelpmeknowwhattodoorhowtohandle." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 19:24:08 | "myaelfyselflol." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 19:24:20 | "Thatsreallycoolthatyouhavepeoplelikethat." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:26:43 | "Did you ever read the" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-24 19:26:43 | "Cracked Magazine or Cracked.com?" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 19:27:15 | Uh ← U (reverted) | ctx: "Uh" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 19:27:18 | Uh ← U (reverted) | ctx: "Uh" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 19:27:36 | Bc ← Be (reverted) | ctx: "Bc" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 19:28:02 | "IdodreamofonedadydoingoneoftbosesilentretreatswithuUhokokwnottheSOLEreasonBcyouareaonceonceonlyoccuriringcreatureandtoalargedegree." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 19:28:03 | "ot." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 19:28:15 | "itistheyou-nessofyouwhichithink." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 19:28:16 | think.is ← thinks (reverted) | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 19:28:27 | "isizwhyyouarewhere." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-24 19:29:09 | ass → as | ctx: "ass" | trigram: "real ass" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 19:29:09 | "yousreyouaretodayTheexceptionalityButyeahhavingarerealass." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-24 19:29:18 | G → GO | ctx: "G" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 19:29:19 | G ← GO (reverted) | ctx: "G" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 19:29:32 | OG ← OGRE (reverted) | ctx: "OG" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 19:30:10 | "buddhistG;OGOHGatthebackgottaruleIwouldrathergotherethanthepsycheward." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-24 19:30:12 | tome → time | ctx: "tome" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 19:30:38 | "thistomeWhensthenext." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-24 19:30:44 | tje → the | ctx: "tje" | trigram: "be tje" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 19:30:44 | "onemaynethiscanbetje." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 19:30:49 | the.thing ← sheathing (reverted) | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 19:30:56 | "tjinfhingtbthingtbatalterstben," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 19:31:01 | nxt ← not (reverted) | ctx: "nxt" | trigram: "the nxt" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 19:39:34 | "txt_hasphaseofmylifeAndthisshitreallychangedyouforever?" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 19:40:44 | ppl ← pop (reverted) | ctx: "ppl" | trigram: "Do ppl" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-24 19:41:22 | osych → psych | ctx: "osych" | trigram: "the osych" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 19:41:30 | "ScaryDopplfreakoutalotIwoulrmuchratherdothisthantbeosychwafdwhichseemstobeclosingin," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-24 19:41:32 | modtly → mostly | ctx: "modtly" | trigram: "but modtly" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 19:41:32 | "butmodtly." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-24 19:42:42 | y → you | ctx: "y" | trigram: "for y" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 19:42:46 | "bcimopentotbisandibealreadybeenpsychwrdedlike6timesItdoesrhisfory-ul?" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-24 19:44:35 | th → the | ctx: "th" | trigram: "are th" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 19:44:36 | th ← the (reverted) | ctx: "th" | trigram: "are th" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 19:44:39 | "Whatareth-seosecorners." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 19:44:42 | "Megan?" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 19:45:02 | thay ← thayer (reverted) | ctx: "thay" | trigram: "yeah thay" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 19:45:07 | prob ← problem (reverted) | ctx: "prob" | trigram: "shit prob" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 19:45:56 | "OhWellyeajthayshiatshitprobqualifieslolTbatshitcrayzyillneverforgetIhave?" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 19:46:21 | "Theoneimthinkinfofwassomsethinfu." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-24 19:46:21 | somethinfu → something | ctx: "somethinfu" | trigram: "was somethinfu" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 19:46:21 | "iqie." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 19:46:23 | somethinfu ← something (reverted) | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 19:46:32 | "guniquetoyouansverypeculiar." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 19:46:32 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 19:46:32 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 19:46:37 | "unlessivedone." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 19:47:03 | "forggotrentensomethinfhappeningtomeYoPerf." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 19:47:22 | "OIgottabeupin6hraat423_0forwork." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-24 19:47:45 | Luh ← Huh (reverted) | ctx: "Luh" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-24 19:47:54 | yourw → you're | ctx: "yourw" | trigram: "u yourw" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 19:47:54 | "GonnalistentomtbookontapeLuhuyourw." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-24 19:54:59 | "doinggreatgreatandammeandkaylynarebothrpproudofhowyourehandlingeveruthinfeverythinfKaylyn*4chan." | app: "com.android.chrome" | field: 2130775490 | inputType: URI | flags: noSuggestions,noPersonalizedLearning
+[SESSION:TYPING] 2026-02-25 01:47:01 | "org/gif4chN." | app: "com.android.chrome" | field: 2130775490 | inputType: URI | flags: noSuggestions,noPersonalizedLearning
+[SESSION:TYPING] 2026-02-25 01:47:10 | "org/b4chan." | app: "com.android.chrome" | field: 2130775490 | inputType: URI | flags: noSuggestions,noPersonalizedLearning
+[SESSION:VOICE] 2026-02-25 02:18:25 | "of getting off of kratom?" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:18:25 | "What is the withdrawal process" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:18:25 | "of duration, what side effects" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:18:25 | "associated with periods of time?" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:18:25 | "Like, how long, what kind" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:21:58 | "about nine months with periods" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:21:58 | "of 7-OH usage spiking my" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:21:58 | "tolerance and you know a" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:21:58 | "I've been on Kratom for" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:21:58 | "7-OH usage and that got" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:21:58 | "but then I had a" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:21:58 | "7-OH and every time I" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:21:58 | "slip up and relapsed on" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:21:58 | "couple of months of daily" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:21:58 | "boost my Kratom intake plain" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:21:58 | "do that I have to" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:21:58 | "pretty bad and I did" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:21:58 | "to like 25 grams 20" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:21:58 | "so I pretty much undid" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:21:58 | "and 15 grams a day" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:21:58 | "leaf to stave off the" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:21:58 | "of Kratom plain leaf and" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:21:58 | "that to between like 10" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:21:58 | "use Kratom to taper off" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:21:58 | "my taper and then eventually" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:21:58 | "cold turkeyed off of both" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:21:58 | "to 25 grams a day" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:21:58 | "I eventually tapered down on" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:21:58 | "cravings to get more 7-OH" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:21:58 | "and emotionally I have been" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:21:58 | "but my Kratom usage spiked" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:21:58 | "said fuck it and just" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:21:58 | "of them this will be" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:21:58 | "day four completely cold turkey" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:21:58 | "a wreck" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:23:32 | "You know, I've just been" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:23:32 | "doesn't understand. It's like if" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:23:32 | "have to do. I mean," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:23:32 | "I go somewhere, like, I" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:23:32 | "still have to pay for" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:23:32 | "it's not only what Kiry" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:23:32 | "to work, doing what I" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:23:32 | "to cover the cost of" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:23:32 | "if I get FMLA, just" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:23:32 | "whatever bills. It's insane." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:23:32 | "that is like $900 for" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:23:32 | "that month on top of" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:23:32 | "my health insurance. So even" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:23:32 | "doing the man thing, going" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:24:39 | "we simply can't do that" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:24:39 | "places before I know exactly" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:24:39 | "just gonna whatever but it's" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:24:39 | "and I've been to those" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:24:39 | "like I thought that I" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:24:39 | "what they're gonna do they're" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:24:39 | "was through the thick of" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:24:39 | "the emotional shit and was" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:24:39 | "flu now but then like" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:24:39 | "just dealing with like the" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:24:39 | "found out that my close" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:24:39 | "the day before yesterday I" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:24:39 | "friend Kaylin overdosed on fentanyl" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-02-25 02:24:43 | "org/b," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:25:17 | "doing something because in its" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:25:17 | "right now I think that" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:25:17 | "of bipolar something or other" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:25:17 | "absence I definitely feel crazy" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:25:17 | "being on kratom somehow was" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:25:17 | "treating the bipolar it was" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:25:17 | "between that and her death" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:25:17 | "and I'm experiencing some kind" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:26:22 | "it was my understanding that" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:26:22 | "physical symptoms than the mental." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:26:22 | "it did more for the" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:26:22 | "I actually have Clonidine, but" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:27:02 | "man like I have no" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:27:02 | "choice I actually feel super" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:27:02 | "blessed right now to feel" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:27:02 | "this raw to be able" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:27:02 | "cleansing fire but I also" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:27:02 | "to feel grief and so" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:27:02 | "intensely it is like a" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:27:02 | "and the floodgates are open" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:27:02 | "feel incredibly alone" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:29:07 | "people put up boundaries. They" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:29:07 | "feels like, you know. It" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:29:07 | "Yeah, I pretty much just" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:29:07 | "don't want to like know" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:29:07 | "can't be bothered to like" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:29:07 | "for what you have. It" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:29:07 | "feeling what you feel." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:29:07 | "like scare everyone in the" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:29:07 | "like how it feels. They" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:29:07 | "feels like you're wrong for" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:29:07 | "physical world. It's like not..." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:29:07 | "wrong essentially. That's what it" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:29:07 | "me that my feelings are" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:29:07 | "want to let me know" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:29:07 | "that I shouldn't feel like" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:29:07 | "doesn't feel like, oh cheer" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:29:07 | "up or oh be grateful" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:29:07 | "get close to me. They" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:29:07 | "all... they want to convince" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:30:10 | "off of all the hard" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:30:10 | "trying to figure out how" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:30:10 | "we were gonna survive together" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:30:10 | "for like a long time" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:30:10 | "the last like running partner" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:30:10 | "years and even though so" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:30:10 | "of being on drugs it's" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:30:10 | "like those years of my" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:30:10 | "life are the most memorable" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:30:10 | "only like those last couple" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:30:10 | "childhood or adolescence or even" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:30:10 | "and for some reason it's" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:30:10 | "single day like we were" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:30:10 | "together like in that hell" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:30:10 | "where I can't remember my" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:30:10 | "the first like fun years" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:30:10 | "much has happened in those" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:30:10 | "ten years since then it" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:30:10 | "still feels like they are" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:30:10 | "that I had like every" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:30:10 | "stuff like Kalen was like" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:30:10 | "inordinately significant mentally" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:30:10 | "and like before I got" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:33:44 | "Okay, I want to pivot" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:33:44 | "week and a half and" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:33:44 | "7-0H pack on two different" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:33:44 | "instances like three days apart" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:33:44 | "and then got back on" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:33:44 | "three or four days and" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:33:44 | "my kratom like say 20" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:33:44 | "then cold turkey'd and today" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:33:44 | "is day four, no this" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:33:44 | "kratom use and then I" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:33:44 | "bought like a signal serving" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:33:44 | "the 7-0 for about a" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:33:44 | "to, I was off of" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:33:44 | "grams a day for like" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:33:44 | "have that tapered down my" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:33:44 | "is the start of day" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:33:44 | "my progression in terms of" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:33:44 | "five. Help me map out" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:33:44 | "what to expect." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:35:56 | "okay but I need you" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:35:56 | "to distinguish here between like" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:35:56 | "hunted for sport like because" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:35:56 | "I feel like one of" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:35:56 | "feelings of like low mood" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:35:56 | "like acute withdrawal of feeling" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:35:56 | "and mild depression versus like" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:35:56 | "the psychological horror show of" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:35:56 | "these is easier to handle" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:35:56 | "are both characteristic of withdrawal" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:35:56 | "than the other although they" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:48:18 | "I mean, the problem with" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:48:18 | "don't even feel it." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:48:18 | "spend time with the family," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:48:18 | "it's dark, I, like, don't" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:48:18 | "so sedating. Like, I drive" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:48:18 | "or at least used to," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:48:18 | "Clonidine and Hydroxazine is they're" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:48:18 | "and now doesn't do anything." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:48:18 | "Like, at all. Like, I" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:48:18 | "a mixer, I work 12-hour" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:48:18 | "like, basically keeps me aloft," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:48:18 | "and I have Adderall that," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:48:18 | "days, I wake up and" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:49:55 | "Adderall right now?" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:49:55 | "waste to even bother taking" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 02:49:55 | "Is it kind of a" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-02-25 03:00:32 | "WouldssrihelpweacelFinallymightbereadytohaveareal." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-25 03:00:45 | "chatchatsometimeifyoureupfor." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-25 03:00:46 | for.it ← fort (reverted) | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-25 03:00:49 | "ititstill." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 04:36:35 | "0 5 0 6 The" | app: "nz.co.whiparound.app" | field: 2131362643 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 04:36:35 | "up." | app: "nz.co.whiparound.app" | field: 2131362643 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 04:36:35 | "counter doesn't count when idled" | app: "nz.co.whiparound.app" | field: 2131362643 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 04:59:08 | "then." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 04:59:08 | "Okay, I'm going to share" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 04:59:08 | "a little bit with you" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 04:59:45 | "Cracks kind of fell off," | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 04:59:45 | "but for a while it" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 04:59:45 | "they I used to have" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 04:59:45 | "pop up on my Facebook" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 04:59:45 | "all the time. Articles would" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 04:59:45 | "It was like kind of" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 04:59:45 | "the website, I'd read it." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 04:59:45 | "was one of them that" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 04:59:45 | "be shared, I'd go to" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 04:59:45 | "clickbaity, but it also had" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 04:59:45 | "my brain. I really enjoyed" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 04:59:45 | "a lot of interesting stuff" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 04:59:45 | "the content for quite some" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 04:59:45 | "that really kind of tickled" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 04:59:45 | "time." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:00:29 | "Like, the writers seem to" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:00:29 | "have a knack for exploiting" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:00:29 | "one of my specific brands" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:00:29 | "same time had a way" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:00:29 | "of curiosity and at the" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:00:29 | "of engaging with topics with" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:00:29 | "intellectual honesty and rigor and" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:00:29 | "and I kept going back." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:00:29 | "I really, really appreciated that" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:01:51 | "Then, just by coincidence, I" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:01:51 | "earth, and I'm not a" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:01:51 | "mean, Cracked fell off the" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:01:51 | "big Facebook Reels guy, I" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:01:51 | "I'm more of a long" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:01:51 | "form content guy, but occasionally" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:01:51 | "don't watch short form content," | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:01:51 | "on my Facebook Reels or" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:01:51 | "this guy would pop up" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:01:51 | "YouTube Shorts or whatever if" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:01:51 | "I was ever just zoning" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:01:51 | "out and doing some brain" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:01:51 | "rot, and I really liked" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:01:51 | "this creator's content like so" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:01:51 | "much it reminded me of" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:01:51 | "Cracked." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:02:56 | "of the articles on Cracked" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:02:56 | "was David Wong, which I" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:02:56 | "But the author of half" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:02:56 | "now know is a pseudonym," | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:02:56 | "His real name is David" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:02:56 | "Pargin, and he's also an" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:02:56 | "at Cracked until it was" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:02:56 | "author. He was the editor-in-chief" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:02:56 | "bought or something, but he" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:02:56 | "really helped to grow the" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:02:56 | "and it's the same guy." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:02:56 | "brand." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:04:31 | "that I I end up" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:04:31 | "and his shorts are just" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:04:31 | "so Interesting and easily digestible" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:04:31 | "But anyway, like his reels" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:04:31 | "really liking his content It's" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:04:31 | "also not like super doomy" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:04:31 | "know, rage that type of" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:04:31 | "deal" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:04:31 | "of Interesting without provoking, you" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:04:31 | "it's just that perfect niche" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:04:31 | "or political content, you know," | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:05:42 | "of like badly edited like" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:05:42 | "Here's an example all of" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:05:42 | "does what he does like" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:05:42 | "his videos are like kind" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:05:42 | "really well he has effectively" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:05:42 | "this one but he he" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:05:42 | "made the transition in the" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:05:42 | "media from one to the" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:05:42 | "other but he has also" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:05:42 | "writer and author and so" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:05:42 | "become like a somewhat prolific" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:05:42 | "I've been reading or listening" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:05:42 | "to one of his books" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:05:42 | "dude he is like a" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:05:42 | "it's like a series and" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:05:42 | "know and I'm thinking well" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:05:42 | "modern-day like Kurt Vonnegut you" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:05:42 | "why have I not been" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:05:42 | "liked his articles and I" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:05:42 | "reading his stuff if I" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:05:42 | "like his videos I bet" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:05:42 | "I'll like his books too" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:09:42 | "End. The book, not the" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-25 05:09:42 | "of John Dies at the" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-25 05:09:42 | "movie. With no spoilers." | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-25 05:09:42 | "Give me a no-spoilers synopsis" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-25 05:11:01 | "Compare and contrast it to" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-25 05:11:01 | "Vonnegut. Is this something a" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-25 05:11:01 | "Vonnegut fan would like?" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-25 05:13:52 | "the End." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:13:52 | "is called John Dies at" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:13:52 | "The book I've been reading" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-25 05:13:57 | "HopeyouandEzraarewellnone," | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:14:39 | "but my respect for the" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:14:39 | "author helps me through that." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:14:39 | "cheesy or campy at times," | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:14:39 | "It definitely is a little" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:15:41 | "Don't want to oversell it." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:15:41 | "I know how well-read you" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:15:41 | "are, but it's also something" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:15:41 | "that I'm just like using" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:15:41 | "things that AI said is" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:15:41 | "to entertain One of the" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:17:08 | "story." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:17:08 | "of Parjans is an adventure" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:17:08 | "At the heart of many" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:17:08 | "meditation and at the heart" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:17:08 | "of Vonnegut's books is a" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:18:05 | "But in lieu... 7161" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:18:16 | "...of saturating myself with political" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 05:18:16 | "shit." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-25 08:20:54 | "8582hlpebroadwaystreet," | app: "com.google.android.apps.maps" | field: 2131429905 | inputType: NORMAL | flags: noSuggestions
+[SESSION:VOICE] 2026-02-25 11:43:12 | "Why are you so sore?" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-25 12:08:44 | "hwy56commercrestand8thsthoneyImdoingreallybadFeelingcrazyCryingallmorningGoodtbingihavemyrefldctivesunglassessobig." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 12:54:31 | "a billify in with this" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 12:54:31 | "out competing Or whatever that" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 12:54:31 | "binding very tightly to the" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 12:54:31 | "a thermometer ie it like" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 12:54:31 | "way it keeps it at" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 12:54:31 | "factor a rip rizzle or" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 12:54:31 | "It's kind of like buprenorphine" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 12:54:31 | "rudimentary understanding of it, but" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 12:54:31 | "In terms of it like" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 12:54:31 | "a certain level" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 12:54:31 | "because I have a very" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 12:54:31 | "it was explained to me" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 12:54:31 | "I'm curious how you would" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 12:54:31 | "that it's sort of like" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 12:54:31 | "receptors blah blah blah and" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 13:51:51 | "tag." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 13:51:51 | "Calling for a five-and-a-half yard" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 14:12:34 | "and having crazy thoughts and" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 14:12:34 | "Today is a really, really" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 14:12:34 | "out of control. I just" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 14:12:34 | "and just all around like" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 14:12:34 | "creature and I am panicked" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 14:12:34 | "want to go home." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 14:12:34 | "bad day. I don't even" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 14:12:34 | "feel like some kind of" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 14:12:34 | "feel like a human. I" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 14:12:34 | "impulses to do crazy things" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-25 14:15:18 | "brotherdoesntseemecrycarqwestcardinatomabilify." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 14:16:57 | "of kratom And I mean" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 14:16:57 | "prescribed by my doctor, but" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 14:16:57 | "would render the Adderall inert," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 14:16:57 | "so I didn't take it," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 14:16:57 | "It's actually something that was" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 14:16:57 | "I was afraid it Itself" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 14:16:57 | "supplies Maybe I should take" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 14:16:57 | "at least through this withdrawal" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 14:16:57 | "it now that I'm off" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 14:16:57 | "process" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 14:16:57 | "but I have like months" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 14:18:16 | "Starting it now, hamper my" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 14:18:16 | "its dopamine and recovering from" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 14:18:16 | "body's ability to begin regulating" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 14:18:16 | "extended kratom usage." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-02-25 14:18:21 | "Wouldthatbehelpfulorrenderedinertlikeadderall?" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 14:19:44 | "I have like three months" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 14:19:44 | "it's like the very small" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 14:19:44 | "be the effective therapeutic dose" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 14:19:44 | "worth of like I think" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 14:19:44 | "they're two milligram I know" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 14:19:44 | "for an adult male 160" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 14:19:44 | "starting dosage like what would" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 14:19:44 | "pounds" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-25 14:21:06 | "I don't know. I know" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 14:21:06 | "though. I've always known that" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 14:21:06 | "it off for five years." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 14:21:06 | "I need to do it" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 14:21:06 | "I needed to. I've put" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 14:21:48 | "ends. I don't know." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 14:21:48 | "Or maybe I'm just trying" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 14:21:48 | "to tie up some loose" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 14:22:59 | "take Abilify think of its" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-25 14:22:59 | "Tell me what users who" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-25 14:22:59 | "Specifically look into user first-hand" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-25 14:22:59 | "effects compared to other antipsychotics." | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-25 14:22:59 | "primarily with extreme bipolar depression." | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-25 14:22:59 | "experiences and those that deal" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-25 14:58:51 | "meal at all today." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 14:58:51 | "I don't remember a good" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-25 14:58:59 | moo → mood | ctx: "moo" | trigram: "good moo" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:00:12 | "and like I can smell" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:00:12 | "don't want anyone near me" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:00:12 | "I fucking reek, man. My" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:00:12 | "ear is all fucked up" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:00:12 | "I'm wearing fucking long johns" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:00:12 | "fucking smell me. It's like" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:00:12 | "because I'm sure they can" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:00:12 | "myself. It's fucking disgusting. I" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:00:12 | "and shit. It's just been" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:00:12 | "single fucking thing today at" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:00:12 | "all. I haven't had time." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:00:12 | "fucking... I haven't eaten a" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:00:38 | "to see that you were" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:00:38 | "the red bull in there." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:00:38 | "I mean, I was happy" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:00:38 | "making coffee, because I saw" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:00:38 | "And..." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:05:43 | "and make some coffee myself." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:05:43 | "like, he'll have a Red" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:05:43 | "I went into the bathroom," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:05:43 | "Bull instead of coffee. And" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:05:43 | "not forgotten about. LOL" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:05:43 | "out, deciding to go ahead" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:05:43 | "But you were making it." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:05:43 | "smile. It made me feel" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:05:43 | "I figured you were just" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:05:43 | "And then I came back" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:05:43 | "And that did make me" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:05:43 | "and I sent that text." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:06:25 | "right now." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:06:25 | "time or space for that" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:06:25 | "But, nevertheless, this morning I" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:06:25 | "something important. And you were" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:06:25 | "did feel shut down by" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:06:25 | "like, nah, I don't have" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:06:25 | "a bid for attention, for" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:06:25 | "you. I kind of had" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-25 15:10:40 | "5 5 0 1 6" | app: "nz.co.whiparound.app" | field: 2131362228 | inputType: NORMAL | flags: none
+[INSISTED] 2026-02-25 15:11:19 | blows | ctx: "blows" | app: "nz.co.whiparound.app" | field: 2131362643 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-25 15:11:22 | hpt → hot | ctx: "hpt" | trigram: "blows hpt" | app: "nz.co.whiparound.app" | field: 2131362643 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-25 15:11:25 | "4 1 0 oo0acblowshptevenwhen." | app: "nz.co.whiparound.app" | field: 2131362643 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-25 15:11:46 | hopd → hood | ctx: "hopd" | trigram: "Both hopd" | app: "nz.co.whiparound.app" | field: 2131362643 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-25 15:11:51 | "offbothhopdshocksarebroken." | app: "nz.co.whiparound.app" | field: 2131362643 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:12:46 | "idled up from the rear" | app: "nz.co.whiparound.app" | field: 2131362643 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:12:46 | "Chuck idles itself down when" | app: "nz.co.whiparound.app" | field: 2131362643 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:12:46 | "control." | app: "nz.co.whiparound.app" | field: 2131362643 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:13:08 | "and must be idled up" | app: "nz.co.whiparound.app" | field: 2131362643 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:13:08 | "from the cab" | app: "nz.co.whiparound.app" | field: 2131362643 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-25 15:13:30 | nome → None | ctx: "nome" | app: "nz.co.whiparound.app" | field: 2131362228 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:14:52 | "It is what it is." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:14:52 | "but that doesn't change." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:14:52 | "recognize everything that you do" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:14:52 | "and what you've been going" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:14:52 | "on at your work. Like," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:14:52 | "I know, I see that" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:14:52 | "Violet and handling the kids" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:14:52 | "shit and I recognize that," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:14:52 | "and the shit that's going" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:14:52 | "It's not like I don't" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:14:52 | "through with taking care of" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:17:54 | "Like, I'm grateful, baby. Truly," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:17:54 | "not change the deep black." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:17:54 | "thinking of me. That does" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:17:54 | "I am. Thank you for" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:18:25 | "often can't give and that's" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:18:25 | "you can't give or very" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:18:25 | "not malicious on your part." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:18:25 | "The thing that I need" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:29:03 | "and there that I couldn't" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:29:03 | "have Claude and that was" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:29:03 | "Trust me, it feels really" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:29:03 | "I told you right then" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:29:03 | "shitty on this side too." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:29:03 | "share it because you don't" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:29:03 | "the AI that I've been" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:29:03 | "talking to." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:29:29 | "time" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:29:29 | "I just don't understand why" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:29:29 | "thing every time every single" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:29:29 | "same exact exact exact same" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:29:29 | "this is always such the" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:30:11 | "mean that not being poured" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:30:11 | "Just because your intentions are" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:30:11 | "to give to me doesn't" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:30:11 | "into on this end doesn't" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:30:11 | "hurt. Just because you don't" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:30:11 | "abdicated, you are absolved, you" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:30:11 | "hurt. Like yes, you are" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:30:11 | "have anything in the tank" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:30:11 | "good doesn't mean it doesn't" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:30:11 | "are forgiven, like whatever. Like" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:30:11 | "fine, I get it, you" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:30:11 | "don't have time for me" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:30:11 | "or space for me. I'm" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:30:11 | "not a priority. I accept" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:30:11 | "that. That is my fate." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:30:32 | "this right now I am" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:30:32 | "it in me to do" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:30:32 | "but I do not have" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:30:32 | "so fucking close to the" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:30:32 | "fucking edge that I can" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:30:32 | "it and taste it and" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:30:32 | "you do not want to" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:30:32 | "hear it calling to me" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:30:32 | "fuck with me right now" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:30:32 | "fucking see it and smell" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:31:53 | "I'm not about to have" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:31:53 | "my fucking humanity fucking like" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:31:53 | "worth of unspoken feelings and" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:31:53 | "all of my fucking years" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:31:53 | "unseen Personhood and all of" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:31:53 | "oh, it doesn't feel good" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:31:53 | "Sam that you What Don't" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:31:53 | "can't feed you right now" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:31:53 | "just erase Yourself because I" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:31:53 | "because I don't have time" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:31:53 | "you right now Like it" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:31:53 | "really hurts me Sam that" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:31:53 | "I don't have attention for" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:31:53 | "for you right now Because" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:31:53 | "I hurt you" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:32:45 | "like that is somehow like" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:32:45 | "to blame for needing attention" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:32:45 | "my fault like I'm somehow" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:33:16 | "Like, don't worry, like, you" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:33:16 | "won't have to fucking feed" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:33:17 | "me for long." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:34:12 | "bawling all day for like" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:34:12 | "want to fucking talk about" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:34:12 | "how hurt you are by" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:34:12 | "fucking 13 hours and you" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:34:12 | "like I've been fucking crying" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:34:12 | "what the actual fuck" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:34:12 | "my fucking eyes out and" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:34:12 | "the fact that I'm suffering" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:36:43 | "And believe me I have" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:36:43 | "learned to be grateful for" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:36:43 | "my clothes cleaned up Then" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:36:43 | "whatever I can get I'll" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:36:43 | "I can get if all" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:36:43 | "take it I'll take whatever" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:36:43 | "I can get are like" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:36:43 | "I can get is is" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:36:43 | "I'll take it if all" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:36:43 | "I'll take it fuck it." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:36:43 | "take it if all I" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:36:43 | "food Sent with me. I'll" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:36:43 | "can get is like a" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:36:43 | "clean bedroom I'll take it" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:36:43 | "whatever whatever the fuck you" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:36:43 | "don't complain. I don't ask" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:36:43 | "have I'll take it like" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:36:43 | "I I Keep I keep" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:36:43 | "to start talking about how" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:36:43 | "I'm hurt by the fact" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:36:43 | "to myself Until you want" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:36:43 | "that My needs go perpetually" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:36:43 | "much it hurts you That" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:36:43 | "the pain and the shit" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:36:43 | "unmet" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:36:43 | "I've learned. I don't I" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:37:02 | "In terms of quality time," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:37:02 | "in terms of prioritization, in" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:37:02 | "in terms of real interest," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:37:02 | "in terms of real connection," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:37:02 | "terms of actual relational communication." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:38:24 | "there is no hope" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:38:24 | "it completely our life fucking" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:38:24 | "a fucking crisp There is" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:38:24 | "think that somehow The fact" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:38:24 | "that I'm hurt Simply means" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:38:24 | "It's like no I get" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:38:24 | "nothing left of us And" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:38:24 | "that I don't see you" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:38:24 | "simply means that I don't" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:38:24 | "understand your burden simply means" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:38:24 | "sucks We are burnt to" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:38:24 | "And it's like you you" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:38:24 | "That I don't get it" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:39:12 | "It's like no I absolutely" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:39:12 | "understand the depression. I understand" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:39:12 | "know what you're going through." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:39:12 | "I understand the addiction. I" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:39:12 | "the bipolar. I understand how" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:39:12 | "fucking insane those three children" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:39:12 | "a toll that it takes." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:39:12 | "I understand. I get it." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:39:12 | "are and how much of" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:39:12 | "I see that and I" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:39:12 | "see you. That doesn't mean" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:39:12 | "it doesn't hurt." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:39:51 | "be hurt. I'm so tired" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:39:51 | "of this exact same impasse." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:39:51 | "seeing you because if I" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:39:51 | "bad guy who's not fucking" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:39:51 | "truly understood then I wouldn't" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:39:51 | "But now I'm the fucking" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:39:51 | "Every time." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:44:16 | "It's like, bro, holy fuck," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:44:16 | "to talk about any of" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:44:16 | "this. Like, I thought maybe" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:44:16 | "I didn't even fucking want" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:44:16 | "any kind of, any kind" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:44:16 | "fucking support needs to come" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:44:16 | "this game instead. Any real" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:44:16 | "you want to fucking play" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:44:16 | "of actual emotional support or" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:44:16 | "from outside the marriage. I" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:44:16 | "connection or anything, but no," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-25 15:44:16 | "get it now." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-25 16:28:58 | "hoodfallsfreelytrsometimesnomelackHhDeadbeat2214!" | app: "com.chase.sig.android" | field: 2131374092 | inputType: PASSWORD | flags: none
+[SESSION:TYPING] 2026-02-25 16:57:04 | "0 5 0 6 0" | app: "com.samsung.android.biometrics.app.setting" | field: 2131362098 | inputType: PASSWORD | flags: forceAscii
+[SESSION:TYPING] 2026-02-25 17:22:50 | "5 0 6 0 5" | app: "com.samsung.android.biometrics.app.setting" | field: 2131362098 | inputType: PASSWORD | flags: forceAscii
+[SESSION:TYPING] 2026-02-25 17:45:42 | "0 6 e-hentai." | app: "com.android.chrome" | field: 2130775490 | inputType: URI | flags: noSuggestions
+[SESSION:TYPING] 2026-02-25 17:45:55 | "orgice9killz!" | app: "com.android.chrome" | field: -1 | inputType: WEB_PASSWORD | flags: none
+[SESSION:TYPING] 2026-02-25 17:46:11 | "exhentai." | app: "com.android.chrome" | field: 2130775490 | inputType: URI | flags: noSuggestions
+[SESSION:TYPING] 2026-02-25 18:26:53 | "orgOfcourseyoulookdepressedlolThatsgoodthatyoutoldher." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-25 18:27:01 | kaylyn ← kayla (reverted) | ctx: "kaylyn" | trigram: "that kaylyn" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-25 18:27:06 | bc ← be (reverted) | ctx: "bc" | trigram: "died bc" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-25 18:27:10 | obviousl → obviously | ctx: "obviousl" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-25 18:27:13 | affevting → affecting | ctx: "affevting" | trigram: "obviously affevting" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-25 18:27:28 | dont ← don't (reverted) | ctx: "dont" | trigram: "I dont" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-25 18:28:06 | feara ← heart (reverted) | ctx: "feara" | trigram: "our feara" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-25 18:28:08 | fear → fears | ctx: "fear" | trigram: "our fear" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-25 18:28:39 | "ItoldthekodsthatkaylyndiedbcotitsobviouslaffevtingmdaddyalotIdontthinkyoupersonallybelieveifbeingahumanisworthanythingatallitsworthliesinspeakinghumanityAndalotoftimethatmeansspeakingoutourfearaanandourgriefTherespracticallynothingmorwhumanYoucouldeven." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-25 18:28:45 | "aarguefearandgriefare." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-25 18:28:47 | morw ← more (reverted) | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-25 18:29:28 | "moreemoreuniversalthanloveWhatsup?" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-25 18:30:01 | "IcanttalkrnIvehadareallybaddayIdkofifEverythingokay?" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-25 18:36:28 | johm → John | ctx: "johm" | trigram: "about johm" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-25 18:36:44 | "ievertoldyouaboutjohmbuthewasmybestfriendinfloridaandsomuchmorethanthayreallyidkek." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-25 18:36:44 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-25 18:36:44 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-25 18:37:00 | kn ← know (reverted) | ctx: "kn" | trigram: "soldiered kn" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-25 18:37:06 | "buthediedandihaveneverevereverdeltwithitivejustsoldieredknonandlusheditdlwn." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-25 18:37:06 | dlwn → down | ctx: "dlwn" | trigram: "it dlwn" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-25 18:37:26 | unstopp → unstoppable | ctx: "unstopp" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-25 18:37:51 | twll → tell | ctx: "twll" | trigram: "can twll" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-25 18:38:00 | daekne → darken | ctx: "daekne" | trigram: "the daekne" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-25 18:38:02 | daekne ← darken (reverted) | ctx: "daekne" | trigram: "the daekne" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-25 18:38:20 | rn ← rnase (reverted) | ctx: "rn" | trigram: "enemy rn" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-25 18:38:59 | bc ← be (reverted) | ctx: "bc" | trigram: "bank bc" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-25 18:39:07 | i ← I (reverted) | ctx: "i" | trigram: "be i" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-25 18:39:19 | "butnoweverythinfoscomingupandotitsunstoppandkmknsomekindofbipolarepisodeicantwllbuticanttelltheteuthfromthedaekne@srknessandkiryinslikeanenemyrnlikenowevtevenanallylikeatotaladversaryandidontknowwhatzrealbutiknowilegittriedtocoptodayiwentandwithdrewmoneyfromINSIDEthebankbcidonthaveadebitcardbcicidontfuckwithcashanymore." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-25 18:39:19 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-25 18:39:19 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-25 18:39:23 | spwnt ← spend (reverted) | ctx: "spwnt" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-25 18:39:24 | spwnt → spent | ctx: "spwnt" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-25 18:39:32 | hlmeless → homeless | ctx: "hlmeless" | trigram: "ANY hlmeless" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-25 18:41:16 | "thenspwntananhourlookingforANYhlmelesspersoninalloftheplacesivemeadeementalnotesofinthepast4yeaesandididntseeasingleonebroHewawasmysponsorandherelapsedLleaPleasegodIjusthavegaveupeventuallyiworkeda13hourdaytodaystartedat230inthemorning." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-25 18:41:16 | "?" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-25 18:41:17 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-25 18:41:19 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-25 18:41:19 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-25 18:45:07 | "andjustscreamcriedintheshoweranddrankabunchofswigsoftequilaNottryinfrodruumponyouIknowthisissuperhardfor." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-25 18:51:22 | co → come | ctx: "co" | trigram: "Emotionally co" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-25 18:51:22 | "yoylryoutooEmotionallyco." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-25 18:51:24 | co ← come (reverted) | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-25 18:51:28 | constipated ← constituted (reverted) | ctx: "constipated" | trigram: "Emotionally constipated" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-25 18:51:40 | "sticonstipateddoesntdoitpoeticjusticebutya," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-25 18:51:40 | ya → a | ctx: "ya" | trigram: "but ya" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-25 18:51:43 | ya ← a (reverted) | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-25 18:51:48 | "cleverclever." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-25 18:52:06 | "Ithinkiknewjoelof." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-25 18:52:11 | "joejoel." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-25 18:52:19 | pictue → picture | ctx: "pictue" | trigram: "the pictue" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-25 18:52:26 | "WHewasintheocipictueforalongtimeright?" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-25 18:55:04 | "IwishwecouldtooFuckmanimsosorryhelookslikikearealagenuineandcoolpersonWhatdoyoufeelaboutjoelnow?" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-25 19:39:48 | Fuckin → Fuckin' | ctx: "Fuckin" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-25 19:39:52 | "LikeiftherewasshitthayyoucouldsautohimrigjtnowwhayowouldyousayFuckinfuckman." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-25 19:39:54 | "Yeah." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-25 19:40:07 | thay → that | ctx: "thay" | trigram: "after thay" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-25 19:40:08 | "Likeapunchtothegutafterthay." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-25 19:40:09 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-25 19:40:09 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-25 19:40:15 | "itotallygetit," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-25 19:40:25 | "ivecriedenoughicanzoneoutmyself." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-26 01:58:34 | "ImsorryifiputtoomuxhonyoubutihonestlydolookiforwardtohearingaboutJoelonthephonesoon4chan." | app: "com.android.chrome" | field: 2130775490 | inputType: URI | flags: noSuggestions,noPersonalizedLearning
+[SESSION:TYPING] 2026-02-26 02:49:05 | "org/bcogentMyshiftisat5asaconcretedtruckdriver." | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:TYPING] 2026-02-26 02:49:26 | "Mycommuteis1hourandiwakeupanhourbeforethatam." | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:TYPING] 2026-02-26 02:56:46 | "WhenwkuouldbebesttoteztmybosstolethimknowimsickandwkntontbecominginWedonttLkalklikealllrofessionalliketjat." | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:TYPING] 2026-02-26 02:56:50 | "hat." | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:TYPING] 2026-02-26 02:57:04 | "Shortaspossibleburtmybossmaksme." | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:TYPING] 2026-02-26 10:34:36 | "nervousesmenervousandidkhowgraphictobetobetakenseriousorwhatitThatsperfevtecrtbutitssittinginmytextboxrdytosendbutimpanickingandsweatingwithfevernotwantingconfrontstionwithhim4chan." | app: "com.android.chrome" | field: 2130775490 | inputType: URI | flags: noSuggestions,noPersonalizedLearning
+[ACCEPTED] 2026-02-26 10:52:48 | Hows → how's | ctx: "Hows" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-26 11:02:10 | studebt → student | ctx: "studebt" | trigram: "the studebt" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-26 11:03:29 | Wdym ← Way (reverted) | ctx: "Wdym" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-26 11:05:34 | "org/bowsitgoingWhatstherightresponseTothestudebtWdymparticipantasThatsahugeclasszoomornotWhatistheanswertheyrelookingfor?" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-26 11:06:25 | Seei ← Seeing (reverted) | ctx: "Seei" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-26 11:06:42 | somsthing → something | ctx: "somsthing" | trigram: "do somsthing" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-26 11:06:55 | "whatyoujustsaidIsthatwhatyouwoulddowithfinSeeiiimaginedshdwouldwanttodosomsthing." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-26 11:07:35 | "ShAnditislike." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-26 11:08:23 | "ButittotallymakessensethatthatwouldbetriggeringagainIdriftfrom*open*to*closed*orwhatever," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-26 11:08:49 | unex → unexpected | ctx: "unex" | trigram: "sometimes unex" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-26 11:09:21 | "withparticularusometimesexpunepexxthingsforcingopenLighterisagoodwaytofeel," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[NEW_WORD] 2026-02-26 11:09:57 | seraquel | ctx: "seraquel" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-26 11:10:26 | disast → disaster | ctx: "disast" | trigram: "a disast" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-26 11:10:31 | tho ← those (reverted) | ctx: "tho" | trigram: "even tho" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-26 11:10:35 | dodnt → didn't | ctx: "dodnt" | trigram: "I dodnt" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-26 11:10:47 | togethee → together | ctx: "togethee" | trigram: "it togethee" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-26 11:10:48 | "nottrhingtoconflatethatwithclosedorwhateverImtryingtowakeup@tistillitookaseraquelandotherthinfslastnightandcalledinsickthismorningyeaterdaywasadisasteventhoidodntcopandimtryingtogetittogethee." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-26 11:11:01 | rn → rnase | ctx: "rn" | trigram: "foggy rn" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-26 11:11:01 | "Soimrealfoggyrn." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-26 11:11:02 | rn ← rnase (reverted) | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-26 11:11:28 | rn ← rnase (reverted) | ctx: "rn" | trigram: "foggy rn" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:12:38 | "Oh, yeah, that's a good" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:12:38 | "response. Is that what you" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:12:38 | "said?" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:17:52 | "I'm in the tub." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:18:15 | "super low I'm like dizzy" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:18:15 | "up my blood pressure is" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:18:15 | "when I'm standing up" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:18:15 | "I'm like trying to wake" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:18:39 | "you." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:18:39 | "stopped sharing my location with" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:18:39 | "I would say if I" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:19:57 | "I was astral projecting." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:20:32 | "honestly I feel like I" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:20:32 | "least for a day because" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:20:32 | "I know I think it's" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:20:32 | "alcohol from last night which" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:20:32 | "need to really take a" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:20:32 | "break from maybe for at" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:20:32 | "the quetiapine plus clonidine plus" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:20:32 | "it could be affecting me" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:20:32 | "in ways I don't see" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:20:58 | "It was a really, really" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:20:58 | "completely out of my mind" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:20:58 | "bad day. I was just" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:20:58 | "all day long." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:21:16 | "emotions turned up to 11" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:21:16 | "seriously like heart racing like" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:21:16 | "all day" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-26 11:21:22 | "WhButplsplsexcusemeIt." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:21:50 | "I don't feel safe in" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:21:50 | "this truck." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:21:50 | "I kept having this realization" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:21:50 | "like I don't feel safe." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:22:35 | "burning me up, like all" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:22:35 | "day. It's left me feeling" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:22:35 | "given you the money this" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:22:35 | "But it's just like adrenaline" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:22:35 | "morning if you had asked" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:22:35 | "whatever. And I would have" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:22:35 | "for it." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:23:21 | "when you take the Abilify," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:23:21 | "Abilify because you're supposedly activating" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:23:21 | "But I had a bagel" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:23:21 | "not sedating, so I waited" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:23:21 | "until this morning." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:23:21 | "and I took Afanadrol and" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:28:27 | "if you want to talk" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:28:27 | "I know you're going through" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:28:27 | "it too. Let me know" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:28:27 | "sometime today." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:28:56 | "My shit isn't working good" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:28:56 | "that was. It misunderstood me." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:28:56 | "right now. Not whatever drug" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:28:56 | "Adderall." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:31:41 | "read it again I don't" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:31:41 | "like remember it I've like" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:31:41 | "I'm trying to set like" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:31:41 | "two goals for myself today" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:31:41 | "it was really sweet I'll" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:31:41 | "car light and shampoo my" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:31:41 | "I did read it baby" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:31:41 | "right now I'm just feeling" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:31:41 | "if I can do my" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:31:41 | "hair and where I am" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:31:41 | "so weak" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-26 11:31:43 | "AdderallNotwethatwas." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:32:20 | "alcohol vacation will be good" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:32:20 | "a lot of water. I've" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:32:20 | "I'm sorry you are having" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:32:20 | "I honestly think taking an" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:32:20 | "really sucks, plus the headache." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:32:20 | "getting headaches too. Try drinking" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:32:20 | "for us because I've been" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:32:20 | "these UTI symptoms again. That" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:32:20 | "and I think that the" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:32:20 | "been just dehydrated as fuck" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:32:20 | "the headache. Contributors." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:32:20 | "alcohol plus that has been" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:33:00 | "too and I'm like feel" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:33:00 | "I have to be really" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:33:00 | "I'm really worried about me" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:33:00 | "is like a minefield like" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:33:00 | "safe space is Quora" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:33:00 | "like picking up my phone" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:33:00 | "I go to or what" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:33:00 | "I'm willing to look at" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:33:00 | "pretty much like the only" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:33:00 | "really careful about what app" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-26 11:33:02 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-26 11:33:02 | Quora → Quota | ctx: "Quora" | trigram: "is Quora" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-26 11:33:05 | Quora ← Quota (reverted) | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-26 11:33:09 | Quora ← Quota (reverted) | ctx: "Quora" | trigram: "is Quora" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:33:42 | "because that was the other" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:33:42 | "want to go down there" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:33:42 | "to a meeting today but" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:33:42 | "and I thought about going" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:33:42 | "at noon but I don't" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:33:42 | "gonna stay away from there" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:33:42 | "place I was gonna look" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:33:42 | "human I might try a" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:33:42 | "zoom thing" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:33:42 | "get myself looking like a" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:33:42 | "for stuff so I'm just" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 11:33:42 | "maybe if I can fucking" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-26 12:10:07 | "aee-hentai." | app: "com.android.chrome" | field: 2130775490 | inputType: URI | flags: noSuggestions,noPersonalizedLearning
+[SESSION:TYPING] 2026-02-26 12:10:24 | "orgice9killz!" | app: "com.android.chrome" | field: -1 | inputType: WEB_PASSWORD | flags: noPersonalizedLearning
+[SESSION:TYPING] 2026-02-26 12:10:38 | "exhentai." | app: "com.android.chrome" | field: 2130775490 | inputType: URI | flags: noSuggestions,noPersonalizedLearning
+[ACCEPTED] 2026-02-26 12:37:24 | Foc → Focus | ctx: "Foc" | app: "com.android.chrome" | field: -1 | inputType: WEB_EDIT_TEXT | flags: autoCorrect,noPersonalizedLearning
+[SESSION:VOICE] 2026-02-26 13:32:10 | "The thing I just sent" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 13:32:10 | "you has been happening to" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 13:32:10 | "me, I swear to God." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 14:45:40 | "replaced the HUD light and" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 14:45:40 | "the lights don't work." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 14:45:40 | "I have a three o'clock" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 14:45:40 | "call out and I just" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 14:47:26 | "able to fasten or to" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 14:47:26 | "even seat the headlight. I" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 14:47:26 | "and I had to take" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 14:47:26 | "it more apart to be" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 14:47:26 | "haven't put any bolts back" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 14:47:26 | "in yet and I don't" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 14:47:26 | "know what's wrong with it." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 14:47:26 | "It might be the bulbs" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 14:47:26 | "haven't fastened anything back. I" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 14:47:26 | "are messed up or it" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 14:47:26 | "is messed up or it" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 14:47:26 | "might be the cable harness" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 14:47:26 | "might be third option." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 14:49:37 | "pieces this is a 2016" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:49:37 | "be able to seat the" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:49:37 | "okay I hit a deer" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:49:37 | "new thing in and before" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:49:37 | "and I ordered a new" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:49:37 | "realize it wasn't gonna come" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:49:37 | "I fastened anything down I" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:49:37 | "shit there's some pictures of" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:49:37 | "the broken pieces and dangling" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:49:37 | "cable harness back in and" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:49:37 | "after I cleaned up all" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:49:37 | "take it apart more to" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:49:37 | "I made sure that there" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:49:37 | "with a cable harness or" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:49:37 | "the lights I had to" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:49:37 | "putting the old bulbs and" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:49:37 | "passenger side headlight assembly didn't" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:49:37 | "turned the car on after" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:49:37 | "the immediate damage and then" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:49:37 | "of the connector like and" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:49:37 | "Mazda 3 I went online" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:49:37 | "and it completely wrecked my" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:49:37 | "was that satisfying snapping sound" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:49:37 | "none of the lights work" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:49:37 | "when I turned it on" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:51:17 | "How are you even supposed" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:51:17 | "to change the headlights anyway" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:51:17 | "the whole damn assembly out?" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:51:17 | "Is there a way to" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:51:17 | "do that even?" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:51:17 | "in this vehicle without taking" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:52:38 | "okay well so there's actually" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:52:38 | "three cable harnesses all feeding" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:52:38 | "it in anyway could that" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:52:38 | "into one master cable harness" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:52:38 | "and I don't know what" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:52:38 | "broken I just I didn't" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:52:38 | "remove it I just plugged" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:52:38 | "be causing an issue I" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:52:38 | "that you hook up so" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:52:38 | "and one of them is" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:52:38 | "there's actually like three lights" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:52:38 | "a real itty bitty light" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:52:38 | "in the corner maybe it's" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:52:38 | "suppose of that shorting out" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:52:38 | "it is either it's like" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:52:38 | "for a flasher or like" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:52:38 | "a blinker or something" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:53:05 | "gone but its base that" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:53:05 | "that you kind of twist" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:53:05 | "the cable harness hooks into" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:53:05 | "but in any case like" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:53:05 | "the bulb itself is completely" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:53:05 | "to lock into the receptacle" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:53:05 | "is still there I didn't" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:53:05 | "bother taking it out" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:56:45 | "that the ground connection on" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:56:45 | "Wait, are you telling me" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:56:45 | "have something that is a" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:56:45 | "a 2016 Mazda3 is gonna" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:56:45 | "direct wire directly bolted to" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:56:45 | "meant. Or is it? Like" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:56:45 | "right. That's not what you" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:56:45 | "I can't imagine that it" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:56:45 | "the frame? That can't be" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:56:45 | "wouldn't just be folded into" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:56:45 | "the cable harness and then" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:56:45 | "tied to the frame somewhere" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 14:56:45 | "else." | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 15:22:56 | "pristine I'll remove it anyway" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 15:22:56 | "are blown anywhere and the" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 15:22:56 | "okay none of the fuses" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 15:22:56 | "but either way it's doesn't" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 15:22:56 | "wedge light or whatever looks" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 15:22:56 | "appear to be shorting out" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 15:31:53 | "Hey, so I got it" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 15:31:53 | "or from the automotive store" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 15:31:53 | "bulbs from the hardware store" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 15:31:53 | "and so I can't put" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 15:31:53 | "beam works. I need to" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 15:31:53 | "or Walmart or wherever but" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 15:31:53 | "I had to take my" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 15:31:53 | "working but only the high" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 15:31:53 | "bumper off to do it" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 15:31:53 | "it until then." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 15:31:53 | "get those bulbs or drive" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 15:31:53 | "everything back together until I" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 15:31:53 | "go buy a couple of" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 15:48:55 | "the way home if I" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 15:48:55 | "or O'Reilly's or Walmart on" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 15:48:55 | "could you stop by AutoZone" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 15:48:55 | "told you the exact number" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 15:48:55 | "of bulbs to get" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 16:17:31 | "Okay, so actually the high" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 16:17:31 | "out that corner light It" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 16:17:31 | "has like a bulb that" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 16:17:31 | "beams worked and it turns" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 16:17:31 | "like plugs in and so" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 16:17:31 | "what are for the 2016" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 16:17:31 | "a cable harness. It just" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 16:17:31 | "just it doesn't have like" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 16:17:31 | "that corner light?" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 16:17:31 | "Mazda 3 what is the" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 16:17:31 | "main headlight and what is" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 16:18:01 | "ask the people at the" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 16:18:01 | "I'm looking it up right" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 16:18:01 | "store and they'll show you." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 16:18:01 | "now. You can straight up" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 16:18:01 | "each bulb has a number." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 16:18:01 | "There's just two bulbs, but" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-26 16:19:03 | "actually not going I'm gonna" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 16:19:03 | "do I tell her to" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 16:19:03 | "send my wife so what" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 16:19:03 | "get" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 16:19:03 | "okay so yeah I want" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 16:19:03 | "that aren't working but I'm" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-26 16:19:03 | "to replace the two bulbs" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:TYPING] 2026-02-26 18:15:31 | "!" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-26 18:15:31 | "0 5 0 6 organalFocanalYaApvaccucuumdeheadunknownOkbabehowfarourareuBbbbbbbbtaskmaster1Hey" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-26 18:16:27 | "Ihitadeerandittotallygotreallydidanumberonmebutimluckyitwasntworse." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-26 18:17:02 | were ← we're (reverted) | ctx: "were" | trigram: "lamps were" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-26 18:17:44 | "Igotthenewassemblyin2ofthelampsweredeadthoughbutididntrealizeituntilicheckedacoupleotherthings." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-26 18:18:13 | "Igotthebulbsandputtogetherbacktogetherasbesticould," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-26 18:18:32 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-26 18:19:03 | "Gonnabekindofpatchworktilligetanewbumpereventuallybutatleastitsstreetlegal." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-26 18:19:20 | "inthedarkagain." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-26 18:19:40 | thoug → though | ctx: "thoug" | trigram: "out thoug" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-26 18:19:43 | "Iappreciateyoureachinfoutthougjman." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-26 18:19:56 | everythring → everything | ctx: "everythring" | trigram: "for everythring" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-26 18:20:00 | "Andiwantedtosaythanksagainforeverythringfrombefore," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-26 18:20:05 | neigjbor → neighbor | ctx: "neigjbor" | trigram: "good neigjbor" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-26 18:20:09 | "youreagoodneigjborandagoodfriend." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-26 19:45:14 | ur ← u (reverted) | ctx: "ur" | trigram: "got ur" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-26 19:45:18 | nack → back | ctx: "nack" | trigram: "car nack" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-26 19:47:13 | i ← I (reverted) | ctx: "i" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-26 19:47:39 | "IlysmImsorryyourefeelinfcrummyIgotthecarworkingsoyougoturcarnackAnditestedthecheckengineanditsthenot-scarycodeButitwasoffagainwhenitookaittowalmartISensornbd," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-26 19:47:39 | nbd → nbdl | ctx: "nbd" | trigram: "Sensor nbd" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-26 19:51:12 | Ugh ← Up (reverted) | ctx: "Ugh" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-26 19:53:25 | y → you | ctx: "y" | trigram: "hope y" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-26 19:54:07 | fe → feel | ctx: "fe" | trigram: "you fe" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-26 19:54:10 | b → better | ctx: "b" | trigram: "feel b" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-26 19:54:25 | res → rest | ctx: "res" | trigram: "and res" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-26 19:54:42 | tomo → tomorrow | ctx: "tomo" | trigram: "well tomo" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-26 19:55:45 | skices → slices | ctx: "skices" | trigram: "couple skices" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-26 19:55:47 | "ucandriveit100kmilesUghthatsoundsliketheworstPoorbaby=[IhopeyfebandreswelltomoWouldugrabmeacoupleskices?" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-27 01:23:24 | "AndwaitididntknowshewashereOooDuh4chan." | app: "com.android.chrome" | field: 2130775490 | inputType: URI | flags: noSuggestions,noPersonalizedLearning
+[SESSION:VOICE] 2026-02-27 11:48:08 | "better. If you have it" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 11:48:08 | "have to go to bed" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 11:48:08 | "use some TLC or, like," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 11:48:08 | "gonna have another early... I" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 11:48:08 | "quality time or attention doing" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 11:48:08 | "0 5 0 6 Hey," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 11:48:08 | "work tomorrow, so I'm gonna" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 11:48:08 | "Elijah. I think he could" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 11:48:08 | "in you at all today," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 11:48:08 | "babe, I hope you're feeling" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 11:48:08 | "I'm feeling really bad about" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 11:48:08 | "something special with Mommy. Because" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 11:48:08 | "Daddy can't. I mean, I'm" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 11:48:08 | "early." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 11:48:24 | "I'm, like, feeling really fucked" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 11:48:24 | "up about it and everything." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 12:55:32 | "Ask Chad what that means." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-27 13:47:39 | "ChatOkYourhusbandisdrivingan80," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-27 13:47:46 | vehiclr ← vehicle (reverted) | ctx: "vehiclr" | trigram: "pound vehiclr" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-27 13:48:21 | "000poundvehiclreicementmixerwithfaultybreaksThanksfor." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-27 13:49:59 | sry ← or (reverted) | ctx: "sry" | trigram: "all sry" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-27 13:51:01 | "4 6 0 1 6" | app: "nz.co.whiparound.app" | field: 2131362228 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 13:52:06 | "1 1 1 Oil pressure" | app: "nz.co.whiparound.app" | field: 2131362643 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 13:52:06 | "is fine but the primary" | app: "nz.co.whiparound.app" | field: 2131362643 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 13:52:06 | "zero. Sometimes they'll pop back" | app: "nz.co.whiparound.app" | field: 2131362643 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 13:52:06 | "up but most of the" | app: "nz.co.whiparound.app" | field: 2131362643 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 13:52:06 | "and secondary air tanks breathe" | app: "nz.co.whiparound.app" | field: 2131362643 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 13:52:06 | "time they're at zero." | app: "nz.co.whiparound.app" | field: 2131362643 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 13:52:30 | "Both hood shocks broken." | app: "nz.co.whiparound.app" | field: 2131362643 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 13:53:04 | "I think would concern you" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 13:53:04 | "it's like I say something" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 13:53:04 | "me I would be like" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 13:53:04 | "that if you were to" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 13:53:04 | "send something like that to" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 13:53:04 | "googling it I would be" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 13:53:04 | "asking the chat I would" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 13:53:04 | "be you know invested" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:06:09 | "much baggage just accumulates every" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:06:09 | "it because to me this" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:06:09 | "I mean it's just so" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:06:09 | "you about crying in the" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:06:09 | "day I'm just buried in" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:06:09 | "I tell you I'm fucked" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:06:09 | "you I'm fucked up about" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:06:09 | "up about John I tell" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:06:09 | "truck for 13 hours straight" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:06:09 | "just feels like an extension" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:06:09 | "of you know I tell" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:06:09 | "Kalen and like when we're" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:06:09 | "finally home when we're finally" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:06:09 | "about John do you ask" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:06:09 | "together like do you ask" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:06:09 | "about me do you ask" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:06:09 | "about Kalen do you ask" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:06:09 | "about any of that no" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:06:09 | "you want to talk about" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:06:09 | "Chris and how he is" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:06:09 | "minutes that we have together" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:06:09 | "shitty and like the 15" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:06:09 | "but like thank God Sam" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:06:09 | "is finally reaching out to" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:06:09 | "Megan and to Celine like" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:06:09 | "how fucking great like maybe" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:06:09 | "now Sam will just leave" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:06:09 | "me the fuck alone and" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:06:09 | "I can take instead of" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:06:09 | "give when it comes to" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:06:09 | "emotional support" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:07:01 | "similar. It's like Sam is" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:07:01 | "an 80,000 pound vehicle on" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:07:01 | "I mean it feels pretty" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:07:01 | "in the middle of driving" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:07:01 | "public streets and my gauges" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:07:01 | "are all shouting at me" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:07:01 | "brakes. And I was expecting" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:07:01 | "concern or anything and she's" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:07:01 | "some kind of care or" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:07:01 | "just like well you know" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:07:01 | "if he doesn't die I'm" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:07:01 | "sure he'll give me the" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:07:01 | "scoop when he gets home." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:07:01 | "telling me I don't have" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:07:01 | "Oh well." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:09:31 | "fat. Which of course Sam," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:09:31 | "But hey Sam, here's something" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:09:31 | "actually important. Levi is talking" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:09:31 | "about not wanting to be" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:09:31 | "is your fault." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:09:45 | "Like that's the subtext there" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:09:45 | "it's not because we've had" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:09:45 | "and don't even act like" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:09:45 | "conversations about it." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "give a fuck What I" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "I am NOT 100% 10" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "blah blah blah But that's" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "that I will actually receive" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "up like I'll talk to" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "need is for you to" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "around and You decide that" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "know. I've all but given" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "being willing to do whatever" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "out of 10, please With" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "I actually need Like I'm" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "other people. I Mean It's" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "if there will ever be" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "you're gonna Offer me support" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "not what I need Like" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "in me to talk to" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "debate with you like if" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "me I Mean, I don't" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "and love in the ways" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "a day where it turns" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "you to act like you" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "the thing with Megan and" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "so grateful for you doing" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "your efforts then I'm wrong" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "Every conversation turns into a" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "turns into a fucking courtroom" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "happening in the conversation It" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "and instead of any support" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "I mean I just wonder" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "where you are defending Yourself" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "ask about me to invest" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "what I need is for" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "support and love Things that" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "it just takes me into" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "such a worse place We" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "the opposite of support and" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "should just straight-up Explicitly like" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "make some rules and you" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "just say it because Your" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "feet screaming that you don't" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "should just be honest and" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "Sam on an emotional level" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "and Invalidating me and It's" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "surfacy and really really really" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "want to Be involved with" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "Unless it's very very very" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:18:01 | "easy" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:21:15 | "shit like for years, babe." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:21:15 | "want me to say" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:21:15 | "I don't know what you" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:21:15 | "I've been saying the same" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:21:30 | "like if it hasn't changed" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:21:30 | "to change" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:21:30 | "by now it's never going" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:23:16 | "I mean like I'm not" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:23:16 | "little dance and walk on" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:23:16 | "gonna beg and do a" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:23:16 | "like The person I'm married" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:23:16 | "you to fucking offer me" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:23:16 | "with depth Like you don't" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:23:16 | "a fucking tightrope To get" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:23:16 | "engage with the human you" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:23:16 | "to is a human being" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:23:16 | "you interact with me in" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:23:16 | "a way that is unique" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:23:16 | "basic human Comfort Like boilerplate" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:23:16 | "to my personhood like you" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:23:16 | "could literally replace me with" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:23:16 | "there is no way that" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:23:16 | "father of provider of Husband" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:23:16 | "engage with the role of" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:23:16 | "any guy and Your cookie" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:23:16 | "same like it's it's not" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:23:16 | "cutter approach would Be the" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:23:16 | "the way that you're gonna" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:23:16 | "do it. No matter who" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:23:16 | "like you're gonna do it" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:23:16 | "it's not like I don't" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:23:16 | "the fuck it is Like" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:23:16 | "know. This is I don't" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:23:16 | "know why I'm even bothering" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:23:16 | "honestly" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:24:36 | "with my truck is gonna" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:24:36 | "be perfect because this way" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:24:36 | "you can sue them and" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:24:36 | "but this whole brakes thing" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:24:36 | "get a bunch of money" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:24:36 | "and there you go" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:27:13 | "like I don't know if" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:27:13 | "to you at this point" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:27:13 | "I'm not even sure if" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:27:13 | "it's beyond repair" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:27:13 | "like I'll ever be open" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:30:20 | "I mean, I've literally done" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:30:20 | "that a bunch of times" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:30:20 | "that before like dozens of" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:30:20 | "vulnerable manner done that done" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:30:20 | "in an intimate and Explicit" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:30:20 | "bunch a bunch a bunch" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:30:20 | "was straight-up fucking shit all" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:30:20 | "out the other or it" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:30:20 | "gonna do it anymore It" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:30:20 | "over because God damn it" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:30:20 | "times serious like like really" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:30:20 | "honestly like dozens of times" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:30:20 | "of times Like I'm not" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:30:20 | "like saying what I need" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:30:20 | "Went in one ear and" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:30:20 | "it Sam is correct. No" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:30:20 | "I'm trying to love" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:30:20 | "The way that I do" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:30:20 | "matter who it is that" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:31:51 | "Like you want to make" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:31:51 | "me feel loved, why don't" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:31:51 | "is that I need that" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:31:51 | "be the first step to" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:31:51 | "you tell me what it" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:31:51 | "I'm not getting. That would" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:31:51 | "make me feel understood, to" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:31:51 | "would I waste my energy" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:31:51 | "if you're not going to" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:31:51 | "listen. If you could tell" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:31:51 | "is not like, no. Why" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:31:51 | "match the energy? To even" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:31:51 | "make me feel like you" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:31:51 | "would I do that? Why" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:31:51 | "start because you asking me" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:31:51 | "make me feel heard, to" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:31:51 | "I need that I'm not" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:31:51 | "getting, that'd be a great" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:31:51 | "make me feel seen, to" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:31:51 | "me what it is that" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:31:51 | "yet for the 10,000th time" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:31:51 | "bother to remember." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:33:15 | "you didn't upload the picture" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:33:15 | "to chat you didn't google" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:33:15 | "it you didn't ask anything" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:33:15 | "like oh well whatever like" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:33:15 | "like you your concern was" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:33:15 | "it's just shallow" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:35:39 | "I sent was the way" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:35:39 | "an argument." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:35:39 | "to transition this out of" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 14:35:39 | "Ok, well that last message" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-27 14:51:57 | "thetheconcernImsorryaboutleviButitssopainfulwhereyourprioritiesareImsofardownthelistimnothingTalkingaboutsuethemifidieLikenoresponseatallsrycleaningImatworkOncamera25470nonewincYowinchester!" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-27 14:54:58 | sam → Sam | ctx: "sam" | trigram: "is sam" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[NEW_WORD] 2026-02-27 14:55:02 | tonys | ctx: "tonys" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-27 14:55:04 | "IsthisstillyournumberWhatsupmangotaweirdquestionforyaThisissamtonysfriend," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-27 14:55:58 | "youwoveworkedonourvehiclesbeforeIgotthefulltribalsleeve." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-27 14:56:01 | "tatattoo." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-27 14:56:33 | "Anywaysirelapsedandamnotdoinggreatandamlosingmymindtryingtofindanything." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-27 14:56:49 | "Ifyouuredoinggoodorwant." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-27 14:57:02 | tha → that's | ctx: "tha" | trigram: "it tha" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-27 14:57:10 | "nonopartofitthaystotallycool." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-27 14:57:18 | "Justignoreme." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-27 14:57:52 | "Butifyoucouldhelpmefindsomethingidkickyoudownorhookitup." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 15:12:19 | "home." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 15:12:19 | "I don't want to come" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 15:16:40 | "I don't want to see" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 15:16:40 | "Elijah either." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 15:17:16 | "Can we get him to" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 15:17:16 | "spend the night at mom's?" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 15:22:41 | "I work at like a" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 15:22:41 | "I don't work super early," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 15:22:41 | "normal time, like 5 or" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 15:22:41 | "7 or something." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 15:22:54 | "I hate my time with" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 15:22:54 | "the kids." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 15:23:10 | "interactions with them are fucking" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 15:23:10 | "can't fucking take it" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 15:23:10 | "from start to finish I" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 15:23:10 | "worst like 100% of my" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 15:23:10 | "like negative it's just shitty" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 15:23:10 | "especially Elijah like he's the" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 15:25:21 | "house shuts down when Levi" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 15:25:21 | "can tell that the whole" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 15:25:21 | "like Levi and Violet are" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 15:25:21 | "and Violet go like 100%" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 15:25:21 | "like nothing is the same" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 15:25:21 | "him because mommy shuts down" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 15:25:21 | "there like he doesn't have" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 15:25:21 | "any like one-on-one time like" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 15:25:21 | "the ones that matter not" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 15:25:21 | "it's just fucking shitty" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 15:25:21 | "And it's like he fucking" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 15:25:21 | "when Levi and Violet aren't" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 15:26:20 | "He's basically just like on" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 15:26:20 | "schedule I would make it" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 15:26:20 | "engaged with. It fucking breaks" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 15:26:20 | "a point to fucking actually" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 15:26:20 | "my heart like if I" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 15:26:20 | "do shit with him." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 15:26:20 | "fucking had a normal fucking" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 15:26:20 | "and to not get like" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 15:26:20 | "his own to entertain himself" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 15:26:38 | "My life is just so" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-27 15:26:38 | "fucking toast." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-27 15:33:20 | da → day | ctx: "da" | trigram: "to da" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-27 15:33:21 | da ← day (reverted) | ctx: "da" | trigram: "to da" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-27 15:35:12 | ger ← get (reverted) | ctx: "ger" | trigram: "to ger" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-27 15:35:17 | meetinfs → meetings | ctx: "meetinfs" | trigram: "to meetinfs" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-27 15:35:33 | privil → privilege | ctx: "privil" | trigram: "the privil" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-27 15:35:49 | essex ← xbox (reverted) | ctx: "essex" | trigram: "x essex" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-27 15:37:26 | stabil → stabilize | ctx: "stabil" | trigram: "to stabil" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-27 15:38:09 | togethee ← together (reverted) | ctx: "togethee" | trigram: "life togethee" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-27 15:44:36 | youe ← you're (reverted) | ctx: "youe" | trigram: "was youe" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-27 15:44:38 | you → your | ctx: "you" | trigram: "was you" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-27 15:46:07 | Ugh ← Up (reverted) | ctx: "Ugh" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-27 16:00:24 | "eithwithafindersfeeIcouldntfindanythinfagaintodayImgonnahavetogotoda(allasIknowthatswhatiwasthinkingwouldbethebestplacetofindsomeonenewwhohaslegitconnectionsButgoddoesnractuallywantmetogerotomeetinfshestrappedmeinalifewhereidontgetthecouprivilofhavinganytomeimeorroutineornormalcyAndalsohedoesntxistexistItookkratomlastnightandtodayandjustnowJusttryingtostablilmyselfinanywaythaticanAndicouldntOriwouldneedtorakewaytakewaymoreLikeourlifetogetheeissoNotlamotriginebuttheotherfor3daysnowFuckWhatwasyouegoalforthisvisitJesusArethereiUghmanfuckAreyouokay?" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-27 16:02:11 | me → mean | ctx: "me" | trigram: "I me" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-27 16:02:17 | "Imeidk." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-27 16:02:56 | "DependsonthemotiveDoyouwanttogivemecompany?" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-27 16:06:33 | wifely ← widely (reverted) | ctx: "wifely" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-27 16:08:06 | "YaIfwantyoucompanyunlessitswifelydutiesycompanyThisisntagame." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-27 16:08:40 | "Ihavenoreasontoconcludethelatteroutofnowhere." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-27 16:08:41 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-27 16:08:41 | "." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-27 16:08:50 | rewching ← teaching (reverted) | ctx: "rewching" | trigram: "the rewching" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-27 16:08:54 | rewching → reaching | ctx: "rewching" | trigram: "the rewching" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-27 16:09:12 | "iappreciatetherewchingoutandbathtubgestures." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-27 16:09:43 | im ← I'm (reverted) | ctx: "im" | trigram: "know im" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-27 16:10:10 | "IjustneedButyoButyouknowimknowimallaboutqualitytimeovereverurhinfythinfelse." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-27 16:10:22 | "Soyeah," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-27 16:10:36 | enusiastic → enthusiastic | ctx: "enusiastic" | trigram: "and enusiastic" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-27 17:51:18 | "onviouslyifitwasgenuinelandenusiasticearnestdesiretocomebewithmethanyaHellyeahHeyuhwhenitcomescanwe." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-28 03:19:04 | "watchthatsjowteogetherandhaveelijaheathistooandthenplayonthefloorwhilewewatchandthenbedtimefordaddyThenewoneloliwanrutowatchitwhileawakelolGamjasonpargintas4chan." | app: "com.android.chrome" | field: 2130775490 | inputType: URI | flags: noSuggestions,noPersonalizedLearning
+[ACCEPTED] 2026-02-28 05:09:45 | blowd → blow | ctx: "blowd" | trigram: "AC blowd" | app: "nz.co.whiparound.app" | field: 2131362643 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-28 05:09:45 | "0 5 0 6 org/binteacblowd" | app: "nz.co.whiparound.app" | field: 2131362643 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-28 05:09:45 | "." | app: "nz.co.whiparound.app" | field: 2131362643 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-28 05:09:47 | blowd ← blow (reverted) | app: "nz.co.whiparound.app" | field: 2131362643 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-28 05:10:13 | "Both hood shocks broken" | app: "nz.co.whiparound.app" | field: 2131362643 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-28 05:10:52 | "Air pressure gauges are working" | app: "nz.co.whiparound.app" | field: 2131362228 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-28 05:10:52 | "as of pre-trip." | app: "nz.co.whiparound.app" | field: 2131362228 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-28 05:25:43 | "hotshotatt." | app: "com.android.chrome" | field: 2130775490 | inputType: URI | flags: noSuggestions
+[SESSION:TYPING] 2026-02-28 05:30:18 | "8 9 0 1 4" | app: "com.android.chrome" | field: -1 | inputType: NORMAL | flags: noPersonalizedLearning
+[SESSION:TYPING] 2026-02-28 05:30:23 | "1 0 3 3 3" | app: "com.android.chrome" | field: -1 | inputType: NORMAL | flags: noPersonalizedLearning
+[SESSION:TYPING] 2026-02-28 05:32:14 | "4 3 5 4 8" | app: "com.android.chrome" | field: -1 | inputType: NORMAL | flags: noPersonalizedLearning
+[SESSION:TYPING] 2026-02-28 05:32:20 | "5 2 5 2 1" | app: "com.android.chrome" | field: -1 | inputType: NORMAL | flags: noPersonalizedLearning
+[SESSION:TYPING] 2026-02-28 05:32:26 | "5 2 6 9 5" | app: "com.android.chrome" | field: -1 | inputType: NORMAL | flags: noPersonalizedLearning
+[SESSION:VOICE] 2026-02-28 05:42:03 | "0 Go to register a" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-28 05:42:03 | "service. It wants me to" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-28 05:42:03 | "enter in a phone number" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-28 05:42:03 | "It doesn't give me a" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-28 05:42:03 | "do it the other way" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-28 05:42:03 | "fucking phone number When I" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-28 05:42:03 | "link that popped up on" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-28 05:42:03 | "where I follow the actual" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-28 05:42:03 | "new SIM card to then" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-28 05:42:03 | "it automatically fills in the" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-28 05:42:03 | "IMEI and the other Card" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-28 05:42:03 | "number or whatever asks for" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-28 05:42:03 | "the device I inserted the" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-28 05:42:03 | "my zip code and then" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-28 05:42:03 | "Okay, those four plans none" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-28 05:42:03 | "it offers me four plans" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-28 05:42:03 | "of which are right" | app: "com.google.android.googlequicksearchbox" | field: 2131430675 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-02-28 08:06:42 | "have like an apocalyptic mental" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 08:06:42 | "have the attitude of a" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 08:06:42 | "why does it have to" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 08:06:42 | "be so painful and mundane" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 08:06:42 | "or some kind of like" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 08:06:42 | "and apocalyptic now I want" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 08:06:42 | "gonna get more mozzarella sticks" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 08:06:42 | "health but enough that lots" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 08:06:42 | "a tweet that sort of" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 08:06:42 | "do I always have to" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 08:06:42 | "psychic breakdown why can't I" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 08:06:42 | "of people will relate to" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 08:06:42 | "thinking I just want it" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 08:06:42 | "isn't like airing out too" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 08:06:42 | "have a fun psychic breakdown" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 08:06:42 | "just told that they were" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 08:06:42 | "like clever and like funny" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 08:06:42 | "absurdly detached Alice in Wonderland" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 08:06:42 | "this in a way that" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 08:06:42 | "much of like my mental" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 08:06:42 | "captures this idea like I'm" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 08:06:42 | "it" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 08:06:42 | "help me come up with" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 08:06:42 | "you know it's like why" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 08:06:42 | "13 year old who was" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 08:06:42 | "one where I regress and" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 08:08:44 | "of Reality is disintegrating before" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 08:08:44 | "is more like Every single" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 08:08:44 | "facet and dimension and Dimension" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 08:08:44 | "multi-dimensional like collapse of like" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 08:08:44 | "We'll try the spreadsheet one," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 08:08:44 | "eternal" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 08:08:44 | "the spreadsheet, you know, mine" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 08:08:44 | "the internal and external and" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 08:08:44 | "but I don't but without" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 08:08:44 | "us This is like a" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-02-28 08:08:46 | "com/workattattattprepaidactiviationatt1339cr290956." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 08:08:54 | "but we got to make" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 08:08:54 | "That last line was good," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 08:08:54 | "it funny." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-02-28 09:49:32 | "De Nuce Maga" 706cr25054chan." | app: "com.android.chrome" | field: 2130775490 | inputType: URI | flags: noSuggestions,noPersonalizedLearning
+[SESSION:TYPING] 2026-02-28 10:33:10 | "2 0 0 5 1" | app: "nz.co.whiparound.app" | field: 2131362228 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-28 10:33:54 | "of pressure first primary and" | app: "nz.co.whiparound.app" | field: 2131362643 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-28 10:33:54 | "secondary" | app: "nz.co.whiparound.app" | field: 2131362643 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-28 10:33:54 | "5 gauges read zero pounds" | app: "nz.co.whiparound.app" | field: 2131362643 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-28 10:34:18 | blowz ← blow (reverted) | ctx: "blowz" | trigram: "AC blowz" | app: "nz.co.whiparound.app" | field: 2131362643 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-28 10:34:21 | blow → blows | ctx: "blow" | trigram: "AC blow" | app: "nz.co.whiparound.app" | field: 2131362643 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-28 10:34:41 | "Hood shock's broken." | app: "nz.co.whiparound.app" | field: 2131362643 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-28 10:52:57 | "different from yesterday, but my" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-28 10:52:57 | "thoughts are going like a" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-28 10:52:57 | "It's going. It definitely feels" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-28 10:52:57 | "thousand miles a minute." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-28 10:53:06 | "voice message?" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-28 10:53:06 | "Can I send you a" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-28 11:13:08 | "hey that's super crazy I'm" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-28 11:13:08 | "pretty crazy here" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-28 11:13:08 | "so sorry things have been" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-28 11:13:24 | "about your dream." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-28 11:13:46 | youd ← you'd (reverted) | ctx: "youd" | trigram: "if youd" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-28 11:13:48 | you → you're | ctx: "you" | trigram: "if you" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-28 11:13:54 | "org/gif0acblowzshotnoneIdlovdtoheariftifyoudlikcomfortablesharing." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-28 11:13:59 | "Imkickingmyselffor." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-28 11:14:00 | "not." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-28 11:14:00 | for.not → forint | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-28 11:14:01 | for.not ← forint (reverted) | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-28 11:14:07 | bsck → back | ctx: "bsck" | trigram: "getting bsck" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-28 11:14:15 | "notgettingbscktoyousooner." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-28 11:14:18 | "," | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-28 11:14:38 | thinf → thing | ctx: "thinf" | trigram: "same thinf" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-28 11:15:13 | "andijustlostanotherfriendtothesamethinfansNOWlike5yearslateritsfinallycatchinfuptome." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-28 11:15:14 | "But." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-28 11:15:38 | "iitsnotlikeinever." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-28 11:15:41 | i ← I (reverted) | ctx: "i" | trigram: "like i" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-28 11:15:53 | "thoseriouslyithinkabouthimallthetime." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-28 11:15:54 | "Even." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-28 11:16:09 | "beforersinceilefrfloridaright." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-28 11:16:15 | "beforbeforeirhappened." | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-28 11:17:13 | "2394403343 Hey," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-28 11:17:26 | "icopiedyournumberintomymessages." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-28 11:17:36 | concersatio → conversation | ctx: "concersatio" | trigram: "previous concersatio" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-28 11:17:41 | "andyournameandourpreviousconcersatiocameup!" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-28 11:18:18 | "Imnjusttouchinfbaserightnow," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-28 11:18:35 | "wantedyoutoknowidowannatalkandimmotgonnaflakeoutthistime," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-28 11:18:47 | "butidontexpecttotalknow," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-28 11:18:48 | "wecan." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-28 11:19:13 | unisolate ← isolate (reverted) | ctx: "unisolate" | trigram: "to unisolate" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-28 11:19:23 | rn ← rnase (reverted) | ctx: "rn" | trigram: "unisolate rn" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-28 11:19:35 | "fifurefigurethatoutwheneverAndimtryinftounisolaternivebeeninaroughspotsoidlovetojusthavean." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-28 11:19:44 | "ongoinfdialoguewithyou." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-28 11:20:05 | youre ← you're (reverted) | ctx: "youre" | trigram: "imagine youre" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-28 11:20:25 | "IimagineyoureAreyoudoinfwell?" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-28 11:20:31 | e → end | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-28 11:20:31 | "Mentally/e." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-28 11:20:32 | e ← end (reverted) | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-28 11:20:38 | "otiomotionally?" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-28 11:20:45 | stoll → still | ctx: "stoll" | trigram: "you stoll" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-28 11:20:52 | AA → A | ctx: "AA" | trigram: "in AA" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-28 11:20:52 | "AreyoustollinvolvedinAA?" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-28 11:20:54 | AA ← A (reverted) | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-28 12:41:00 | "Yeahheysorry," | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-28 12:41:28 | def ← be (reverted) | ctx: "def" | trigram: "will def" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-28 12:41:36 | latwr → later | ctx: "latwr" | trigram: "up latwr" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-28 15:35:31 | wvent → event | ctx: "wvent" | trigram: "an wvent" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-28 15:35:35 | CO ← COURT (reverted) | ctx: "CO" | trigram: "in CO" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[NEW_WORD] 2026-02-28 15:35:38 | CO | ctx: "CO" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-28 15:35:46 | peeps ← peep (reverted) | ctx: "peeps" | trigram: "her peeps" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-28 15:36:14 | gramps ← tramps (reverted) | ctx: "gramps" | trigram: "Tell gramps" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-28 15:39:01 | "🙃 wegptot26yearoldsanda7yearoldandijustgothomebutiwilldefbbehittingyouuplatwrfromworkbeadtrimmerTrimmermazdab20163bifrontInMadaxmaxcementmixerMissyoutoomanWishyoublivedinatinyhouseouthereImgonnabetakingoffforKaylynsmemorialMeganandiaregtryingtostnitetitupasanwventinCOwhereCOWHEREwhereallherpeepsareWereplanningitoutRsTellgrampstohookitupwithsomepercssssWeknowugotbththemoldmanKirywouldbebgoing," | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-28 17:06:14 | Nah ← Naha (reverted) | ctx: "Nah" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-28 17:06:17 | yer ← yerba (reverted) | ctx: "yer" | trigram: "Nah yer" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-28 17:06:19 | "wewouldneverbeapartNahyergood." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[INSISTED] 2026-02-28 17:06:30 | responding | ctx: "responding" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[REJECTED] 2026-02-28 17:06:35 | vm ← vmas (reverted) | ctx: "vm" | trigram: "your vm" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-02-28 17:06:45 | phonr → phone | ctx: "phonr" | trigram: "the phonr" | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-02-28 17:06:59 | "Ikeptaccidentallyrespondingtoyourvmandthinkingwewereonthephonrlolwaslikewhynot." | app: "com.google.android.apps.messaging" | field: 2131427913 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-02-28 18:44:13 | "for fun times at the" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 18:44:13 | "help me come up with" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 18:44:13 | "dinner table with our six-year-old" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 18:44:13 | "fun would you rather questions" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 18:55:10 | "tell me if that's true" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 18:55:10 | "OP for like a good" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 18:55:10 | "super speed is like totally" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 18:55:10 | "they're varying ages that would" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 18:55:10 | "deal of reasons can you" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 18:55:10 | "I heard that low-key like" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 18:55:10 | "a way that I can" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 18:55:10 | "and list them off in" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 18:55:10 | "relate to the family as" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 18:55:10 | "be interesting and understanding" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 18:55:55 | "Those would-you-rather questions were a" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 18:55:55 | "hit. Can you give me" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 18:55:55 | "some more? Give me an" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 18:55:55 | "extended list." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 19:07:25 | "having the ability to read" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 19:07:25 | "See, I think that, like," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 19:07:25 | "would be, I think that" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 19:07:25 | "ruin, like, all relationships or" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 19:07:25 | "but isn't that, like, common" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 19:07:25 | "that would kind of, like," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 19:07:25 | "my wife, and she's like," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 19:07:25 | "like, how, like, cool that" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 19:07:25 | "thinks that that, like, I'm" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 19:07:25 | "discourse? Like, isn't, like, she" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 19:07:25 | "you're telling on yourself, like," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 19:07:25 | "bad, like, have bad, like," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 19:07:25 | "whatever. I mentioned that to" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 19:07:25 | "minds as, like, cool as" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 19:07:25 | "intentions, but what do you," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 19:07:25 | "I really, really want it," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 19:07:25 | "like, help me articulate this," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 19:07:25 | "because I've read so much" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 19:07:25 | "on, like, Reddit and stuff" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-02-28 19:07:25 | "about this." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
