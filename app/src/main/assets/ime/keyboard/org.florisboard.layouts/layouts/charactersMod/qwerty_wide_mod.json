@@ -1,57 +1,22 @@
 [
   [
-    {
-      "code": 0,
-      "type": "placeholder"
-    }
+    { "$": "text_key", "code": -14, "label": "⇥" },
+    { "$": "navigation", "code": -27, "label": "«" },
+    { "$": "navigation", "code": -28, "label": "»" },
+    { "$": "navigation", "code": -25 },
+    { "$": "navigation", "code": -26 },
+    { "code": 0, "type": "placeholder" }
   ],
   [
-    {
-      "$": "navigation",
-      "code": -21
-    },
-    {
-      "$": "navigation",
-      "code": -24
-    },
-    {
-      "$": "navigation",
-      "code": -22
-    },
-    {
-      "code": -202,
-      "label": "⚛",
-      "type": "system_gui"
-    },
-    {
-      "$": "text_key",
-      "code": -14,
-      "label": "⇥"
-    },
-    {
-      "$": "text_key",
-      "code": -305,
-      "label": "Σ"
-    },
-    {
-      "$": "text_key",
-      "code": -306,
-      "label": "λ"
-    },
-    {
-      "$": "text_key",
-      "code": -307,
-      "label": "Ψ"
-    },
-    {
-      "$": "text_key",
-      "code": -33
-    },
-    {
-      "$": "text_key",
-      "code": 10,
-      "label": "↵",
-      "type": "enter_editing"
-    }
+    { "$": "navigation", "code": -15, "label": "⎋" },
+    { "$": "navigation", "code": -21 },
+    { "$": "navigation", "code": -24 },
+    { "$": "navigation", "code": -22 },
+    { "code": -202, "label": "⚛", "type": "system_gui" },
+    { "$": "text_key", "code": -305, "label": "Σ" },
+    { "$": "text_key", "code": -306, "label": "λ" },
+    { "$": "text_key", "code": 47, "label": "/" },
+    { "$": "text_key", "code": -33 },
+    { "$": "text_key", "code": 10, "label": "↵", "type": "enter_editing" }
   ]
 ]
