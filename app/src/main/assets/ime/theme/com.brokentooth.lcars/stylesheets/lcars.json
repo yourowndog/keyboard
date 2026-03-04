@@ -94,19 +94,15 @@
     "background": "var(--primary-variant)",
     "foreground": "var(--on-primary)"
   },
-  "key[code=-1][ctrlstate=`active`]": {
+  "key[code=-1]:focus": {
     "background": "var(--secondary)",
     "foreground": "var(--on-primary)"
   },
-  "key[code=-1][ctrlstate=`locked`]": {
+  "key[code=-1]:hover": {
     "background": "var(--primary-variant)",
     "foreground": "var(--secondary)"
   },
-  "key[code=-305][numberrowstate=`active`]": {
-    "background": "var(--secondary)",
-    "foreground": "var(--on-primary)"
-  },
-  "key[code=-306][devrowstate=`active`]": {
+  "key[code=-305,-306]:focus": {
     "background": "var(--secondary)",
     "foreground": "var(--on-primary)"
   },

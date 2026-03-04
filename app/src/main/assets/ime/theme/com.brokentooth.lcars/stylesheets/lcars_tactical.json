@@ -76,24 +76,19 @@
     "border-width": "2dp",
     "shape": "cut-corner(12dp, 12dp, 12dp, 12dp)"
   },
-  "key[code=-1][ctrlstate=`active`]": {
+  "key[code=-1]:focus": {
     "background": "var(--tac-amber-gold)",
     "foreground": "var(--text-inverse)",
     "border-color": "var(--tac-amber-gold)"
   },
-  "key[code=-1][ctrlstate=`locked`]": {
+  "key[code=-1]:hover": {
     "background": "var(--tac-amber-gold)",
     "foreground": "var(--text-inverse)",
     "border-color": "var(--tac-amber-gold)",
     "shadow-elevation": "8dp",
     "shadow-color": "var(--tac-amber-gold)"
   },
-  "key[code=-305][numberrowstate=`active`]": {
-    "background": "var(--tac-amber-gold)",
-    "foreground": "var(--text-inverse)",
-    "border-color": "var(--tac-amber-gold)"
-  },
-  "key[code=-306][devrowstate=`active`]": {
+  "key[code=-305,-306]:focus": {
     "background": "var(--tac-amber-gold)",
     "foreground": "var(--text-inverse)",
     "border-color": "var(--tac-amber-gold)"

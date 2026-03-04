@@ -85,21 +85,17 @@
     "foreground": "#FFFFFF",
     "shape": "var(--shape-med-sharp)"
   },
-  "key[code=-1][ctrlstate=`active`]": {
+  "key[code=-1]:focus": {
     "background": "var(--med-accent-teal)",
     "foreground": "#FFFFFF"
   },
-  "key[code=-1][ctrlstate=`locked`]": {
+  "key[code=-1]:hover": {
     "background": "var(--med-accent-teal)",
     "foreground": "#FFFFFF",
     "shadow-elevation": "4dp",
     "shadow-color": "var(--med-accent-teal)"
   },
-  "key[code=-305][numberrowstate=`active`]": {
-    "background": "var(--med-accent-teal)",
-    "foreground": "#FFFFFF"
-  },
-  "key[code=-306][devrowstate=`active`]": {
+  "key[code=-305,-306]:focus": {
     "background": "var(--med-accent-teal)",
     "foreground": "#FFFFFF"
   },
