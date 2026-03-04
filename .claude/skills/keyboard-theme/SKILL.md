@@ -37,83 +37,274 @@ Ask this using AskUserQuestion:
 
 ---
 
-## Step 1 — Design the Palette
+## Step 1 — Extract Brand Colors
 
-Define 15-25 CSS-like variables in the `@defines` block. These control the entire theme — individual rules reference them via `var(--name)`.
+From the user's input (image, description, named palette), identify **5-8 brand colors**. These are the theme's DNA — everything else derives from them.
+
+### Brand Color Roles
+
+```
+Brand-1 (Primary hue)      — The theme's signature. Used on ENTER, CTRL, active chips.
+Brand-2 (Secondary hue)    — Complementary accent. Caps lock, focused tabs, subheaders.
+Brand-3 (Neutral dark)     — Deep base tone. Keyboard background, panel backgrounds.
+Brand-4 (Neutral mid)      — Mid-tone. Key surfaces, cards, secondary containers.
+Brand-5 (Neutral light)    — Light reference. Text on dark, borders on light.
+Brand-6+ (Optional accent)  — Tertiary colors for special treatments (number row, popups, etc.)
+```
+
+State these colors explicitly before proceeding. Example:
+> **Brand palette:** #FF6A4D (warm coral), #5AC7E0 (cool cyan), #0B0D13 (near-black), #5E6573 (slate), #C7CCD8 (silver), #1A2530 (deep navy)
+
+---
+
+## Step 2 — Derive the Tonal Scales
+
+From each brand color, generate a **5-step tonal scale** by adjusting lightness. Use HSL or oklch mentally — shift lightness while preserving hue and saturation.
+
+```
+Step 1 (darkest)   — Brand color at ~15-20% lightness. Deep shadows, pressed states on dark themes.
+Step 2 (dark)      — Brand color at ~30-35% lightness. Default surfaces on dark themes.
+Step 3 (base)      — The brand color itself. Accent usage, active states.
+Step 4 (light)     — Brand color at ~65-75% lightness. Default surfaces on light themes.
+Step 5 (lightest)  — Brand color at ~90-95% lightness. Faint tints, hover states on light themes.
+```
+
+You don't need to list all 25-40 derived colors explicitly, but you MUST use this mental model when assigning colors. Every color in the final stylesheet should trace back to a brand color at a specific tonal step. No orphan colors.
+
+### Alpha Variants
+
+For any tonal step, you can also create alpha variants:
+- `rgba(r,g,b,0.07)` — barely-there tint (incognito indicators, subtle backgrounds)
+- `rgba(r,g,b,0.15)` — ghost (disabled states, faint dividers)
+- `rgba(r,g,b,0.25)` — subdued (spacer lines, muted borders)
+- `rgba(r,g,b,0.50)` — half (secondary text, inactive icons)
+- `rgba(r,g,b,0.80)` — near-solid (key hints, secondary labels)
+
+---
+
+## Step 3 — Map Tokens to Semantic Roles
+
+Now assign derived colors to the `@defines` variables. This is where design judgment matters most.
 
 ### Required Variables
 
 Every theme MUST define all of these:
 
 ```
---primary              Main accent color (ENTER key, active elements)
---primary-variant      Darker/lighter primary for pressed states
---secondary            Secondary accent (caps lock indicator, focused tabs, subheaders)
---background           Keyboard window background
---background-variant   Slightly different background for panels/editors
---surface              Default key background
---surface-variant      Key background on press / secondary surfaces
---popup-surface        Long-press popup background
---focused-popup-surface  Highlighted popup element
---drag-marker          Drag handle color in editors
---spacer-color         Candidate word divider (use rgba with ~0.25 alpha)
---one-hand-background  One-handed mode panel background
---one-hand-foreground  One-handed mode icon color
---incognito-icon-color Incognito indicator (use rgba with ~0.07 alpha)
---on-primary           Text color on primary-colored elements
---on-background        Text on background
---on-background-disabled  Disabled text on background (use rgba ~0.3 alpha)
---on-surface           Text on surface (key labels)
---on-surface-variant   Secondary text on surface (hints, spacebar text)
---shape                Default key shape, e.g. "rounded-corner(8dp, 8dp, 8dp, 8dp)"
---shape-variant        Larger radius for panels/cards, e.g. "rounded-corner(12dp, 12dp, 12dp, 12dp)"
+--primary              Brand-1, step 3 (base). ENTER key, active filter chips, action buttons.
+--primary-variant      Brand-1, step 1 or 2. Pressed state for primary elements.
+--secondary            Brand-2, step 3 (base). Caps lock, focused emoji tab, subheaders.
+--background           Brand-3, step 1 (darkest) for dark themes, step 5 (lightest) for light.
+--background-variant   Brand-3, one step lighter/darker than --background. Panel interiors.
+--surface              Brand-4, step 2 for dark, step 4 for light. Key caps, cards.
+--surface-variant      Brand-4, one step toward background. Pressed keys, secondary panels.
+--popup-surface        Distinct from surface — popups should feel "lifted". Often step 2-3 of Brand-4.
+--focused-popup-surface  Brand-2 or Brand-1 at step 3-4. Highlighted popup character.
+--drag-marker          High-visibility. Brand-2 or a bright accent.
+--spacer-color         Any neutral at ~0.25 alpha. Thin vertical dividers between candidate words.
+--one-hand-background  Brand-3, step 1-2. Side panel when in one-handed mode.
+--one-hand-foreground  Brand-1 or Brand-5. Arrow icons in one-handed panel.
+--incognito-icon-color Any light color at ~0.07 alpha. Barely visible watermark.
+--on-primary           High-contrast text on primary color. Usually near-white or near-black.
+--on-background        Primary text on keyboard background. Must pass WCAG AA (4.5:1).
+--on-background-disabled  Same hue as --on-background at ~0.30 alpha.
+--on-surface           Primary text on key surfaces. Key labels — highest readability priority.
+--on-surface-variant   Secondary text on keys. Hints, spacebar label. ~0.50-0.70 alpha or muted hue.
+--shape                Default key corners. "rounded-corner(Ndp, Ndp, Ndp, Ndp)"
+--shape-variant        Larger radius for panels and cards. 12-24dp typically.
 ```
 
-### Optional Variables (add as needed for the design)
+### Strongly Recommended Variables
+
+Add these unless you have a specific reason not to:
 
 ```
---shape-chip / --pill-shape   Pill shape for filter chips: "rounded-corner(50%, 50%, 50%, 50%)"
---numrow-bg, --numrow-fg, --numrow-border   If number row should differ from normal keys
---secondary-variant    For pressed states on secondary-colored elements
+--shape-chip           Pill shape for filter chips: "rounded-corner(50%, 50%, 50%, 50%)"
+--pill-shape           Pill for spacebar or buttons: "rounded-corner(24dp, 24dp, 24dp, 24dp)"
+--secondary-variant    Brand-2, step 1-2. Pressed state for secondary elements.
 ```
 
-### Design Guidelines
+### Optional Specialty Variables
 
-- **Contrast**: Key labels (--on-surface) must be clearly readable against key backgrounds (--surface). Aim for WCAG AA (4.5:1) minimum.
-- **Pressed states**: Should be visibly different from default. Typically darken for dark themes, lighten for light themes.
-- **Primary accent**: Used sparingly — ENTER key, CTRL key, active filter chips. Should pop against the surface.
-- **Secondary accent**: Used for caps lock indicator, emoji tab focus, clipboard subheaders. Should complement but differ from primary.
-- **Background vs Surface**: Background is the overall keyboard frame; surface is individual key caps. They should differ by at least 10-15% lightness.
+Add when the design calls for differentiated sub-regions:
+
+```
+--numrow-bg            Number row background (e.g., darker or tinted differently from letter keys)
+--numrow-fg            Number row text color (can be an accent for visual distinction)
+--numrow-border        Number row key border
+--panel-header-bg      Shared header background for clipboard/actions editor panels
+--chip-active-bg       Active filter chip fill (can differ from --primary for variety)
+--popup-indicator      Extended-popup "more available" indicator color
+```
 
 ---
 
-## Step 2 — Generate the Full Stylesheet
+## Step 4 — Shape and Depth Strategy
 
-Use `floris_night.json` as the structural template. The complete set of rules below must ALL be present in every theme. Do not omit rules — a partial stylesheet will render incorrectly.
+Colors alone don't make a theme feel designed. You must also make deliberate choices about shape and elevation. State your shape strategy before generating JSON.
+
+### Shape Vocabulary
+
+```
+"rectangle()"                              — Sharp, no radius. Industrial, terminal-style.
+"rounded-corner(4dp, 4dp, 4dp, 4dp)"      — Subtle softening. Modern professional.
+"rounded-corner(8dp, 8dp, 8dp, 8dp)"      — Standard FlorisBoard default. Friendly, neutral.
+"rounded-corner(12dp, 12dp, 12dp, 12dp)"   — Plump, card-like. Material 3 feel.
+"rounded-corner(50%, 50%, 50%, 50%)"        — Full pill. Playful, iOS-esque.
+"cut-corner(6dp, 6dp, 6dp, 6dp)"           — Chamfered. Sci-fi, technical, LCARS-inspired.
+"circle()"                                  — For icon buttons (smartbar toggles, header buttons).
+Asymmetric shapes                           — e.g., "rounded-corner(12dp, 12dp, 0dp, 0dp)" for sheet tops.
+```
+
+### Recommended Shape Assignments
+
+Don't give everything the same radius. Vary shapes by visual role:
+
+| Surface Type | Shape Character | Why |
+|---|---|---|
+| Letter keys | Your base `--shape` | Repeated 26+ times, needs to tile cleanly |
+| ENTER / CTRL keys | Same as letter keys or slightly bolder | Must feel pressable, action-oriented |
+| Spacebar | Pill or wider radius | It's the widest key — distinct shape emphasizes it |
+| Number row | Can differ (cut-corner, tighter radius) | Creates visual separation from letter grid |
+| Key popups | Match base keys or slightly softer | Should feel like they "belong" to the key |
+| Filter chips | Pill (`50%`) | Standard chip convention, instantly readable as toggleable |
+| Clipboard cards | `--shape-variant` (larger radius) | Cards are bigger surfaces — larger radius feels proportional |
+| Panel headers | Flat bottom, rounded top | Anchored to content below, capped on top |
+| Dialogs | `--shape-variant` | Floating elements get softer treatment |
+| Smartbar toggles | `circle()` | Small icon buttons — circle is natural |
+| Action tiles | `--shape-variant` or `20%` | Grid items in the actions editor — need room for label text |
+
+### Elevation Strategy
+
+Use `shadow-elevation` to establish a visual z-order:
+
+```
+0dp   — Flat. The default for modern themes. Keys, smartbar, background elements.
+1dp   — Subtle lift. Dialogs, clipboard card actions.
+2dp   — Standard lift. Key popups, clipboard cards (when you want them to float).
+4dp   — Strong lift. Reserved for modal overlays or dramatic popup effects.
+```
+
+Pick ONE of these strategies and apply it consistently:
+- **Flat theme**: Everything 0dp except popups (2dp). Clean, modern.
+- **Material theme**: Keys 2dp, popups 2dp, cards 2dp, panels 0dp. Classic Android.
+- **Layered theme**: Background 0dp, keys 1dp, popups 2dp, dialogs 4dp. Deliberate hierarchy.
+
+---
+
+## Step 5 — Visual Reference: What You're Styling
+
+This section describes what each UI surface actually looks like on screen, so you can make informed design choices.
+
+### Main Keyboard Surface
+
+The primary typing view. Takes up the full keyboard window.
+
+- **Window** (`window`): The outermost background behind everything. Visible as thin gaps between keys and at edges.
+- **Letter keys** (`key`): ~30 rectangular buttons in a grid (QWERTY). Each shows one large character label. The most visually dominant element — they tile to form the keyboard's "face."
+- **Special keys**: SHIFT, DELETE, and symbol switchers sit at row edges. Same size as 1.2-1.5 letter keys.
+- **ENTER key** (`key[code=10]`): Bottom-right area. Action key — visually highlighted with primary accent color.
+- **CTRL key** (`key[code=-1]`): In the dev/terminal row. Also primary-accented. Has three visual states: default, pressed, locked (focus).
+- **Spacebar** (`key[code=32]`): Wide horizontal bar spanning ~60% of bottom row. Shows keyboard name in small muted text. Often benefits from a distinct shape (pill).
+- **Number row** (`key[code=48..57]`): Optional top row of 0-9. Can be styled distinctly to separate it from the letter grid.
+- **Dev rows**: Two extra bottom rows with terminal keys (Tab, arrows, Esc, Ctrl, symbols like Σ λ Ψ). Same key styling as letter keys unless you add code-specific rules.
+- **Key hints** (`key-hint`): Tiny superscript characters in the upper-right corner of keys (e.g., numbers on letter keys). Monospace, ~6sp. Must be visible but not competing with the main label.
+- **Key popups** (`key-popup-box`): When long-pressing a key, a floating box appears above it showing the character at larger size. Contains multiple variant characters the user can slide to.
+- **Popup focus** (`key-popup-element:focus`): The currently-highlighted character within a popup gets a distinct background fill.
+
+### Smartbar (Suggestion Bar)
+
+A horizontal bar above the keyboard showing autocorrect candidates and quick actions.
+
+- **Suggestion mode**: Shows 3-5 candidate words in a horizontally scrolling row (`smartbar-candidate-word`), separated by thin vertical lines (`smartbar-candidate-spacer`). The first suggestion has a `>` prefix. Pressing a word inserts it.
+- **Candidate clip** (`smartbar-candidate-clip`): Clipboard-sourced suggestions that appear alongside word candidates.
+- **Action toggles** (`smartbar-shared-actions-toggle`): Small circular icon buttons at the left/right edges of the smartbar — expand/collapse chevron, mic button. Circle shape with surface background.
+- **Extended toggle** (`smartbar-extended-actions-toggle`): The secondary expand button. Usually transparent/ghost styled.
+- **Action keys** (`smartbar-action-key`): When the action row is visible, these are icon buttons (clipboard, emoji, settings, etc.) in a horizontal scrolling strip.
+- **Overflow button** (`smartbar-actions-overflow-customize-button`): Green pill-shaped "Reorder actions" button at the bottom of the expanded actions area.
+
+### Smartbar Actions Editor
+
+A bottom sheet that slides up when you long-press or configure the smartbar actions.
+
+- **Editor container** (`smartbar-actions-editor`): Full-width panel with rounded top corners. Background color, slides up from bottom.
+- **Editor header** (`smartbar-actions-editor-header`): Top bar with title text and close/back buttons. Slightly different background from the editor body to create visual separation.
+- **Header buttons** (`smartbar-actions-editor-header-button`): Circle-shaped icon buttons in the header bar.
+- **Subheaders** (`smartbar-actions-editor-subheader`): Section labels like "AVAILABLE ACTIONS" in bold, colored with secondary accent. These create visual hierarchy within the editor.
+- **Tile grid** (`smartbar-actions-editor-tile-grid`): A 4-column grid of action tiles.
+- **Action tiles** (`smartbar-actions-editor-tile`): Square-ish cards with an icon above a label. Center-aligned text, 2-line max. These are the drag-and-drop items for customizing the smartbar.
+- **Disabled tiles** (`smartbar-action-tile:disabled`): Grayed-out tiles for unavailable actions (like "Switch language" when only one language is configured).
+
+### Clipboard Panel
+
+A full-height panel replacing the keyboard when you tap the clipboard action.
+
+- **Header** (`clipboard-header`): Top bar with back arrow, "Clipboard" title, and icon buttons (toggle, eye/visibility, trash/filter, pin, backspace). Header buttons are circular.
+- **Filter row** (`clipboard-filter-row`): Horizontal strip below the header containing pill-shaped filter chips. Has its own background (often slightly different from the panel body).
+- **Filter chips** (`clipboard-filter-chip`): Pill-shaped toggles: "Text", "Images", "Videos". Each has an icon + label. Inactive chips have surface background; active chip gets primary fill with on-primary text. This is a strong branding surface.
+- **Subheaders** (`clipboard-subheader`): Small uppercase section labels like "OTHER", "PINNED". Colored with secondary accent.
+- **Content area** (`clipboard-content`): Scrollable area containing the clipboard grid.
+- **Grid** (`clipboard-grid`): Masonry-style 2-column layout. Cards have variable height based on content length.
+- **Clipboard cards** (`clipboard-item`): Rounded-corner cards showing clipped text. Background fill, shadow elevation, generous padding for text items. These are the largest flat surfaces after keys — their shape/shadow/color has major visual impact.
+- **Card popup** (`clipboard-item-popup`): Expanded view when tapping a card. Shows full text.
+- **Timestamp** (`clipboard-item-timestamp`): Small italic text below card content showing when it was clipped.
+- **Card actions** (`clipboard-item-actions`): Action bar that appears on interaction — pin, delete, share. Row of icon+label buttons.
+- **Clear-all dialog** (`clipboard-clear-all-dialog`): Modal confirmation dialog. Has message text, two buttons (cancel/confirm). Floating with shadow.
+- **Disabled state** (`clipboard-history-disabled-*`): When clipboard history is off: bold title, description paragraph, and a primary-colored pill button to enable.
+- **Locked state** (`clipboard-history-locked-*`): When clipboard access is restricted. Centered bold title and message.
+
+### Emoji / Media Panel
+
+Full-height panel for emoji input.
+
+- **Tab row** (`media-emoji-tab`): Horizontal row of category icons at the top (clock, smiley, hand, animals, food, etc.). Scrollable. Active tab icon gets secondary/primary color (`media-emoji-tab:focus`), inactive tabs are muted.
+- **Section headers** (`media-emoji-subheader`): Bold labels like "Smileys & Emotion" separating emoji groups.
+- **Emoji keys** (`media-emoji-key`): Transparent-background grid of emoji. Pressed state gets a subtle surface fill. Emoji themselves render in system font — you're styling the cell, not the glyph.
+- **Emoji popups** (`media-emoji-key-popup-box`): Long-press popup showing skin tone variants. Same as key popups structurally.
+- **Bottom row** (`media-bottom-row-button`): "ABC" button (return to keyboard) and backspace. Full-width bottom bar with button padding.
+
+### Other Surfaces
+
+- **One-handed panel** (`one-handed-panel`): Side panel with arrow buttons for moving keyboard left/right/expand. Background + foreground (icon color).
+- **Subtype panel** (`subtype-panel`): Language/layout picker sheet. Rounded-top panel with header and list items. Header is visually distinct (surface background), list items have generous padding.
+- **Extracted landscape** (`extracted-landscape-*`): Text editing view in landscape mode. Input field with border, action button.
+- **Glide trail** (`glide-trail`): The line drawn during swipe typing. Colored with primary or accent.
+- **Incognito indicator** (`incognito-mode-indicator`): Faint watermark icon when in incognito mode.
+- **Autofill chip** (`inline-autofill-chip`): Inline suggestion chip from the system autofill service.
+
+---
+
+## Step 6 — Generate the Full Stylesheet
+
+Read `floris_night.json` in `app/src/main/assets/ime/theme/org.florisboard.themes/stylesheets/` as the structural baseline. The complete set of rules below must ALL be present in every theme. Do not omit rules — a partial stylesheet will render incorrectly.
 
 ### Complete Rule Structure
 
 ```jsonc
 {
   "$schema": "https://schemas.florisboard.org/snygg/v2/stylesheet",
-  "@defines": { /* ... all variables from Step 1 ... */ },
+  "@defines": { /* ... all variables from Step 3 ... */ },
 
   // === KEYBOARD WINDOW ===
   "window": { "background", "foreground" },
+  // Optional: add "clip": "no" for edge-bleed effects (keys can render beyond window bounds)
 
   // === KEYS ===
   "key":                          { background, foreground, font-size, shape, shadow-elevation, text-max-lines },
   "key:pressed":                  { background, foreground },
-  "key[code=10]":                 { background, foreground },          // ENTER
-  "key[code=10]:pressed":         { background, foreground },
-  "key[code=-1]":                 { background, foreground },          // CTRL
+  "key[code=10]":                 { background, foreground },          // ENTER — use --primary
+  "key[code=10]:pressed":         { background, foreground },          // ENTER pressed — use --primary-variant
+  "key[code=-1]":                 { background, foreground },          // CTRL — use --primary
   "key[code=-1]:pressed":         { background, foreground },
-  "key[code=-1]:focus":           { background, foreground },
-  "key[code=32]":                 { background, foreground, font-size, text-overflow },  // SPACE
-  "key[code=-201,-202,-203]":     { font-size },                       // view switchers
-  "key[code=-204,-205]":          { font-size },                       // numeric view switchers
-  "key[code=-205]":               { text-max-lines },
-  "key[code=-11][shiftstate=`caps_lock`]": { foreground },             // SHIFT caps lock
+  "key[code=-1]:focus":           { background, foreground },          // CTRL locked state
+  "key[code=32]":                 { background, foreground, font-size, text-overflow },  // SPACE — consider pill shape
+  "key[code=-201,-202,-203]":     { font-size },                       // view switchers — typically 18sp
+  "key[code=-204,-205]":          { font-size },                       // numeric view switchers — typically 12sp
+  "key[code=-205]":               { text-max-lines },                  // numeric advanced — allows 2 lines
+  "key[code=-11][shiftstate=`caps_lock`]": { foreground },             // SHIFT caps lock — use --secondary
+
+  // Optional but encouraged — number row differentiation:
+  // "key[code=48..57]":           { background, foreground, font-weight, border-color, shape },
 
   // === KEY HINTS ===
   "key-hint": { background, foreground, font-family, font-size, padding, text-max-lines },
@@ -231,33 +422,38 @@ Number row: code 48..57 (characters '0'..'9')
 ### Property Value Reference
 
 ```
-Colors:     "#RRGGBB", "#AARRGGBB", "rgb(r,g,b)", "rgba(r,g,b,a)", "transparent"
-Sizes:      "Ndp" (density pixels), "Nsp" (scaled pixels for font)
-Shapes:     "rectangle()", "circle()", "rounded-corner(Ndp,Ndp,Ndp,Ndp)", "cut-corner(Ndp,Ndp,Ndp,Ndp)"
-            Percentages work too: "rounded-corner(50%,50%,50%,50%)"
-Font:       "monospace", "sans-serif", "serif", or custom @font reference
-Align:      "start", "center", "end"
-Overflow:   "clip", "ellipsis", "visible"
-Clip:       "yes", "no"
-Variables:  "var(--name)" references @defines
+Colors:        "#RRGGBB", "#AARRGGBB", "rgb(r,g,b)", "rgba(r,g,b,a)", "transparent"
+Sizes:         "Ndp" (density pixels), "Nsp" (scaled pixels for font)
+Shapes:        "rectangle()", "circle()", "rounded-corner(Ndp,Ndp,Ndp,Ndp)", "cut-corner(Ndp,Ndp,Ndp,Ndp)"
+               Percentages work too: "rounded-corner(50%,50%,50%,50%)"
+Font family:   "monospace", "sans-serif", "serif", or custom @font reference
+Font weight:   "normal", "bold"
+Font style:    "normal", "italic"
+Text align:    "start", "center", "end"
+Text overflow: "clip", "ellipsis", "visible"
+Clip:          "yes", "no" (on window — controls whether keys can bleed past edges)
+Shadow:        "shadow-elevation": "Ndp" (0dp = flat, 1-4dp for depth)
+Border:        "border-color": color, "border-width": "Ndp"
+Variables:     "var(--name)" references @defines
 ```
 
-### Creative Latitude
+### Additional Properties Available
 
-The rule structure and property names above are fixed — don't invent new ones. But you have full creative control over:
+These properties exist in the Snygg engine and can be used on any rule where appropriate:
 
-- All color values and the palette as a whole
-- Shape choices (rounded, cut-corner, circle, rectangle, and their radii)
-- Shadow elevation (0dp for flat, 1-4dp for material depth)
-- Font sizes (within reasonable bounds: 6-24sp)
-- Font weights (normal, bold)
-- Whether to use `"clip": "no"` on window for edge-bleed effects
-- Whether specific keys get unique treatments beyond the standard ones (e.g., number row styling like LCARS does with `key[code=48..57]`)
-- Whether the space bar gets a distinct shape (pill vs rectangle vs matching keys)
+```
+shadow-color:         Override default shadow color (default is derived from elevation)
+letter-spacing:       Adjust character spacing, e.g., "0.5sp"
+line-height:          Adjust line height for multi-line text
+text-decoration-line: "none", "underline", "line-through"
+background-image:     URL or resource reference for background images
+content-scale:        Scale factor for content rendering
+@font:                Custom font reference in @defines block
+```
 
 ---
 
-## Step 3 — Output
+## Step 7 — Output
 
 ### If Rapid-fire Mode
 
@@ -313,7 +509,7 @@ cd "$FLEX_DIR" && zip -r "/tmp/$THEME_ID.flex" . && cd -
 
 ---
 
-## Step 4 — Iterate
+## Step 8 — Iterate
 
 After the user tries the theme, they may come back with feedback like:
 - "The keys are too bright"
@@ -329,8 +525,92 @@ If the user uploads a new screenshot showing problems, analyze it to identify th
 
 ## Design Principles
 
-1. **Keys are the star.** The most important visual element. They need clear labels, obvious pressed feedback, and enough contrast to be instantly readable at arm's length.
-2. **Accent colors guide the eye.** ENTER and CTRL get primary color because they're action keys. Caps lock gets secondary because it's a state indicator. Don't put accent colors on regular letter keys.
-3. **The suggestion bar is secondary.** It should be readable but not compete with the keys. Candidate words use on-background color, not on-surface.
-4. **Flat is usually better than elevated.** `shadow-elevation: 0dp` gives a modern feel. Reserve shadows for popups and floating elements that need visual lift.
-5. **Test with real typing.** A theme that looks good in a screenshot may have invisible pressed states or unreadable hints at actual typing speed.
+### 1. Hierarchy Through Restraint
+
+A professional theme uses its full palette but distributes intensity deliberately:
+
+- **Primary accent appears in 3-4 places max**: ENTER key, CTRL key, active filter chip, the customize button. That's it. If primary is everywhere, nothing pops.
+- **Secondary accent appears in 3-5 places**: Caps lock indicator, focused emoji tab, subheaders, clipboard card actions, drag marker. Supporting role.
+- **Neutral tones do the heavy lifting**: 80%+ of the visible surface area (key backgrounds, panel backgrounds, card fills, text) should be neutral-derived. This is what makes the accents actually accenting.
+
+### 2. Surface Temperature Variation
+
+Sub-panels should feel like distinct rooms in the same house — clearly related but not identical:
+
+- **Main keyboard**: The "living room." Warmest neutral or most saturated surface tone. This is what the user sees 95% of the time.
+- **Clipboard panel**: Can skew slightly cooler or use `--background-variant` to feel like a separate space. The filter row having its own background color reinforces this.
+- **Actions editor**: A utility space. Can be slightly darker/more muted than the main keyboard.
+- **Emoji panel**: Can be slightly warmer — emoji are colorful, so a neutral-warm background lets them breathe.
+
+This variation should be SUBTLE — 5-10% lightness shift, or a slight hue rotation. Not different-theme-level different.
+
+### 3. Card and Chip Surfaces Are Branding Opportunities
+
+The clipboard cards and filter chips are the largest and most distinctive non-key surfaces. They deserve deliberate treatment:
+
+- **Clipboard cards**: Their shape, shadow, and fill define the clipboard panel's personality. A flat card on a dark theme with 0dp shadow and tight radius feels technical. A card with 2dp shadow and 12dp radius feels cozy. A card with cut-corners feels sci-fi.
+- **Active filter chips**: Primary-filled pill with on-primary text. This is one of the most concentrated hits of your theme's brand color. Make sure the inactive-to-active transition feels satisfying (enough contrast difference to feel like a real toggle).
+- **Action tiles**: The 4-column grid in the actions editor — each tile is a mini card. Their shape/padding/margin define the grid's density and feel.
+
+### 4. Pressed States Must Be Obvious at Speed
+
+When typing at 60+ WPM, the user needs instant visual confirmation that a key registered. The pressed state must differ from default by enough to be perceived in <100ms:
+
+- **Dark themes**: Pressed surface should be darker (toward background) OR lighter (toward popup-surface). At least 15% lightness delta.
+- **Light themes**: Pressed surface should be notably darker. Light-on-light pressed states are invisible.
+- **Accent keys** (ENTER, CTRL): Use `--primary-variant` — a visibly darker/more saturated version of primary.
+- **Candidate words**: Pressed state should add a visible fill where there was none (transparent → surface).
+
+### 5. Typography Sizes Are Load-Bearing
+
+Don't change font sizes arbitrarily. These sizes are tuned for the physical layout:
+
+```
+22sp — Key labels. The right size for thumb-distance readability.
+18sp — View switcher keys (?123, ABC). Slightly smaller because they're text, not single characters.
+16sp — Headers (clipboard, actions editor, subtype panel). Title-weight text.
+14sp — Body text (candidate words, clipboard items, action tiles). Readable at smaller size.
+12sp — Secondary text (spacebar label, clipboard descriptions, timestamps). Supplementary.
+ 8sp — Tertiary (candidate secondary text). Minimal.
+ 6sp — Key hints. Tiny superscripts, monospace.
+```
+
+### 6. Shapes Tell a Story
+
+The mix of shapes across a theme creates a visual language:
+
+- **All rounded-corner(8dp)**: Safe, neutral, modern. The default. Fine but not distinctive.
+- **Mix of rounded + cut-corner**: Technical, sci-fi. Cut-corners on number row + rounded on letter keys = visual hierarchy through geometry.
+- **Mix of sharp + pill**: Bold contrast. Rectangle keys with pill spacebar = instant personality.
+- **All cut-corner**: Committed aesthetic (LCARS-style). Works but needs confident color choices to support it.
+- **Asymmetric corners** (e.g., top-left rounded, others sharp): Avant-garde. Use sparingly — maybe just on panels.
+
+Pick a shape story and commit to it. Don't use 5 different radii without purpose.
+
+### 7. The Window Clip Trick
+
+Setting `"clip": "no"` on the `window` rule lets keys render outside the keyboard bounds. Combined with `shadow-elevation`, this creates a subtle "keys floating above the frame" effect. It's a small detail but it elevates flat themes.
+
+### 8. Color Harmony Models
+
+When extracting or creating palettes, use one of these proven models:
+
+- **Complementary**: Two hues opposite on the color wheel (primary + secondary). High contrast, energetic. E.g., coral + cyan (LCARS).
+- **Analogous**: 2-3 hues adjacent on the wheel. Harmonious, low-contrast. E.g., forest green + teal + blue.
+- **Split-complementary**: One hue + two adjacent to its complement. Vibrant but less tense than straight complementary. E.g., purple + yellow-green + yellow-orange.
+- **Monochromatic**: One hue at multiple lightness/saturation levels + a neutral. Sophisticated, restrained. E.g., five shades of blue + warm gray.
+- **Triadic**: Three equidistant hues. Rich but needs careful saturation management. E.g., red + blue + yellow (desaturated to burgundy + navy + gold).
+
+State which model you're using. It grounds your choices.
+
+### 9. Every Rule Gets Attention
+
+Do NOT phone it in on lesser-used surfaces. The clipboard disabled state, the clear-all dialog, the landscape extracted input, the one-handed panel — these all need colors that trace back to your brand palette. A user who opens the clipboard panel should feel like they're still in the same theme, not looking at unstyled defaults.
+
+Specifically, check these commonly-neglected rules:
+- `clipboard-clear-all-dialog-button` — should it be primary-filled or ghost?
+- `clipboard-history-disabled-button` — this is a call-to-action, use primary
+- `smartbar-actions-editor-subheader` — uses secondary accent, not just plain foreground
+- `smartbar-actions-editor-tile[code=-999]` and `[code=-991]` — disabled and drag states
+- `extracted-landscape-input-field` — has border-color and border-width, don't leave them default
+- `media-emoji-key-popup-extended-indicator` — can use "inherit" or a specific color
