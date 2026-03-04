@@ -423,13 +423,16 @@ private fun TextKeyButton(
         FlorisImeUi.Attr.DevRowState to if (devRowEnabled) "active" else "none",
     )
 
+    val isToggleActive = when (key.computedData.code) {
+        KeyCode.CTRL -> evaluator.state.isCtrlPressed || evaluator.state.isCtrlLocked
+        KeyCode.TOGGLE_NUMBER_ROW -> numberRowEnabled
+        KeyCode.TOGGLE_DEV_ROW -> devRowEnabled
+        else -> false
+    }
     val selector = when {
         !key.isEnabled -> SnyggSelector.DISABLED
         key.isPressed -> SnyggSelector.PRESSED
-        key.computedData.code == KeyCode.CTRL && evaluator.state.isCtrlLocked -> SnyggSelector.HOVER
-        key.computedData.code == KeyCode.CTRL && evaluator.state.isCtrlPressed -> SnyggSelector.FOCUS
-        key.computedData.code == KeyCode.TOGGLE_NUMBER_ROW && numberRowEnabled -> SnyggSelector.FOCUS
-        key.computedData.code == KeyCode.TOGGLE_DEV_ROW && devRowEnabled -> SnyggSelector.FOCUS
+        isToggleActive -> SnyggSelector.PRESSED
         else -> SnyggSelector.NONE
     }
     val size = remember(key, desiredKey) {
