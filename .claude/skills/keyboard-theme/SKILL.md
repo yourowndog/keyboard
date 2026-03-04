@@ -52,8 +52,16 @@ Brand-5 (Neutral light)    — Light reference. Text on dark, borders on light.
 Brand-6+ (Optional accent)  — Tertiary colors for special treatments (number row, popups, etc.)
 ```
 
-State these colors explicitly before proceeding. Example:
-> **Brand palette:** #FF6A4D (warm coral), #5AC7E0 (cool cyan), #0B0D13 (near-black), #5E6573 (slate), #C7CCD8 (silver), #1A2530 (deep navy)
+State these colors explicitly before proceeding, giving each a **descriptive name** that will become the root of its variable family in `@defines`. Example:
+> **Brand palette:**
+> - **coral** #FF6A4D — warm orange-red, the signature accent
+> - **cyan** #5AC7E0 — cool complement, secondary accent
+> - **void** #0B0D13 — near-black base
+> - **hull** #5E6573 — slate gray neutral
+> - **silver** #C7CCD8 — light neutral for text
+> - **navy** #1A2530 — deep blue-gray for specialty surfaces
+
+These names become the variable prefixes: `--coral-neon`, `--coral-dim`, `--void-deep`, `--hull-700`, etc.
 
 ---
 
@@ -86,32 +94,73 @@ For any tonal step, you can also create alpha variants:
 
 Now assign derived colors to the `@defines` variables. This is where design judgment matters most.
 
-### Required Variables
+### CRITICAL: Use Descriptive Color Names, Not Generic Roles
 
-Every theme MUST define all of these:
+**Do NOT use generic variable names like `--primary`, `--surface`, `--on-background`.** These are meaningless when the user sees them in the theme selector — they can't tell what color `--primary` actually is without opening the JSON.
+
+**DO use names that describe the actual color.** The user should be able to infer the hex value from the name alone. Follow the naming patterns established in the existing LCARS themes:
+
+Good examples from existing themes:
+```
+--coral-neon          (you know it's bright orange-red)
+--coral-deep          (darker coral)
+--coral-dim           (muted coral)
+--coral-glass         (translucent coral)
+--cyan-neon           (bright cyan)
+--cyan-bright         (slightly less intense cyan)
+--cyan-dim            (dark cyan)
+--cyan-glass          (translucent cyan)
+--gold-prime          (bright gold)
+--gold-dim            (dark gold)
+--tac-red-alert       (vivid red)
+--tac-red-neon        (brightest red)
+--tac-red-mid         (mid red)
+--tac-red-dark        (very dark red)
+--tac-amber-gold      (amber/gold)
+--tac-amber-text      (lighter amber for text)
+--void-prime          (pure/near black)
+--void-deep           (deepest black)
+--void-panel          (slightly lighter black for panels)
+--void-glass          (translucent black)
+--hull-100 .. hull-900  (gray scale with "hull" personality, numbered light-to-dark)
+--med-accent-teal     (medical teal)
+--med-alert-coral     (medical alert coral)
+```
+
+**Naming Pattern:** `--{color-family}-{intensity}` or `--{theme-prefix}-{color}-{intensity}`
+
+- Color family: the actual hue name (coral, cyan, gold, amber, teal, violet, moss, slate, etc.)
+- Intensity: neon/bright/base/mid/dim/dark/deep or numbered scales (100-900)
+- Special suffixes: `-glass` for alpha variants, `-text` for text-optimized variants
+- Neutrals: name the neutral after something evocative (void, hull, ash, carbon, smoke, bone, chalk, etc.)
+
+The `@defines` block IS the user's interface for manual tweaks. Make it self-documenting.
+
+### Required Semantic Slots
+
+Every theme must cover all these semantic roles. The VARIABLE NAMES should be descriptive (as above), but the comments below show what role each fills:
 
 ```
---primary              Brand-1, step 3 (base). ENTER key, active filter chips, action buttons.
---primary-variant      Brand-1, step 1 or 2. Pressed state for primary elements.
---secondary            Brand-2, step 3 (base). Caps lock, focused emoji tab, subheaders.
---background           Brand-3, step 1 (darkest) for dark themes, step 5 (lightest) for light.
---background-variant   Brand-3, one step lighter/darker than --background. Panel interiors.
---surface              Brand-4, step 2 for dark, step 4 for light. Key caps, cards.
---surface-variant      Brand-4, one step toward background. Pressed keys, secondary panels.
---popup-surface        Distinct from surface — popups should feel "lifted". Often step 2-3 of Brand-4.
---focused-popup-surface  Brand-2 or Brand-1 at step 3-4. Highlighted popup character.
---drag-marker          High-visibility. Brand-2 or a bright accent.
---spacer-color         Any neutral at ~0.25 alpha. Thin vertical dividers between candidate words.
---one-hand-background  Brand-3, step 1-2. Side panel when in one-handed mode.
---one-hand-foreground  Brand-1 or Brand-5. Arrow icons in one-handed panel.
---incognito-icon-color Any light color at ~0.07 alpha. Barely visible watermark.
---on-primary           High-contrast text on primary color. Usually near-white or near-black.
---on-background        Primary text on keyboard background. Must pass WCAG AA (4.5:1).
---on-background-disabled  Same hue as --on-background at ~0.30 alpha.
---on-surface           Primary text on key surfaces. Key labels — highest readability priority.
---on-surface-variant   Secondary text on keys. Hints, spacebar label. ~0.50-0.70 alpha or muted hue.
---shape                Default key corners. "rounded-corner(Ndp, Ndp, Ndp, Ndp)"
---shape-variant        Larger radius for panels and cards. 12-24dp typically.
+# Primary accent — ENTER key, CTRL key, active filter chips, action buttons
+# Primary pressed — darker/shifted primary for pressed states
+# Secondary accent — caps lock indicator, focused emoji tab, subheaders, drag marker
+# Deep background — keyboard window background, panel backgrounds
+# Alt background — slightly different background for editors/panels
+# Key surface — default key cap fill (the most-seen color)
+# Key surface pressed — pressed key fill (must differ by 15%+ lightness from default)
+# Popup surface — long-press popup background (should feel "lifted")
+# Popup focus — highlighted character in popup (accent color)
+# Spacer divider — thin vertical lines between candidates (~0.25 alpha)
+# One-hand panel bg — side panel background
+# One-hand panel fg — side panel arrow icons
+# Incognito tint — barely-visible watermark (~0.07 alpha)
+# Text on primary — high-contrast text on primary-colored surfaces
+# Text on background — primary text on keyboard background (WCAG AA)
+# Text disabled — muted text (~0.30 alpha)
+# Text on keys — key labels (highest readability priority)
+# Text on keys secondary — hints, spacebar label (~0.50-0.70 alpha or muted hue)
+# Key shape — default corner radius
+# Panel shape — larger radius for cards/panels
 ```
 
 ### Strongly Recommended Variables
@@ -119,9 +168,9 @@ Every theme MUST define all of these:
 Add these unless you have a specific reason not to:
 
 ```
---shape-chip           Pill shape for filter chips: "rounded-corner(50%, 50%, 50%, 50%)"
---pill-shape           Pill for spacebar or buttons: "rounded-corner(24dp, 24dp, 24dp, 24dp)"
---secondary-variant    Brand-2, step 1-2. Pressed state for secondary elements.
+# Chip shape — pill for filter chips: "rounded-corner(50%, 50%, 50%, 50%)"
+# Pill shape — for spacebar or rounded buttons: "rounded-corner(24dp, 24dp, 24dp, 24dp)"
+# Secondary pressed — darker secondary for pressed states
 ```
 
 ### Optional Specialty Variables
@@ -129,12 +178,11 @@ Add these unless you have a specific reason not to:
 Add when the design calls for differentiated sub-regions:
 
 ```
---numrow-bg            Number row background (e.g., darker or tinted differently from letter keys)
---numrow-fg            Number row text color (can be an accent for visual distinction)
---numrow-border        Number row key border
---panel-header-bg      Shared header background for clipboard/actions editor panels
---chip-active-bg       Active filter chip fill (can differ from --primary for variety)
---popup-indicator      Extended-popup "more available" indicator color
+# Number row bg — darker or tinted differently from letter keys
+# Number row fg — text color (can be an accent for visual distinction)
+# Number row border — key border color
+# Panel header bg — shared header background for clipboard/actions editor
+# Glass/translucent variants — for overlay surfaces (append -glass to the color family)
 ```
 
 ---
