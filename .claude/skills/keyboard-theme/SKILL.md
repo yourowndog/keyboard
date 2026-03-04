@@ -324,7 +324,22 @@ Full-height panel for emoji input.
 
 ## Step 6 — Generate the Full Stylesheet
 
-Read `floris_night.json` in `app/src/main/assets/ime/theme/org.florisboard.themes/stylesheets/` as the structural baseline. The complete set of rules below must ALL be present in every theme. Do not omit rules — a partial stylesheet will render incorrectly.
+### COMPLETENESS IS NON-NEGOTIABLE
+
+Every rule listed below MUST be present in the output. No exceptions. A theme with missing rules means unstyled surfaces fall back to engine defaults — which means the user opens the clipboard or emoji panel and sees a jarring mismatch with generic gray where their carefully designed theme should be.
+
+**Before declaring a theme done, count your rules.** The minimum complete set is 70+ rules. If your output has fewer than 60 rules, you've forgotten entire panels. Cross-reference against `floris_night.json` if in doubt.
+
+Common rules that get forgotten:
+- `key[code=10]:pressed` and `key[code=-1]:pressed` / `key[code=-1]:focus` (people merge ENTER/CTRL into one rule and lose the pressed/focus states)
+- `key[code=-11][shiftstate=caps_lock]` (caps lock indicator — critical UX feedback)
+- The entire clipboard dialog family (`clipboard-clear-all-dialog*`, `clipboard-history-disabled-*`, `clipboard-history-locked-*`)
+- Landscape extracted input (`extracted-landscape-*`)
+- One-handed panel and subtype panel
+- Emoji popups (`media-emoji-key-popup-box`, `media-emoji-key-popup-element:focus`)
+- `glide-trail`, `incognito-mode-indicator`, `inline-autofill-chip`
+
+Read `floris_night.json` in `app/src/main/assets/ime/theme/org.florisboard.themes/stylesheets/` as the structural baseline.
 
 ### Complete Rule Structure
 
