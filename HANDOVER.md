@@ -1,429 +1,178 @@
-# OmniBoard Autocorrect System - Handover Document
-**Date:** 2026-02-17
-**Last Build:** 4332513a (http://142.93.94.124:8000/omni.apk)
+# Handover: Sticky/Lock Visual States for Ctrl, Toggle Number Row, Toggle Dev Row
 
----
+## Goal
 
-## 🚨 CRITICAL BUG DISCOVERED
+Three special keys need persistent visual feedback showing their active/locked state AFTER the finger lifts:
 
-**Symptom:** No suggestions or autocorrect appearing when typing
-**Test Case:** Typed `wouldf you like tk go to the stoee wkth me?` - zero corrections
-**Context:** Tested in OmniBoard settings text field (might be special input type)
+- **Ctrl** (`KeyCode.CTRL`, code `-1`): single-tap = "active" (sticky), double-tap = "locked" (persistent)
+- **Toggle Number Row** (`KeyCode.TOGGLE_NUMBER_ROW`, code `-305`): lit when number row is visible
+- **Toggle Dev Row** (`KeyCode.TOGGLE_DEV_ROW`, code `-306`): lit when dev row is visible
 
-**Likely Cause:** Input field type detection blocking suggestions
-- Settings fields may be marked as `TYPE_TEXT_VARIATION_FILTER` or similar
-- Check `EditorInfo.inputType` for special flags that disable suggestions
+Currently, none of these show any visual change after the finger lifts. The standard `:pressed` finger-down flash works fine — it's the persistent post-release state that's broken.
 
-**Next Steps:**
-1. Test in a normal app (Messages, Notes) to verify autocorrect works
-2. Check `activeInfo.isRawInputEditor` in AbstractEditorInstance.kt:398
-3. Add logging to see what input type the settings field reports
-4. Verify SymSpellManager initialization with logs
+## What Was Done
 
----
-
-## 📋 TODAY'S WORK SUMMARY
-
-### 1. Harvest System Improvements ✅
-**Commit:** 4332513a - "feat(harvest): comprehensive logging and analysis system"
-
-**What Changed:**
-- Added session source tagging (TYPING vs VOICE) to separate voice transcription from manual typing
-- Added 4 new event types for failure detection:
-  - `NO_SUGGESTION` - When no autocorrect offered (dictionary gap)
-  - `MULTI_ATTEMPT` - Multiple correction attempts (user struggling)
-  - `IGNORED_SUGGESTIONS` - Suggestions shown but all ignored
-  - `BACKSPACE_STORM` - High backspace count (high-effort word)
-- Created `harvest_analyze.py` for automated analysis with typing/voice separation
-- Lowered thresholds to 2 (aggressive pattern detection for young autocorrect)
-- Added 390 personal bigrams from typing patterns
-- Voice input now tagged as SESSION:VOICE before flushing
-
-**Files Modified:**
-- `HarvestManager.kt` - New event types, session source tracking
-- `KeyboardManager.kt` - Voice session tagging in stopVoiceCapture()
-- `harvest_analyze.py` - NEW: Multi-source analyzer
-- `GEMINI.md` - Full documentation
-- `HARVEST_SYSTEM.md` - NEW: Quick reference guide
-
-### 2. Context-Aware Autocorrect ✅
-**Commit:** 9aa51797 - "feat(nlp): add hybrid context-aware blocking and boost bigram influence"
-
-**What Changed:**
-- Removed "id" from CONTRACTION_SHORTCUTS (line 63 SymSpellManager.kt)
-- Increased BIGRAM_WEIGHT from 0.5 → 5.0 (CandidateScorer.kt:28)
-- Added grammatical blocking:
-  - Possessives (my/your/his) + contractions = blocked
-  - Determiners (the/this/that) + contractions = blocked
-- Added bigram validation: typed word with 2x stronger bigram blocks correction
-
-### 3. Dictionary Updates ✅
-**Added to unified_dictionary.tsv:**
-- texted, messaged, ya, Ya, ai, AI, Aww, aww (previous session)
-- blinker, blinkers (today)
-
-### 4. Bigrams ✅
-- Added 390 personal bigrams to final_mobile_bigrams.tsv
-- Filtered out stutters, Welsh artifacts, "like" filler patterns
-
----
-
-## 🏗️ AUTOCORRECT ARCHITECTURE
-
-### The Pipeline (How Autocorrect Works)
+### 1. Added Snygg attribute constants (`FlorisImeUi.kt`)
 
 ```
-User types word → Composing text buffer
-        ↓
-User presses SPACE → AbstractEditorInstance.commitText() (line 402)
-        ↓
-Check if word separator + composing text exists
-        ↓
-NlpManager.getAutoCommitCandidate() → Get top suggestion
-        ↓
-LatinLanguageProvider.suggest() → Generate candidates
-        ↓
-SymSpellManager.suggest(input, previousWord) → SymSpell lookup
-        ↓
-NgramSuggestionEngine.rank() → Score with bigrams
-        ↓
-Top candidate (isEligibleForAutoCommit=true) → Auto-commit
-        ↓
-Replace composing text with corrected word + separator
+app/src/main/kotlin/dev/patrickgold/florisboard/ime/theme/FlorisImeUi.kt
 ```
 
-### Key Functions
-
-**SymSpellManager.kt:**
-- `suggest(input, previousWord)` → Returns List<String> of suggestions
-- `fix(input, previousWord)` → Direct autocorrect (NOT used in pipeline!)
-- `hasWord(word)` → Check if word exists in dictionary
-- MAX_EDIT_DISTANCE = 2
-- PREFIX_LENGTH = 7
-
-**CandidateScorer.kt:**
-- `score(typed, candidate, editDistance, prevWord, isInUserDict)` → Lower = better
-- BIGRAM_WEIGHT = 5.0
-- Handles anti-corrections, grammatical blocking, bigram validation
-- Spatial cost calculation for typo likelihood
-
-**AbstractEditorInstance.kt:**
-- `commitText(text)` (line 393) → Main autocorrect trigger
-- Line 402: Check if word separator + composing text
-- Line 409: Get auto-commit candidate from NLP manager
-- Line 414-437: Replace composing word with correction
-
-**LatinLanguageProvider.kt:**
-- `suggest()` (line 266) → Calls SymSpellManager.suggest()
-- Line 277: `isEligibleForAutoCommit = upperCount < 2`
-- Returns WordSuggestionCandidates
-
-**NlpManager.kt:**
-- `getAutoCommitCandidate()` (line 253) → First eligible candidate
-- `suggest()` (line 199) → Triggers suggestion generation
-- `activeCandidates` → Current suggestion list
-
----
-
-## 🗂️ KEY FILES & LOCATIONS
-
-### Autocorrect Core
-```
-app/src/main/kotlin/dev/patrickgold/florisboard/ime/nlp/
-├── SymSpellManager.kt           # Dictionary lookup, suggestion generation
-├── shared/
-│   ├── CandidateScorer.kt       # Unified scoring (edit distance + bigrams + spatial)
-│   ├── BigramTable.kt           # Bigram frequency lookup
-│   └── CasingUtils.kt           # Smart casing (Christmas, I'm, etc.)
-├── PersonalPreferences.kt       # Anti-corrections map
-├── NlpManager.kt                # Orchestrates suggestion providers
-├── SuggestionEngine.kt          # NgramSuggestionEngine (ranking)
-└── latin/
-    └── LatinLanguageProvider.kt # Calls SymSpell, creates candidates
-```
-
-### Editor Integration
-```
-app/src/main/kotlin/dev/patrickgold/florisboard/ime/
-├── editor/
-│   ├── AbstractEditorInstance.kt  # commitText() - autocorrect trigger (line 402)
-│   └── EditorInstance.kt          # Harvest logging, undo state
-└── keyboard/
-    └── KeyboardManager.kt         # Voice tagging, space handling
-```
-
-### Dictionaries & Data
-```
-app/src/main/assets/ime/dict/
-├── unified_dictionary.tsv         # CANONICAL word list (word \t frequency)
-├── final_mobile_bigrams.tsv       # Bigram pairs (word1 word2 \t frequency)
-└── [other legacy files]
-```
-
-### Harvest System
-```
-keyboard-local/
-├── harvest.py                     # Sync data from phone to repo
-├── harvest_analyze.py             # Generate reports from harvest data
-├── usage_harvest.md               # Local copy of harvest data
-├── HARVEST_SYSTEM.md              # Quick reference
-├── GEMINI.md                      # Full documentation
-└── [Generated outputs:]
-    ├── harvest_summary.md         # Stats + recommendations
-    ├── anti_corrections.txt       # For PersonalPreferences.kt
-    ├── dictionary_additions.txt   # For unified_dictionary.tsv
-    ├── bigrams_combined.tsv       # For final_mobile_bigrams.tsv
-    └── problem_patterns.txt       # Autocorrect failures
-```
-
----
-
-## 🐛 DEBUGGING THE NO-SUGGESTIONS BUG
-
-### Hypothesis: Input Field Type Blocking
-
-**Check 1: Input Type Detection**
-Location: `AbstractEditorInstance.kt:398`
+Added to `FlorisImeUi.Attr` object (~line 390):
 ```kotlin
-if (activeInfo.isRawInputEditor) {
-    ic.finishComposingText()
-    ic.commitText(text, 1)
+const val CtrlState = "ctrlstate"
+const val NumberRowState = "numberrowstate"
+const val DevRowState = "devrowstate"
 ```
 
-If `isRawInputEditor = true`, autocorrect is skipped entirely.
+### 2. Wired attributes into key rendering (`TextKeyboardLayout.kt`)
 
-**Check 2: EditorInfo Flags**
-Add logging in `EditorInstance.kt` or `AbstractEditorInstance.kt`:
+```
+app/src/main/kotlin/dev/patrickgold/florisboard/ime/text/keyboard/TextKeyboardLayout.kt
+```
+
+In `TextKeyButton()` (~line 410), the attributes map now includes:
 ```kotlin
-android.util.Log.d("AutocorrectDebug", "InputType: ${activeInfo.inputType}, isRaw: ${activeInfo.isRawInputEditor}")
+FlorisImeUi.Attr.CtrlState to when {
+    evaluator.state.isCtrlLocked -> "locked"
+    evaluator.state.isCtrlPressed -> "active"
+    else -> "none"
+},
+FlorisImeUi.Attr.NumberRowState to if (numberRowEnabled) "active" else "none",
+FlorisImeUi.Attr.DevRowState to if (devRowEnabled) "active" else "none",
 ```
 
-Common flags that disable suggestions:
-- `TYPE_TEXT_VARIATION_PASSWORD`
-- `TYPE_TEXT_VARIATION_VISIBLE_PASSWORD`
-- `TYPE_TEXT_VARIATION_EMAIL_ADDRESS`
-- `TYPE_TEXT_FLAG_NO_SUGGESTIONS`
-- Settings fields might use `TYPE_TEXT_VARIATION_FILTER`
+Where `numberRowEnabled` / `devRowEnabled` come from `prefs.keyboard.numberRow.observeAsState()` (Compose state observation).
 
-### Check 3: SymSpell Initialization
-
-Add logging to verify dictionary loaded:
+The old DEBUG hacks were removed from the selector:
 ```kotlin
-// In SymSpellManager.kt after line 178
-android.util.Log.i("SymSpellManager",
-    "Loaded $loadedWords words, isReady=$isReady, prefixIndex=${prefixIndex.size}")
+// REMOVED:
+// key.computedData.code == KeyCode.CTRL && evaluator.state.isCtrlPressed -> SnyggSelector.FOCUS
+// key.computedData.code == KeyCode.TOGGLE_NUMBER_ROW -> SnyggSelector.PRESSED // DEBUG
+// key.computedData.code == KeyCode.TOGGLE_DEV_ROW -> SnyggSelector.PRESSED // DEBUG
 ```
 
-Expected output: `Loaded ~300000 words, isReady=true, prefixIndex=~26 prefixes`
+### 3. Added theme selectors to all 4 LCARS stylesheets
 
-If `loadedWords = 0`, dictionary failed to load.
-
-### Check 4: Suggestion Generation
-
-Add logging in `LatinLanguageProvider.kt:266`:
-```kotlin
-val suggestions = dev.patrickgold.florisboard.ime.nlp.SymSpellManager.suggest(
-    input = currentWordRaw,
-    previousWord = previousWord,
-)
-android.util.Log.d("Suggestions", "Input: '$currentWordRaw' → ${suggestions.size} suggestions: $suggestions")
+Example from `lcars_neon.json` (currently has DEBUG hardcoded colors):
+```json
+"key[code=-1][ctrlstate=`active`]": {
+    "background": "#00FF00",
+    "foreground": "#000000"
+},
+"key[code=-305][numberrowstate=`active`]": {
+    "background": "#FF0000",
+    "foreground": "#FFFFFF"
+}
 ```
 
-### Check 5: Auto-Commit Eligibility
+All 4 LCARS themes were updated: `lcars.json`, `lcars_neon.json`, `lcars_tactical.json`, `lcars_sickbay.json`.
 
-Add logging in `NlpManager.kt:257`:
-```kotlin
-val result = activeCandidates.take(3).firstOrNull { it.isEligibleForAutoCommit }
-android.util.Log.d("AutoCommit", "Active candidates: ${activeCandidates.size}, Auto-commit: $result")
-return result
-```
+### 4. Updated docs
 
----
+`SNYGG/SNYGG_REFERENCE.md` and `SNYGG_REALITY/SNYGG_CHEATSHEET.md` updated with new attributes.
 
-## 🧪 TEST CASES
+## What Was Tested
 
-### Immediate Tests (Normal App)
+- Built and installed via factory remote (`git push factory dev`)
+- Tested on Neon theme with hardcoded bright colors (#FF0000, #00FF00, #FF00FF)
+- **Result: NONE of the colors appeared.** The toggle keys and Ctrl key show only the standard `:pressed` flash and nothing persistent.
 
-**Test in Messages/Notes app (NOT OmniBoard settings):**
+## What Was Verified (Code-Level)
 
-1. **Extra character deletion:**
-   - Type: `wouldf` + SPACE
-   - Expected: `would `
-   - Current: ❌ NO CORRECTION
+All of these were traced through and appear correct:
 
-2. **Simple substitution:**
-   - Type: `tk` + SPACE
-   - Expected: `to `
-   - Current: ❌ NO CORRECTION
+1. **Snygg regex parsing** — Python simulation confirms `key[code=-305][numberrowstate=`active`]` parses correctly into attributes `{code: ["-305"], numberrowstate: ["active"]}`
 
-3. **Typo with context:**
-   - Type: `blibker` + SPACE
-   - Expected: `blinker ` (just added to dictionary)
-   - Current: ❌ NO CORRECTION
+2. **Snygg attribute matching** — `SnyggAttributes.isMatchForQuery()` in `SnyggTheme.kt:166` does `query[attrKey]?.toString()` and checks `contains()`. String values like `"active"` match backtick-stripped values from the theme JSON.
 
-4. **Single letter:**
-   - Type: `s` + SPACE
-   - Expected: `a ` (line 267 SymSpellManager.kt)
-   - Current: ❌ NO CORRECTION
+3. **Snygg style cascade** — `SnyggTheme.query()` iterates ALL matching rules sorted by specificity. Rules with more attributes sort after (override) rules with fewer. So `key[code=-305][numberrowstate=`active`]` (2 attrs) overrides `key[code=-305,-306]` (1 attr).
 
-5. **Bigram context:**
-   - Type: `my id` + SPACE
-   - Expected: `my id ` (NOT "my I'd" - blocked by possessive rule)
-   - Current: ❓ UNKNOWN
+4. **Snygg selector matching** — Rules with no `:pressed`/`:focus` suffix have `SnyggSelector.NONE`, which matches any query selector per `SnyggSelector.isMatchForQuery()`.
 
-### Harvest Data Tests
+5. **Ctrl state sources exist** — `activeState.isCtrlPressed` and `isCtrlLocked` are real boolean flags in `KeyboardState.kt` (bit flags in `rawValue`). `handleCtrlDown()` in `KeyboardManager.kt:803` sets them.
 
-After fixing, use keyboard normally and run:
+6. **Toggle pref sources exist** — `prefs.keyboard.numberRow` and `prefs.keyboard.devRow` are boolean prefs toggled by `KeyboardManager.kt:1172-1177`.
+
+7. **Evaluator update chain** — `KeyboardManager.kt:363`: `activeState.collectLatestIn(scope) { updateActiveEvaluators() }`. When `activeState` changes, a new evaluator is created with a fresh `activeState.snapshot()` and emitted to `_activeEvaluator` StateFlow. `TextInputLayout.kt:55` collects this: `val evaluator by keyboardManager.activeEvaluator.collectAsState()`.
+
+8. **`shiftstate` works with same mechanism** — `InputShiftState.CAPS_LOCK.toString()` returns `"caps_lock"` which matches theme selector `key[code=-11][shiftstate=`caps_lock`]`. This uses the exact same attribute matching path.
+
+## Potential Issues / Things NOT Yet Verified
+
+### Theory 1: Theme files aren't being loaded from assets (MOST LIKELY)
+Maybe the Neon theme stylesheet loaded at runtime is NOT the one from `assets/ime/theme/`. FlorisBoard's extension system may cache/install themes to app storage on first run, and subsequent APK installs may not overwrite the cached copy.
+
+**How to test:** Add a completely new obviously-wrong rule like `"key": { "background": "#FF0000" }` as the FIRST rule in `lcars_neon.json`. If ALL keys don't turn red on install, the file isn't being loaded and there's a caching issue. You may need to clear app data or uninstall/reinstall.
+
+### Theory 2: `shiftstate` doesn't actually work either
+We ASSUMED `shiftstate` attribute selectors work because they exist in themes. But maybe they DON'T work and the caps lock indicator uses a different mechanism entirely (like Compose-side logic outside Snygg).
+
+**How to test:** Add `"key[code=-11][shiftstate=`caps_lock`]": { "background": "#FF0000" }` to a theme and verify caps lock actually turns the shift key red.
+
+### Theory 3: Evaluator snapshot timing
+`evaluator.state` is a **snapshot** (frozen copy) created in `updateActiveEvaluators()`. The flow chain is async (`scope.launch`). Maybe the evaluator snapshot never captures the updated Ctrl state, or the Compose recomposition fires before the new evaluator is ready.
+
+**How to test:** Add logging in `updateActiveEvaluators()` printing `state.isCtrlPressed` to verify the snapshot captures the correct value after Ctrl is pressed.
+
+### Theory 4: The attribute map values aren't invalidating rememberQuery cache
+`SnyggUi.kt:254` uses `remember(this, elementName, attributes, mergedSelector, ...)`. If the `attributes` map identity doesn't trigger cache invalidation despite content changes, stale results would be returned.
+
+**How to test:** Temporarily replace `remember(...)` with just `query(...)` in `rememberQuery()` to disable caching entirely.
+
+### Theory 5: Rule parsing silently fails
+`SnyggElementRule.fromOrNull()` might return `null` for the new selectors, causing them to be silently dropped during theme compilation. The regex looks correct in theory, but edge cases are possible.
+
+**How to test:** Add logging in `SnyggStylesheet` deserialization or `SnyggTheme.compileFrom()` to print all parsed rule strings and verify attribute selectors appear.
+
+## Key Files
+
+| File | Purpose |
+|------|---------|
+| `app/.../ime/theme/FlorisImeUi.kt` | `Attr` constants (lines 390-396) |
+| `app/.../ime/text/keyboard/TextKeyboardLayout.kt` | `TextKeyButton()` attributes + selector (lines 404-430) |
+| `lib/snygg/src/.../SnyggRule.kt` | Attribute parsing regex (line 421), `SnyggAttributes.from()` (line 423), `compareTo()` (line 242) |
+| `lib/snygg/src/.../SnyggTheme.kt` | `query()` cascade (line 63), `isMatchForQuery()` (line 166), `rememberQuery()` lives in SnyggUi.kt (line 244) |
+| `lib/snygg/src/.../ui/SnyggUi.kt` | `rememberQuery()` with `remember()` cache (line 254), `ProvideSnyggStyle()` (line 194) |
+| `lib/snygg/src/.../ui/SnyggBox.kt` | `SnyggBox()` composable that TextKeyButton uses (line 58) |
+| `app/.../ime/keyboard/KeyboardManager.kt` | `handleCtrlDown()` (line 803), toggle handlers (line 1172), `updateActiveEvaluators()` (line 390), `activeState` flow collection (line 363) |
+| `app/.../ime/keyboard/KeyboardState.kt` | `isCtrlPressed`/`isCtrlLocked` flags (line 236), `ObservableKeyboardState` with StateFlow (line 249), `snapshot()` (line 110) |
+| `app/.../ime/keyboard/ComputingEvaluator.kt` | Interface defining `state: KeyboardState` (line 64), placeholder (line 88) |
+| `app/.../ime/text/TextInputLayout.kt` | `evaluator` collected as Compose state from `keyboardManager.activeEvaluator.collectAsState()` (line 55) |
+| `app/.../assets/ime/theme/com.brokentooth.lcars/stylesheets/*.json` | Theme stylesheet JSON files |
+| `app/.../assets/ime/theme/com.brokentooth.lcars/extension.json` | Theme extension manifest |
+
+## Current State of the Code
+
+Branch `dev` with 2 relevant commits:
+1. `6a33c4d7` — main implementation (attributes, theme selectors, docs, bigrams, smartbar/clipboard selectors)
+2. `a01c3d5c` — debug commit with hardcoded bright colors in `lcars_neon.json`
+
+The debug colors (#FF0000, #00FF00, #FF00FF) are still in `lcars_neon.json`. The Kotlin code is clean (no debug artifacts).
+
+## Recommended Next Steps
+
+1. **Test Theory 1 first** (theme caching) — it's the easiest and would explain everything. If the asset JSON files aren't being read at runtime, nothing we do in them matters. Try clearing app data or adding a rule that would break ALL keys visually.
+
+2. **Test Theory 2** — verify `shiftstate` actually works as a visual indicator. If it doesn't, the whole Snygg string-attribute mechanism may be non-functional and we'd need a different approach (e.g., going back to pseudo-selectors like `:focus`).
+
+3. **If themes ARE loading** — add logging in `SnyggTheme.query()` and `isMatchForQuery()` to trace whether the attribute selectors are being evaluated and whether they match.
+
+4. **Nuclear option** — if Snygg attribute matching is fundamentally broken, revert to using the selector-based approach: map active states to `:focus` selector in the Kotlin code and use `:focus` pseudo-selectors in themes. This is what the old Ctrl hack did and it worked.
+
+## Build & Test
+
 ```bash
-cd ~/keyboard-local
-python3 harvest.py              # Sync from phone
-python3 harvest_analyze.py      # Generate reports
-cat problem_patterns.txt        # Check for NO_SUGGESTION events
+# Build and deploy
+git push factory dev
+
+# APK URL after build
+http://142.93.94.124:8000/omni.apk
+
+# Remotes
+factory = ssh://silo@beksinski/home/silo/git/omniboard.git  (build server)
+origin = https://github.com/yourowndog/keyboard.git
+vault = /data/data/com.termux/files/home/vault/projects/keyboard
+
+# No ADB available — testing is on-device in Termux
 ```
-
----
-
-## 📊 HARVEST DATA INSIGHTS
-
-**Last Analysis (2026-02-16 23:31:03):**
-- Typing: 11,237 sessions, 53,752 words
-- Autocorrect accuracy: 51.2% (310 accepted / 295 rejected)
-- Top rejected: "s"→"so" (10x), "id"→"I'd" (13x) ← Both now fixed!
-
-**Current Thresholds (harvest_analyze.py):**
-```python
-MIN_WORD_FREQ = 2          # Dictionary addition threshold
-MIN_REJECTION_COUNT = 2    # Anti-correction threshold
-MIN_BIGRAM_FREQ = 2        # Bigram inclusion threshold
-```
-
-**Rationale:** Aggressive thresholds for rapid iteration workflow with frequent reinstalls.
-
----
-
-## 🔧 KNOWN ISSUES & FIXES
-
-### Fixed in Current Build ✅
-1. **"s" → "so" over-correction** → Now does "s" → "a" (line 267)
-2. **"id" → "I'd" in wrong contexts** → Removed from CONTRACTION_SHORTCUTS, uses context
-3. **Weak bigram influence** → BIGRAM_WEIGHT 0.5 → 5.0
-4. **Voice data polluting metrics** → SESSION:TYPING vs SESSION:VOICE separation
-5. **Missing dictionary words** → Added texted, messaged, ya, ai, blinker
-
-### Still Broken ❌
-1. **NO SUGGESTIONS APPEARING AT ALL** ← Current critical bug
-2. **Extra character not stripped** (e.g., "wouldf" → "would") ← Might be fixed once #1 resolved
-3. **Multiple typos per sentence** ← All failed, suggests #1 is the root cause
-
-### Not Yet Tested ⏳
-- Context-aware "id" handling (my id vs I'd like)
-- Grammatical blocking (the I'm, my I'd)
-- Bigram validation (typed word with stronger bigram wins)
-- Personal bigrams from typing patterns
-- New harvest event types (NO_SUGGESTION, MULTI_ATTEMPT, etc.)
-
----
-
-## 🚀 NEXT SESSION CHECKLIST
-
-### Immediate Priority
-1. [ ] Test autocorrect in normal app (Messages, not settings)
-2. [ ] Add logging to identify why no suggestions appear
-3. [ ] Check `isRawInputEditor` flag for settings fields
-4. [ ] Verify SymSpellManager initialization succeeded
-5. [ ] Confirm dictionary loaded (~300k words)
-
-### If Autocorrect Works (Just Input Field Issue)
-6. [ ] Test all 5 test cases above
-7. [ ] Verify context-aware "id" handling
-8. [ ] Verify bigram influence (type common phrases)
-9. [ ] Use keyboard normally to generate harvest data
-10. [ ] Run harvest_analyze.py to check for new patterns
-
-### If Autocorrect Still Broken
-6. [ ] Check Android logcat for errors during initialization
-7. [ ] Verify assets (unified_dictionary.tsv, final_mobile_bigrams.tsv) exist in APK
-8. [ ] Check if suggestion bar shows ANY candidates (even wrong ones)
-9. [ ] Test if manual suggestion selection works (tap suggestion)
-10. [ ] Bisect commits to find when it broke
-
-### After Autocorrect Works
-11. [ ] Apply recommendations from harvest_summary.md
-12. [ ] Add anti-corrections from anti_corrections.txt to PersonalPreferences.kt
-13. [ ] Add new words from dictionary_additions.txt to unified_dictionary.tsv
-14. [ ] Merge bigrams from bigrams_combined.tsv to final_mobile_bigrams.tsv
-15. [ ] Document any new patterns discovered
-
----
-
-## 📖 USEFUL COMMANDS
-
-### Building
-```bash
-cd ~/keyboard-local
-git add -A
-git commit -m "description"
-git push factory dev          # Triggers build
-# APK: http://142.93.94.124:8000/omni.apk
-```
-
-### Harvest Workflow
-```bash
-cd ~/keyboard-local
-python3 harvest.py            # Pull from /sdcard/Documents/usage_harvest.md
-python3 harvest_analyze.py    # Generate all reports
-cat harvest_summary.md        # Review stats
-cat problem_patterns.txt      # Check failures
-```
-
-### Dictionary Queries
-```bash
-cd ~/keyboard-local
-grep "^blinker" app/src/main/assets/ime/dict/unified_dictionary.tsv
-grep "would" app/src/main/assets/ime/dict/unified_dictionary.tsv
-wc -l app/src/main/assets/ime/dict/unified_dictionary.tsv  # Total words
-```
-
-### Android Logging (if accessible)
-```bash
-adb logcat | grep -E "SymSpell|Autocorrect|Suggestions"
-```
-
----
-
-## 💡 DESIGN NOTES
-
-### Why Two Functions: fix() vs suggest()?
-- `fix(input, previousWord)` → Direct single correction (NOT used in current pipeline)
-- `suggest(input, previousWord)` → List of candidates for ranking
-
-**Current pipeline uses suggest()** because:
-1. Suggestions need ranking with bigram context
-2. User might want to see alternatives in suggestion bar
-3. NgramSuggestionEngine does final scoring
-
-### Why Bigram Weight = 5.0?
-Previous value (0.5) was drowned out by edit distance and spatial costs. A bigram frequency of 100 only contributed 0.5 × log(100) ≈ 2.3 to the score, which was negligible. Now 5.0 × log(100) ≈ 23, making bigrams actually influential.
-
-### Why Aggressive Thresholds (MIN=2)?
-With frequent reinstalls and rapid iteration, waiting for 5+ occurrences means missing critical issues. The autocorrect is "young" and needs to learn fast from limited data.
-
----
-
-## 🎯 SUCCESS CRITERIA
-
-**Autocorrect is working when:**
-1. ✅ Typing `wouldf` + SPACE → `would `
-2. ✅ Typing `tk` + SPACE → `to `
-3. ✅ Typing `blibker` + SPACE → `blinker `
-4. ✅ Typing `s` + SPACE → `a ` (or `so` if we decide to change it)
-5. ✅ Typing `my id` + SPACE → `my id ` (NOT "my I'd")
-6. ✅ Suggestions visible in suggestion bar
-7. ✅ Harvest data shows <5% NO_SUGGESTION events
-8. ✅ Autocorrect accuracy >70% (from harvest_summary.md)
-
----
-
-**Last Updated:** 2026-02-17
-**Next Agent:** Start by testing in normal app, add logging if needed
-**Questions?** See GEMINI.md for full architecture, HARVEST_SYSTEM.md for workflow

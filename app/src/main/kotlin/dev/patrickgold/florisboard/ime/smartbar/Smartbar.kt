@@ -133,6 +133,10 @@ fun VoiceVisualizer(
     isTranscribing: Boolean,
     modifier: Modifier = Modifier,
 ) {
+    // Query the Smartbar Candidate Word theme to get the cyan/data color
+    val themeQuery = rememberSnyggThemeQuery(FlorisImeUi.SmartbarCandidateWord.elementName)
+    val themeColor = themeQuery.foreground().let { if (it.isUnspecified) Color.White else it }
+
     // Smooth the amplitude for organic feel
     val smoothAmplitude by animateFloatAsState(
         targetValue = amplitude,
@@ -151,15 +155,15 @@ fun VoiceVisualizer(
         ),
         label = "phase",
     )
-    // Center-out ripple radius: 0 → 0.6 (covers center to edge)
-    val rippleRadius by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 0.6f,
+    // Left-to-right scanning wave for processing state
+    val scanOffset by infiniteTransition.animateFloat(
+        initialValue = -0.2f,
+        targetValue = 1.2f,
         animationSpec = infiniteRepeatable(
-            animation = tween(6000, easing = LinearEasing),
+            animation = tween(2000, easing = LinearEasing),
             repeatMode = RepeatMode.Restart,
         ),
-        label = "rippleRadius",
+        label = "scanOffset",
     )
     // Gentle shimmer
     val shimmer by infiniteTransition.animateFloat(
@@ -178,33 +182,36 @@ fun VoiceVisualizer(
         val centerY = canvasHeight / 2f
 
         if (isTranscribing) {
-            // === PROCESSING: Center-out ripple ===
+            // === PROCESSING: Asymmetrical Scanning Wave ===
             val maxBarHeight = canvasHeight * 0.8f
-            val minBarHeight = canvasHeight * 0.05f
-            val barCount = 80
-            val totalUnits = barCount * 1.25f
+            val minBarHeight = canvasHeight * 0.1f
+            val barCount = 60
+            val totalUnits = barCount * 1.5f
             val unitWidth = canvasWidth / totalUnits
             val barWidth = unitWidth * 1.0f
-            val gapWidth = unitWidth * 0.25f
+            val gapWidth = unitWidth * 0.5f
 
             for (i in 0 until barCount) {
                 val x = (i * (barWidth + gapWidth)) + (gapWidth / 2f)
                 val fraction = i.toFloat() / barCount
 
-                // Distance from center (0 at center, 0.5 at edges)
-                val distFromCenter = Math.abs(fraction - 0.5f).toFloat()
-                // Gaussian pulse centered on the expanding ripple radius
-                val dist = (distFromCenter - rippleRadius).let { it * it }
-                val pulse = Math.exp((-dist * 25.0)).toFloat()
-                val bg = 0.06f + 0.03f * Math.sin((fraction * 4.0 * Math.PI) + shimmer).toFloat()
-                val height = minBarHeight + (maxBarHeight - minBarHeight) * (pulse * 0.85f + bg)
-                val alpha = 0.2f + 0.6f * pulse
+                // Distance from the current scan position
+                val dist = (fraction - scanOffset).let { it * it }
+                // Pulse centered on scanOffset
+                val pulse = Math.exp((-dist * 30.0)).toFloat()
+                
+                // Add some secondary wave motion for "alive" feel
+                val secondaryWave = 0.1f * Math.sin((fraction * 6.0 * Math.PI) + shimmer).toFloat()
+                
+                val height = minBarHeight + (maxBarHeight - minBarHeight) * (pulse * 0.9f + Math.abs(secondaryWave))
+                val alpha = 0.15f + 0.75f * pulse
 
                 val y = (canvasHeight - height) / 2f
-                drawRect(
-                    color = Color.White.copy(alpha = alpha),
+                drawRoundRect(
+                    color = themeColor.copy(alpha = alpha),
                     topLeft = Offset(x, y),
                     size = Size(barWidth, height),
+                    cornerRadius = CornerRadius(barWidth / 2f, barWidth / 2f)
                 )
             }
         } else {
@@ -242,19 +249,19 @@ fun VoiceVisualizer(
 
             drawPath(
                 path = path,
-                color = Color.White.copy(alpha = 0.9f),
+                color = themeColor.copy(alpha = 0.9f),
                 style = Stroke(
-                    width = 3.0f,
+                    width = 4.0f,
                     cap = StrokeCap.Round,
-                    join = StrokeJoin.Miter,
+                    join = StrokeJoin.Round,
                 ),
             )
 
             // Subtle baseline
             drawRect(
-                color = Color.White.copy(alpha = 0.1f),
-                topLeft = Offset(0f, centerY - 0.5f),
-                size = Size(canvasWidth, 1f),
+                color = themeColor.copy(alpha = 0.15f),
+                topLeft = Offset(0f, centerY - 1f),
+                size = Size(canvasWidth, 2f),
             )
         }
     }
