@@ -234,3 +234,44 @@ See `app/build.gradle.kts` dependencies section for full list.
 - Compile SDK: 35
 - JDK: 17 (Temurin distribution)
 - Uses version catalogs (`gradle/libs.versions.toml`, `gradle/tools.versions.toml`)
+
+## Factory Build System (CI/CD)
+
+The project uses a remote "Factory" server to handle builds. This allows you to trigger a full compilation and artifact generation on a dedicated machine without using local resources.
+
+### Remote Configuration
+
+The local repository must be configured with a git remote named `factory`:
+- **URL**: `ssh://silo@beksinski/home/silo/git/omniboard.git`
+- **Purpose**: Automated headless CI/CD
+
+To add it if missing: `git remote add factory ssh://silo@beksinski/home/silo/git/omniboard.git`
+
+### Triggering a Build
+
+Push any branch to the `factory` remote. The server automatically detects the push, checks out that branch, and runs the build script.
+
+```bash
+# Standard build (dev branch)
+git push factory dev
+
+# Feature branch build
+git push factory feature/your-branch-name
+
+# Force a rebuild (if the branch hasn't changed)
+git push factory <branch-name> --force
+```
+
+### Server-Side Logic (post-receive hook)
+
+The server uses a Git `post-receive` hook at `/home/silo/git/omniboard.git/hooks/post-receive`:
+- **Checkout**: Force-checkouts the incoming branch to `/home/silo/build_dir`
+- **Execution**: Runs `/home/silo/build_script.sh`
+- **Feedback**: Build progress and status (Success/Failure) stream back to your terminal in real-time as part of the `git push` output
+
+### Agent Workflow
+
+1. Verify the factory remote exists: `git remote -v`
+2. Commit your local changes
+3. Push to `factory` to validate compilation and generate debug APKs
+4. Once the build succeeds, push to `origin` (GitHub) to persist the work
