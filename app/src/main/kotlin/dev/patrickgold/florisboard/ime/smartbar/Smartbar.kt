@@ -155,22 +155,32 @@ fun VoiceVisualizer(
         ),
         label = "phase",
     )
-    // Left-to-right scanning wave for processing state
+    // Left-to-right scanning wave for processing state - slowed down for grace
     val scanOffset by infiniteTransition.animateFloat(
-        initialValue = -0.2f,
-        targetValue = 1.2f,
+        initialValue = -0.4f,
+        targetValue = 1.4f,
         animationSpec = infiniteRepeatable(
-            animation = tween(2000, easing = LinearEasing),
+            animation = tween(4000, easing = androidx.compose.animation.core.FastOutSlowInEasing),
             repeatMode = RepeatMode.Restart,
         ),
         label = "scanOffset",
+    )
+    // Secondary "ghost" wave moving at a different speed for depth
+    val ghostOffset by infiniteTransition.animateFloat(
+        initialValue = 1.4f,
+        targetValue = -0.4f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(6000, easing = androidx.compose.animation.core.LinearOutSlowInEasing),
+            repeatMode = RepeatMode.Restart,
+        ),
+        label = "ghostOffset",
     )
     // Gentle shimmer
     val shimmer by infiniteTransition.animateFloat(
         initialValue = 0f,
         targetValue = 2f * Math.PI.toFloat(),
         animationSpec = infiniteRepeatable(
-            animation = tween(4000, easing = LinearEasing),
+            animation = tween(8000, easing = LinearEasing),
             repeatMode = RepeatMode.Restart,
         ),
         label = "shimmer",
@@ -182,29 +192,33 @@ fun VoiceVisualizer(
         val centerY = canvasHeight / 2f
 
         if (isTranscribing) {
-            // === PROCESSING: Asymmetrical Scanning Wave ===
-            val maxBarHeight = canvasHeight * 0.8f
-            val minBarHeight = canvasHeight * 0.1f
-            val barCount = 60
-            val totalUnits = barCount * 1.5f
+            // === PROCESSING: Mesmerizing Layered Scanning Wave ===
+            val maxBarHeight = canvasHeight * 0.7f
+            val minBarHeight = canvasHeight * 0.15f
+            val barCount = 70
+            val totalUnits = barCount * 1.4f
             val unitWidth = canvasWidth / totalUnits
-            val barWidth = unitWidth * 1.0f
+            val barWidth = unitWidth * 0.9f
             val gapWidth = unitWidth * 0.5f
 
             for (i in 0 until barCount) {
                 val x = (i * (barWidth + gapWidth)) + (gapWidth / 2f)
                 val fraction = i.toFloat() / barCount
 
-                // Distance from the current scan position
+                // Primary Pulse
                 val dist = (fraction - scanOffset).let { it * it }
-                // Pulse centered on scanOffset
-                val pulse = Math.exp((-dist * 30.0)).toFloat()
+                val pulse = Math.exp((-dist * 20.0)).toFloat()
                 
-                // Add some secondary wave motion for "alive" feel
-                val secondaryWave = 0.1f * Math.sin((fraction * 6.0 * Math.PI) + shimmer).toFloat()
+                // Ghost Pulse (softer, trailing)
+                val ghostDist = (fraction - ghostOffset).let { it * it }
+                val ghostPulse = Math.exp((-ghostDist * 15.0)).toFloat() * 0.4f
                 
-                val height = minBarHeight + (maxBarHeight - minBarHeight) * (pulse * 0.9f + Math.abs(secondaryWave))
-                val alpha = 0.15f + 0.75f * pulse
+                // Combined wave motion
+                val secondaryWave = 0.08f * Math.sin((fraction * 4.0 * Math.PI) + shimmer).toFloat()
+                
+                val combinedPulse = (pulse + ghostPulse + Math.abs(secondaryWave)).coerceIn(0f, 1f)
+                val height = minBarHeight + (maxBarHeight - minBarHeight) * combinedPulse
+                val alpha = 0.1f + 0.8f * combinedPulse
 
                 val y = (canvasHeight - height) / 2f
                 drawRoundRect(
