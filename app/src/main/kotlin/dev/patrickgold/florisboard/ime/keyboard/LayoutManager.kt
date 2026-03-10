@@ -335,6 +335,8 @@ class LayoutManager(context: Context) {
             }
         }
 
+        var visibleExtraModRows = 0
+
         if (mainLayout != null && modifierLayout != null) {
             for (mainRowI in mainLayout.arrangement.indices) {
                 val mainRow = mainLayout.arrangement[mainRowI]
@@ -356,18 +358,18 @@ class LayoutManager(context: Context) {
                     computedArrangement.add(temp)
                 }
             }
-            // Row 1 of modifier (space/comma/period/enter) is always included
-            if (modifierLayout.arrangement.size > 1) {
-                val spaceRow = modifierLayout.arrangement[1]
-                val rowArray = Array(spaceRow.size) { TextKey(spaceRow[it]).apply { isAlpha = false } }
-                computedArrangement.add(rowArray)
-            }
-            // Rows 2+ (esc/ctrl/arrows) are hidden when modRowsHidden
-            for (modRowI in 2 until modifierLayout.arrangement.size) {
-                if (modRowsHidden) continue
+            for (modRowI in 1 until modifierLayout.arrangement.size) {
                 val modRow = modifierLayout.arrangement[modRowI]
+                if (modRowsHidden) {
+                    val hasSpace = modRow.any { keyData ->
+                        val computed = keyData.compute(DefaultComputingEvaluator) ?: return@any false
+                        computed.code == KeyCode.SPACE || computed.code == KeyCode.CJK_SPACE
+                    }
+                    if (!hasSpace) continue
+                }
                 val rowArray = Array(modRow.size) { TextKey(modRow[it]).apply { isAlpha = false } }
                 computedArrangement.add(rowArray)
+                visibleExtraModRows++
             }
         } else if (mainLayout != null && modifierLayout == null) {
             for (mainRow in mainLayout.arrangement) {
@@ -404,9 +406,9 @@ class LayoutManager(context: Context) {
         }
 
         val array = Array(computedArrangement.size) { computedArrangement[it] }
-        // When modRowsHidden: row 0 is merged (doesn't count), but we keep 1 filtered bottom row
+        // When modRowsHidden: count only the actually visible extra mod rows
         // When visible: count all mod rows (including row 0 which is merged but counted in sizing)
-        val bottomModRows = if (modRowsHidden) 1 else (modifierLayout?.arrangement?.size ?: 0)
+        val bottomModRows = if (modRowsHidden) visibleExtraModRows else (modifierLayout?.arrangement?.size ?: 0)
         return TextKeyboard(
             arrangement = array,
             mode = keyboardMode,

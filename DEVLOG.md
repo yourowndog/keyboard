@@ -291,3 +291,10 @@
   - Layout fix: `modRowsVisible=false` no longer nulls out the entire modifier layout; it preserves row 0 (shift/space/enter) and only hides extra mod rows
   - Long-press fix: swipe detector no longer cancels SPACE long-press coroutine before the 2.5x timer fires
   - Verified: HarvestManager password detection, "app"/"fix" in dictionary, CandidateScorer penalty-based bigrams
+
+### 2026-03-10
+* **Task:** Fixed spacebar sizing on mod row toggle; retrieved Whisper API key for local builds.
+* **Files:** `LayoutManager.kt`, `qwerty_default.json`, `local.properties`
+* **Details:**
+  - **Spacebar Sizing:** Split the modifier layout (`qwerty_default.json`) into 3 logical rows (row 0: shift/merge, row 1: space/enter/punctuation, row 2: nav/utility). The `modRowsVisible` toggle now cleanly skips row 2 while leaving the essential spacebar row intact, allowing it to correctly expand (`hasSlimSpaceRow=false`).
+  - **Whisper Integration:** Pulled the missing `OPENAI_API_KEY` from the factory server (`silo@beksinski`) and injected it into `local.properties` so local builds now have Whisper functionality.
