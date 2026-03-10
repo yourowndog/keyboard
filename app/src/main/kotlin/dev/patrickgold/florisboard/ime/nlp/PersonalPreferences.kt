@@ -17,24 +17,42 @@ object PersonalPreferences {
      * 
      * Added when a correction is rejected 5+ times in harvest analysis.
      */
+    /**
+     * Personal vocabulary: words Sam types intentionally that should NEVER be corrected.
+     * Checked case-insensitively — one lowercase entry covers all capitalizations.
+     * Add abbreviations, slang, and shorthand here instead of anti-corrections.
+     */
+    val PERSONAL_VOCAB = setOf(
+        // Abbreviations
+        "bc", "rn", "tf", "lmk", "ppl", "msg", "thx", "sry", "btw",
+        "imo", "idk", "omg", "wtf", "smh", "ngl", "tbh", "fr", "wdym",
+        "bday", "pls", "llms", "cs", "gen", "config", "ai",
+        // Slang / informal
+        "im", "ya", "def", "tho", "nah", "ugh", "oof", "bruh", "cuz",
+        "g", "i",
+    )
+
+    fun isPersonalVocab(typed: String): Boolean {
+        return PERSONAL_VOCAB.contains(typed.lowercase())
+    }
+
+    /**
+     * Anti-corrections: block specific wrong suggestions for genuine typos and real words.
+     * Use this for: typos with bad suggestions, real words being mutated, proper nouns.
+     * Use PERSONAL_VOCAB instead for: abbreviations and slang that should never be corrected at all.
+     */
     val ANTI_CORRECTIONS = mapOf(
+        // Real words with bad suggestions
         "sams" to listOf("samson", "samoa"),
         "min" to listOf("mine", "mini", "mind"),
         "Hurray" to listOf("Hurrah"),
-        "uh" to listOf("uhuru", "u"),    // common hesitation word
-        "bc" to listOf("by", "bye", "be"), // abbreviation for "because"
-        "pls" to listOf("Plays", "plus"),  // Common abbrev for "please"
-        "oof" to listOf("Ok", "of"),    // Exclamation
+        "uh" to listOf("uhuru", "u"),
         "id" to listOf("i'd", "I'd"),
         "s" to listOf("so", "see"),
-        "im" to listOf("I'm"),
-        "i" to listOf("I"),
-        "Ya" to listOf("Yale"),
         "Hows" to listOf("How"),
         "minecraft" to listOf("mineshaft"),
         "hesd" to listOf("he'd"),
         "d" to listOf("don't"),
-        "ai" to listOf("Ain't", "ain't"),
         "snd" to listOf("and"),
         "t" to listOf("to"),
         "gor" to listOf("gore"),
@@ -42,50 +60,26 @@ object PersonalPreferences {
         "ir" to listOf("iron"),
         "Congrats" to listOf("Contrast"),
         "domething" to listOf("something"),
-        // 2026-03-02 harvest
-        "rn" to listOf("rnase"),        // 5x rejected - "right now" abbrev
-        "Bc" to listOf("Be"),           // 4x rejected - capitalized "because"
-        "Ugh" to listOf("Up"),          // 3x rejected - exclamation
-        "were" to listOf("we're"),      // 3x rejected - past tense is valid
-        "Kaylyn" to listOf("Kayla"),    // 3x rejected - proper name
-        "ton" to listOf("top", "to"),   // 2x rejected - real word, not in dict
-        "def" to listOf("be"),          // 2x rejected - "definitely" abbrev
-        "Quora" to listOf("Quota"),     // 2x rejected - proper noun
-        "tf" to listOf("to"),           // 3x rejected - slang
-        "ppl" to listOf("pop"),         // 2x rejected - "people" abbrev
-        "Lmk" to listOf("Ok"),          // 2x rejected - "let me know"
-        "Uh" to listOf("U"),            // 2x rejected - hesitation word
-        "un" to listOf("under"),        // 3x rejected - prefix/abbrev
-        "Thx" to listOf("The"),         // "thanks" abbreviation
-        "bday" to listOf("by"),         // "birthday" abbreviation
-        "Wdym" to listOf("Way"),        // "what do you mean"
-        "tho" to listOf("those"),       // slang for "though"
-        "Nah" to listOf("Naha"),        // common slang
-        "facetime" to listOf("peacetime"), // product name
-        "constipated" to listOf("constituted"), // real word
-        "gramps" to listOf("tramps"),   // real word
-        "peeps" to listOf("peep"),      // plural form
-        "msg" to listOf("is"),          // "message" abbreviation
-        "sry" to listOf("or"),          // "sorry" abbreviation
-        "llms" to listOf("alms"),       // tech term (LLMs)
-        "Ppl" to listOf("Pop"),         // capitalized "people"
-        "caps" to listOf("capsule"),    // real word
-        "CO" to listOf("COURT", "COULD"), // state abbreviation
-        // 2026-03-10 harvest
-        "cs" to listOf("cska"),         // Counter-Strike / CS abbrev
-        "7o" to listOf("to"),           // number+letter fat finger
-        "cuz" to listOf("cuzco"),       // informal because/cousin
-        "duh" to listOf("oh"),          // real word
+        "were" to listOf("we're"),
+        "Kaylyn" to listOf("Kayla"),
+        "ton" to listOf("top", "to"),
+        "Quora" to listOf("Quota"),
+        "Uh" to listOf("U"),
+        "un" to listOf("under"),
+        "facetime" to listOf("peacetime"),
+        "constipated" to listOf("constituted"),
+        "gramps" to listOf("tramps"),
+        "peeps" to listOf("peep"),
+        "caps" to listOf("capsule"),
+        "CO" to listOf("COURT", "COULD"),
+        // Fat-finger artifacts
+        "7o" to listOf("to"),
+        // Real words losing to bad suggestions
+        "duh" to listOf("oh"),
         "Duh" to listOf("Dug"),
         "dopesick" to listOf("homesick"),
-        "Bruh" to listOf("Brut"),
         "Nugs" to listOf("Bugs"),
-        "ya" to listOf("yale"),         // lowercase ya (Ya/Yale already blocked)
-        "g" to listOf("go"),            // standalone g: "5G", "what's up G"
-        "its" to listOf("it's"),        // possessive != contraction
-        "Im" to listOf("I'm"),          // capitalized im
-        "gen" to listOf("gene"),        // generation abbrev
-        "config" to listOf("configuration"),
+        "its" to listOf("it's"),
         "tomcat" to listOf("tosca"),
         "deadhead" to listOf("deadbeat"),
         "junkie" to listOf("junk"),

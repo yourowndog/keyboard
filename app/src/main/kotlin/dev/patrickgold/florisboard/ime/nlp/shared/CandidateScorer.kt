@@ -74,6 +74,11 @@ object CandidateScorer {
         isInUserDict: Boolean = false,
         frequency: Double = 0.0,
     ): Double {
+        // PERSONAL VOCAB: Never correct words Sam types intentionally as-is
+        if (dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isPersonalVocab(typed)) {
+            return CULLED_SCORE
+        }
+
         // ANTI-CORRECTIONS: Filter out forbidden typed→candidate pairs
         if (dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isAntiCorrection(typed, candidate)) {
             android.util.Log.d("CandidateScorer", "ANTI-CORRECTION: $typed → $candidate")
