@@ -62,6 +62,10 @@ abstract class Keyboard {
         bottomRowHeightFactor: Float = 0.75f,
         alphaRowHeightFactor: Float = 1.0f,
         alphaKeyWidthFactor: Float = 1.0f,
+        alphaSpacingH: Float = 0f,
+        alphaSpacingV: Float = 0f,
+        modeSpacingH: Float = 0f,
+        modeSpacingV: Float = 0f,
     )
 }
 

@@ -265,26 +265,12 @@ fun TextKeyboardLayout(
                     0f
                 }
                 
-                keyboard.layout(keyboardWidth, keyboardHeight - totalGaps, desiredKey, true, bottomRowHeightFactor, alphaRowHeightFactor, alphaKeyWidthFactor)
+                keyboard.layout(
+                    keyboardWidth, keyboardHeight - totalGaps, desiredKey, true,
+                    bottomRowHeightFactor, alphaRowHeightFactor, alphaKeyWidthFactor,
+                    alphaMarginH, alphaMarginV, modeMarginH, modeMarginV
+                )
                 
-                // Post-layout adjustments for split spacing and hitboxes
-                for (key in keyboard.keys()) {
-                    val mH = if (key.isAlpha) alphaMarginH else modeMarginH
-                    val mV = if (key.isAlpha) alphaMarginV else modeMarginV
-                    
-                    // Visible bounds are deflated by the specific spacing
-                    key.visibleBounds.applyFrom(key.touchBounds).deflateBy(mH, mV)
-
-                    // Hitbox expansion (Touch Target Expansion)
-                    // We expand the touch hitbox horizontally for alpha keys
-                    // by a small amount (e.g., 20% of the margin) into the gap area
-                    if (key.isAlpha && mH > 0) {
-                        val expansion = mH * 0.2f
-                        key.touchBounds.left -= expansion
-                        key.touchBounds.right += expansion
-                    }
-                }
-
                 // Apply per-key customizations from prefs
                 val customizations = dev.patrickgold.florisboard.ime.keyboard.KeyCustomizationManager.parseFromJson(keyCustomizationsJson)
                 for (key in keyboard.keys()) {

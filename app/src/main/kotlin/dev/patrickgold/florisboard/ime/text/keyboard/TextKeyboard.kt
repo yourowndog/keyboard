@@ -53,22 +53,37 @@ class TextKeyboard(
         bottomRowHeightFactor: Float,
         alphaRowHeightFactor: Float,
         alphaKeyWidthFactor: Float,
+        alphaSpacingH: Float,
+        alphaSpacingV: Float,
+        modeSpacingH: Float,
+        modeSpacingV: Float,
     ) {
         if (arrangement.isEmpty()) return
 
-        val desiredTouchBounds = desiredKey.touchBounds
-        val desiredVisibleBounds = desiredKey.visibleBounds
-        if (desiredTouchBounds.isEmpty() || desiredVisibleBounds.isEmpty()) return
         if (keyboardWidth.isNaN() || keyboardHeight.isNaN()) return
-        val rowMarginH = abs(desiredTouchBounds.width - desiredVisibleBounds.width)
-        val rowMarginV = (keyboardHeight - desiredTouchBounds.height * rowCount.toFloat()) / (rowCount - 1).coerceAtLeast(1).toFloat()
+
+        // 1. Find the widest row to determine the base unitWidth.
+        // Usually Row 0 with 10 keys (10.0 units).
+        var maxRowUnits = 0.0f
+        for (row in rows()) {
+            var rowUnits = 0.0f
+            for (key in row) {
+                val factor = if (key.isAlpha) key.flayWidthFactor * alphaKeyWidthFactor else key.flayWidthFactor
+                rowUnits += factor
+            }
+            maxRowUnits = maxOf(maxRowUnits, rowUnits)
+        }
+
+        // Calculate a consistent unitWidth based on the widest row filling the screen.
+        // We subtract a small amount for padding (rowMarginH).
+        val rowMarginH = alphaSpacingH * 2.0f
+        val unitWidth = (keyboardWidth - rowMarginH) / maxRowUnits
 
         var currentPosY = 0.0f
         for ((r, row) in rows().withIndex()) {
             val hasExtraRows = rowCount >= 5
             val rowHeight = if (hasExtraRows) {
                 // Standard base is 3 alpha rows + bottomModRowCount mod rows at the bottom.
-                // Toggleable extension rows at the top (r < topModCount) also use mod height.
                 val topModCount = (rowCount - 3 - bottomModRowCount).coerceAtLeast(0)
                 val modRowCount = bottomModRowCount + topModCount
                 val alphaRowCount = rowCount - modRowCount
@@ -78,131 +93,67 @@ class TextKeyboard(
                 val isModHeightRow = r < topModCount || r >= rowCount - bottomModRowCount
                 if (isModHeightRow) baseHeight * bottomRowHeightFactor else baseHeight * alphaRowHeightFactor
             } else {
-                desiredTouchBounds.height
+                keyboardHeight / rowCount.toFloat()
             }
 
-            val posY = if (hasExtraRows) {
-                currentPosY
-            } else {
-                (desiredTouchBounds.height + rowMarginV) * r
-            }
-
-            val availableWidth = (keyboardWidth - rowMarginH) / desiredTouchBounds.width
-            var requestedWidth = 0.0f
-            var shrinkSum = 0.0f
-            var growSum = 0.0f
+            // Calculate total width of this specific row
+            var totalRowWidth = 0.0f
             for (key in row) {
                 val factor = if (key.isAlpha) key.flayWidthFactor * alphaKeyWidthFactor else key.flayWidthFactor
-                requestedWidth += factor
-                shrinkSum += key.flayShrink
-                growSum += key.flayGrow
+                totalRowWidth += factor * unitWidth
             }
-            if (requestedWidth <= availableWidth) {
-                // Requested with is smaller or equal to the available with, so we can grow
-                val additionalWidth = availableWidth - requestedWidth
-                var posX = rowMarginH / 2.0f
-                for ((k, key) in row.withIndex()) {
-                    val factor = if (key.isAlpha) key.flayWidthFactor * alphaKeyWidthFactor else key.flayWidthFactor
-                    val keyWidth = desiredTouchBounds.width * when (growSum) {
-                        0.0f -> when (k) {
-                            0, row.size - 1 -> factor + additionalWidth / 2.0f
-                            else -> factor
-                        }
-                        else -> factor + additionalWidth * (key.flayGrow / growSum)
-                    }
-                    // Calculate per-key height based on flayHeightFactor
-                    val keyHeight = rowHeight * key.flayHeightFactor
-                    val heightDelta = keyHeight - rowHeight
-                    
-                    // Calculate vertical offset based on alignment
-                    val verticalOffset = when (key.flayVerticalAlignment) {
-                        VerticalAlignment.TOP -> -heightDelta
-                        VerticalAlignment.CENTER -> -heightDelta / 2.0f
-                        VerticalAlignment.BOTTOM -> 0.0f
-                    }
-                    
-                    key.touchBounds.apply {
-                        left = posX
-                        top = posY + verticalOffset
-                        right = posX + keyWidth
-                        bottom = posY + rowHeight + (keyHeight - rowHeight) + verticalOffset
-                    }
-                    key.visibleBounds.apply {
-                        left = key.touchBounds.left + abs(desiredTouchBounds.left - desiredVisibleBounds.left) + when {
-                            growSum == 0.0f && k == 0 -> ((additionalWidth / 2.0f) * desiredTouchBounds.width)
-                            else -> 0.0f
-                        }
-                        top = key.touchBounds.top + abs(desiredTouchBounds.top - desiredVisibleBounds.top)
-                        right = key.touchBounds.right - abs(desiredTouchBounds.right - desiredVisibleBounds.right) - when {
-                            growSum == 0.0f && k == row.size - 1 -> ((additionalWidth / 2.0f) * desiredTouchBounds.width)
-                            else -> 0.0f
-                        }
-                        bottom = key.touchBounds.bottom - abs(desiredTouchBounds.bottom - desiredVisibleBounds.bottom)
-                    }
-                    posX += keyWidth
-                    // After-adjust touch bounds for the row margin
-                    key.touchBounds.apply {
-                        if (k == 0) {
-                            left = 0.0f
-                        } else if (k == row.size - 1) {
-                            right = keyboardWidth
-                        }
-                        if (extendTouchBoundariesDownwards && r + 1 == arrangement.size) {
-                            bottom += height
-                        }
-                    }
+
+            // Centering logic: start at half the leftover space
+            var posX = (keyboardWidth - totalRowWidth) / 2.0f
+
+            for ((k, key) in row.withIndex()) {
+                val factor = if (key.isAlpha) key.flayWidthFactor * alphaKeyWidthFactor else key.flayWidthFactor
+                val keyWidth = factor * unitWidth
+                
+                // Vertical alignment and height calculation
+                val keyHeight = rowHeight * key.flayHeightFactor
+                val heightDelta = keyHeight - rowHeight
+                val verticalOffset = when (key.flayVerticalAlignment) {
+                    VerticalAlignment.TOP -> -heightDelta
+                    VerticalAlignment.CENTER -> -heightDelta / 2.0f
+                    VerticalAlignment.BOTTOM -> 0.0f
                 }
-            } else {
-                // Requested size too big, must shrink.
-                val clippingWidth = requestedWidth - availableWidth
-                var posX = rowMarginH / 2.0f
-                for ((k, key) in row.withIndex()) {
-                    val factor = if (key.isAlpha) key.flayWidthFactor * alphaKeyWidthFactor else key.flayWidthFactor
-                    val keyWidth = desiredTouchBounds.width * if (key.flayShrink == 0.0f) {
-                        factor
-                    } else {
-                        factor - clippingWidth * (key.flayShrink / shrinkSum)
-                    }
-                    // Calculate per-key height based on flayHeightFactor
-                    val keyHeight = rowHeight * key.flayHeightFactor
-                    val heightDelta = keyHeight - rowHeight
-                    
-                    // Calculate vertical offset based on alignment
-                    val verticalOffset = when (key.flayVerticalAlignment) {
-                        VerticalAlignment.TOP -> -heightDelta
-                        VerticalAlignment.CENTER -> -heightDelta / 2.0f
-                        VerticalAlignment.BOTTOM -> 0.0f
-                    }
-                    
-                    key.touchBounds.apply {
-                        left = posX
-                        top = posY + verticalOffset
-                        right = posX + keyWidth
-                        bottom = posY + rowHeight + (keyHeight - rowHeight) + verticalOffset
-                    }
-                    key.visibleBounds.apply {
-                        left = key.touchBounds.left + abs(desiredTouchBounds.left - desiredVisibleBounds.left)
-                        top = key.touchBounds.top + abs(desiredTouchBounds.top - desiredVisibleBounds.top)
-                        right = key.touchBounds.right - abs(desiredTouchBounds.right - desiredVisibleBounds.right)
-                        bottom = key.touchBounds.bottom - abs(desiredTouchBounds.bottom - desiredVisibleBounds.bottom)
-                    }
-                    posX += keyWidth
-                    // After-adjust touch bounds for the row margin
-                    key.touchBounds.apply {
-                        if (k == 0) {
-                            left = 0.0f
-                        } else if (k == row.size - 1) {
-                            right = keyboardWidth
-                        }
-                        if (extendTouchBoundariesDownwards && r + 1 == arrangement.size) {
-                            bottom += height
-                        }
-                    }
+                
+                key.touchBounds.apply {
+                    left = posX
+                    top = currentPosY + verticalOffset
+                    right = posX + keyWidth
+                    bottom = currentPosY + rowHeight + (keyHeight - rowHeight) + verticalOffset
+                }
+
+                // Spacing logic: Alpha vs Mode
+                val mH = if (key.isAlpha) alphaSpacingH else modeSpacingH
+                val mV = if (key.isAlpha) alphaSpacingV else modeSpacingV
+
+                key.visibleBounds.apply {
+                    left = key.touchBounds.left + mH
+                    top = key.touchBounds.top + mV
+                    right = key.touchBounds.right - mH
+                    bottom = key.touchBounds.bottom - mV
+                }
+
+                // Hitbox expansion (Touch Target Expansion)
+                // We expand the touch hitbox horizontally for alpha keys
+                // by a small amount (e.g., 20% of the horizontal spacing)
+                if (key.isAlpha && mH > 0) {
+                    val expansion = mH * 0.2f
+                    key.touchBounds.left -= expansion
+                    key.touchBounds.right += expansion
+                }
+
+                posX += keyWidth
+                
+                // After-adjust touch bounds for the last main row to extend into the bezel if needed
+                if (extendTouchBoundariesDownwards && r + 1 == arrangement.size) {
+                    key.touchBounds.bottom += keyboardHeight / rowCount.toFloat()
                 }
             }
-            if (hasExtraRows) {
-                currentPosY += rowHeight
-            }
+            currentPosY += rowHeight
         }
     }
 
