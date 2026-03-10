@@ -74,7 +74,7 @@ object SymSpellManager {
     )
     // Prefer common contractions before running SymSpell so "im" maps to "I'm" instead of "pm".
     private val CONTRACTION_SHORTCUTS = mapOf(
-        "im" to "I'm",
+        // "im" removed — now in PERSONAL_VOCAB (never corrected)
         "i'm" to "I'm",
         "ive" to "I've",
         // "id" removed - now handled by context-aware logic in CandidateScorer
@@ -296,6 +296,13 @@ object SymSpellManager {
         }
     
         val lower = input.lowercase()
+
+        // PERSONAL VOCAB: If Sam typed exactly what he meant, return it untouched.
+        // Must be checked before CONTRACTION_SHORTCUTS and all hardcoded early returns.
+        if (dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isPersonalVocab(input)) {
+            return input
+        }
+
         // Fast-path for contractions so missing apostrophes don't divert to unrelated words.
         CONTRACTION_SHORTCUTS[lower]?.let { contraction ->
             return applyCasingPattern(input, contraction)
@@ -345,10 +352,9 @@ object SymSpellManager {
             return input
         }
         val instance = symSpell ?: return input
-        // Handle single-letter inputs explicitly to avoid over-correcting every keystroke.
-        // Special case: lone "i" should become "I"
+        // Handle single-letter inputs — return as-is (PERSONAL_VOCAB already handled "i" above)
         if (input.length == 1) {
-            return if (input == "i") "I" else input
+            return input
         }
 
         // Reflexes: Fast correction
