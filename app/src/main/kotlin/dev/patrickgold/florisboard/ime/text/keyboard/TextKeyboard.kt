@@ -63,24 +63,22 @@ class TextKeyboard(
 
         if (keyboardWidth.isNaN() || keyboardHeight.isNaN()) return
 
-        // 1. Find the widest row to determine the base unitWidth.
-        var maxRowUnits = 0.0f
+        // 1. Compute alphaUnitWidth from the widest alpha-containing row only.
+        //    Mod keys inside alpha rows (shift, backspace) use their base flayWidthFactor
+        //    so that alphaKeyWidthFactor and modKeyWidthFactor stay fully independent.
+        val rowMarginH = alphaSpacingH * 2.0f
+        var maxAlphaRowUnits = 0.0f
         for (row in rows()) {
+            val hasAlpha = row.any { it.isAlpha }
+            if (!hasAlpha) continue
             var rowUnits = 0.0f
             for (key in row) {
-                val factor = if (key.isAlpha) {
-                    key.flayWidthFactor * alphaKeyWidthFactor
-                } else {
-                    key.flayWidthFactor * modKeyWidthFactor
-                }
-                rowUnits += factor
+                rowUnits += if (key.isAlpha) key.flayWidthFactor * alphaKeyWidthFactor
+                            else key.flayWidthFactor
             }
-            maxRowUnits = maxOf(maxRowUnits, rowUnits)
+            maxAlphaRowUnits = maxOf(maxAlphaRowUnits, rowUnits)
         }
-
-        // Calculate a consistent unitWidth based on the widest row filling the screen.
-        val rowMarginH = alphaSpacingH * 2.0f
-        val unitWidth = (keyboardWidth - rowMarginH) / maxRowUnits
+        val alphaUnitWidth = if (maxAlphaRowUnits > 0f) (keyboardWidth - rowMarginH) / maxAlphaRowUnits else keyboardWidth
 
         var currentPosY = 0.0f
         for ((r, row) in rows().withIndex()) {
@@ -98,6 +96,19 @@ class TextKeyboard(
                 keyboardHeight / rowCount.toFloat()
             }
 
+            // Determine the effective unit width for this row.
+            // Alpha rows use the shared alphaUnitWidth (consistent key size across all alpha rows).
+            // Pure mod rows compute their own unit width so they fill the screen independently,
+            // meaning modKeyWidthFactor has no effect on alpha key sizing and vice versa.
+            val isAlphaRow = row.any { it.isAlpha }
+            val rowUnitWidth = if (isAlphaRow) {
+                alphaUnitWidth
+            } else {
+                var modRowUnits = 0.0f
+                for (key in row) { modRowUnits += key.flayWidthFactor * modKeyWidthFactor }
+                if (modRowUnits > 0f) keyboardWidth / modRowUnits else alphaUnitWidth
+            }
+
             // Calculate total width of this specific row
             var totalRowWidth = 0.0f
             for (key in row) {
@@ -106,7 +117,7 @@ class TextKeyboard(
                 } else {
                     key.flayWidthFactor * modKeyWidthFactor
                 }
-                totalRowWidth += factor * unitWidth
+                totalRowWidth += factor * rowUnitWidth
             }
 
             // Centering logic: start at half the leftover space
@@ -118,7 +129,7 @@ class TextKeyboard(
                 } else {
                     key.flayWidthFactor * modKeyWidthFactor
                 }
-                val keyWidth = factor * unitWidth
+                val keyWidth = factor * rowUnitWidth
                 
                 // Vertical alignment and height calculation
                 val keyHeight = rowHeight * key.flayHeightFactor
