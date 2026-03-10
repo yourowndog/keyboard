@@ -577,6 +577,10 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "keyboard__alpha_key_width",
             default = 100,
         )
+        val modKeyWidth = int(
+            key = "keyboard__mod_key_width",
+            default = 100,
+        )
         val keySpacingVertical = float(
             key = "keyboard__key_spacing_vertical",
             default = 2.0f,

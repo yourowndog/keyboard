@@ -53,6 +53,7 @@ class TextKeyboard(
         bottomRowHeightFactor: Float,
         alphaRowHeightFactor: Float,
         alphaKeyWidthFactor: Float,
+        modKeyWidthFactor: Float,
         alphaSpacingH: Float,
         alphaSpacingV: Float,
         modeSpacingH: Float,
@@ -63,19 +64,21 @@ class TextKeyboard(
         if (keyboardWidth.isNaN() || keyboardHeight.isNaN()) return
 
         // 1. Find the widest row to determine the base unitWidth.
-        // Usually Row 0 with 10 keys (10.0 units).
         var maxRowUnits = 0.0f
         for (row in rows()) {
             var rowUnits = 0.0f
             for (key in row) {
-                val factor = if (key.isAlpha) key.flayWidthFactor * alphaKeyWidthFactor else key.flayWidthFactor
+                val factor = if (key.isAlpha) {
+                    key.flayWidthFactor * alphaKeyWidthFactor
+                } else {
+                    key.flayWidthFactor * modKeyWidthFactor
+                }
                 rowUnits += factor
             }
             maxRowUnits = maxOf(maxRowUnits, rowUnits)
         }
 
         // Calculate a consistent unitWidth based on the widest row filling the screen.
-        // We subtract a small amount for padding (rowMarginH).
         val rowMarginH = alphaSpacingH * 2.0f
         val unitWidth = (keyboardWidth - rowMarginH) / maxRowUnits
 
@@ -83,7 +86,6 @@ class TextKeyboard(
         for ((r, row) in rows().withIndex()) {
             val hasExtraRows = rowCount >= 5
             val rowHeight = if (hasExtraRows) {
-                // Standard base is 3 alpha rows + bottomModRowCount mod rows at the bottom.
                 val topModCount = (rowCount - 3 - bottomModRowCount).coerceAtLeast(0)
                 val modRowCount = bottomModRowCount + topModCount
                 val alphaRowCount = rowCount - modRowCount
@@ -99,7 +101,11 @@ class TextKeyboard(
             // Calculate total width of this specific row
             var totalRowWidth = 0.0f
             for (key in row) {
-                val factor = if (key.isAlpha) key.flayWidthFactor * alphaKeyWidthFactor else key.flayWidthFactor
+                val factor = if (key.isAlpha) {
+                    key.flayWidthFactor * alphaKeyWidthFactor
+                } else {
+                    key.flayWidthFactor * modKeyWidthFactor
+                }
                 totalRowWidth += factor * unitWidth
             }
 
@@ -107,7 +113,11 @@ class TextKeyboard(
             var posX = (keyboardWidth - totalRowWidth) / 2.0f
 
             for ((k, key) in row.withIndex()) {
-                val factor = if (key.isAlpha) key.flayWidthFactor * alphaKeyWidthFactor else key.flayWidthFactor
+                val factor = if (key.isAlpha) {
+                    key.flayWidthFactor * alphaKeyWidthFactor
+                } else {
+                    key.flayWidthFactor * modKeyWidthFactor
+                }
                 val keyWidth = factor * unitWidth
                 
                 // Vertical alignment and height calculation

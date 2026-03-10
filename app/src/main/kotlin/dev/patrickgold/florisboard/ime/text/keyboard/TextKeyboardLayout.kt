@@ -222,6 +222,7 @@ fun TextKeyboardLayout(
         val keyMarginH by prefs.keyboard.keySpacingHorizontal.observeAsTransformingState { it.dp.toPx() }
         val keyMarginV by prefs.keyboard.keySpacingVertical.observeAsTransformingState { it.dp.toPx() }
         val alphaKeyWidthFactor by prefs.keyboard.alphaKeyWidth.observeAsTransformingState { it / 100f }
+        val modKeyWidthFactor by prefs.keyboard.modKeyWidth.observeAsTransformingState { it / 100f }
         val alphaMarginH by prefs.keyboard.alphaSpacingHorizontal.observeAsTransformingState { it.dp.toPx() }
         val alphaMarginV by prefs.keyboard.alphaSpacingVertical.observeAsTransformingState { it.dp.toPx() }
         val modeMarginH by prefs.keyboard.modeSpacingHorizontal.observeAsTransformingState { it.dp.toPx() }
@@ -236,7 +237,7 @@ fun TextKeyboardLayout(
 
         val desiredKey = remember(
             keyboard, keyboardWidth, keyboardHeight, keyMarginH, keyMarginV,
-            alphaKeyWidthFactor, alphaMarginH, alphaMarginV, modeMarginH, modeMarginV,
+            alphaKeyWidthFactor, modKeyWidthFactor, alphaMarginH, alphaMarginV, modeMarginH, modeMarginV,
             keyboardRowBaseHeight, bottomRowHeightFactor, alphaRowHeightFactor, modRowUpperGap,
             modRowInnerGap, modRowLowerGap, keyCustomizationsJson, evaluator
         ) {
@@ -268,6 +269,7 @@ fun TextKeyboardLayout(
                 keyboard.layout(
                     keyboardWidth, keyboardHeight - totalGaps, desiredKey, true,
                     bottomRowHeightFactor, alphaRowHeightFactor, alphaKeyWidthFactor,
+                    modKeyWidthFactor,
                     alphaMarginH, alphaMarginV, modeMarginH, modeMarginV
                 )
                 

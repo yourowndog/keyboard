@@ -189,7 +189,11 @@ class TextKey(override val data: AbstractKeyData) : Key(data) {
             }
             // Per-key height control: spacebar gets full height even in compressed rows
             // The factor of 1.33 compensates for the 0.75 row compression (1.0 / 0.75 ≈ 1.33)
-            flayHeightFactor = 1.0f
+            flayHeightFactor = when (computed.code) {
+                KeyCode.SPACE,
+                KeyCode.CJK_SPACE -> 1.1f
+                else -> 1.0f
+            }
             flayVerticalAlignment = when (computed.code) {
                 KeyCode.SPACE,
                 KeyCode.CJK_SPACE -> VerticalAlignment.CENTER
