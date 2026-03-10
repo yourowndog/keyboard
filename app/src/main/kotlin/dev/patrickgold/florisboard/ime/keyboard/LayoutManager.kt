@@ -28,6 +28,7 @@ import dev.patrickgold.florisboard.ime.core.Subtype
 import dev.patrickgold.florisboard.ime.editor.FlorisEditorInfo
 import dev.patrickgold.florisboard.ime.popup.PopupMapping
 import dev.patrickgold.florisboard.ime.popup.PopupMappingComponent
+import dev.patrickgold.florisboard.ime.text.key.KeyCode
 import dev.patrickgold.florisboard.ime.text.key.KeyType
 import dev.patrickgold.florisboard.ime.text.keyboard.TextKey
 import dev.patrickgold.florisboard.ime.text.keyboard.TextKeyData
@@ -356,10 +357,28 @@ class LayoutManager(context: Context) {
                 }
             }
             for (modRowI in 1 until modifierLayout.arrangement.size) {
-                if (modRowsHidden) continue  // Skip extra mod rows when hidden
                 val modRow = modifierLayout.arrangement[modRowI]
-                val rowArray = Array(modRow.size) { TextKey(modRow[it]).apply { isAlpha = false } }
-                computedArrangement.add(rowArray)
+                if (modRowsHidden) {
+                    // Filter row: keep essential keys (space, punctuation, enter, view-switch)
+                    // Hide utility/nav keys (esc, ctrl, arrows, undo/redo)
+                    val essentialKeys = modRow.filter { keyData ->
+                        val computed = keyData.compute(DefaultComputingEvaluator) ?: return@filter false
+                        when (computed.code) {
+                            KeyCode.SPACE, KeyCode.CJK_SPACE,
+                            KeyCode.ENTER,
+                            KeyCode.VIEW_CHARACTERS, KeyCode.VIEW_SYMBOLS, KeyCode.VIEW_SYMBOLS2,
+                            KeyCode.VIEW_NUMERIC, KeyCode.VIEW_NUMERIC_ADVANCED -> true
+                            in 32..126 -> true  // printable ASCII (comma, period, etc.)
+                            else -> false
+                        }
+                    }
+                    if (essentialKeys.isEmpty()) continue
+                    val rowArray = Array(essentialKeys.size) { TextKey(essentialKeys[it]).apply { isAlpha = false } }
+                    computedArrangement.add(rowArray)
+                } else {
+                    val rowArray = Array(modRow.size) { TextKey(modRow[it]).apply { isAlpha = false } }
+                    computedArrangement.add(rowArray)
+                }
             }
         } else if (mainLayout != null && modifierLayout == null) {
             for (mainRow in mainLayout.arrangement) {
@@ -396,7 +415,9 @@ class LayoutManager(context: Context) {
         }
 
         val array = Array(computedArrangement.size) { computedArrangement[it] }
-        val bottomModRows = if (modRowsHidden) 0 else (modifierLayout?.arrangement?.size ?: 0)
+        // When modRowsHidden: row 0 is merged (doesn't count), but we keep 1 filtered bottom row
+        // When visible: count all mod rows (including row 0 which is merged but counted in sizing)
+        val bottomModRows = if (modRowsHidden) 1 else (modifierLayout?.arrangement?.size ?: 0)
         return TextKeyboard(
             arrangement = array,
             mode = keyboardMode,
