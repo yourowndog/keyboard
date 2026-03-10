@@ -6,6 +6,43 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **OmniBoard** is a customized fork of FlorisBoard, an open-source Android keyboard (IME - Input Method Editor). This fork adds advanced autocorrect capabilities, OpenAI Whisper voice integration, personal typing pattern learning, and special Linux/Termux control keys.
 
+## MANDATORY: Use jcodemunch MCP for ALL Codebase Navigation
+
+**You MUST use the `jcodemunch` MCP tools for all code exploration in this repo.**
+Do NOT use Bash find/grep, Glob, or Grep tools for searching or navigating code — they are slower, token-wasteful, and fail on this device (ripgrep ENOENT).
+
+### jcodemunch Tool Reference
+
+| Tool | Purpose |
+|------|---------|
+| `mcp__jcodemunch__list_repos` | Check which repos are already indexed |
+| `mcp__jcodemunch__index_repo` | Index the full repo (do once per session, or after major changes) |
+| `mcp__jcodemunch__index_folder` | Re-index a specific subdirectory after edits |
+| `mcp__jcodemunch__invalidate_cache` | Force re-index if stale/wrong results appear |
+| `mcp__jcodemunch__get_repo_outline` | High-level overview of entire repo structure |
+| `mcp__jcodemunch__get_file_tree` | Directory/file tree for a given path |
+| `mcp__jcodemunch__get_file_outline` | Classes, functions, structure of a file (without full content) |
+| `mcp__jcodemunch__get_file_content` | Full content of a specific file |
+| `mcp__jcodemunch__get_symbol` | Definition + context for a single named symbol |
+| `mcp__jcodemunch__get_symbols` | Definitions for multiple symbols at once |
+| `mcp__jcodemunch__search_symbols` | Find symbols by name/pattern across the whole repo |
+| `mcp__jcodemunch__search_text` | Full-text search across all indexed files |
+
+### Standard Workflow for Any Task
+
+1. `list_repos` — confirm keyboard-local is indexed
+2. If not indexed: `index_repo` with path `~/projects/keyboard-local`
+3. `get_repo_outline` — orient yourself in the codebase
+4. `search_symbols` or `search_text` — locate relevant classes/functions
+5. `get_file_outline` — understand a file's structure before reading it fully
+6. `get_symbol` / `get_file_content` — read only what you need
+7. Edit with the Edit tool
+8. `index_folder` on changed directories to keep the index current
+
+**Bash is only acceptable for: git commands, build commands, running scripts.**
+
+---
+
 ## Hard Constraints — Read Before Suggesting Anything
 
 - **Single user only.** OmniBoard is built exclusively for Sam. Do not generalize analysis to "other users", "common typing patterns", or "average frequency distributions". The only patterns that matter are Sam's.

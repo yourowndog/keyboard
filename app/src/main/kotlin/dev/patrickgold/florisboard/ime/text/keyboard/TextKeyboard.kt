@@ -52,7 +52,7 @@ class TextKeyboard(
         extendTouchBoundariesDownwards: Boolean,
         bottomRowHeightFactor: Float,
         alphaRowHeightFactor: Float,
-        alphaKeyWidthFactor: Float = 1.0f,
+        alphaKeyWidthFactor: Float,
     ) {
         if (arrangement.isEmpty()) return
 
