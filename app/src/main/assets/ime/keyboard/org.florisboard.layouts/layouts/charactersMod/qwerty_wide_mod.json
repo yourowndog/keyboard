@@ -1,17 +1,10 @@
 [
   [
-    { "code": 0, "type": "placeholder" }
-  ],
-  [
-    { "$": "text_key", "code": -14, "label": "⇥" },
-    { "$": "navigation", "code": -27, "label": "«" },
-    { "$": "navigation", "code": -23 },
-    { "$": "navigation", "code": -28, "label": "»" },
+    { "code": 0, "type": "placeholder" },
     { "$": "text_key", "code": 45, "label": "-" },
     { "$": "text_key", "code": 33, "label": "!" },
     { "$": "text_key", "code": 34, "label": "\"" },
     { "$": "text_key", "code": 64, "label": "@" },
-    { "$": "text_key", "code": 47, "label": "/" },
     { "code": -1, "label": "CTRL", "type": "modifier" }
   ],
   [

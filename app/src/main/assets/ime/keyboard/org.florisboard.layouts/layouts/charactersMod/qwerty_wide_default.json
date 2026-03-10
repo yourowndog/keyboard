@@ -1,8 +1,6 @@
 [
   [
-    { "code": 0, "type": "placeholder" }
-  ],
-  [
+    { "code": 0, "type": "placeholder" },
     { "code": -11, "label": "shift", "type": "modifier" },
     { "code": 44, "label": ",", "groupId": 1 },
     { "code": 32, "label": "space" },
@@ -19,7 +17,6 @@
     { "$": "navigation", "code": -21 },
     { "$": "navigation", "code": -24 },
     { "$": "navigation", "code": -22 },
-    { "code": -7, "label": "DEL" },
     { "code": 10, "label": "↵", "type": "enter_editing" }
   ]
 ]

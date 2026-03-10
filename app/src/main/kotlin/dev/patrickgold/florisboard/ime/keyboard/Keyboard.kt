@@ -65,8 +65,8 @@ abstract class Keyboard {
         modKeyWidthFactor: Float = 1.0f,
         alphaSpacingH: Float = 0f,
         alphaSpacingV: Float = 0f,
-        modeSpacingH: Float = 0f,
-        modeSpacingV: Float = 0f,
+        modSpacingH: Float = 0f,
+        modSpacingV: Float = 0f,
     )
 }
 
