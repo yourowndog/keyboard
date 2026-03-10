@@ -1,5 +1,8 @@
 [
   [
+    { "code": 0, "type": "placeholder" }
+  ],
+  [
     { "$": "text_key", "code": -14, "label": "⇥" },
     { "$": "navigation", "code": -27, "label": "«" },
     { "$": "navigation", "code": -23 },
@@ -18,26 +21,17 @@
     { "$": "navigation", "code": -22 },
     { "code": -202, "label": "⚛", "type": "system_gui" },
     { "$": "text_key", "code": -305, "label": "Σ" },
-    { "$": "text_key", "code": -306, "label": "λ" },
-    { "$": "text_key", "code": -307, "label": "Ψ" },
-    { "$": "text_key", "code": -33 },
-    { "$": "text_key", "code": 10, "label": "↵", "type": "enter_editing" }
-  ],
-  [
-    { "code": -11, "label": "shift", "type": "modifier" },
-    { "code": -1, "label": "ctrl", "type": "modifier" },
-    { "code": 0, "type": "placeholder" },
-    { "code": 44, "label": "," },
-    { "code": 32, "label": "space" },
-    { "code": 46, "label": ".", "groupId": 2,
+    { "$": "text_key", "code": 32, "label": "space" },
+    { "$": "text_key", "code": 46, "label": ".", "groupId": 2,
       "popup": {
         "main": { "$": "text_key", "code": 63, "label": "?" },
         "relevant": [
           { "$": "text_key", "code": 33, "label": "!" },
-          { "$": "text_key", "code": 8230, "label": "…" },
-          { "$": "text_key", "code": 44, "label": "," }
+          { "$": "text_key", "code": 34, "label": "\"" }
         ]
       }
-    }
+    },
+    { "$": "text_key", "code": -33 },
+    { "$": "text_key", "code": 10, "label": "↵", "type": "enter_editing" }
   ]
 ]

@@ -597,12 +597,12 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "keyboard__alpha_spacing_horizontal",
             default = 2.0f,
         )
-        val modeSpacingVertical = float(
-            key = "keyboard__mode_spacing_vertical",
+        val modSpacingVertical = float(
+            key = "keyboard__mod_spacing_vertical",
             default = 2.0f,
         )
-        val modeSpacingHorizontal = float(
-            key = "keyboard__mode_spacing_horizontal",
+        val modSpacingHorizontal = float(
+            key = "keyboard__mod_spacing_horizontal",
             default = 2.0f,
         )
         val bottomRowHeightFactor = int(

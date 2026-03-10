@@ -56,8 +56,8 @@ class TextKeyboard(
         modKeyWidthFactor: Float,
         alphaSpacingH: Float,
         alphaSpacingV: Float,
-        modeSpacingH: Float,
-        modeSpacingV: Float,
+        modSpacingH: Float,
+        modSpacingV: Float,
     ) {
         if (arrangement.isEmpty()) return
 
@@ -136,9 +136,9 @@ class TextKeyboard(
                     bottom = currentPosY + rowHeight + (keyHeight - rowHeight) + verticalOffset
                 }
 
-                // Spacing logic: Alpha vs Mode
-                val mH = if (key.isAlpha) alphaSpacingH else modeSpacingH
-                val mV = if (key.isAlpha) alphaSpacingV else modeSpacingV
+                // Spacing logic: Alpha vs Mod
+                val mH = if (key.isAlpha) alphaSpacingH else modSpacingH
+                val mV = if (key.isAlpha) alphaSpacingV else modSpacingV
 
                 key.visibleBounds.apply {
                     left = key.touchBounds.left + mH

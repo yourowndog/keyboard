@@ -225,8 +225,8 @@ fun TextKeyboardLayout(
         val modKeyWidthFactor by prefs.keyboard.modKeyWidth.observeAsTransformingState { it / 100f }
         val alphaMarginH by prefs.keyboard.alphaSpacingHorizontal.observeAsTransformingState { it.dp.toPx() }
         val alphaMarginV by prefs.keyboard.alphaSpacingVertical.observeAsTransformingState { it.dp.toPx() }
-        val modeMarginH by prefs.keyboard.modeSpacingHorizontal.observeAsTransformingState { it.dp.toPx() }
-        val modeMarginV by prefs.keyboard.modeSpacingVertical.observeAsTransformingState { it.dp.toPx() }
+        val modMarginH by prefs.keyboard.modSpacingHorizontal.observeAsTransformingState { it.dp.toPx() }
+        val modMarginV by prefs.keyboard.modSpacingVertical.observeAsTransformingState { it.dp.toPx() }
         val bottomRowHeightFactor by prefs.keyboard.bottomRowHeightFactor.observeAsTransformingState { it / 100f }
         val alphaRowHeightFactor by prefs.keyboard.alphaRowHeightFactor.observeAsTransformingState { it / 100f }
         val modRowUpperGap by prefs.keyboard.modRowUpperGap.observeAsTransformingState { it.dp.toPx() }
@@ -237,7 +237,7 @@ fun TextKeyboardLayout(
 
         val desiredKey = remember(
             keyboard, keyboardWidth, keyboardHeight, keyMarginH, keyMarginV,
-            alphaKeyWidthFactor, modKeyWidthFactor, alphaMarginH, alphaMarginV, modeMarginH, modeMarginV,
+            alphaKeyWidthFactor, modKeyWidthFactor, alphaMarginH, alphaMarginV, modMarginH, modMarginV,
             keyboardRowBaseHeight, bottomRowHeightFactor, alphaRowHeightFactor, modRowUpperGap,
             modRowInnerGap, modRowLowerGap, keyCustomizationsJson, evaluator
         ) {
@@ -270,7 +270,7 @@ fun TextKeyboardLayout(
                     keyboardWidth, keyboardHeight - totalGaps, desiredKey, true,
                     bottomRowHeightFactor, alphaRowHeightFactor, alphaKeyWidthFactor,
                     modKeyWidthFactor,
-                    alphaMarginH, alphaMarginV, modeMarginH, modeMarginV
+                    alphaMarginH, alphaMarginV, modMarginH, modMarginV
                 )
                 
                 // Apply per-key customizations from prefs

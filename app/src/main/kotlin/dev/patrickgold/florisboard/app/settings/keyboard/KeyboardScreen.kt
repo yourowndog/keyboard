@@ -176,8 +176,8 @@ fun KeyboardScreen() = FlorisScreen {
                 stepIncrement = 0.5f,
             )
             DialogSliderPreference(
-                primaryPref = prefs.keyboard.modeSpacingVertical,
-                secondaryPref = prefs.keyboard.modeSpacingHorizontal,
+                primaryPref = prefs.keyboard.modSpacingVertical,
+                secondaryPref = prefs.keyboard.modSpacingHorizontal,
                 title = "Mod Key Spacing",
                 primaryLabel = stringRes(R.string.screen_orientation__vertical),
                 secondaryLabel = stringRes(R.string.screen_orientation__horizontal),
