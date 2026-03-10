@@ -92,3 +92,45 @@ To create a key that runs custom logic (like toggling a setting):
 - **Mod Row:** `[TAB] [LEFT] [DOWN] [RIGHT] ...`. Use `navigation` template for arrows (-21, -24, -22).
 - **Smartbar Icons:** `ComputingEvaluator.computeImageVector` maps codes to icons. If a code (like ESC -15) is missing there, Smartbar renders nothing (or text if label exists).
 - **Proven Smartbar:** ESC as first item (added `Icons.Default.Close` mapping). Removed Redo/Undo/Arrows from defaults to save space.
+
+## 13) Ergonomic Width Sliders (Alpha vs Mod Key Width) — 2026-03-10
+
+### The Slider Math Trap (DO NOT REPEAT)
+The layout function receives `alphaKeyWidthFactor` and `modKeyWidthFactor` (floats, 0.8–1.4).
+If you compute `unitWidth = screenWidth / sum(key.flayWidthFactor * widthFactor)` and then
+compute `keyWidth = key.flayWidthFactor * widthFactor * unitWidth`, **the factor cancels out
+completely** — it appears in both numerator and denominator. The sliders will do nothing.
+
+**Correct approach** (`TextKeyboard.kt`):
+1. Compute `baseAlphaUnitWidth` from the widest alpha row using **base `flayWidthFactor` only** (no slider multiplier).
+2. For each mod-only row, compute `baseModRowUnitWidth = screenWidth / sum(key.flayWidthFactor)` — again, no slider.
+3. Then apply the slider ONLY when computing actual key pixel width: `key.flayWidthFactor * widthFactor * baseUnitWidth`.
+
+This way `alphaKeyWidthFactor=0.8` makes alpha keys 80% of their reference size (centered row),
+and `modKeyWidthFactor=0.8` uniformly shrinks mod rows — fully independent.
+
+### Mod-Row Symbol Hints Pollution
+The hint system (`LayoutManager.addRowHints`) bottom-aligns the symbols keyboard rows onto the
+characters keyboard rows **by position index**. With qwerty_wide + mod (6 char rows) and
+western_wide symbols (5 rows), `rOffset=1`, so the 3-key comma/space/period mod row aligns with
+`western_wide` symbols row 2: `[\ | _ = [ ] ...]`. Period is position 2 → gets `_` as its
+`computedSymbolHint`, which then appears in the long-press popup.
+
+**Fix:** In `addRowHints`, skip keys where `!key.isAlpha`. Mod-row keys are already
+explicit symbols — positional hint alignment doesn't make semantic sense for them.
+
+### The `placeholder` Key (code 0) in Mod JSON Files
+The mod layout's **first row** is merged with the main layout's **last row** in LayoutManager.
+The placeholder key (`{ "code": 0, "type": "placeholder" }`) is the signal: when encountered,
+it splices in ALL alpha keys from the last main row at that position. Keys before/after the
+placeholder in the mod row appear as mod keys flanking the alpha block.
+
+**NEVER** put non-placeholder keys in mod row 0 without a placeholder — you'll silently DROP
+the entire ZXCVBNM alpha row. All subsequent rows (row 1, 2, ...) of the mod file are appended
+as pure mod rows with `isAlpha=false`.
+
+### Spacebar `flayWidthFactor` in Mod Rows
+`TextKey.kt` assigns `flayWidthFactor = 5.0f` for SPACE when `hasSlimSpaceRow = false`
+(`bottomModRowCount < 3`). In a 3-key row `[, space .]` the space dominates at 5/7 ≈ 71% width.
+This is intentional for the standard spacebar row but means a compact 3-key mod row with a
+space key will always have a large spacebar unless `bottomModRowCount` is set to 3+.
