@@ -1,5 +1,5 @@
 # Harvest Analysis Summary
-Generated: 2026-03-02 19:51:43
+Generated: 2026-03-10 10:02:30
 
 ## 📊 Statistics
 
@@ -9,9 +9,9 @@ Generated: 2026-03-02 19:51:43
 - **Total Words**: 60,006
 
 ### Autocorrect Performance
-- **Accepted Corrections**: 478
-- **Rejected Corrections**: 461
-- **Accuracy Rate**: 50.9%
+- **Accepted Corrections**: 564
+- **Rejected Corrections**: 531
+- **Accuracy Rate**: 51.5%
 
 ### Issues Detected
 - **No Suggestions**: 0 instances
@@ -24,7 +24,7 @@ Generated: 2026-03-02 19:51:43
 ### 1. Add to Anti-Corrections
 *Corrections that are frequently rejected (≥2x):*
 
-- `"i" → "I"` (15x rejected)
+- `"i" → "I"` (17x rejected)
 - `"im" → "I'm"` (13x rejected)
 - `"id" → "I'd"` (13x rejected)
 - `"s" → "so"` (10x rejected)
@@ -33,8 +33,10 @@ Generated: 2026-03-02 19:51:43
 - `"min" → "mind"` (6x rejected)
 - `"rn" → "rnase"` (5x rejected)
 - `"were" → "we're"` (4x rejected)
+- `"ai" → "ain't"` (4x rejected)
 - `"Ugh" → "Up"` (4x rejected)
 - `"Bc" → "Be"` (4x rejected)
+- `"cs" → "cska"` (4x rejected)
 - `"Hows" → "How"` (3x rejected)
 - `"bc" → "by"` (3x rejected)
 - `"7o" → "to"` (3x rejected)
@@ -42,8 +44,6 @@ Generated: 2026-03-02 19:51:43
 - `"hesd" → "he'd"` (3x rejected)
 - `"tf" → "to"` (3x rejected)
 - `"d" → "don't"` (3x rejected)
-- `"ai" → "Ain't"` (3x rejected)
-- `"dont" → "don't"` (3x rejected)
 
 ### 2. Dictionary Additions (High Priority)
 *Words with no suggestions or multiple attempts (freq ≥2):*

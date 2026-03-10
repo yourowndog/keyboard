@@ -21,7 +21,7 @@ object PersonalPreferences {
         "sams" to listOf("samson", "samoa"),
         "min" to listOf("mine", "mini", "mind"),
         "Hurray" to listOf("Hurrah"),
-        "uh" to listOf("uhuru"),        // 2x rejected - common hesitation
+        "uh" to listOf("uhuru", "u"),    // common hesitation word
         "bc" to listOf("by", "bye", "be"), // abbreviation for "because"
         "pls" to listOf("Plays", "plus"),  // Common abbrev for "please"
         "oof" to listOf("Ok", "of"),    // Exclamation
@@ -34,7 +34,7 @@ object PersonalPreferences {
         "minecraft" to listOf("mineshaft"),
         "hesd" to listOf("he'd"),
         "d" to listOf("don't"),
-        "ai" to listOf("Ain't"),
+        "ai" to listOf("Ain't", "ain't"),
         "snd" to listOf("and"),
         "t" to listOf("to"),
         "gor" to listOf("gore"),
@@ -70,7 +70,25 @@ object PersonalPreferences {
         "llms" to listOf("alms"),       // tech term (LLMs)
         "Ppl" to listOf("Pop"),         // capitalized "people"
         "caps" to listOf("capsule"),    // real word
-        "CO" to listOf("COURT"),        // state abbreviation
+        "CO" to listOf("COURT", "COULD"), // state abbreviation
+        // 2026-03-10 harvest
+        "cs" to listOf("cska"),         // Counter-Strike / CS abbrev
+        "7o" to listOf("to"),           // number+letter fat finger
+        "cuz" to listOf("cuzco"),       // informal because/cousin
+        "duh" to listOf("oh"),          // real word
+        "Duh" to listOf("Dug"),
+        "dopesick" to listOf("homesick"),
+        "Bruh" to listOf("Brut"),
+        "Nugs" to listOf("Bugs"),
+        "ya" to listOf("yale"),         // lowercase ya (Ya/Yale already blocked)
+        "g" to listOf("go"),            // standalone g: "5G", "what's up G"
+        "its" to listOf("it's"),        // possessive != contraction
+        "Im" to listOf("I'm"),          // capitalized im
+        "gen" to listOf("gene"),        // generation abbrev
+        "config" to listOf("configuration"),
+        "tomcat" to listOf("tosca"),
+        "deadhead" to listOf("deadbeat"),
+        "junkie" to listOf("junk"),
     )
     
     /**
