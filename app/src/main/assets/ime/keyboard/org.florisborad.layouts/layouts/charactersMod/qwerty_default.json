@@ -13,6 +13,15 @@
       "uri":      { "code":   47, "label": "/", "groupId": 1 }
     },
     { "code":   32, "label": "space" },
-    { "code":   46, "label": ".", "groupId": 2 }
+    { "code":   46, "label": ".", "groupId": 2,
+      "popup": {
+        "main": { "$": "text_key", "code": 63, "label": "?" },
+        "relevant": [
+          { "$": "text_key", "code": 33, "label": "!" },
+          { "$": "text_key", "code": 8230, "label": "…" },
+          { "$": "text_key", "code": 44, "label": "," }
+        ]
+      }
+    }
   ]
 ]

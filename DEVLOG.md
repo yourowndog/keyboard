@@ -278,3 +278,7 @@
 ### 2026-03-03
 * **Task:** Fixed 'black-on-black' visibility issues in LCARS Neon, Tactical, and Ops themes by adding missing SNYGG selectors for Clipboard, Smartbar, and Media sections.
 * **Files:** `app/src/main/assets/ime/theme/org.florisboard.themes/stylesheets/lcars_neon.json`, `app/src/main/assets/ime/theme/org.florisboard.themes/stylesheets/lcars_tactical.json`, `app/src/main/assets/ime/theme/org.florisboard.themes/stylesheets/lcars.json`
+
+### 2026-03-10
+* **Task:** Implemented OmniBoard Ergonomic Upgrades: Dynamic Alpha Key Width, Split Spacing (Alpha/Mode), Hitbox Expansion, and Period Key Punctuation Popup.
+* **Files:** `AppPrefs.kt`, `KeyboardScreen.kt`, `TextKey.kt`, `LayoutManager.kt`, `TextKeyboard.kt`, `TextKeyboardLayout.kt`, `qwerty_default.json`

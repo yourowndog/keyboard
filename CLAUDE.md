@@ -275,3 +275,18 @@ The server uses a Git `post-receive` hook at `/home/silo/git/omniboard.git/hooks
 2. Commit your local changes
 3. Push to `factory` to validate compilation and generate debug APKs
 4. Once the build succeeds, push to `origin` (GitHub) to persist the work
+
+## OpenClaw Interface
+
+**OpenClaw** is a local AI interface that runs in a background proot environment on the device.
+
+- **Purpose**: OpenClaw acts as an interactive workspace for running and managing AI agents and tasks. It has access to MCP tools like jCodeMunch and Tasker.
+- **Location**: Runs in a Debian environment via Termux's `proot-distro`.
+- **User context**: It runs under the isolated user `openclaw`.
+- **How to Start**: 
+  1. Open a terminal.
+  2. Start the gateway server: `proot-distro login debian --user openclaw -- start-claw`
+- **How to Use**:
+  - The primary interface is a Terminal UI.
+  - Access it by running: `proot-distro login debian --user openclaw -- openclaw tui`
+- **Configuration**: Settings (like the OpenAI API key, profiles, and MCP tools) are stored at `/home/openclaw/.openclaw/openclaw.json` inside the Debian rootfs.

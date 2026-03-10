@@ -136,8 +136,16 @@ fun KeyboardScreen() = FlorisScreen {
                 min = 50,
                 max = 150,
                 stepIncrement = 5,
-            )
-            DialogSliderPreference(
+                )
+                DialogSliderPreference(
+                primaryPref = prefs.keyboard.alphaKeyWidth,
+                title = "Alpha Key Width",
+                valueLabel = { stringRes(R.string.unit__percent__symbol, "v" to it) },
+                min = 80,
+                max = 140,
+                stepIncrement = 5,
+                )
+                DialogSliderPreference(
                 primaryPref = prefs.keyboard.keySpacingVertical,
                 secondaryPref = prefs.keyboard.keySpacingHorizontal,
                 title = stringRes(R.string.pref__keyboard__key_spacing__label),
@@ -147,10 +155,31 @@ fun KeyboardScreen() = FlorisScreen {
                 min = 0.0f,
                 max = 10.0f,
                 stepIncrement = 0.5f,
-            )
-            DialogSliderPreference(
-                prefs.keyboard.bottomRowHeightFactor,
-                title = stringRes(R.string.pref__keyboard__bottom_row_height__label),
+                )
+                DialogSliderPreference(
+                primaryPref = prefs.keyboard.alphaSpacingVertical,
+                secondaryPref = prefs.keyboard.alphaSpacingHorizontal,
+                title = "Alpha Key Spacing",
+                primaryLabel = stringRes(R.string.screen_orientation__vertical),
+                secondaryLabel = stringRes(R.string.screen_orientation__horizontal),
+                valueLabel = { stringRes(R.string.unit__display_pixel__symbol, "v" to it) },
+                min = 0.0f,
+                max = 10.0f,
+                stepIncrement = 0.5f,
+                )
+                DialogSliderPreference(
+                primaryPref = prefs.keyboard.modeSpacingVertical,
+                secondaryPref = prefs.keyboard.modeSpacingHorizontal,
+                title = "Mode Key Spacing",
+                primaryLabel = stringRes(R.string.screen_orientation__vertical),
+                secondaryLabel = stringRes(R.string.screen_orientation__horizontal),
+                valueLabel = { stringRes(R.string.unit__display_pixel__symbol, "v" to it) },
+                min = 0.0f,
+                max = 10.0f,
+                stepIncrement = 0.5f,
+                )
+                DialogSliderPreference(
+                prefs.keyboard.bottomRowHeightFactor,                title = stringRes(R.string.pref__keyboard__bottom_row_height__label),
                 valueLabel = { stringRes(R.string.unit__percent__symbol, "v" to it) },
                 min = 50,
                 max = 100,

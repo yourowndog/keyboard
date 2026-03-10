@@ -52,6 +52,7 @@ class TextKeyboard(
         extendTouchBoundariesDownwards: Boolean,
         bottomRowHeightFactor: Float,
         alphaRowHeightFactor: Float,
+        alphaKeyWidthFactor: Float = 1.0f,
     ) {
         if (arrangement.isEmpty()) return
 
@@ -91,7 +92,8 @@ class TextKeyboard(
             var shrinkSum = 0.0f
             var growSum = 0.0f
             for (key in row) {
-                requestedWidth += key.flayWidthFactor
+                val factor = if (key.isAlpha) key.flayWidthFactor * alphaKeyWidthFactor else key.flayWidthFactor
+                requestedWidth += factor
                 shrinkSum += key.flayShrink
                 growSum += key.flayGrow
             }
@@ -100,12 +102,13 @@ class TextKeyboard(
                 val additionalWidth = availableWidth - requestedWidth
                 var posX = rowMarginH / 2.0f
                 for ((k, key) in row.withIndex()) {
+                    val factor = if (key.isAlpha) key.flayWidthFactor * alphaKeyWidthFactor else key.flayWidthFactor
                     val keyWidth = desiredTouchBounds.width * when (growSum) {
                         0.0f -> when (k) {
-                            0, row.size - 1 -> key.flayWidthFactor + additionalWidth / 2.0f
-                            else -> key.flayWidthFactor
+                            0, row.size - 1 -> factor + additionalWidth / 2.0f
+                            else -> factor
                         }
-                        else -> key.flayWidthFactor + additionalWidth * (key.flayGrow / growSum)
+                        else -> factor + additionalWidth * (key.flayGrow / growSum)
                     }
                     // Calculate per-key height based on flayHeightFactor
                     val keyHeight = rowHeight * key.flayHeightFactor
@@ -154,10 +157,11 @@ class TextKeyboard(
                 val clippingWidth = requestedWidth - availableWidth
                 var posX = rowMarginH / 2.0f
                 for ((k, key) in row.withIndex()) {
+                    val factor = if (key.isAlpha) key.flayWidthFactor * alphaKeyWidthFactor else key.flayWidthFactor
                     val keyWidth = desiredTouchBounds.width * if (key.flayShrink == 0.0f) {
-                        key.flayWidthFactor
+                        factor
                     } else {
-                        key.flayWidthFactor - clippingWidth * (key.flayShrink / shrinkSum)
+                        factor - clippingWidth * (key.flayShrink / shrinkSum)
                     }
                     // Calculate per-key height based on flayHeightFactor
                     val keyHeight = rowHeight * key.flayHeightFactor

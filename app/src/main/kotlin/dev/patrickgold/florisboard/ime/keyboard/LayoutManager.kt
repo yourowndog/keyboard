@@ -345,9 +345,9 @@ class LayoutManager(context: Context) {
                     val firstModRow = modifierLayout.arrangement.firstOrNull()
                     for (modKey in (firstModRow ?: listOf())) {
                         if (modKey is TextKeyData && modKey.code == 0) {
-                            rowArray.addAll(mainRow.map { TextKey(it) })
+                            rowArray.addAll(mainRow.map { TextKey(it).apply { isAlpha = true } })
                         } else {
-                            rowArray.add(TextKey(modKey))
+                            rowArray.add(TextKey(modKey).apply { isAlpha = false })
                         }
                     }
                     val temp = Array(rowArray.size) { rowArray[it] }
@@ -356,17 +356,17 @@ class LayoutManager(context: Context) {
             }
             for (modRowI in 1 until modifierLayout.arrangement.size) {
                 val modRow = modifierLayout.arrangement[modRowI]
-                val rowArray = Array(modRow.size) { TextKey(modRow[it]) }
+                val rowArray = Array(modRow.size) { TextKey(modRow[it]).apply { isAlpha = false } }
                 computedArrangement.add(rowArray)
             }
         } else if (mainLayout != null && modifierLayout == null) {
             for (mainRow in mainLayout.arrangement) {
-                val rowArray = Array(mainRow.size) { TextKey(mainRow[it]) }
+                val rowArray = Array(mainRow.size) { TextKey(mainRow[it]).apply { isAlpha = true } }
                 computedArrangement.add(rowArray)
             }
         } else if (mainLayout == null && modifierLayout != null) {
             for (modRow in modifierLayout.arrangement) {
-                val rowArray = Array(modRow.size) { TextKey(modRow[it]) }
+                val rowArray = Array(modRow.size) { TextKey(modRow[it]).apply { isAlpha = false } }
                 computedArrangement.add(rowArray)
             }
         }
