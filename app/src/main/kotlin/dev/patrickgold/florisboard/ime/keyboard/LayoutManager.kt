@@ -410,6 +410,9 @@ class LayoutManager(context: Context) {
 
     private fun addRowHints(main: Array<TextKey>, hint: Array<TextKey>, hintType: KeyType) {
         for ((k,key) in main.withIndex()) {
+            // Only assign hints to alpha keys — mod-row keys are already visible symbols
+            // and mis-aligned hints (e.g. "_" on period) pollute their popups.
+            if (!key.isAlpha) continue
             val hintKey = hint.getOrNull(k)?.data?.compute(DefaultComputingEvaluator)
             if (hintKey?.type != hintType) {
                 continue
