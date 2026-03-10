@@ -4,8 +4,6 @@
     { "code": 0, "type": "placeholder" }
   ],
   [
-    { "$": "navigation", "code": -15, "label": "⎋" },
-    { "code": -1, "label": "CTRL", "type": "modifier" },
     { "$": "variation_selector",
       "default":  { "code":   44, "label": ",", "groupId": 1 },
       "email":    { "code":   64, "label": "@", "groupId": 1 },
@@ -22,6 +20,11 @@
         ]
       }
     },
+    { "code":  10, "label": "Go", "groupId": 3, "type": "enter_editing" }
+  ],
+  [
+    { "$": "navigation", "code": -15, "label": "⎋" },
+    { "code": -1, "label": "CTRL", "type": "modifier" },
     { "$": "navigation", "code": -21 },
     { "$": "navigation", "code": -24 },
     { "$": "navigation", "code": -22 }

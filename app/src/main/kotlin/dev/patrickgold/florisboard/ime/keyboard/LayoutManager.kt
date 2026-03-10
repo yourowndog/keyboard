@@ -356,29 +356,18 @@ class LayoutManager(context: Context) {
                     computedArrangement.add(temp)
                 }
             }
-            for (modRowI in 1 until modifierLayout.arrangement.size) {
+            // Row 1 of modifier (space/comma/period/enter) is always included
+            if (modifierLayout.arrangement.size > 1) {
+                val spaceRow = modifierLayout.arrangement[1]
+                val rowArray = Array(spaceRow.size) { TextKey(spaceRow[it]).apply { isAlpha = false } }
+                computedArrangement.add(rowArray)
+            }
+            // Rows 2+ (esc/ctrl/arrows) are hidden when modRowsHidden
+            for (modRowI in 2 until modifierLayout.arrangement.size) {
+                if (modRowsHidden) continue
                 val modRow = modifierLayout.arrangement[modRowI]
-                if (modRowsHidden) {
-                    // Filter row: keep essential keys (space, punctuation, enter, view-switch)
-                    // Hide utility/nav keys (esc, ctrl, arrows, undo/redo)
-                    val essentialKeys = modRow.filter { keyData ->
-                        val computed = keyData.compute(DefaultComputingEvaluator) ?: return@filter false
-                        when (computed.code) {
-                            KeyCode.SPACE, KeyCode.CJK_SPACE,
-                            KeyCode.ENTER,
-                            KeyCode.VIEW_CHARACTERS, KeyCode.VIEW_SYMBOLS, KeyCode.VIEW_SYMBOLS2,
-                            KeyCode.VIEW_NUMERIC, KeyCode.VIEW_NUMERIC_ADVANCED -> true
-                            in 32..126 -> true  // printable ASCII (comma, period, etc.)
-                            else -> false
-                        }
-                    }
-                    if (essentialKeys.isEmpty()) continue
-                    val rowArray = Array(essentialKeys.size) { TextKey(essentialKeys[it]).apply { isAlpha = false } }
-                    computedArrangement.add(rowArray)
-                } else {
-                    val rowArray = Array(modRow.size) { TextKey(modRow[it]).apply { isAlpha = false } }
-                    computedArrangement.add(rowArray)
-                }
+                val rowArray = Array(modRow.size) { TextKey(modRow[it]).apply { isAlpha = false } }
+                computedArrangement.add(rowArray)
             }
         } else if (mainLayout != null && modifierLayout == null) {
             for (mainRow in mainLayout.arrangement) {
