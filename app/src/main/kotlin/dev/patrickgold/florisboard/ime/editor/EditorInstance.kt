@@ -99,6 +99,7 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
             fieldId = info.base.fieldId,
             inputVariation = info.inputAttributes.variation.toString(),
             flags = flags,
+            isPassword = info.inputAttributes.isPassword,
         )
         cachedAppContext = ctx
         return ctx

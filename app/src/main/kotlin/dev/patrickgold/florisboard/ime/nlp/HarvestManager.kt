@@ -31,6 +31,7 @@ data class AppContext(
     val fieldId: Int,
     val inputVariation: String,
     val flags: String,
+    val isPassword: Boolean = false,
 )
 
 object HarvestManager {
@@ -278,6 +279,8 @@ object HarvestManager {
                 currentAppContext = appContext
             }
 
+            if (currentAppContext?.isPassword == true) return
+
             if (sessionBuffer.isNotEmpty() && !word.matches(Regex("^[.,?!;:]$"))) {
                 sessionBuffer.append(" ")
             }
@@ -321,6 +324,9 @@ object HarvestManager {
     
     private fun append(category: String, content: String, context: String?, prevPrevWord: String? = null, appContext: AppContext? = null) {
         val file = harvestFile ?: return
+
+        // NEVER log anything if we're in a password field
+        if (appContext?.isPassword == true || currentAppContext?.isPassword == true) return
 
         CoroutineScope(Dispatchers.IO).launch {
             try {

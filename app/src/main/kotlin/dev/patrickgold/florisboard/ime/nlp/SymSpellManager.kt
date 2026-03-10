@@ -430,6 +430,7 @@ object SymSpellManager {
                 editDistance = candidate.distance,
                 prevWord = prev,
                 isInUserDict = isUserWord,
+                frequency = candidate.frequency
             )
             
             Triple(candidate, score, "score=${"%.2f".format(score)}")
@@ -515,6 +516,7 @@ object SymSpellManager {
                     editDistance = candidate.distance,
                     prevWord = prev,
                     isInUserDict = isUserWord,
+                    frequency = candidate.frequency
                 )
                 if (score >= CandidateScorer.CULLED_SCORE - 0.1) {
                     android.util.Log.d("SymSpell_Debug", "CULLED: '$lowerTerm' (score=$score)")

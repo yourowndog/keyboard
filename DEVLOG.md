@@ -282,3 +282,12 @@
 ### 2026-03-10
 * **Task:** Implemented OmniBoard Ergonomic Upgrades: Dynamic Alpha Key Width, Split Spacing (Alpha/Mode), Hitbox Expansion, and Period Key Punctuation Popup.
 * **Files:** `AppPrefs.kt`, `KeyboardScreen.kt`, `TextKey.kt`, `LayoutManager.kt`, `TextKeyboard.kt`, `TextKeyboardLayout.kt`, `qwerty_default.json`
+
+### 2026-03-10
+* **Task:** State-of-the-World Recovery — Fixed build break, number toggle layout catastrophe, and spacebar long-press toggle.
+* **Files:** `SymSpellManager.kt`, `LayoutManager.kt`, `TextKeyboardLayout.kt`
+* **Details:**
+  - Build fix: `candidate.count` → `candidate.frequency` (SymSpellKt v3.4.0 API change)
+  - Layout fix: `modRowsVisible=false` no longer nulls out the entire modifier layout; it preserves row 0 (shift/space/enter) and only hides extra mod rows
+  - Long-press fix: swipe detector no longer cancels SPACE long-press coroutine before the 2.5x timer fires
+  - Verified: HarvestManager password detection, "app"/"fix" in dictionary, CandidateScorer penalty-based bigrams

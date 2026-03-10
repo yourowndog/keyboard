@@ -609,7 +609,14 @@ private class TextKeyboardLayoutController(
                         if (swipeGestureDetector.onTouchMove(event, pointer, alwaysTriggerOnMove) || pointer.hasTriggeredGestureMove) {
                             pointer.hasTriggeredGestureMove = true
                             pointer.activeKey?.let { activeKey ->
-                                inputEventDispatcher.sendCancel(activeKey.computedDataOnDown)
+                                // Don't cancel SPACE long-press: the swipe detector fires before the
+                                // 2.5x long-press delay, killing the mod-row toggle coroutine.
+                                // Only cancel once the long-press has already been handled.
+                                val isSpaceKey = activeKey.computedData.code == KeyCode.SPACE ||
+                                    activeKey.computedData.code == KeyCode.CJK_SPACE
+                                if (!isSpaceKey || pointer.hasTriggeredLongPress) {
+                                    inputEventDispatcher.sendCancel(activeKey.computedDataOnDown)
+                                }
                             }
                         } else {
                             onTouchMoveInternal(event, pointer)
@@ -686,14 +693,8 @@ private class TextKeyboardLayoutController(
                     pointer.hasTriggeredLongPress = true
                     when (key.computedData.code) {
                         KeyCode.SPACE, KeyCode.CJK_SPACE -> {
-                            when (prefs.gestures.spaceBarLongPress.get()) {
-                                SwipeAction.NO_ACTION,
-                                SwipeAction.INSERT_SPACE -> {
-                                }
-                                else -> {
-                                    keyboardManager.executeSwipeAction(prefs.gestures.spaceBarLongPress.get())
-                                }
-                            }
+                            android.util.Log.i("FlorisBoard_Debug", "Space long press trigger in TextKeyboardLayout")
+                            keyboardManager.handleSpaceLongPress()
                             true
                         }
                         KeyCode.SHIFT -> {

@@ -509,6 +509,10 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "keyboard__dev_row",
             default = false,
         )
+        val modRowsVisible = boolean(
+            key = "keyboard__mod_rows_visible",
+            default = true,
+        )
         val hintedNumberRowEnabled = boolean(
             key = "keyboard__hinted_number_row_enabled",
             default = true,

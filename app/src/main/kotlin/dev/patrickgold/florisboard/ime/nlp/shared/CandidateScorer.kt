@@ -85,13 +85,15 @@ object CandidateScorer {
             return CULLED_SCORE  // Reject this candidate completely
         }
 
-        // HYBRID CONTEXT-AWARE BLOCKING: Grammar rules + bigram validation
+        // HYBRID CONTEXT-AWARE PENALTY: Grammar rules + bigram validation
+        var grammarPenalty = 0.0
+        var bigramBlockPenalty = 0.0
+
         if (prevWord != null) {
             val prevLower = prevWord.lowercase()
             val candLower = candidate.lowercase()
 
-            // Grammatical blocking: Possessives/determiners never precede contractions
-            // Examples: "my I'd" ✗, "the I'm" ✗, "your I'll" ✗
+            // Grammatical penalty: Possessives/determiners rarely precede contractions
             val POSSESSIVE_CONTEXTS = setOf("my", "your", "his", "her", "their", "our", "its")
             val DETERMINERS = setOf("the", "this", "that", "these", "those", "a", "an", "some", "any", "each", "every")
             val CONTRACTIONS = setOf("i'm", "i'd", "i'll", "i've", "we're", "we'll", "they're", "you're",
@@ -99,20 +101,17 @@ object CandidateScorer {
 
             if ((POSSESSIVE_CONTEXTS.contains(prevLower) || DETERMINERS.contains(prevLower))
                 && CONTRACTIONS.contains(candLower)) {
-                android.util.Log.d("CandidateScorer", "GRAMMAR BLOCK: $prevWord + $candidate")
-                return CULLED_SCORE  // Grammatically impossible
+                grammarPenalty = 50.0  // Heavy penalty instead of hard block
             }
 
-            // Bigram validation: If typed word forms stronger bigram than candidate, block correction
+            // Bigram validation: If typed word forms stronger bigram than candidate, penalize candidate
             val bigramTable = BigramTable.get()
             if (bigramTable != null) {
                 val typedBigramFreq = bigramTable.getFrequency(prevWord, typed)
                 val candidateBigramFreq = bigramTable.getFrequency(prevWord, candidate)
 
-                // If typed word has 2x stronger bigram, keep it (block correction)
                 if (typedBigramFreq > 0 && typedBigramFreq >= candidateBigramFreq * 2) {
-                    android.util.Log.d("CandidateScorer", "BIGRAM BLOCK: $prevWord + $typed ($typedBigramFreq) > $candidate ($candidateBigramFreq)")
-                    return CULLED_SCORE
+                    bigramBlockPenalty = 20.0 // Push it down the list, but don't delete it
                 }
             }
         }
@@ -121,7 +120,7 @@ object CandidateScorer {
         val candidateNoApos = candidate.replace("'", "")
         
         // Start with edit distance as base penalty
-        var score = editDistance
+        var score = editDistance + grammarPenalty + bigramBlockPenalty
         
         // Spatial cost: penalize far keys, reward transpositions
         score += spatialCost(typed, candidate)

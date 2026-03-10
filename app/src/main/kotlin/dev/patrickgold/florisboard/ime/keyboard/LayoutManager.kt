@@ -291,6 +291,7 @@ class LayoutManager(context: Context) {
         val mainLayout = mainLayoutResult.onFailure {
             flogWarning { "$keyboardMode - main - $it" }
         }.getOrNull()
+        val modRowsHidden = !prefs.keyboard.modRowsVisible.get()
         val modifierToLoad = if (mainLayout?.meta?.modifier != null) {
             val layoutType = when (mainLayout.type) {
                 LayoutType.SYMBOLS -> {
@@ -355,6 +356,7 @@ class LayoutManager(context: Context) {
                 }
             }
             for (modRowI in 1 until modifierLayout.arrangement.size) {
+                if (modRowsHidden) continue  // Skip extra mod rows when hidden
                 val modRow = modifierLayout.arrangement[modRowI]
                 val rowArray = Array(modRow.size) { TextKey(modRow[it]).apply { isAlpha = false } }
                 computedArrangement.add(rowArray)
@@ -394,7 +396,7 @@ class LayoutManager(context: Context) {
         }
 
         val array = Array(computedArrangement.size) { computedArrangement[it] }
-        val bottomModRows = modifierLayout?.arrangement?.size ?: 0
+        val bottomModRows = if (modRowsHidden) 0 else (modifierLayout?.arrangement?.size ?: 0)
         return TextKeyboard(
             arrangement = array,
             mode = keyboardMode,

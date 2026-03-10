@@ -608,7 +608,9 @@ private fun TextKeyDataPreviewBox(
                 override fun layout(
                     keyboardWidth: Float, keyboardHeight: Float, desiredKey: Key,
                     extendTouchBoundariesDownwards: Boolean, bottomRowHeightFactor: Float,
-                    alphaRowHeightFactor: Float,
+                    alphaRowHeightFactor: Float, alphaKeyWidthFactor: Float,
+                    modKeyWidthFactor: Float, alphaSpacingH: Float, alphaSpacingV: Float,
+                    modSpacingH: Float, modSpacingV: Float,
                 ) = error("not implemented")
             }
 

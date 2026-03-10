@@ -348,6 +348,11 @@ class KeyboardManager(
                     keyboardCache.clear(KeyboardMode.CHARACTERS)
                 }
             }
+            prefs.keyboard.modRowsVisible.asFlow().collectLatestIn(scope) {
+                updateActiveEvaluators {
+                    keyboardCache.clear(KeyboardMode.CHARACTERS)
+                }
+            }
             prefs.keyboard.hintedNumberRowEnabled.asFlow().collectLatestIn(scope) {
                 updateActiveEvaluators()
             }
@@ -886,6 +891,17 @@ class KeyboardManager(
      * Handles a [KeyCode.SPACE] event. Also handles the auto-correction of two space taps if
      * enabled by the user.
      */
+    fun handleSpaceLongPress() {
+        android.util.Log.i("FlorisBoard_Debug", "Space long press detected! Current modRowsVisible: ${prefs.keyboard.modRowsVisible.get()}")
+        scope.launch {
+            prefs.keyboard.modRowsVisible.let { it.set(!it.get()) }
+            android.util.Log.i("FlorisBoard_Debug", "New modRowsVisible: ${prefs.keyboard.modRowsVisible.get()}")
+            updateActiveEvaluators {
+                keyboardCache.clear(KeyboardMode.CHARACTERS)
+            }
+        }
+    }
+
     private fun handleSpace(data: KeyData) {
         // DISABLED: NLP auto-commit - we now use SymSpell autocorrect in commitTextInternal instead
         // val candidate = nlpManager.getAutoCommitCandidate()

@@ -88,6 +88,11 @@ value class InputAttributes private constructor(val raw: Int) {
     val flagTextNoSuggestions: Boolean
         get() = type == Type.TEXT && (raw and InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS != 0)
 
+    val isPassword: Boolean
+        get() = variation == Variation.PASSWORD || 
+                variation == Variation.VISIBLE_PASSWORD || 
+                variation == Variation.WEB_PASSWORD
+
 
 
     companion object {
