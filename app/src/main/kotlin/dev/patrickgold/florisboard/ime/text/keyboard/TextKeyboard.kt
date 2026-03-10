@@ -103,18 +103,29 @@ class TextKeyboard(
             // Alpha rows share baseAlphaUnitWidth. Mod-only rows each compute their own so
             // their proportions are preserved at factor=1.0 and scaled uniformly by modKeyWidthFactor.
             val isAlphaRow = row.any { it.isAlpha }
-            val baseRowUnitWidth = if (isAlphaRow) {
-                baseAlphaUnitWidth
-            } else {
-                var baseModRowUnits = 0.0f
-                for (key in row) { baseModRowUnits += key.flayWidthFactor }
-                if (baseModRowUnits > 0f) keyboardWidth / baseModRowUnits else baseAlphaUnitWidth
+            // Space row: contains the spacebar. Uses alpha unit width + alpha spacing so it
+            // is immune to modKeyWidthFactor. Centering naturally gives it slightly more side
+            // margin than alpha rows (fewer total units, same reference width).
+            val isSpaceRow = !isAlphaRow && row.any { it.computedData.code == 32 }
+            val baseRowUnitWidth = when {
+                isAlphaRow -> baseAlphaUnitWidth
+                isSpaceRow -> baseAlphaUnitWidth  // immune to mod slider
+                else -> {
+                    var baseModRowUnits = 0.0f
+                    for (key in row) { baseModRowUnits += key.flayWidthFactor }
+                    if (baseModRowUnits > 0f) keyboardWidth / baseModRowUnits else baseAlphaUnitWidth
+                }
             }
 
             // Apply slider multipliers only here — they affect actual pixel widths, not the reference.
+            // Space row keys use factor=1.0 so neither slider affects them.
             var totalRowWidth = 0.0f
             for (key in row) {
-                val widthFactor = if (key.isAlpha) alphaKeyWidthFactor else modKeyWidthFactor
+                val widthFactor = when {
+                    key.isAlpha -> alphaKeyWidthFactor
+                    isSpaceRow -> 1.0f
+                    else -> modKeyWidthFactor
+                }
                 totalRowWidth += key.flayWidthFactor * widthFactor * baseRowUnitWidth
             }
 
@@ -122,7 +133,11 @@ class TextKeyboard(
             var posX = (keyboardWidth - totalRowWidth) / 2.0f
 
             for ((k, key) in row.withIndex()) {
-                val widthFactor = if (key.isAlpha) alphaKeyWidthFactor else modKeyWidthFactor
+                val widthFactor = when {
+                    key.isAlpha -> alphaKeyWidthFactor
+                    isSpaceRow -> 1.0f
+                    else -> modKeyWidthFactor
+                }
                 val keyWidth = key.flayWidthFactor * widthFactor * baseRowUnitWidth
                 
                 // Vertical alignment and height calculation
@@ -141,9 +156,17 @@ class TextKeyboard(
                     bottom = currentPosY + rowHeight + (keyHeight - rowHeight) + verticalOffset
                 }
 
-                // Spacing logic: Alpha vs Mod
-                val mH = if (key.isAlpha) alphaSpacingH else modSpacingH
-                val mV = if (key.isAlpha) alphaSpacingV else modSpacingV
+                // Spacing logic: Alpha vs Space row vs Mod
+                val mH = when {
+                    key.isAlpha -> alphaSpacingH
+                    isSpaceRow -> alphaSpacingH
+                    else -> modSpacingH
+                }
+                val mV = when {
+                    key.isAlpha -> alphaSpacingV
+                    isSpaceRow -> alphaSpacingV
+                    else -> modSpacingV
+                }
 
                 key.visibleBounds.apply {
                     left = key.touchBounds.left + mH

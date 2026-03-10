@@ -138,7 +138,7 @@ class TextKey(override val data: AbstractKeyData) : Key(data) {
                     else -> 1.0f
                 }
             }
-            val hasSlimSpaceRow = keyboard.bottomModRowCount >= 3
+            val hasSlimSpaceRow = keyboard.bottomModRowCount >= 2
             flayGrow = when (keyboardMode) {
                 KeyboardMode.NUMERIC,
                 KeyboardMode.PHONE,

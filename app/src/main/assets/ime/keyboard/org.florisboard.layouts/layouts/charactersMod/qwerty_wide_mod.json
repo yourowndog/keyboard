@@ -2,7 +2,8 @@
   [
     { "$": "text_key", "code": 44, "label": "," },
     { "$": "text_key", "code": 32, "label": "space" },
-    { "$": "text_key", "code": 46, "label": ".", "popup": { "main": { "$": "text_key", "code": 33, "label": "!" }, "relevant": [{ "$": "text_key", "code": 63, "label": "?" }] } }
+    { "$": "text_key", "code": 46, "label": ".", "popup": { "main": { "$": "text_key", "code": 33, "label": "!" }, "relevant": [{ "$": "text_key", "code": 63, "label": "?" }] } },
+    { "code": 10, "label": "↵", "type": "enter_editing" }
   ],
   [
     { "$": "text_key", "code": -14, "label": "⇥" },
@@ -14,7 +15,7 @@
     { "$": "text_key", "code": 34, "label": "\"" },
     { "$": "text_key", "code": 64, "label": "@" },
     { "$": "text_key", "code": 47, "label": "/" },
-    { "code": -1, "label": "CTRL", "type": "modifier" }
+    { "code": -212, "label": "😊", "type": "system_gui" }
   ],
   [
     { "$": "navigation", "code": -15, "label": "⎋" },
@@ -26,6 +27,6 @@
     { "$": "text_key", "code": -306, "label": "λ" },
     { "$": "text_key", "code": -307, "label": "Ψ" },
     { "$": "text_key", "code": -33 },
-    { "$": "text_key", "code": 10, "label": "↵", "type": "enter_editing" }
+    { "code": -1, "label": "CTRL", "type": "modifier" }
   ]
 ]
