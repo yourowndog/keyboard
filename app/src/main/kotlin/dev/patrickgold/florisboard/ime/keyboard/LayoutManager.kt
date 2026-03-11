@@ -361,10 +361,14 @@ class LayoutManager(context: Context) {
             for (modRowI in 1 until modifierLayout.arrangement.size) {
                 val modRow = modifierLayout.arrangement[modRowI]
                 if (modRowsHidden) {
+                    var debugFoundSpace = false
                     val hasSpace = modRow.any { keyData ->
                         val computed = keyData.compute(DefaultComputingEvaluator) ?: return@any false
-                        computed.code == KeyCode.SPACE || computed.code == KeyCode.CJK_SPACE
+                        val isSpace = (computed.code == KeyCode.SPACE || computed.code == KeyCode.CJK_SPACE)
+                        if (isSpace) debugFoundSpace = true
+                        isSpace
                     }
+                    android.util.Log.i("FlorisBoard_Debug", "modRowI=$modRowI hasSpace=$debugFoundSpace. Keys count=${modRow.size}")
                     if (!hasSpace) continue
                 }
                 val rowArray = Array(modRow.size) { TextKey(modRow[it]).apply { isAlpha = false } }

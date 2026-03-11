@@ -149,7 +149,7 @@ class TextKey(override val data: AbstractKeyData) : Key(data) {
                 }
                 else -> when (computed.code) {
                     KeyCode.SPACE,
-                    KeyCode.CJK_SPACE -> if (hasSlimSpaceRow) 0.0f else 1.0f
+                    KeyCode.CJK_SPACE -> 1.0f
                     KeyCode.ENTER -> 1.0f
                     else -> 0.0f
                 }
@@ -165,7 +165,7 @@ class TextKey(override val data: AbstractKeyData) : Key(data) {
                 }
                 else -> when (computed.code) {
                     KeyCode.SPACE,
-                    KeyCode.CJK_SPACE -> if (hasSlimSpaceRow) 5.00f else 1.00f
+                    KeyCode.CJK_SPACE -> 5.00f
                     KeyCode.VIEW_CHARACTERS,
                     KeyCode.VIEW_SYMBOLS2 -> 1.56f
                     KeyCode.ENTER -> 1.30f
