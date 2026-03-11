@@ -130,7 +130,15 @@ the entire ZXCVBNM alpha row. All subsequent rows (row 1, 2, ...) of the mod fil
 as pure mod rows with `isAlpha=false`.
 
 ### Spacebar `flayWidthFactor` in Mod Rows
-`TextKey.kt` assigns `flayWidthFactor = 5.0f` for SPACE when `hasSlimSpaceRow = false`
-(`bottomModRowCount < 3`). In a 3-key row `[, space .]` the space dominates at 5/7 ≈ 71% width.
-This is intentional for the standard spacebar row but means a compact 3-key mod row with a
-space key will always have a large spacebar unless `bottomModRowCount` is set to 3+.
+`TextKey.kt` originally assigned `flayWidthFactor = 5.0f` only when `hasSlimSpaceRow = false` (when `bottomModRowCount < 3`). When hiding mod rows via toggle (which reduces `bottomModRowCount` to 1), the spacebar was arbitrarily forced down to `1.0f` width and `0.0f` grow, causing it to shrink to a "postage stamp" shape.
+**The Fix:** We stripped the `hasSlimSpaceRow` override. The spacebar must ALWAYS have a baseline width factor of `5.0f` and a `flayGrow` of `1.0f`. This ensures it aggressively consumes available horizontal space, expanding gracefully across any row regardless of how many modifier rows are toggled.
+
+### Dynamic Mod-Row Hiding (The "Sigma" Toggle)
+When implementing a toggle key to show/hide extra modifier rows (like the number or navigation rows), **do not hardcode row numbers** to skip.
+Wide layouts (like `qwerty_wide_mod`) place their keys in different rows than standard layouts (`qwerty_default`). Hardcoding "always keep Row 1" will explicitly preserve the wrong keys (like arrows/tab) on wide layouts.
+**The Fix:** To hide mod rows programmatically, `LayoutManager.kt` must scan the keys dynamically:
+```kotlin
+val hasSpace = modRow.any { it.compute(DefaultComputingEvaluator)?.code == KeyCode.SPACE }
+if (!hasSpace) continue // Hide this row
+```
+Also, remember to dynamically update the `bottomModRows` count based on how many extra mod rows are actually retained, so proportional layout scaling executes correctly.
