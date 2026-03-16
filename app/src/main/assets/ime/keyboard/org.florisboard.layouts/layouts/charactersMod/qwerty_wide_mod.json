@@ -21,7 +21,7 @@
   [
     { "code": -1, "label": "CTRL", "type": "modifier" },
     { "code": -202, "label": "⚛", "type": "system_gui" },
-    { "$": "text_key", "code": 35, "label": "#" },
+    { "$": "text_key", "code": 37, "label": "%" },
     { "$": "navigation", "code": -21 },
     { "$": "navigation", "code": -24 },
     { "$": "navigation", "code": -22 },
