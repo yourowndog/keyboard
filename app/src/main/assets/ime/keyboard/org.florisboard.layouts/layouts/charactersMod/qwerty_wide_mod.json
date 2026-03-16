@@ -28,6 +28,8 @@
     { "$": "text_key", "code": 61, "label": "=" },
     { "$": "text_key", "code": 126, "label": "~" },
     { "$": "text_key", "code": 64, "label": "@" },
+    { "code": -31, "label": "clipboard_copy", "type": "system_gui" },
+    { "code": -33, "label": "clipboard_paste", "type": "system_gui" },
     { "code": -1, "label": "CTRL", "type": "modifier" }
   ]
 ]
