@@ -160,6 +160,11 @@
     },
     {
       "$": "text_key",
+      "code": -14,
+      "label": "⇥"
+    },
+    {
+      "$": "text_key",
       "code": 44,
       "label": ",",
       "hint": "",
