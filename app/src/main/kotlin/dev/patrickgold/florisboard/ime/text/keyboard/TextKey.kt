@@ -169,10 +169,10 @@ class TextKey(override val data: AbstractKeyData) : Key(data) {
                     KeyCode.CJK_SPACE -> 5.00f
                     KeyCode.VIEW_CHARACTERS,
                     KeyCode.VIEW_SYMBOLS2 -> 1.56f
-                    KeyCode.ENTER -> 1.30f
+                    KeyCode.ENTER,
+                    KeyCode.TAB -> 1.50f
                     KeyCode.SHIFT,
                     KeyCode.DELETE -> 1.00f
-                    KeyCode.TAB,
                     KeyCode.ESCAPE -> 1.00f
                     KeyCode.ARROW_LEFT,
                     KeyCode.ARROW_RIGHT,

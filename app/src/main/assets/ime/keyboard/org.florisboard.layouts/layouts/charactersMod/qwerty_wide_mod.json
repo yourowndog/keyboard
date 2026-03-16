@@ -21,9 +21,11 @@
   [
     { "code": -1, "label": "CTRL", "type": "modifier" },
     { "code": -202, "label": "⚛", "type": "system_gui" },
+    { "$": "text_key", "code": 35, "label": "#" },
     { "$": "navigation", "code": -21 },
     { "$": "navigation", "code": -24 },
     { "$": "navigation", "code": -22 },
+    { "$": "text_key", "code": 61, "label": "=" },
     { "$": "text_key", "code": 126, "label": "~" },
     { "$": "text_key", "code": 64, "label": "@" },
     { "code": -1, "label": "CTRL", "type": "modifier" }
