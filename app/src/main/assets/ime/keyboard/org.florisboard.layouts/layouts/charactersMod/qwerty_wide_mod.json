@@ -1,5 +1,6 @@
 [
   [
+    { "$": "text_key", "code": -14, "label": "⇥" },
     { "$": "text_key", "code": 44, "label": "," },
     { "$": "text_key", "code": 32, "label": "space" },
     { "$": "text_key", "code": 46, "label": ".", "popup": { "main": { "$": "text_key", "code": 33, "label": "!" }, "relevant": [{ "$": "text_key", "code": 63, "label": "?" }] } },
