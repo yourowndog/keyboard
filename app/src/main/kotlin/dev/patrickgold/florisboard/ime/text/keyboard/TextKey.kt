@@ -173,7 +173,8 @@ class TextKey(override val data: AbstractKeyData) : Key(data) {
                     KeyCode.TAB -> 1.50f
                     KeyCode.SHIFT,
                     KeyCode.DELETE -> 1.00f
-                    KeyCode.ESCAPE -> 1.00f
+                    KeyCode.ESCAPE -> 1.25f
+                    KeyCode.TOGGLE_NUMBER_ROW -> 1.25f
                     KeyCode.ARROW_LEFT,
                     KeyCode.ARROW_RIGHT,
                     KeyCode.ARROW_UP,
@@ -200,6 +201,11 @@ class TextKey(override val data: AbstractKeyData) : Key(data) {
                 KeyCode.CJK_SPACE -> VerticalAlignment.CENTER
                 else -> VerticalAlignment.BOTTOM
             }
+            // Inset the visible bounds of edge keys that are wider than their row peers,
+            // so they render at normal visual width while still occupying the extra layout space.
+            // 0.20f = (1.25 - 1.00) / 1.25 — the outer-edge fraction to inset as padding.
+            flayPaddingLeft = if (computed.code == KeyCode.ESCAPE) 0.20f else 0f
+            flayPaddingRight = if (computed.code == KeyCode.TOGGLE_NUMBER_ROW) 0.20f else 0f
         }
     }
 

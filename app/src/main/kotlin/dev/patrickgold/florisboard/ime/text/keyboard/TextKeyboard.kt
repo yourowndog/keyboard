@@ -168,10 +168,11 @@ class TextKeyboard(
                     else -> modSpacingV
                 }
 
+                val kw = key.touchBounds.right - key.touchBounds.left
                 key.visibleBounds.apply {
-                    left = key.touchBounds.left + mH
+                    left = key.touchBounds.left + mH + key.flayPaddingLeft * kw
                     top = key.touchBounds.top + mV
-                    right = key.touchBounds.right - mH
+                    right = key.touchBounds.right - mH - key.flayPaddingRight * kw
                     bottom = key.touchBounds.bottom - mV
                 }
 
