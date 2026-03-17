@@ -46,9 +46,15 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -366,8 +372,11 @@ class FlorisImeService : LifecycleInputMethodService() {
         if (info == null) return
         val editorInfo = FlorisEditorInfo.wrap(info)
         activeState.batchEdit {
-            if (activeState.imeUiMode != ImeUiMode.CLIPBOARD || prefs.clipboard.historyHideOnNextTextField.get()) {
-                activeState.imeUiMode = ImeUiMode.TEXT
+            // If the keyboard was manually minimized, keep it minimized on focus change.
+            if (!activeState.isKeyboardMinimized) {
+                if (activeState.imeUiMode != ImeUiMode.CLIPBOARD || prefs.clipboard.historyHideOnNextTextField.get()) {
+                    activeState.imeUiMode = ImeUiMode.TEXT
+                }
             }
             activeState.isSelectionMode = editorInfo.initialSelection.isSelectionMode
             editorInstance.handleStartInputView(editorInfo, isRestart = restarting)
@@ -681,11 +690,33 @@ class FlorisImeService : LifecycleInputMethodService() {
                                 .weight(keyboardWeight)
                                 .wrapContentHeight(),
                         ) {
-                            when (state.imeUiMode) {
-                                ImeUiMode.TEXT, ImeUiMode.VOICE -> TextInputLayout()
-                                ImeUiMode.MEDIA -> MediaInputLayout()
-                                ImeUiMode.CLIPBOARD -> ClipboardInputLayout()
-                                ImeUiMode.VOICE_HISTORY -> dev.patrickgold.florisboard.ime.voice.VoiceTranscriptionInputLayout()
+                            if (state.isKeyboardMinimized) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(40.dp)
+                                        .padding(end = 8.dp, bottom = 4.dp),
+                                    contentAlignment = Alignment.CenterEnd,
+                                ) {
+                                    IconButton(
+                                        onClick = {
+                                            keyboardManager.activeState.isKeyboardMinimized = false
+                                        },
+                                        modifier = Modifier.size(36.dp),
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Filled.KeyboardArrowUp,
+                                            contentDescription = "Show keyboard",
+                                        )
+                                    }
+                                }
+                            } else {
+                                when (state.imeUiMode) {
+                                    ImeUiMode.TEXT, ImeUiMode.VOICE -> TextInputLayout()
+                                    ImeUiMode.MEDIA -> MediaInputLayout()
+                                    ImeUiMode.CLIPBOARD -> ClipboardInputLayout()
+                                    ImeUiMode.VOICE_HISTORY -> dev.patrickgold.florisboard.ime.voice.VoiceTranscriptionInputLayout()
+                                }
                             }
                         }
                     }

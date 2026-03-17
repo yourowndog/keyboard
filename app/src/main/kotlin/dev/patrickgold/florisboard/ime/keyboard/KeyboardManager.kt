@@ -1092,8 +1092,11 @@ class KeyboardManager(
             KeyCode.ENTER -> handleEnter()
             KeyCode.FORWARD_DELETE -> handleForwardDelete(OperationUnit.CHARACTERS)
             KeyCode.FORWARD_DELETE_WORD -> handleForwardDelete(OperationUnit.WORDS)
-            KeyCode.IME_SHOW_UI -> FlorisImeService.showUi()
-            KeyCode.IME_HIDE_UI -> FlorisImeService.hideUi()
+            KeyCode.IME_SHOW_UI -> {
+                activeState.isKeyboardMinimized = false
+                FlorisImeService.showUi()
+            }
+            KeyCode.IME_HIDE_UI -> activeState.isKeyboardMinimized = true
             KeyCode.TMUX_PREFIX -> editorInstance.sendDownUpKeyEvent(KeyEvent.KEYCODE_B, KeyEvent.META_CTRL_ON)
             KeyCode.IME_PREV_SUBTYPE -> subtypeManager.switchToPrevSubtype()
             KeyCode.IME_NEXT_SUBTYPE -> subtypeManager.switchToNextSubtype()

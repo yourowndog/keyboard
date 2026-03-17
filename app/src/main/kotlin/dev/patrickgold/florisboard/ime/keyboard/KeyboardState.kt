@@ -100,6 +100,7 @@ open class KeyboardState protected constructor(open var rawValue: ULong) {
         const val F_IS_TRANSCRIBING: ULong =                0x4_0000_0000u
         const val F_IS_PAUSED: ULong =                      0x8_0000_0000u
 
+        const val F_IS_KEYBOARD_MINIMIZED: ULong =          0x02_00_00_00_00_00_00_00uL
         const val F_DEBUG_SHOW_DRAG_AND_DROP_HELPERS =      0x01_00_00_00_00_00_00_00uL
 
         const val STATE_ALL_ZERO: ULong =                   0uL
@@ -240,6 +241,10 @@ open class KeyboardState protected constructor(open var rawValue: ULong) {
     var isCtrlLocked: Boolean
         get() = getFlag(F_IS_CTRL_LOCKED)
         set(v) { setFlag(F_IS_CTRL_LOCKED, v) }
+
+    var isKeyboardMinimized: Boolean
+        get() = getFlag(F_IS_KEYBOARD_MINIMIZED)
+        set(v) { setFlag(F_IS_KEYBOARD_MINIMIZED, v) }
 
     var debugShowDragAndDropHelpers: Boolean
         get() = getFlag(F_DEBUG_SHOW_DRAG_AND_DROP_HELPERS)

@@ -185,7 +185,8 @@ class TextKey(override val data: AbstractKeyData) : Key(data) {
                     KeyCode.MOVE_END_OF_PAGE -> 0.72f
                     KeyCode.UNDO,
                     KeyCode.REDO -> 0.8f
-                    KeyCode.CTRL -> 1.25f
+                    KeyCode.CTRL,
+                    KeyCode.TMUX_PREFIX -> 1.25f
                     else -> 1.00f
                 }
             }
