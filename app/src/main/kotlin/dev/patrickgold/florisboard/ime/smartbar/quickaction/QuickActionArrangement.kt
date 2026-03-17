@@ -68,6 +68,7 @@ data class QuickActionArrangement(
         val Default = QuickActionArrangement(
             stickyAction = QuickAction.InsertKey(TextKeyData.VOICE_INPUT),
             dynamicActions = listOf(
+                QuickAction.InsertKey(TextKeyData.IME_HIDE_UI),
                 QuickAction.InsertKey(TextKeyData.ESCAPE),
                 QuickAction.InsertKey(TextKeyData.SETTINGS),
                 QuickAction.InsertKey(TextKeyData.IME_UI_MODE_CLIPBOARD),

@@ -641,14 +641,14 @@ class KeyboardManager(
                     activeState.isManualSelectionModeStart = true
                     activeState.isManualSelectionModeEnd = false
                 }
-                sendDownUpKeyEvent(KeyEvent.KEYCODE_DPAD_LEFT, meta(alt = true, shift = isShiftPressed, ctrl = isCtrlPressed), count)
+                sendDownUpKeyEvent(KeyEvent.KEYCODE_MOVE_HOME, meta(ctrl = true, shift = isShiftPressed), count)
             }
             KeyCode.MOVE_END_OF_LINE -> {
                 if (!selection.isSelectionMode && activeState.isManualSelectionMode) {
                     activeState.isManualSelectionModeStart = false
                     activeState.isManualSelectionModeEnd = true
                 }
-                sendDownUpKeyEvent(KeyEvent.KEYCODE_DPAD_RIGHT, meta(alt = true, shift = isShiftPressed, ctrl = isCtrlPressed), count)
+                sendDownUpKeyEvent(KeyEvent.KEYCODE_MOVE_END, meta(ctrl = true, shift = isShiftPressed), count)
             }
         }
     }
@@ -1094,6 +1094,7 @@ class KeyboardManager(
             KeyCode.FORWARD_DELETE_WORD -> handleForwardDelete(OperationUnit.WORDS)
             KeyCode.IME_SHOW_UI -> FlorisImeService.showUi()
             KeyCode.IME_HIDE_UI -> FlorisImeService.hideUi()
+            KeyCode.TMUX_PREFIX -> editorInstance.sendDownUpKeyEvent(KeyEvent.KEYCODE_B, KeyEvent.META_CTRL_ON)
             KeyCode.IME_PREV_SUBTYPE -> subtypeManager.switchToPrevSubtype()
             KeyCode.IME_NEXT_SUBTYPE -> subtypeManager.switchToNextSubtype()
             KeyCode.AI_GENERATE -> scope.launch(Dispatchers.IO) {

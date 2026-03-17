@@ -30,6 +30,7 @@
     { "$": "text_key", "code": 126, "label": "~" },
     { "code": -31, "label": "clipboard_copy", "type": "system_gui" },
     { "code": -33, "label": "clipboard_paste", "type": "system_gui" },
+    { "$": "text_key", "code": -400, "label": "⌗" },
     { "code": -1, "label": "CTRL", "type": "modifier" }
   ]
 ]
