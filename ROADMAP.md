@@ -104,6 +104,54 @@ Features planned for upcoming development, roughly ordered by complexity.
 
 ---
 
+## 7. Key Padding "Smoosh" — Redistribute Space to Neighbors
+
+**What:** When a key has `flayPaddingLeft/Right` applied (currently ESC and Σ), the visual inset should cause neighboring keys to grow into that reclaimed space rather than leaving a visual gap. Currently the padding just shrinks the rendered key while the touch boundary stays the same allocated width — neighbors don't see the freed space.
+
+**Why:** The current padding approach works for the alignment fix but isn't a general-purpose "make this key visually smaller" tool. True smooshing would let you say "give ESC less visual weight" and have the adjacent key automatically fill in.
+
+**Approach:**
+- During layout, after computing `visibleBounds` for a key with padding, propagate the reclaimed pixel width to the immediately adjacent key's `visibleBounds.right` (left neighbor) or `visibleBounds.left` (right neighbor)
+- Alternatively: instead of padding the key itself, allocate a zero-width invisible spacer key on the outer edge — the real key takes its normal 1.00f width and the spacer absorbs the extra 0.25f
+- The spacer approach is cleaner architecturally and avoids patching the visibleBounds propagation loop
+
+**Files:** `TextKeyboard.kt`, `TextKey.kt`, possibly layout JSON schema (for explicit spacer keys)
+
+---
+
+## 8. Theme Change Logging System
+
+**What:** Any edits to theme/snygg stylesheet files should be automatically logged to a persistent change log (similar to how `usage_harvest.md` logs typing events). This way, when an agent implements theme work in a session, it doesn't get lost — the next agent can read the log and bake changes into the actual default theme pack.
+
+**Why:** Theme tweaks made during sessions currently evaporate if they're only in `.flex` scratch files or never merged back into the asset stylesheets. A harvest-style log gives a paper trail.
+
+**Approach:**
+- Create `theme_changelog.md` at the repo root — append-only, one entry per change
+- Format: `[date] [file] [property changed] [old value] → [new value] [why]`
+- Could be maintained manually by convention or hooked into a write-watcher script
+- Agent instructions (in CLAUDE.md) should mandate writing a log entry whenever a theme file is edited
+- Periodic "bake-in" task: review log, apply approved entries to the canonical stylesheet assets, clear the log
+
+**Files:** `theme_changelog.md` (new), `CLAUDE.md` (add mandate), snygg asset stylesheets
+
+---
+
+## 9. Tmux Prefix Key (Ctrl+B Combo Key)
+
+**What:** Add a dedicated key to the mod row (or smartbar) that fires `Ctrl+B` as a single tap — the tmux prefix. This lets Sam trigger tmux commands without holding CTRL and tapping B separately.
+
+**Why:** Sam uses tmux heavily. The current CTRL key requires two-tap combos. A single-tap tmux-prefix key would be a significant workflow improvement in terminal sessions.
+
+**Approach:**
+- Define a new `KeyCode` constant, e.g. `TMUX_PREFIX = -400` (or similar unused negative code)
+- In `KeyboardManager.kt`, handle that code by sending `Ctrl+B` as a key chord: `sendDownUpKeyEvents(KeyEvent.KEYCODE_B, KeyEvent.META_CTRL_ON)`
+- Add the key to `qwerty_wide_mod.json` (row 3, perhaps replacing or alongside ⚛) — or make it a smartbar quick-action button
+- Alternatively: generalize to a "chord key" concept — a key defined as `"chord": [-1, 98]` (CTRL + 'b') that any layout can use, making this reusable for other tmux/terminal combos
+
+**Files:** `KeyCode.kt`, `KeyboardManager.kt`, `qwerty_wide_mod.json`, possibly layout JSON schema for chord key type
+
+---
+
 ## Priority Order (suggested)
 
 | # | Feature | Effort | Impact |
@@ -111,6 +159,9 @@ Features planned for upcoming development, roughly ordered by complexity.
 | 3 | Fix smartbar action reordering | Low | High |
 | 4 | True home/end nav | Low | Medium |
 | 1 | Hide keyboard button | Low | High |
+| 9 | Tmux prefix key (Ctrl+B) | Low | High |
 | 2 | Phrase prediction toggle button | Low | Medium |
+| 8 | Theme change logging | Low | Medium |
 | 5 | Transparent background | Medium | High |
+| 7 | Padding smoosh (redistribute to neighbors) | Medium | Medium |
 | 6 | Independent space row | Very High | Very High |
