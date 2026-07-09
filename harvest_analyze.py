@@ -70,9 +70,9 @@ class HarvestAnalyzer:
         print(f"📖 Reading {self.harvest_file}...")
 
         patterns = {
-            'session_typing': re.compile(r'^\[SESSION:TYPING\] .* \| "(.*)"$'),
-            'session_voice': re.compile(r'^\[SESSION:VOICE\] .* \| "(.*)"$'),
-            'session_legacy': re.compile(r'^\[SESSION\] .* \| "(.*)"$'),  # Old format (treat as typing)
+            'session_typing': re.compile(r'^\[SESSION:TYPING\] .* \| "(.*)"(?:\s*\|\s*app:.*)?$'),
+            'session_voice': re.compile(r'^\[SESSION:VOICE\] .* \| "(.*)"(?:\s*\|\s*app:.*)?$'),
+            'session_legacy': re.compile(r'^\[SESSION\] .* \| "(.*)"(?:\s*\|\s*app:.*)?$'),  # Old format (treat as typing)
             'accepted': re.compile(r'^\[ACCEPTED\] .* \| (.*) → (.*) \|'),
             'rejected': re.compile(r'^\[REJECTED\] .* \| (.*) ← (.*) \(reverted\)'),
             'new_word': re.compile(r'^\[NEW_WORD\] .* \| (.*)'),

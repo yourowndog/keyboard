@@ -1,0 +1,619 @@
+{
+  "file_metrics": {
+    "total_lines": 63587,
+    "empty_lines": 6,
+    "comment_lines": 6,
+    "valid_log_records": 63135,
+    "earliest_timestamp": "2025-12-24 07:08:41",
+    "latest_timestamp": "2026-07-03 02:28:06"
+  },
+  "triage_buckets": {
+    "clean_prose": 53695,
+    "code_json": 2022,
+    "concatenated": 2488,
+    "url_command": 274,
+    "filler_heavy": 1517
+  },
+  "app_bucket_cross_tab": {
+    "UNKNOWN_APP": {
+      "clean_prose": 12071,
+      "code_json": 419,
+      "concatenated": 532,
+      "url_command": 20,
+      "filler_heavy": 43
+    },
+    "dev.patrickgold.florisboard.debug": {
+      "clean_prose": 37,
+      "code_json": 25,
+      "concatenated": 6,
+      "url_command": 0,
+      "filler_heavy": 0
+    },
+    "com.google.android.apps.messaging": {
+      "clean_prose": 5090,
+      "concatenated": 380,
+      "filler_heavy": 223,
+      "code_json": 149,
+      "url_command": 4
+    },
+    "com.samsung.android.biometrics.app.setting": {
+      "clean_prose": 8,
+      "code_json": 0,
+      "url_command": 0,
+      "concatenated": 0,
+      "filler_heavy": 0
+    },
+    "com.android.chrome": {
+      "concatenated": 117,
+      "clean_prose": 432,
+      "filler_heavy": 19,
+      "url_command": 7,
+      "code_json": 10
+    },
+    "com.termux": {
+      "clean_prose": 11871,
+      "code_json": 799,
+      "filler_heavy": 307,
+      "concatenated": 720,
+      "url_command": 139
+    },
+    "nz.co.whiparound.app": {
+      "clean_prose": 97,
+      "code_json": 3,
+      "concatenated": 3,
+      "url_command": 1,
+      "filler_heavy": 0
+    },
+    "com.openai.chatgpt": {
+      "concatenated": 79,
+      "clean_prose": 808,
+      "code_json": 31,
+      "filler_heavy": 9,
+      "url_command": 3
+    },
+    "com.facebook.orca": {
+      "clean_prose": 2760,
+      "concatenated": 207,
+      "code_json": 95,
+      "filler_heavy": 117,
+      "url_command": 11
+    },
+    "com.anthropic.claude": {
+      "clean_prose": 3506,
+      "filler_heavy": 146,
+      "code_json": 98,
+      "concatenated": 85,
+      "url_command": 2
+    },
+    "com.ultimateguitar.tabs": {
+      "concatenated": 1,
+      "code_json": 0,
+      "url_command": 0,
+      "filler_heavy": 0,
+      "clean_prose": 0
+    },
+    "com.google.android.googlequicksearchbox": {
+      "clean_prose": 10693,
+      "concatenated": 201,
+      "filler_heavy": 509,
+      "code_json": 232,
+      "url_command": 29
+    },
+    "com.google.android.apps.maps": {
+      "concatenated": 1,
+      "clean_prose": 1,
+      "code_json": 0,
+      "url_command": 0,
+      "filler_heavy": 0
+    },
+    "com.chase.sig.android": {
+      "concatenated": 1,
+      "code_json": 0,
+      "url_command": 0,
+      "filler_heavy": 0,
+      "clean_prose": 0
+    },
+    "com.google.android.youtube": {
+      "clean_prose": 13,
+      "code_json": 0,
+      "url_command": 0,
+      "concatenated": 0,
+      "filler_heavy": 0
+    },
+    "com.google.android.apps.labs.language.tailwind": {
+      "url_command": 48,
+      "clean_prose": 3078,
+      "concatenated": 37,
+      "filler_heavy": 53,
+      "code_json": 61
+    },
+    "net.dinglisch.android.taskerm": {
+      "clean_prose": 15,
+      "code_json": 2,
+      "concatenated": 2,
+      "url_command": 0,
+      "filler_heavy": 0
+    },
+    "com.google.android.apps.translate": {
+      "concatenated": 6,
+      "clean_prose": 6,
+      "code_json": 0,
+      "url_command": 0,
+      "filler_heavy": 0
+    },
+    "com.spotify.music": {
+      "clean_prose": 2,
+      "url_command": 1,
+      "code_json": 0,
+      "concatenated": 0,
+      "filler_heavy": 0
+    },
+    "com.android.settings": {
+      "clean_prose": 4,
+      "code_json": 0,
+      "url_command": 0,
+      "concatenated": 0,
+      "filler_heavy": 0
+    },
+    "rk.android.app.shortcutmaker": {
+      "concatenated": 1,
+      "code_json": 0,
+      "url_command": 0,
+      "filler_heavy": 0,
+      "clean_prose": 0
+    },
+    "com.google.android.gm": {
+      "clean_prose": 35,
+      "concatenated": 2,
+      "code_json": 0,
+      "url_command": 0,
+      "filler_heavy": 0
+    },
+    "md.obsidian": {
+      "clean_prose": 266,
+      "code_json": 2,
+      "url_command": 0,
+      "concatenated": 0,
+      "filler_heavy": 0
+    },
+    "com.beeper.android": {
+      "clean_prose": 356,
+      "code_json": 8,
+      "filler_heavy": 12,
+      "concatenated": 14,
+      "url_command": 1
+    },
+    "com.carriez.flutter_hbb": {
+      "clean_prose": 1439,
+      "filler_heavy": 42,
+      "code_json": 71,
+      "concatenated": 49,
+      "url_command": 2
+    },
+    "org.mozilla.firefox": {
+      "concatenated": 4,
+      "code_json": 0,
+      "url_command": 0,
+      "filler_heavy": 0,
+      "clean_prose": 0
+    },
+    "ai.x.grok": {
+      "clean_prose": 524,
+      "filler_heavy": 4,
+      "code_json": 4,
+      "url_command": 5,
+      "concatenated": 15
+    },
+    "secure.unblock.unlimited.proxy.snap.hotspot.shield": {
+      "concatenated": 2,
+      "code_json": 1,
+      "url_command": 0,
+      "filler_heavy": 0,
+      "clean_prose": 0
+    },
+    "com.google.android.apps.googlevoice": {
+      "clean_prose": 3,
+      "code_json": 0,
+      "url_command": 0,
+      "concatenated": 0,
+      "filler_heavy": 0
+    },
+    "com.github.android": {
+      "concatenated": 1,
+      "clean_prose": 3,
+      "url_command": 1,
+      "code_json": 0,
+      "filler_heavy": 0
+    },
+    "com.amazon.mShop.android.shopping": {
+      "clean_prose": 3,
+      "code_json": 0,
+      "url_command": 0,
+      "concatenated": 0,
+      "filler_heavy": 0
+    },
+    "com.google.android.apps.docs.editors.docs": {
+      "clean_prose": 10,
+      "code_json": 0,
+      "url_command": 0,
+      "concatenated": 0,
+      "filler_heavy": 0
+    },
+    "com.google.android.apps.docs": {
+      "clean_prose": 1,
+      "code_json": 0,
+      "url_command": 0,
+      "concatenated": 0,
+      "filler_heavy": 0
+    },
+    "com.gemma.api": {
+      "clean_prose": 2,
+      "code_json": 0,
+      "url_command": 0,
+      "concatenated": 0,
+      "filler_heavy": 0
+    },
+    "io.brokentooth.soma": {
+      "concatenated": 7,
+      "code_json": 3,
+      "clean_prose": 86,
+      "url_command": 0,
+      "filler_heavy": 0
+    },
+    "com.ss.powershortcuts": {
+      "code_json": 1,
+      "url_command": 0,
+      "concatenated": 0,
+      "filler_heavy": 0,
+      "clean_prose": 0
+    },
+    "com.hcsc.android.providerfindertx": {
+      "concatenated": 1,
+      "code_json": 0,
+      "url_command": 0,
+      "filler_heavy": 0,
+      "clean_prose": 0
+    },
+    "com.sirma.mobile.bible.android": {
+      "clean_prose": 463,
+      "filler_heavy": 33,
+      "concatenated": 13,
+      "code_json": 8,
+      "url_command": 0
+    },
+    "com.google.android.apps.photos": {
+      "clean_prose": 1,
+      "code_json": 0,
+      "url_command": 0,
+      "concatenated": 0,
+      "filler_heavy": 0
+    },
+    "com.google.android.gms": {
+      "clean_prose": 1,
+      "code_json": 0,
+      "url_command": 0,
+      "concatenated": 0,
+      "filler_heavy": 0
+    },
+    "com.ubercab": {
+      "clean_prose": 5,
+      "code_json": 0,
+      "url_command": 0,
+      "concatenated": 0,
+      "filler_heavy": 0
+    },
+    "com.flyfrontier.android": {
+      "clean_prose": 1,
+      "code_json": 0,
+      "url_command": 0,
+      "concatenated": 0,
+      "filler_heavy": 0
+    },
+    "it.rignanese.leo.slimfacebook": {
+      "clean_prose": 4,
+      "code_json": 0,
+      "url_command": 0,
+      "concatenated": 0,
+      "filler_heavy": 0
+    },
+    "us.zoom.videomeetings": {
+      "concatenated": 1,
+      "code_json": 0,
+      "url_command": 0,
+      "filler_heavy": 0,
+      "clean_prose": 0
+    }
+  },
+  "spaceless_rates": {
+    "UNKNOWN_APP": 4.065724111578143,
+    "dev.patrickgold.florisboard.debug": 8.823529411764707,
+    "com.google.android.apps.messaging": 6.500171057133082,
+    "com.samsung.android.biometrics.app.setting": 0.0,
+    "com.android.chrome": 20.0,
+    "com.termux": 5.203816131830009,
+    "nz.co.whiparound.app": 2.8846153846153846,
+    "com.openai.chatgpt": 8.494623655913978,
+    "com.facebook.orca": 6.489028213166144,
+    "com.anthropic.claude": 2.215272348188689,
+    "com.ultimateguitar.tabs": 100.0,
+    "com.google.android.googlequicksearchbox": 1.7232510288065845,
+    "com.google.android.apps.maps": 50.0,
+    "com.chase.sig.android": 100.0,
+    "com.google.android.youtube": 0.0,
+    "com.google.android.apps.labs.language.tailwind": 1.1290814769606348,
+    "net.dinglisch.android.taskerm": 10.526315789473683,
+    "com.google.android.apps.translate": 50.0,
+    "com.spotify.music": 0.0,
+    "com.android.settings": 0.0,
+    "rk.android.app.shortcutmaker": 100.0,
+    "com.google.android.gm": 5.405405405405405,
+    "md.obsidian": 0.0,
+    "com.beeper.android": 3.580562659846547,
+    "com.carriez.flutter_hbb": 3.056768558951965,
+    "org.mozilla.firefox": 100.0,
+    "ai.x.grok": 2.717391304347826,
+    "secure.unblock.unlimited.proxy.snap.hotspot.shield": 66.66666666666666,
+    "com.google.android.apps.googlevoice": 0.0,
+    "com.github.android": 20.0,
+    "com.amazon.mShop.android.shopping": 0.0,
+    "com.google.android.apps.docs.editors.docs": 0.0,
+    "com.google.android.apps.docs": 0.0,
+    "com.gemma.api": 0.0,
+    "io.brokentooth.soma": 7.291666666666667,
+    "com.ss.powershortcuts": 0.0,
+    "com.hcsc.android.providerfindertx": 100.0,
+    "com.sirma.mobile.bible.android": 2.5145067698259185,
+    "com.google.android.apps.photos": 0.0,
+    "com.google.android.gms": 0.0,
+    "com.ubercab": 0.0,
+    "com.flyfrontier.android": 0.0,
+    "it.rignanese.leo.slimfacebook": 0.0,
+    "us.zoom.videomeetings": 100.0
+  },
+  "event_counts": {
+    "REJECTED": 1219,
+    "INSISTED": 183,
+    "ACCEPTED": 1481,
+    "NEW_WORD": 58,
+    "MANUAL_FIX": 198
+  },
+  "app_event_cross_tab": {
+    "UNKNOWN_APP": {
+      "REJECTED": 302,
+      "INSISTED": 25,
+      "ACCEPTED": 346,
+      "NEW_WORD": 16,
+      "MANUAL_FIX": 0
+    },
+    "dev.patrickgold.florisboard.debug": {
+      "REJECTED": 8,
+      "ACCEPTED": 9,
+      "INSISTED": 0,
+      "NEW_WORD": 0,
+      "MANUAL_FIX": 0
+    },
+    "com.openai.chatgpt": {
+      "ACCEPTED": 34,
+      "REJECTED": 52,
+      "MANUAL_FIX": 9,
+      "INSISTED": 0,
+      "NEW_WORD": 0
+    },
+    "com.facebook.orca": {
+      "REJECTED": 253,
+      "NEW_WORD": 9,
+      "ACCEPTED": 215,
+      "MANUAL_FIX": 31,
+      "INSISTED": 7
+    },
+    "com.google.android.youtube": {
+      "REJECTED": 11,
+      "ACCEPTED": 1,
+      "INSISTED": 1,
+      "NEW_WORD": 0,
+      "MANUAL_FIX": 0
+    },
+    "com.google.android.apps.messaging": {
+      "ACCEPTED": 525,
+      "REJECTED": 374,
+      "NEW_WORD": 23,
+      "INSISTED": 93,
+      "MANUAL_FIX": 54
+    },
+    "nz.co.whiparound.app": {
+      "INSISTED": 1,
+      "ACCEPTED": 7,
+      "REJECTED": 5,
+      "MANUAL_FIX": 1,
+      "NEW_WORD": 0
+    },
+    "com.android.chrome": {
+      "ACCEPTED": 18,
+      "REJECTED": 21,
+      "MANUAL_FIX": 13,
+      "INSISTED": 1,
+      "NEW_WORD": 0
+    },
+    "com.anthropic.claude": {
+      "ACCEPTED": 61,
+      "REJECTED": 51,
+      "MANUAL_FIX": 12,
+      "INSISTED": 12,
+      "NEW_WORD": 2
+    },
+    "com.google.android.googlequicksearchbox": {
+      "MANUAL_FIX": 62,
+      "REJECTED": 2,
+      "ACCEPTED": 0,
+      "INSISTED": 0,
+      "NEW_WORD": 0
+    },
+    "com.google.android.apps.photos": {
+      "ACCEPTED": 1,
+      "REJECTED": 0,
+      "INSISTED": 0,
+      "NEW_WORD": 0,
+      "MANUAL_FIX": 0
+    },
+    "com.samsung.android.biometrics.app.setting": {
+      "ACCEPTED": 20,
+      "INSISTED": 8,
+      "REJECTED": 0,
+      "NEW_WORD": 0,
+      "MANUAL_FIX": 0
+    },
+    "com.google.android.apps.translate": {
+      "MANUAL_FIX": 1,
+      "ACCEPTED": 1,
+      "NEW_WORD": 1,
+      "REJECTED": 0,
+      "INSISTED": 0
+    },
+    "net.dinglisch.android.taskerm": {
+      "REJECTED": 1,
+      "ACCEPTED": 0,
+      "INSISTED": 0,
+      "NEW_WORD": 0,
+      "MANUAL_FIX": 0
+    },
+    "com.ss.launcher2": {
+      "REJECTED": 2,
+      "ACCEPTED": 1,
+      "INSISTED": 0,
+      "NEW_WORD": 0,
+      "MANUAL_FIX": 0
+    },
+    "com.google.android.gm": {
+      "ACCEPTED": 6,
+      "REJECTED": 7,
+      "INSISTED": 0,
+      "NEW_WORD": 0,
+      "MANUAL_FIX": 0
+    },
+    "com.beeper.android": {
+      "ACCEPTED": 173,
+      "REJECTED": 42,
+      "INSISTED": 34,
+      "MANUAL_FIX": 2,
+      "NEW_WORD": 4
+    },
+    "org.mozilla.firefox": {
+      "ACCEPTED": 4,
+      "REJECTED": 3,
+      "INSISTED": 0,
+      "NEW_WORD": 0,
+      "MANUAL_FIX": 0
+    },
+    "com.spotify.music": {
+      "REJECTED": 2,
+      "ACCEPTED": 1,
+      "INSISTED": 0,
+      "NEW_WORD": 0,
+      "MANUAL_FIX": 0
+    },
+    "com.google.android.apps.labs.language.tailwind": {
+      "ACCEPTED": 10,
+      "REJECTED": 9,
+      "INSISTED": 0,
+      "NEW_WORD": 0,
+      "MANUAL_FIX": 0
+    },
+    "com.rosteam.gpsemulator": {
+      "ACCEPTED": 2,
+      "REJECTED": 0,
+      "INSISTED": 0,
+      "NEW_WORD": 0,
+      "MANUAL_FIX": 0
+    },
+    "com.android.vending": {
+      "REJECTED": 2,
+      "INSISTED": 1,
+      "ACCEPTED": 0,
+      "NEW_WORD": 0,
+      "MANUAL_FIX": 0
+    },
+    "io.brokentooth.soma": {
+      "ACCEPTED": 11,
+      "REJECTED": 6,
+      "NEW_WORD": 3,
+      "INSISTED": 0,
+      "MANUAL_FIX": 0
+    },
+    "ai.x.grok": {
+      "ACCEPTED": 1,
+      "REJECTED": 3,
+      "MANUAL_FIX": 1,
+      "INSISTED": 0,
+      "NEW_WORD": 0
+    },
+    "com.amazon.mShop.android.shopping": {
+      "REJECTED": 12,
+      "ACCEPTED": 2,
+      "INSISTED": 0,
+      "NEW_WORD": 0,
+      "MANUAL_FIX": 0
+    },
+    "com.carriez.flutter_hbb": {
+      "REJECTED": 43,
+      "ACCEPTED": 20,
+      "MANUAL_FIX": 9,
+      "INSISTED": 0,
+      "NEW_WORD": 0
+    },
+    "com.reddit.frontpage": {
+      "ACCEPTED": 1,
+      "REJECTED": 2,
+      "INSISTED": 0,
+      "NEW_WORD": 0,
+      "MANUAL_FIX": 0
+    },
+    "com.ultimateguitar.tabs": {
+      "ACCEPTED": 3,
+      "REJECTED": 0,
+      "INSISTED": 0,
+      "NEW_WORD": 0,
+      "MANUAL_FIX": 0
+    },
+    "com.sirma.mobile.bible.android": {
+      "ACCEPTED": 5,
+      "MANUAL_FIX": 3,
+      "REJECTED": 4,
+      "INSISTED": 0,
+      "NEW_WORD": 0
+    },
+    "com.android.settings.intelligence": {
+      "ACCEPTED": 1,
+      "REJECTED": 0,
+      "INSISTED": 0,
+      "NEW_WORD": 0,
+      "MANUAL_FIX": 0
+    },
+    "com.android.systemui": {
+      "REJECTED": 1,
+      "ACCEPTED": 1,
+      "INSISTED": 0,
+      "NEW_WORD": 0,
+      "MANUAL_FIX": 0
+    },
+    "us.zoom.videomeetings": {
+      "ACCEPTED": 1,
+      "REJECTED": 1,
+      "INSISTED": 0,
+      "NEW_WORD": 0,
+      "MANUAL_FIX": 0
+    }
+  },
+  "intent_outcomes": {
+    "validated_reject": 522,
+    "manual_fix": 36,
+    "capitulation": 66,
+    "validated_fix": 1227,
+    "leave_alone": 241,
+    "unresolved": 1047
+  },
+  "calibration_denominator": {
+    "validated_fixes": 1227,
+    "identity_leave_alone": 241,
+    "capitulation_fights": 588
+  }
+}

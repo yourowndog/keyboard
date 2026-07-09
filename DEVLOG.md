@@ -299,3 +299,8 @@
   - **Spacebar Sizing:** Split the modifier layout (`qwerty_default.json`) into 3 logical rows (row 0: shift/merge, row 1: space/enter/punctuation, row 2: nav/utility). The `modRowsVisible` toggle now cleanly skips row 2 while leaving the essential spacebar row intact, allowing it to correctly expand (`hasSlimSpaceRow=false`).
   - **Whisper Integration:** Pulled the missing `OPENAI_API_KEY` from the factory server (`silo@beksinski`) and injected it into `local.properties` so local builds now have Whisper functionality.
   - **Wide Layout Spacebar Fix:** Removed the hardcoded `hasSlimSpaceRow` sizing override in `TextKey.kt` to allow the spacebar to always scale (`flayGrow=1.0f`). Rewrote `LayoutManager.kt` mod row parsing to dynamically check each mod row for the `SPACE` keycode, ensuring the space row is protected while other rows correctly hide on toggle, regardless of the layout structure (`qwerty_default` vs `qwerty_wide`). Documented the interaction in `omniboard_hacking.md`.
+
+### 2026-07-09
+* **Task:** Sanitized leaked credentials (API keys, GitHub tokens, cookies) from user harvest logs and bigram files, then amended the local commit.
+* **Files:** `usage_harvest.md`, `bigrams_combined.tsv`, `bigrams_typing.tsv`, `personal_phrases.tsv`, `DEVLOG.md`
+

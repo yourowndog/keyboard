@@ -1,17 +1,17 @@
 # Harvest Analysis Summary
-Generated: 2026-03-10 10:02:30
+Generated: 2026-07-03 02:53:04
 
 ## 📊 Statistics
 
 ### Data Volume
-- **Typing Sessions**: 11510 sessions, 54,918 words
-- **Voice Sessions**: 1072 sessions, 5,088 words
-- **Total Words**: 60,006
+- **Typing Sessions**: 27935 sessions, 128,893 words
+- **Voice Sessions**: 31566 sessions, 151,592 words
+- **Total Words**: 280,485
 
 ### Autocorrect Performance
-- **Accepted Corrections**: 564
-- **Rejected Corrections**: 531
-- **Accuracy Rate**: 51.5%
+- **Accepted Corrections**: 1471
+- **Rejected Corrections**: 1219
+- **Accuracy Rate**: 54.7%
 
 ### Issues Detected
 - **No Suggestions**: 0 instances
@@ -24,26 +24,26 @@ Generated: 2026-03-10 10:02:30
 ### 1. Add to Anti-Corrections
 *Corrections that are frequently rejected (≥2x):*
 
-- `"i" → "I"` (17x rejected)
-- `"im" → "I'm"` (13x rejected)
-- `"id" → "I'd"` (13x rejected)
+- `"i" → "I"` (30x rejected)
+- `"bc" → "by"` (24x rejected)
+- `"im" → "I'm"` (14x rejected)
+- `"id" → "I'd"` (14x rejected)
+- `"Ya" → "Yards"` (13x rejected)
+- `"Bc" → "By"` (12x rejected)
 - `"s" → "so"` (10x rejected)
+- `"rn" → "rnase"` (8x rejected)
 - `"Ya" → "Yale"` (7x rejected)
 - `"bc" → "be"` (7x rejected)
+- `"ai" → "ain't"` (7x rejected)
 - `"min" → "mind"` (6x rejected)
-- `"rn" → "rnase"` (5x rejected)
-- `"were" → "we're"` (4x rejected)
-- `"ai" → "ain't"` (4x rejected)
-- `"Ugh" → "Up"` (4x rejected)
-- `"Bc" → "Be"` (4x rejected)
-- `"cs" → "cska"` (4x rejected)
-- `"Hows" → "How"` (3x rejected)
-- `"bc" → "by"` (3x rejected)
-- `"7o" → "to"` (3x rejected)
-- `"minecraft" → "mineshaft"` (3x rejected)
-- `"hesd" → "he'd"` (3x rejected)
-- `"tf" → "to"` (3x rejected)
-- `"d" → "don't"` (3x rejected)
+- `"were" → "we're"` (6x rejected)
+- `"mens" → "Mensa"` (6x rejected)
+- `"Uh" → "Huh"` (6x rejected)
+- `"ya" → "yards"` (6x rejected)
+- `"dont" → "don't"` (5x rejected)
+- `"its" → "it's"` (5x rejected)
+- `"e" → "end"` (5x rejected)
+- `"k" → "Kiry"` (4x rejected)
 
 ### 2. Dictionary Additions (High Priority)
 *Words with no suggestions or multiple attempts (freq ≥2):*
@@ -52,76 +52,76 @@ Generated: 2026-03-10 10:02:30
 
 ### 3. New Bigrams
 
-#### From Typing (4479 bigrams, freq ≥2):
-- `you know` (283x)
-- `to be` (107x)
-- `want to` (106x)
-- `and then` (104x)
-- `of the` (98x)
-- `going to` (95x)
-- `like the` (89x)
-- `to the` (88x)
-- `in the` (86x)
-- `this is` (81x)
-- `to do` (76x)
-- `kind of` (75x)
-- `on the` (75x)
-- `it's like` (72x)
-- `don't know` (69x)
-- `need to` (69x)
-- `that you` (66x)
-- `able to` (59x)
-- `you to` (57x)
-- `all of` (57x)
+#### From Typing (13050 bigrams, freq ≥2):
+- `you know` (328x)
+- `of the` (203x)
+- `want to` (161x)
+- `to be` (158x)
+- `in the` (157x)
+- `on the` (145x)
+- `to the` (142x)
+- `this is` (138x)
+- `and then` (128x)
+- `like the` (114x)
+- `if you` (112x)
+- `need to` (112x)
+- `to do` (111x)
+- `going to` (110x)
+- `you can` (99x)
+- `and the` (95x)
+- `is the` (93x)
+- `don't know` (84x)
+- `able to` (84x)
+- `kind of` (84x)
 
-#### From Voice (432 bigrams, freq ≥2):
-- `you know` (24x)
-- `to be` (19x)
-- `in the` (17x)
-- `of the` (14x)
-- `going on` (13x)
-- `trying to` (11x)
-- `this is` (10x)
-- `and you` (10x)
-- `to do` (9x)
-- `have to` (9x)
-- `and the` (9x)
-- `on with` (8x)
-- `don't know` (8x)
-- `want to` (8x)
-- `with the` (8x)
-- `need to` (7x)
-- `and so` (7x)
-- `right now` (7x)
-- `able to` (7x)
-- `like the` (7x)
+#### From Voice (12129 bigrams, freq ≥2):
+- `you know` (745x)
+- `to be` (366x)
+- `of the` (350x)
+- `want to` (338x)
+- `and then` (293x)
+- `in the` (265x)
+- `to do` (257x)
+- `like the` (252x)
+- `kind of` (210x)
+- `going to` (210x)
+- `this is` (202x)
+- `it's like` (200x)
+- `don't know` (195x)
+- `all of` (195x)
+- `need to` (194x)
+- `if you` (182x)
+- `that you` (176x)
+- `able to` (174x)
+- `have to` (168x)
+- `trying to` (163x)
 
-#### Combined Total: 4586 unique bigrams
+#### Combined Total: 20767 unique bigrams
 
 ### 4. Autocorrect Failures
 
 *No autocorrect failures detected.*
 
-### 5. Personal Phrases (866 learned)
+### 5. Personal Phrases (10123 learned)
 *Multi-word phrases from your typing history (for phrase prediction):*
 
-- `i don't` → `know` (53x)
-- `i want` → `to` (40x)
-- `be able` → `to` (30x)
-- `and you` → `know` (23x)
-- `you know` → `i` (22x)
-- `like i` → `don't` (21x)
-- `you know` → `and` (21x)
-- `i need` → `to` (21x)
-- `want you` → `to` (21x)
-- `going to` → `be` (21x)
-- `to be` → `able` (21x)
-- `go ahead` → `and` (19x)
-- `i want` → `you` (19x)
-- `a little` → `bit` (17x)
-- `you know` → `like` (17x)
-- `i mean` → `i` (16x)
-- `i have` → `a` (16x)
-- `i want` → `you to` (16x)
-- `i don't` → `want` (15x)
-- `we're going` → `to` (15x)
+- `i don't` → `know` (191x)
+- `i want` → `to` (191x)
+- `be able` → `to` (126x)
+- `going to` → `be` (96x)
+- `i need` → `to` (87x)
+- `want you` → `to` (81x)
+- `to be` → `able` (78x)
+- `i mean` → `i` (70x)
+- `and you` → `know` (70x)
+- `you know` → `what` (70x)
+- `i want` → `you` (66x)
+- `like i` → `don't` (64x)
+- `you know` → `like` (63x)
+- `you know` → `i` (62x)
+- `go ahead` → `and` (60x)
+- `we need` → `to` (59x)
+- `all of` → `the` (59x)
+- `blah blah` → `blah` (57x)
+- `path /` → `secure` (57x)
+- `that i` → `can` (56x)
