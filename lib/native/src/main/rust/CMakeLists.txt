@@ -19,6 +19,7 @@ endif()
 ### FlorisBoard ###
 
 add_library(fl_native SHARED src/lib.c)
+target_link_options(fl_native PRIVATE "-Wl,-z,max-page-size=16384")
 
 if(CMAKE_ANDROID_ARCH_ABI STREQUAL "armeabi-v7a")
     set(ANDROID_TARGET "armv7a-linux-androideabi")

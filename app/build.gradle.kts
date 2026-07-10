@@ -221,9 +221,8 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     // REFLEXES (SymSpell) - Hardcoded to bypass catalog error
     implementation("com.darkrockstudios:SymSpellKt-android:3.4.0")
+    implementation("com.microsoft.onnxruntime:onnxruntime-android:1.26.0")
 
-    // BRAINS (MediaPipe) - Hardcoded to bypass catalog error
-    implementation("com.google.mediapipe:tasks-genai:0.10.14")
     implementation(libs.cache4k)
     implementation(libs.kotlin.reflect)
     implementation(libs.kotlinx.coroutines)

@@ -25,13 +25,26 @@
     "x": { "hint": { "code": 61, "label": "=" } },
     "c": { "hint": { "code": 42, "label": "*" } },
     "v": { "hint": { "code": 38, "label": "&" } },
-    "b": { "hint": { "code": 92, "label": "\" }, "relevant": [{ "code": 124, "label": "|" }] },
+    "b": { "hint": { "code": 92, "label": "\\" }, "relevant": [{ "code": 124, "label": "|" }] },
     "n": { "hint": { "code": 123, "label": "{" } },
     "m": { "hint": { "code": 125, "label": "}" } },
-    
-    "/": { "hint": { "code": 124, "label": "|" } }, 
-    
+
+    "/": { "hint": { "code": 124, "label": "|" } },
     ".": { "hint": { "code": 63, "label": "?" } },
     ",": { "hint": { "code": 60, "label": "<" }, "relevant": [{ "code": 62, "label": ">" }] }
+  },
+  "uri": {
+    ".": {
+      "main": { "code": -255, "label": ".com" },
+      "relevant": [
+        { "code": -255, "label": ".org" },
+        { "code": -255, "label": ".net" },
+        { "code": -255, "label": ".io" },
+        { "code": -255, "label": ".dev" },
+        { "code": -255, "label": ".app" },
+        { "code": -255, "label": ".edu" },
+        { "code": -255, "label": ".gov" }
+      ]
+    }
   }
 }

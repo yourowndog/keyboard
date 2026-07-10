@@ -8961,9 +8961,9 @@ $commit_message git	push echo	3
 then git	commit	3
 changes committed	and	3
 changes committed	and pushed	3
-export gemini_paid_api_key="aizasydfsc22c197mka4qkdo44oh-0mr3fssz_y	export	3
-gemini_paid_api_key="aizasydfsc22c197mka4qkdo44oh-0mr3fssz_y export	gemini_free_api_key="aizasyddzfac-k6cq0hafw29q7kvrjs6uqmczpc	3
-export gemini_paid_api_key="aizasydfsc22c197mka4qkdo44oh-0mr3fssz_y	export gemini_free_api_key="aizasyddzfac-k6cq0hafw29q7kvrjs6uqmczpc	3
+export gemini_paid_api_key="[REDACTED_SECRET]	export	3
+gemini_paid_api_key="[REDACTED_SECRET] export	gemini_free_api_key="[REDACTED_SECRET]	3
+export gemini_paid_api_key="[REDACTED_SECRET]	export gemini_free_api_key="[REDACTED_SECRET]	3
 alias flask='python3	/storage/emulated/0/vault/ultima/scripts/run_tunnel.py	3
 flask='python3 /storage/emulated/0/vault/ultima/scripts/run_tunnel.py	export	3
 alias flask='python3	/storage/emulated/0/vault/ultima/scripts/run_tunnel.py export	3

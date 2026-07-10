@@ -109,7 +109,7 @@
     "text-overflow": "ellipsis",
     "shape": "var(--shape-accent)"
   },
-  "key[code=-202,-14,-11,-131,-4,-7,-9]": {
+  "key[code=-14,-11,-131,-4,-7,-9]": {
     "background": "var(--tac-amber-dark)",
     "foreground": "var(--tac-amber-gold)",
     "border-color": "var(--tac-amber-gold)",
@@ -121,7 +121,7 @@
     "border-color": "var(--tac-amber-gold)",
     "shape": "cut-corner(6dp, 6dp, 6dp, 6dp)"
   },
-  "key[code=-206..-201,-35,-31,-33,34,45,95]": {
+  "key[code=-206..-203,-201,-35,34,95]": {
     "background": "var(--tac-hull)",
     "foreground": "var(--text-dim)",
     "border-color": "var(--tac-red-dark)",

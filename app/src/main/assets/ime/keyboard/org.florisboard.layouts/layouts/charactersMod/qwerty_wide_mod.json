@@ -3,28 +3,28 @@
     { "$": "text_key", "code": -14, "label": "⇥" },
     { "$": "text_key", "code": 44, "label": "," },
     { "$": "text_key", "code": 32, "label": "space" },
-    { "$": "text_key", "code": 46, "label": ".", "popup": { "main": { "$": "text_key", "code": 33, "label": "!" }, "relevant": [{ "$": "text_key", "code": 63, "label": "?" }] } },
+    { "$": "text_key", "code": 46, "label": ".", "popup": { "main": { "$": "text_key", "code": 39, "label": "'" }, "relevant": [{ "$": "text_key", "code": 34, "label": "\"" }] } },
     { "code": 10, "label": "↵", "type": "enter_editing" }
   ],
   [
     { "$": "navigation", "code": -15, "label": "⎋" },
-    { "code": -212, "label": "😊", "type": "system_gui" },
+    { "$": "text_key", "code": 126, "label": "~" },
     { "$": "text_key", "code": 58, "label": ":", "popup": { "main": { "$": "text_key", "code": 59, "label": ";" }, "relevant": [{ "$": "text_key", "code": 61, "label": "=" }, { "$": "text_key", "code": 64, "label": "@" }] } },
     { "$": "navigation", "code": -27, "label": "«" },
     { "$": "navigation", "code": -23 },
     { "$": "navigation", "code": -28, "label": "»" },
     { "$": "text_key", "code": 45, "label": "-", "popup": { "main": { "$": "text_key", "code": 95, "label": "_" }, "relevant": [{ "$": "text_key", "code": 126, "label": "~" }, { "$": "text_key", "code": 34, "label": "\"" }] } },
-    { "$": "text_key", "code": 47, "label": "/" },
+    { "$": "text_key", "code": 39, "label": "'", "popup": { "main": { "$": "text_key", "code": 34, "label": "\"" } } },
     { "$": "text_key", "code": -305, "label": "Σ" }
   ],
   [
-    { "$": "text_key", "code": -400, "label": "PREF" },
+    { "$": "text_key", "code": -400, "label": "MOD" },
     { "code": -202, "label": "⚛", "type": "system_gui" },
-    { "$": "text_key", "code": 37, "label": "%" },
+    { "$": "text_key", "code": 64, "label": "@", "popup": { "main": { "$": "text_key", "code": 37, "label": "%" }, "relevant": [{ "$": "text_key", "code": 42, "label": "*" }, { "$": "text_key", "code": 35, "label": "#" }] } },
     { "$": "navigation", "code": -21 },
     { "$": "navigation", "code": -24 },
     { "$": "navigation", "code": -22 },
-    { "code": -31, "label": "clipboard_copy", "type": "system_gui" },
+    { "$": "text_key", "code": 47, "label": "/" },
     { "code": -33, "label": "clipboard_paste", "type": "system_gui" },
     { "code": -1, "label": "CTRL", "type": "modifier" }
   ]

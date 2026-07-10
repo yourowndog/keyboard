@@ -1291,7 +1291,7 @@ Copy to repo: `cp /sdcard/Documents/usage_harvest.md ~/vault/projects/keyboard/`
 [SESSION] 2026-01-16 14:40:35 | "put. 0 5 0 6"
 [ACCEPTED] 2026-01-16 14:45:59 | hsve → have | ctx: "hsve" | trigram: "can hsve"
 [ACCEPTED] 2026-01-16 14:48:09 | appre → appreciate | ctx: "appre" | trigram: "I appre"
-[SESSION] 2026-01-16 15:23:34 | "https://www.amazon.com/spr/returns/label/b46c3655-ee8b-4a30-a6a2-44598945ddcc?linkGeneratedOnTimeStamp=1768598210919&ref_=spr_share_label_post&printerFriendly=1&src=old&encoded=1&token=fe550449-682b-4d34-b92a-dbc412f8de1f ThankyouWhataboutthehandwarmersIhaveabunchathomeillfigureityoucanhsvethelabeloutImsostressedIminadarkplacebutiappretheeffortYeahSameHimOranythingArocktuReturnlabelHesgood,"
+[SESSION] 2026-01-16 15:23:34 | "https://www.amazon.com/spr/returns/label/b46c3655-ee8b-4a30-a6a2-44598945ddcc?linkGeneratedOnTimeStamp=1768598210919&ref_=spr_share_label_post&printerFriendly=1&src=old&encoded=1&token=<REDACTED_TOKEN> ThankyouWhataboutthehandwarmersIhaveabunchathomeillfigureityoucanhsvethelabeloutImsostressedIminadarkplacebutiappretheeffortYeahSameHimOranythingArocktuReturnlabelHesgood,"
 [REJECTED] 2026-01-16 15:23:38 | pro ← problem (reverted) | ctx: "pro" | trigram: "a pro"
 [REJECTED] 2026-01-16 15:23:42 | minecraft ← mineshaft (reverted) | ctx: "minecraft" | trigram: "pro minecraft"
 [ACCEPTED] 2026-01-16 15:25:26 | ugh → up | ctx: "ugh" | trigram: "And ugh"
@@ -20690,7 +20690,7 @@ Copy to repo: `cp /sdcard/Documents/usage_harvest.md ~/vault/projects/keyboard/`
 [SESSION:TYPING] 2026-03-05 19:59:54 | "WebKit rendering engines. Other community" | app: "com.google.android.apps.labs.language.tailwind" | field: 2 | inputType: NORMAL | flags: autoCorrect
 [SESSION:TYPING] 2026-03-05 19:59:54 | "complete web pages, and automate" | app: "com.google.android.apps.labs.language.tailwind" | field: 2 | inputType: NORMAL | flags: autoCorrect
 [SESSION:TYPING] 2026-03-05 19:59:54 | "similar multimodal capabilities tailored for" | app: "com.google.android.apps.labs.language.tailwind" | field: 2 | inputType: NORMAL | flags: autoCorrect
-[SESSION:TYPING] 2026-03-05 19:59:54 | "blackwhite084/playwright-plus-python-mcp (which is optimized specifically" | app: "com.google.android.apps.labs.language.tailwind" | field: 2 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-03-05 19:59:54 | "blackwhite08<REDACTED_GOOGLE_OAUTH_CODE> (which is optimized specifically" | app: "com.google.android.apps.labs.language.tailwind" | field: 2 | inputType: NORMAL | flags: autoCorrect
 [SESSION:TYPING] 2026-03-05 19:59:54 | "specific development stacks. ​The divergence" | app: "com.google.android.apps.labs.language.tailwind" | field: 2 | inputType: NORMAL | flags: autoCorrect
 [SESSION:TYPING] 2026-03-05 19:59:54 | "broader systemic trend in agentic" | app: "com.google.android.apps.labs.language.tailwind" | field: 2 | inputType: NORMAL | flags: autoCorrect
 [SESSION:TYPING] 2026-03-05 19:59:54 | "token efficiency of programmatic navigation" | app: "com.google.android.apps.labs.language.tailwind" | field: 2 | inputType: NORMAL | flags: autoCorrect
@@ -22694,7 +22694,7 @@ Copy to repo: `cp /sdcard/Documents/usage_harvest.md ~/vault/projects/keyboard/`
 [SESSION:VOICE] 2026-03-07 17:17:10 | "a task that opens the" | app: "net.dinglisch.android.taskerm" | field: -1 | inputType: NORMAL | flags: autoCorrect
 [SESSION:VOICE] 2026-03-07 17:17:10 | "menu" | app: "net.dinglisch.android.taskerm" | field: -1 | inputType: NORMAL | flags: autoCorrect
 [SESSION:VOICE] 2026-03-07 17:24:04 | "developer options, but this one" | app: "com.google.android.googlequicksearchbox" | field: 2131430718 | inputType: NORMAL | flags: noSuggestions,autoCorrect
-[SESSION:VOICE] 2026-03-07 17:24:04 | "AIzaSyCSgkClEEZFNKNDsPb2U7vLulLfObVtRTY I'm trying to create" | app: "com.google.android.googlequicksearchbox" | field: 2131430718 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-03-07 17:24:04 | "[REDACTED_SECRET] I'm trying to create" | app: "com.google.android.googlequicksearchbox" | field: 2131430718 | inputType: NORMAL | flags: noSuggestions,autoCorrect
 [SESSION:VOICE] 2026-03-07 17:24:04 | "this running services menu in" | app: "com.google.android.googlequicksearchbox" | field: 2131430718 | inputType: NORMAL | flags: noSuggestions,autoCorrect
 [SESSION:VOICE] 2026-03-07 17:24:04 | "a shortcut, like a power" | app: "com.google.android.googlequicksearchbox" | field: 2131430718 | inputType: NORMAL | flags: noSuggestions,autoCorrect
 [SESSION:VOICE] 2026-03-07 17:24:04 | "right here in this screenshot..." | app: "com.google.android.googlequicksearchbox" | field: 2131430718 | inputType: NORMAL | flags: noSuggestions,autoCorrect
@@ -29143,10 +29143,10 @@ Copy to repo: `cp /sdcard/Documents/usage_harvest.md ~/vault/projects/keyboard/`
 [SESSION:VOICE] 2026-03-12 11:50:48 | "trying to use my Claude" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
 [SESSION:VOICE] 2026-03-12 11:50:48 | "setup token and it looks" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
 [SESSION:VOICE] 2026-03-12 11:50:48 | "have any line breaks in" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
-[SESSION:VOICE] 2026-03-12 11:50:48 | "0:gateway- 1:menu* sk-ant-oat01-YGr4iEN3WtqzWF1MXLdiI1QiT4SJa69K-W0bCXQGmWZiROyBgkGOopwr06qL9Q-IfQQdyD6_NvsWGcF40dGz5Q-AM 8o9gAA I'm" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-03-12 11:50:48 | "0:gateway- 1:menu* <REDACTED_OPENAI_API_KEY> 8o9gAA I'm" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
 [SESSION:VOICE] 2026-03-12 11:50:48 | "like it's split into two" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
 [SESSION:VOICE] 2026-03-12 11:52:28 | "Because that was one thing." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
-[SESSION:VOICE] 2026-03-12 11:52:28 | "sk-ant-oat01-YGr4iEN3WtqzWF1MXLdiI1QiT4SJa69K-W0bCXQGmWZiROyBgkGOopwr06qL9Q-IfQQdyD6_NvsWGcF40dGz5Q-AM 8o9gAA How do I" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-03-12 11:52:28 | "<REDACTED_OPENAI_API_KEY> 8o9gAA How do I" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
 [SESSION:VOICE] 2026-03-12 11:52:28 | "should probably start using. Or" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
 [SESSION:VOICE] 2026-03-12 11:52:28 | "use an external secrets provider?" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
 [SESSION:VOICE] 2026-03-12 11:52:28 | "this and that, that I" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
@@ -29160,7 +29160,7 @@ Copy to repo: `cp /sdcard/Documents/usage_harvest.md ~/vault/projects/keyboard/`
 [SESSION:VOICE] 2026-03-12 12:00:17 | "my favorite model to talk" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
 [SESSION:VOICE] 2026-03-12 12:00:17 | "to pick. This is going" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
 [SESSION:VOICE] 2026-03-12 12:00:17 | "what made 4-0 so great." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
-[SESSION:VOICE] 2026-03-12 12:00:17 | "sk-ant-oat01-YGr4iEN3WtqzWF1MXLdiI1QiT4SJa69K-W0bCXQGmWZiROyBgkGOopwr06qL9Q-IfQQdyD6_NvsWGcF40dGz5Q-AM 8o9gAA [REDACTED_SECRET] [REDACTED_SECRET] I" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-03-12 12:00:17 | "<REDACTED_OPENAI_API_KEY> 8o9gAA [REDACTED_SECRET] [REDACTED_SECRET] I" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
 [SESSION:VOICE] 2026-03-12 12:00:17 | "to in the past was" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
 [SESSION:VOICE] 2026-03-12 12:00:17 | "it for You know, and" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
 [SESSION:VOICE] 2026-03-12 12:00:17 | "don't know which Claude model" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
@@ -45987,7 +45987,7 @@ Copy to repo: `cp /sdcard/Documents/usage_harvest.md ~/vault/projects/keyboard/`
 [SESSION:TYPING] 2026-03-20 07:19:37 | "commit and push? (y/n) "" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
 [SESSION:TYPING] 2026-03-20 07:19:37 | "^[Yy]$ ]]; then git commit" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
 [SESSION:TYPING] 2026-03-20 07:19:37 | ""✅ Changes committed and pushed."" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
-[SESSION:TYPING] 2026-03-20 07:19:37 | "PATH="$HOME/bin:$HOME/.local/bin:$PATH" export GEMINI_PAID_API_KEY="AIzaSyDFSC22C197Mka4QkDo44oh-0Mr3fsSz_Y" export GEMINI_FREE_API_KEY="AIzaSyDDzfAC-K6cq0HAfw29Q7kvrJS6uqMCZpc"" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-03-20 07:19:37 | "PATH="$HOME/bin:$HOME/.local/bin:$PATH" export GEMINI_PAID_API_KEY="[REDACTED_SECRET]" export GEMINI_FREE_API_KEY="[REDACTED_SECRET]"" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
 [SESSION:TYPING] 2026-03-20 07:19:37 | "export GEMINI_API_KEY="$GEMINI_PAID_API_KEY" # LangSmith /" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
 [SESSION:TYPING] 2026-03-20 07:19:37 | "run_tunnel.py alias flask='python3 /storage/emulated/0/Vault/ultima/scripts/run_tunnel.py' export" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
 [SESSION:TYPING] 2026-03-20 07:19:37 | "" commit_message echo "Commit message:" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
@@ -46212,7 +46212,7 @@ Copy to repo: `cp /sdcard/Documents/usage_harvest.md ~/vault/projects/keyboard/`
 [SESSION:TYPING] 2026-03-20 07:21:28 | ""$commit_message" git push echo "✅" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
 [SESSION:TYPING] 2026-03-20 07:21:28 | "echo "❌ Commit cancelled." fi" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
 [SESSION:TYPING] 2026-03-20 07:21:28 | "-p "Enter commit message: "" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
-[SESSION:TYPING] 2026-03-20 07:21:28 | "PATH="$HOME/bin:$HOME/.local/bin:$PATH" export GEMINI_PAID_API_KEY="AIzaSyDFSC22C197Mka4QkDo44oh-0Mr3fsSz_Y" export GEMINI_FREE_API_KEY="AIzaSyDDzfAC-K6cq0HAfw29Q7kvrJS6uqMCZpc"" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-03-20 07:21:28 | "PATH="$HOME/bin:$HOME/.local/bin:$PATH" export GEMINI_PAID_API_KEY="[REDACTED_SECRET]" export GEMINI_FREE_API_KEY="[REDACTED_SECRET]"" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
 [SESSION:TYPING] 2026-03-20 07:21:28 | "Changes committed and pushed." else" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
 [SESSION:TYPING] 2026-03-20 07:21:28 | "LANGCHAIN_ENDPOINT="https://api.smith.langchain.com" export LANGCHAIN_API_KEY="[REDACTED_SECRET]" export LANGCHAIN_PROJECT="HybridRig-v10"" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
 [SESSION:TYPING] 2026-03-20 07:21:28 | "} alias flask='python3 /storage/emulated/0/Vault/ultima/scripts/run_tunnel.py' export" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
@@ -46987,7 +46987,7 @@ Copy to repo: `cp /sdcard/Documents/usage_harvest.md ~/vault/projects/keyboard/`
 [SESSION:TYPING] 2026-03-20 09:20:19 | "GEMINI_API_KEY="$GEMINI_PAID_API_KEY" # LangSmith / LangChain" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
 [SESSION:TYPING] 2026-03-20 09:20:19 | "export LANGSMITH_TRACING=true export LANGSMITH_ENDPOINT="$LANGCHAIN_ENDPOINT" export" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
 [SESSION:TYPING] 2026-03-20 09:20:19 | "=== trash() { TRASH_DIR=\~/.local/share/Trash/files mkdir" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
-[SESSION:TYPING] 2026-03-20 09:20:19 | "export GEMINI_PAID_API_KEY="AIzaSyDFSC22C197Mka4QkDo44oh-0Mr3fsSz_Y" export GEMINI_FREE_API_KEY="AIzaSyDDzfAC-K6cq0HAfw29Q7kvrJS6uqMCZpc" export" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-03-20 09:20:19 | "export GEMINI_PAID_API_KEY="[REDACTED_SECRET]" export GEMINI_FREE_API_KEY="[REDACTED_SECRET]" export" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
 [SESSION:TYPING] 2026-03-20 09:20:19 | ""Proceed with commit and push?" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
 [SESSION:TYPING] 2026-03-20 09:20:19 | "(y/n) " confirm if [[" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
 [SESSION:TYPING] 2026-03-20 09:20:19 | ""[proot] Syncing repo from Termux..."" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
@@ -62178,7 +62178,7 @@ Copy to repo: `cp /sdcard/Documents/usage_harvest.md ~/vault/projects/keyboard/`
 [SESSION:TYPING] 2026-06-25 18:06:34 | "🤤 🤤 🤤 refurbisheduiphone3Sexyyyyyy/exit/exit/exitexitttitnantmuxatmuxhrcodexsource/." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
 [SESSION:TYPING] 2026-06-25 18:07:25 | "───────────────────────────────────────────────────────────────────────────────── https://accounts.google.com/o/oauth2/auth?access_type=offline&client_id=[REDACTED_SECRET]&code_challenge=C nhnHPzri3XxX4112IYJl6j0yPLRFqswxUtGabqvLYE&code_challenge_method=S256&prompt=cons ent&redirect_uri=https%3A%2F%2Fantigravity.google%2Foauth-callback&response_type=" | app: "com.android.chrome" | field: 2130775478 | inputType: URI | flags: noSuggestions
 [SESSION:TYPING] 2026-06-25 18:07:53 | "code&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcloud-platform+https%3A%2F%2 Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fau th%2Fuserinfo.profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcclog+https%3A%2F %2Fwww.googleapis.com%2Fauth%2Fexperimentsandconfigs+openid& https://accounts.google.com/o/oauth2/auth?access_type=offline&client_id=107100606" | app: "com.android.chrome" | field: 2130775478 | inputType: URI | flags: noSuggestions
-[SESSION:TYPING] 2026-06-25 18:07:53 | "0591-tmhssin2h21lcre235vtolojh4g403ep.apps.googleusercontent.com&code_challenge=C nhnHPzri3XxX4112IYJl6j0yPLRFqswxUtGabqvLYE&code_challenge_method=S256&prompt=cons ent&redirect_uri=https%3A%2F%2Fantigravity.google%2Foauth-callback&response_type= code&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcloud-platform+https%3A%2F%2 Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fau" | app: "com.android.chrome" | field: 2130775478 | inputType: URI | flags: noSuggestions
+[SESSION:TYPING] 2026-06-25 18:07:53 | "<REDACTED_GOOGLE_OAUTH_CLIENT_ID>&code_challenge=C nhnHPzri3XxX4112IYJl6j0yPLRFqswxUtGabqvLYE&code_challenge_method=S256&prompt=cons ent&redirect_uri=https%3A%2F%2Fantigravity.google%2Foauth-callback&response_type= code&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcloud-platform+https%3A%2F%2 Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fau" | app: "com.android.chrome" | field: 2130775478 | inputType: URI | flags: noSuggestions
 [SESSION:VOICE] 2026-06-25 18:18:06 | "me figure out why bashrc," | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
 [SESSION:VOICE] 2026-06-25 18:18:06 | "alias, hr-codecs, and hr-clod aren't" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
 [SESSION:VOICE] 2026-06-25 18:18:06 | "working. I think I have" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
@@ -63585,3 +63585,1294 @@ Copy to repo: `cp /sdcard/Documents/usage_harvest.md ~/vault/projects/keyboard/`
 [SESSION:TYPING] 2026-07-03 02:24:07 | "." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
 [SESSION:TYPING] 2026-07-03 02:24:07 | "." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
 [SESSION:TYPING] 2026-07-03 02:28:06 | "ncontinue334/permissi/yper/btwhowdoialloweverythinginagy," | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+
+<!-- HARVEST BATCH: 2026-07-09 (adb pull from sleeper, multiset merge incl. recovered dedup-dropped lines) -->
+" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+" | app: "com.google.android.googlequicksearchbox" | field: 2131430718 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+" | app: "com.google.android.googlequicksearchbox" | field: 2131430718 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+" | app: "com.google.android.googlequicksearchbox" | field: 2131430718 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+" | app: "com.google.android.googlequicksearchbox" | field: 2131430718 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+" | app: "com.google.android.googlequicksearchbox" | field: 2131430718 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+" | app: "com.google.android.googlequicksearchbox" | field: 2131430718 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+" | app: "com.google.android.googlequicksearchbox" | field: 2131430718 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+" | app: "com.google.android.googlequicksearchbox" | field: 2131430718 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+" | app: "com.google.android.googlequicksearchbox" | field: 2131430718 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+" | app: "com.google.android.googlequicksearchbox" | field: 2131430718 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+" | app: "com.google.android.googlequicksearchbox" | field: 2131430718 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:VOICE] 2026-03-12 12:00:17 | "<REDACTED_OPENAI_API_KEY> 8o9gAA <REDACTED_OPENAI_API_KEY> <REDACTED_OPENAI_API_KEY> I" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-03-12 12:08:50 | "<REDACTED_OPENAI_API_KEY> <REDACTED_OPENAI_API_KEY> 8 8 2" | app: "org.mozilla.firefox" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-03-12 17:45:02 | ""value": "g.a0007wgOFW4HcqsIcv483fkea7h4SDX2tmFFdqi1bo8KKFKmmbM6VvPbrC4d-<REDACTED_OPENAI_API_KEY>", "domain": "notebooklm.google.com", "hostOnly":" | app: "com.google.android.googlequicksearchbox" | field: 2131430734 | inputType: NORMAL | flags: noSuggestions,autoCorrect
+[SESSION:TYPING] 2026-03-12 17:52:19 | "{ "name": "__Secure-OSID", "value": "g.a0007wgOFW4HcqsIcv483fkea7h4SDX2tmFFdqi1bo8KKFKmmbM6VvPbrC4d-<REDACTED_OPENAI_API_KEY>"," | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-03-13 04:30:47 | "Openai api <REDACTED_OPENAI_API_KEY> Okay, so" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:VOICE] 2026-03-16 11:16:58 | "<REDACTED_GITHUB_TOKEN> Okay, so I've got" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-03-17 07:54:32 | "<REDACTED_OPENAI_API_KEY> okay I thought it" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-03-17 08:00:02 | "<REDACTED_OPENAI_API_KEY> /data/data/com.termux/files/home/vault/LCARS Theme/source assests lcars_style_bible.json" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-03-19 09:20:04 | "ID: <REDACTED_GOOGLE_OAUTH_CLIENT_ID> - Client Secret:" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-03-19 09:20:04 | "<REDACTED_GOOGLE_OAUTH_CLIENT_SECRET> Scopes: - https://www.googleapis.com/auth/cloud-platform -" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-03-19 09:36:22 | "https://accounts.google.com/o/oauth2/v2/auth?client_id=<REDACTED_GOOGLE_OAUTH_CLIENT_ID>&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A8085%2Foauth2callback&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcloud-platform+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&code_challenge=fxq3pvL7yPRK4FEgItWQhSlsBM8En01aDq0_i6wZ6nA&code_challenge_method=S256&state=60ec242cac56808eb0b4905ed19302ce60414381f8c947e6f7a3cbade0b29fbe&access_type=offline&prompt=consent#opencode You tell me if" | app: "com.github.android" | field: -1 | inputType: NORMAL | flags: autoCorrect
+" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+" | app: "com.google.android.apps.messaging" | field: 2131427917 | inputType: NORMAL | flags: none
+" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-03-20 07:19:37 | "LANGCHAIN_TRACING_V2=true export LANGCHAIN_ENDPOINT="https://api.smith.langchain.com" export LANGCHAIN_API_KEY="<REDACTED_LANGSMITH_API_KEY>"" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-03-20 07:19:37 | "--force" export OPENAI_API_KEY="<REDACTED_OPENAI_API_KEY>" export OPENROUTER_API_KEY="<REDACTED_OPENAI_API_KEY>"" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-03-20 07:21:28 | "LANGCHAIN_ENDPOINT="https://api.smith.langchain.com" export LANGCHAIN_API_KEY="<REDACTED_LANGSMITH_API_KEY>" export LANGCHAIN_PROJECT="HybridRig-v10"" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-03-20 07:21:28 | "export OPENAI_API_KEY="<REDACTED_OPENAI_API_KEY>" export OPENROUTER_API_KEY="<REDACTED_OPENAI_API_KEY>" alias" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-03-20 09:20:19 | "export LANGCHAIN_ENDPOINT="https://api.smith.langchain.com" export LANGCHAIN_API_KEY="<REDACTED_LANGSMITH_API_KEY>" export" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-03-20 09:20:19 | "export OPENAI_API_KEY="<REDACTED_OPENAI_API_KEY>" export OPENROUTER_API_KEY="<REDACTED_OPENAI_API_KEY>" #" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+" | app: "com.ss.launcher2" | field: 2131296585 | inputType: NORMAL | flags: none
+" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+" | app: "com.google.android.apps.messaging" | field: 2131427917 | inputType: NORMAL | flags: none
+" | app: "com.google.android.apps.messaging" | field: 2131427917 | inputType: NORMAL | flags: none
+" | app: "com.google.android.apps.messaging" | field: 2131427917 | inputType: NORMAL | flags: none
+" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+" | app: "com.google.android.apps.messaging" | field: 2131427917 | inputType: NORMAL | flags: none
+" | app: "com.google.android.apps.messaging" | field: 2131427917 | inputType: NORMAL | flags: none
+" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-06-23 00:54:48 | "https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=https%3A%2F%2Fcodeassist.google.com%2Fauthcode&access_type=offline&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcloud-platform%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&code_challenge_method=S256&code_challenge=JKZWp-dvGN344jdlh63VVMGOSEDsw82J7cbmlw_NXew&state=97d5948935868c3972054c6d3462e1c69ed6ec4794ee4864ffd186df4b07511c&response_type=code&client_id=<REDACTED_GOOGLE_OAUTH_CLIENT_ID> <REDACTED_GOOGLE_OAUTH_CODE> <REDACTED_GOOGLE_OAUTH_CODE> qQq-pyrrhussshpyrrhussshdagygeminidardownloadagycodexclaude/model3helpmesshpyrrhusiaddedpwtomyhomewifimaybeipchanged?" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-06-23 20:37:41 | "<REDACTED_GOOGLE_OAUTH_CODE> beassuredandreassuredadozentimesthatwithcobraexactltnothingchabgesbutwhoknowsShesbasedinTXHherreferencesaeealltexasbasedapkpkginstallgoogleCommandtoinstallagyjnintermuxcnanyihouimportmcpfromgemini3themcpshoupdldbeasimplejsoninthegemini." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-06-25 18:07:25 | "───────────────────────────────────────────────────────────────────────────────── https://accounts.google.com/o/oauth2/auth?access_type=offline&client_id=107100606 <REDACTED_GOOGLE_OAUTH_CLIENT_ID>&code_challenge=C nhnHPzri3XxX4112IYJl6j0yPLRFqswxUtGabqvLYE&code_challenge_method=S256&prompt=cons ent&redirect_uri=https%3A%2F%2Fantigravity.google%2Foauth-callback&response_type=" | app: "com.android.chrome" | field: 2130775478 | inputType: URI | flags: noSuggestions
+[SESSION:VOICE] 2026-06-25 18:18:06 | "th%2Fuserinfo.profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcclog+https%3A%2F %2Fwww.googleapis.com%2Fauth%2Fexperimentsandconfigs+openid&state=vAuyEpq8NciiJ5R YbRMskw <REDACTED_GOOGLE_OAUTH_CODE> Help" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[REJECTED] 2026-07-03 02:32:10 | 38k ← ok (reverted) | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:32:20 | "ingeminiicouldctrlyforyolomodebutidkhowtoinagy/exitagy-y-cagy--yolo-cagy-c--dangerously-skip-permissionscintinueontinueactuallythatwasstaleihave38kmoreondevicethatarenew." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[MANUAL_FIX] 2026-07-03 02:32:20 | "actually" → "ingeminiicouldctrlyforyolomodebutidkhowtoinagy/exitagy-y-cagy--yolo-cagy-c--dangerously-skip-permissionscintinueontinueactuallythatwasstaleihave38kmoreondevicethatarenew" | ctx: "new" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[ACCEPTED] 2026-07-03 02:32:23 | uh → up | ctx: "uh" | trigram: "have uh" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:32:23 | "Ihaveuh." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[REJECTED] 2026-07-03 02:32:25 | uh ← up (reverted) | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:32:42 | "Someantipatternstuffinthescriptsectionandaformattingthing." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:32:59 | "Ihaveatriggerhsppyagentthoughsofirstidlikeyouandhimtogetonthesamepage." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:34:36 | "report on the Omni Board" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "I need an updated reconnaissance" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "of a few months ago." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "logging/harvesting system. A prior recon" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "(HARVEST_RECON.md) covered ~25,315 entries as" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "have accumulated on-device, and I'm" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "told there's anti-pattern issues in" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "Since then ~38,000 more entries" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "the script section plus a" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "formatting problem. Don't propose fixes" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "— just report findings, plainly." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "1. CURRENT TOTALS - Full" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "current entry count, and how" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "that breaks down by category" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "(SESSION:VOICE, SESSION:TYPING, legacy SESSION, ACCEPTED," | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "REJECTED, MANUAL_FIX, and any NEW" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "category types that didn't exist" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "in the prior recon). -" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "Of the new ~38k entries" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "specifically, same category breakdown —" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "has the mix shifted (more" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "voice vs typing, etc.) compared" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "to the original ~25k? -" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "Date range: earliest and latest" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "timestamp in the full dataset" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "now. 2. THE ANTI-PATTERN ISSUE" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "- What specifically is happening" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "in the "script section" —" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "describe the actual behavior/bug, not" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "a proposed fix. - How" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "much of the data (what" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "% or count) is affected" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "by this? - Is it" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "a logging-time bug (bad data" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "going in) or a downstream" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "processing bug (good data, bad" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "script reading it)? 3. THE" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "FORMATTING PROBLEM - What format" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "issue exists, concretely — show" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "a real broken example entry" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "alongside what a correctly-formatted entry" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "looks like. - Is this" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "new, or is it the" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "unresolved? 4. FORMATTING/PROCESSING SCRIPTS INVENTORY" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "in the prior recon, still" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "- List every script currently" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "involved in the harvesting/logging/ formatting" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "same SESSION:TYPING concatenation issue flagged" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "when it runs (on-device at" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "currently working correctly or contributing" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "cleanup pass), and whether it's" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "to the anti-pattern/formatting issues above." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "pipeline (file paths), and for" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "does the new 38k live" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "log time, or a separate" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "— same file as before," | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "a new file, split across" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "each one: what it does," | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "entries at risk of being" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "lost (unsynced, only on-device, no" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "Pull 20 random entries from" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "the new ~38k specifically and" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "5. STORAGE STATE - Where" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "issues as the formatting/anti-pattern problems" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "report plainly whether they look" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "clean/usable or share the same" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "ON THE NEW DATA -" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "code/data, say so explicitly rather" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "is unclear or you're inferring" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "above. Output this as a" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "single markdown report. Where something" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "rather than reading directly from" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "on-device and synced? - Any" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:34:36 | "backup)? 6. DATA QUALITY SPOT-CHECK" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:39:41 | "than guessing silently. Givemeaprompttogivetohimaskingaboutthecurrentstateoftheeorldwisoyoucangetapicturebetweentheliogstatusyousawbeforesndthenewstuffondeviceinadditiontoallthetypesofdatscollectedwhattheseformsttingdcriptsdoandsnythingelserelstedtotheharvestingprocess2didnyoyououtputthatinafile?" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:39:44 | "also," | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:40:03 | "givemeabriefrundownofifwestillhavetheuh." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:40:29 | "frewuencywordfrewuencyquencydatadocument." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:40:42 | "theremaybeacoupleofthemin," | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:40:52 | "thetsbseabseperatedformat." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:41:05 | "youneednotparsethembutgiveanexplanationofthem," | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:41:25 | "theirsizeformwttingsndwhetherornotwehavebigramstrigramsetc," | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:41:30 | "thehealthofthem," | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-07-03 02:44:03 | thie → this | ctx: "thie" | trigram: "is thie" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:44:03 | "howtheyvsryearyetcHereisthie," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:44:06 | "andalso," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[REJECTED] 2026-07-03 02:44:16 | aosp ← as (reverted) | ctx: "aosp" | trigram: "of aosp" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[ACCEPTED] 2026-07-03 02:44:23 | dictionsrie → dictionaries | ctx: "dictionsrie" | trigram: "of dictionsrie" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[REJECTED] 2026-07-03 02:44:50 | bigrams ← bigamy (reverted) | ctx: "bigrams" | trigram: "of bigrams" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[REJECTED] 2026-07-03 02:45:09 | wonky ← won (reverted) | ctx: "wonky" | trigram: "somewhat wonky" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[ACCEPTED] 2026-07-03 02:45:19 | eesults → results | ctx: "eesults" | trigram: "unsatisfactory eesults" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:45:19 | "iscrapedandformattedatonofaospandothertypesofdictionsriefrewuencylisttomakemyautocorrectengineworkingalthoughinadditiontoallkindsofbigrwmsamsaandstufffromwuestionablesourcesrhatgavemesomewhatworkingsomewhatwonkybutbutunsatisfactoeyeesults." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[MANUAL_FIX] 2026-07-03 02:45:19 | "bigrwms" → "iscrapedandformattedatonofaospandothertypesofdictionsriefrewuencylisttomakemyautocorrectengineworkingalthoughinadditiontoallkindsofbigrwmsamsaandstufffromwuestionablesourcesrhatgavemesomewhatworkingsomewhatwonkybutbutunsatisfactoeyeesults" | ctx: "results" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:45:43 | "Idkifanyofitisrelevantorsalvagableorifwewouldbebetteroffderivinffromtheactuslttpinglogs." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:45:45 | "However," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[ACCEPTED] 2026-07-03 02:46:21 | incorpor → incorporate | ctx: "incorpor" | trigram: "rather incorpor" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "of the word frequency and" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "Here is a brief rundown" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "prediction TSV documents in the" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "Assets (inside app/.../dict/ ) •" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "aosp_unigram.tsv • What it is:" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "from the Android Open Source" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "Project. • Size & Count:" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "2.9 MB / 165,544 words." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "Default English unigram vocabulary list" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "repository: ### 1. Active Engine" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "). • Health: High. Static" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "• Format: word\tfrequency (e.g., the\t10000000" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "system file used as base" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "prediction weights. • unified_dictionary.tsv •" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "What it is: The active" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "unigram dictionary used by SymSpell." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "• Size & Count: 914" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "KB / 65,113 words. •" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "Format: word\tfrequency (includes capitalized names" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "and custom words like Aalto\t312" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "). • Health: High. This" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "is the custom-built runtime vocabulary." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "• final_mobile_bigrams.tsv • What it" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "is: Main bigram dictionary used" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "to rank word-pair suggestions in" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "Count: 1.2 MB / 83,869" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "the Smartbar. • Size &" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "lines. • Format: word1 word2\tfrequency" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "Health: High. This is the" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "(e.g., wish I'd\t10000 ). •" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "deployment target for merged bigrams." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "is: Phrase prediction lookup table" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "Analyzer Outputs (in repository root)" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "(used by the beam search" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "• personal_phrases.tsv • What it" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "bigrams and phrase predictions generated" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "i don't\tknow\t52 ). • Health:" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "by the analyzer script. •" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "Sizes: 32 KB (2,888 entries)" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "bigrams and trigram continuations. •" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "What they are: Aggregated user" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "algorithm). • Size & Count:" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "• personal_bigrams.tsv & personal_phrases.tsv •" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "respectively. • Format: Standard tab-separated" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "High. ────── ### 2. Local" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "• Format: word1 word2\tcontinuation_word(s)\tfrequency (e.g.," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "(4,479 lines) and 5.4 KB" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "manual typing versus Whisper voice" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "Health: High. Successfully compiled and" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "sessions. • Sizes: 59 KB" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "merged log history. • bigrams_typing.tsv" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "& bigrams_voice.tsv • What they" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "updated based on the full" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "are: Sub-categorized bigram files separating" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "source. • bigrams_combined.tsv • What" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "Separated cleanly by input method" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "by Git). • Health: High." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "database from both input methods," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "it is: Merged combined bigram" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "12.7 KB / 822 lines." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "ready to be integrated into" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "Legacy Files • sam_bigrams.tsv •" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "and 13 KB (867 entries)" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "(Currently untracked). • Health: High." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "(433 lines) respectively. (Currently untracked" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "What it is: An old" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "bigram scratchpad or helper export." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "Size: 61 KB (4,586 lines)." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "KB / 407 lines. •" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "the active keyboard assets. •" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "• Size & Count: 6" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "Format: Malformed, tab-separated but contains" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "duplicates, raw sequences, and noise" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "────── ### 3. Orphaned /" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "rows of character strings 1111111..." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "entries (e.g., im\tim\t5 or long" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "). • Health: Poor. Appears" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "to contain legacy garbage data" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "and formatting errors. Should not" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:46:46 | "be used for dictionary compilation." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[REJECTED] 2026-07-03 02:48:50 | i ← I (reverted) | ctx: "i" | trigram: "Explain i" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[REJECTED] 2026-07-03 02:49:05 | d ← do (reverted) | ctx: "d" | trigram: "essex d" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[REJECTED] 2026-07-03 02:49:14 | gix ← go (reverted) | ctx: "gix" | trigram: "will gix" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[MANUAL_FIX] 2026-07-03 02:49:57 | "i" → "ispentalotoftimeaggregstingandformattingitsoifwecouldmakitsthetypeofthinfwedneedtodooveridrstheruseincorporwhatwehave:::ExplainiSothedataisthereitsjustnotformsttdcorrectlyattedcorrectltandwewillgixfixitandgetitandthenbeabletodowhatwehadplannedfrombeforeoncewehavetheitcorrectedehichwasweweretalkingaboutwritigconvertingitintotrainingdata" | ctx: "data" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:49:57 | ". ispentalotoftimeaggregstingandformattingitsoifwecouldmakitsthetypeofthinfwedneedtodooveridrstheruseincorporwhatwehave:::ExplainiSothedataisthereitsjustnotformsttdcorrectlyattedcorrectltandwewillgixfixitandgetitandthenbeabletodowhatwehadplannedfrombeforeoncewehavetheitcorrectedehichwasweweretalkingaboutwritigconvertingitintotrainingdata?" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:51:21 | "PlainenglishpleseYeahwhatwouldbeyourplanfortheregexsfix," | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "after the closing quote (`"$`)." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "the line to end immediately" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "The new regex allows optional" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "problem: the old regex required" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "Here's the fix. The core" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "on older lines that don't" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "metadata after it, without breaking" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "have metadata. **The change, in" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "`harvest_analyze.py`:** ```python # OLD (breaks" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "metadata): 'session_typing': re.compile(r'^\[SESSION:TYPING\] .* \|" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "on any line with trailing" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | ""(.*)"$') 'session_voice': re.compile(r'^\[SESSION:VOICE\] .* \|" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | ""(.*)"$') # NEW (captures the" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "quoted text, metadata after it" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "is optional): 'session_typing': re.compile(r'^\[SESSION:TYPING\] .*" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "\| "(.*)"(?:\s*\|\s*app:.*)?$') ``` **Why this" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "works:** the `(.*)` capture is" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "\| "(.*)"(?:\s*\|\s*app:.*)?$') 'session_voice': re.compile(r'^\[SESSION:VOICE\] .*" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "greedy, so it naturally grabs" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "everything up to the *last*" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "quote in the line —" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "which lands right before the" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "`| app:` metadata block, even" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "embedded quotes (like your sample" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "if the text itself contains" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "with `"name": "SAPISID"` inside it)." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "so old-format lines with no" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "The `(?:\s*\|\s*app:.*)?` part is optional," | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "metadata still match exactly like" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "before. Nothing that worked before" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "should break. **One thing to" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "flag to your agent before" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "and 18 in the recon" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "he applies it:** samples 9" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "have quotes *inside* the logged" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "text itself (JSON fragments, a" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "filename in quotes). Have him" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "specifically test the new regex" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "the fix, not just a" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "against those two lines after" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "clean sample — they're the" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "actual edge case that could" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "quote" strategy if the text" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "still trip up a "last" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "ends with a quote character" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "agent to apply this and" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "write the prompt for your" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "confirm the match rate jumps" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "itself. If those two pass," | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "you're solid. Want me to" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:52:36 | "then re-run the analyzer to" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 02:53:57 | "," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:53:57 | "from ~21% toward ~100%? justtellmewhstyouthinknocodechangesyetOkletstakeitslow" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:54:02 | "for session_typing, session_voice, and session_legacy" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:54:02 | "### Summary of Updates 1." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:54:02 | "Regex Fix Applied: The patterns" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:54:02 | "now use your greedy quote" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:54:02 | "capture pattern alongside optional trailing" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:54:02 | "metadata matching (?:\s*\|\s*app:.*)?$. 2. Edge" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:54:02 | "matches complex edge cases where" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:54:02 | "Cases Checked: This strategy successfully" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:54:02 | "quotes are embedded inside the" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:54:02 | "text itself (e.g. JSON strings" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:54:02 | "like Sample 9 and files" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:54:02 | "backtracking mismatches. 3. Execution Verified:" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:54:02 | "like Sample 18) without any" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:54:02 | "Running python3 harvest_analyze.py successfully completed," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:54:02 | "processing the entire dataset of" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:54:02 | "280,476 words across 27,935 typing" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:54:02 | "sessions and 31,566 voice sessions" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:54:02 | "(previously, 79% of these sessions" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:54:02 | "were skipped). All outputs, including" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:54:02 | "phrase tables and bigrams, have" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:54:02 | "been updated based on the" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:54:02 | "full scope of your usage" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 02:55:06 | "history." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "the left-most suggestion candidate in" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "succeeding log line: • Retyped" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "isolated line but is written" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "a candidate (e.g. by tapping" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "typed word. • Manual Correction:" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "same position will appear right" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "### 1. ACCEPTED/REJECTED Fields &" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "is not in the dictionary," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "active. If the user commits" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "or [ACCEPTED] sequence for the" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "the Smartbar, representing their raw" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "matches their originally typed composing" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "| inputType: variation | flags:" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "(Rejection kept): The adjacent [SESSION:TYPING]" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "after. ────── ### 2. INSISTED" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "[INSISTED]. • If the word" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "string. • Capitulation: An [ACCEPTED]" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "multiple events can occur within" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "HarvestManager.kt automatically redirects it to" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "| ctx: "prevWord" | app:" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "fieldId | inputType: variation |" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "in EditorInstance.kt when suggestions/autocomplete are" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "input) and the selected word" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "A [MANUAL_FIX] line will appear" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "inputType: variation | flags: flags" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "21:24:46 | "typed" → "new_word"" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "| app: packageName | field:" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "the file is opened in" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "text case-insensitively ( text.equals(original, ignoreCase" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "[REJECTED] yyyy-MM-dd HH:mm:ss | typed" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "immediately next (e.g., [MANUAL_FIX] 2026-07-02" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "explicitly list the final outcome." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "Outcome Identification: • Timestamps: Timestamps" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "of [INSISTED]. • Fields Carried:" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "[INSISTED] yyyy-MM-dd HH:mm:ss | word" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "by looking at the immediately" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "A full Gaussian spatial model" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "Sequencing Each ACCEPTED and REJECTED" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "model, we must: 1. Start" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "────── ### 3. Touch Coordinates" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "not possible with the current" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "metadata ( x / y" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "QWERTY adjacency map in the" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "in HarvestManager to record raw" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "coordinates) is passed or written." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "dataset. To build a spatial" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "), followed by the [SESSION:TYPING]" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "sequentially in real-time (chronologically ordered" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "word (rejection was correct) or" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "append mode. • Committed Outcomes:" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "codebase). 2. Implement coordinate logging" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "flags • REJECTED Line Structure:" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "representing text sequences, words, and" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "touch events for future training" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "However, you can determine if" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "dictionary, it is logged as" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "• Impact on Autocorrect Modeling:" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "word is already in the" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | ""prevWord" | trigram: "prevPrevWord prevWord"" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "flags: flags #### Sequencing and" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "relies on the chronological sequence" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "event is logged as an" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "→ correctedTo | ctx: "prevWord"" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "= true) ). • Semantics" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "& Fallback: • If the" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "string will contain the reverted" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "| trigram: "prevPrevWord prevWord" |" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "[ACCEPTED] yyyy-MM-dd HH:mm:ss | typed" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "capitulated (rejection followed by correction/defeat)" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "(e.g., using the keyboard's spatial" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "are formatted with second-level precision" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "Semantics • Trigger Event: Triggered" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "context parameters. No raw touch" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "of lines in the log" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "layout structure and the existing" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "• Logged Fields: No touch" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "from a text-derived confusion matrix" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "using historical touch coordinates is" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "file, which is preserved because" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "app: "packageName" | field: fieldId" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "the user re-typed their original" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "be logged as [NEW_WORD] instead" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "coordinates, key bounds, or pressure" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "( yyyy-MM-dd HH:mm:ss ). Since" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "← rejectedCorrection (reverted) | ctx:" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "by execution order in the" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "manager only receives string objects" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "coordinates are stored. The logging" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | ""packageName" | field: fieldId |" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "file). • ACCEPTED Line Structure:" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "The REJECTED line does not" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:51:01 | "a single second, sub-second sorting" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "handoff prompt for your agent" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "on the fleet. --- **Build" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "reports counts and provenance. **It" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "a diagnostic. It reads the" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "`harvest_manifest.py` — a measurement-only triage" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "data lives, so here's a" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "manifest for `usage_harvest.md`.** This is" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "iterations. Right — the script" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "to build A-plus against `usage_harvest.md`" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "has to run where the" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "deletes nothing, edits nothing, and" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "Standalone Python 3, standard library" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "output is a report only." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "only (no pandas/nltk), runnable in" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "path to `usage_harvest.md` as a" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "Termux or on Titan. **Input:**" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "writes no cleaned corpus** —" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "(legacy), `ACCEPTED`, `REJECTED`, `MANUAL_FIX`, `INSISTED`," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "in play: `SESSION:VOICE`, `SESSION:TYPING`, `SESSION`" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "CLI arg. Parse each line" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "Extract the `app:` field where" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "`UNKNOWN_APP`. **Part 1 — Prose" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "by its `[TAG]` prefix. Tags" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "present; bucket missing-app lines as" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "— it's authoritative (append-mode log)." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "triage (SESSION lines only: VOICE," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "order (first match wins): 1." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "corpus, classifies each line, and" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "session line into exactly one" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "`./`, balanced `{...}` or `[...]`," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "`, `function`, `git@`, `sudo `," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "TYPING, legacy SESSION).** Tag each" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "signatures: `{"`, `=>`, `Math.`, `const" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "`NEW_WORD`, `UNKNOWN`. Preserve file order" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "like a shell command/path (leading" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "ratio > ~0.25). 2. `url_command`" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "`code_json` — line contains code/JSON/config" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "`$`, `cd `, `/data/`, etc.)." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "token longer than ~22 chars," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "— contains `http://`/`https://`/`www.`, or looks" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "OR mean word length is" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "3. `concatenated` — has a" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "implausibly high for prose (>" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "only) filler ratio (`um`, `uh`," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "bucket, checked in this priority" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "~12). 4. `filler_heavy` — (VOICE" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "or high special-char density (non-alphanumeric-non-space" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "`like`, `you know`, `so`, `i" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "tokens. This is a **downweight**" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "flag, still counts as prose." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "mean`, repeated) exceeds ~30% of" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "at the top of the" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "5. `clean_prose` — everything else." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "file so they're tunable in" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "one place. **Report for Part" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "1:** - Per bucket: total" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "= counts). This is the" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "line count + % of" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "core provenance view — it" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "apps, cols = buckets, cells" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "Labeled-event audit (ACCEPTED / REJECTED" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "discard *and from where*. -" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "against the agent's earlier ~13%" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "shows what we glean and" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "`filler_heavy` lines = the real" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "to confirm the parser agrees" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "trainable-prose denominator.** **Part 2 —" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "/ INSISTED / NEW_WORD /" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "all session lines. - **Cross-tab:" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "Per app: spaceless-line rate (sanity-check" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "MANUAL_FIX).** For each `ACCEPTED`/`REJECTED`, look" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "containing the reverted original →" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "`REJECTED` then a SESSION line" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "(user fixed it themselves). -" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "**validated_reject** (reject was correct). -" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "with the prior scan). -" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "app × bucket** (rows =" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "Chrome / 2% Termux findings," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "`REJECTED` then a re-`ACCEPTED`/correction for" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "the same position → **capitulation**" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "at the **immediately following line(s)**" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "Headline number: **total `clean_prose` +" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "to classify real intent: -" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "`REJECTED` then `MANUAL_FIX` → **manual_fix**" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "seed). - `INSISTED` and `NEW_WORD`" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "Make the thresholds named constants" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "(pushy bad suggestion — false-positive" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "genuine change → **validated_fix** (confusion-matrix" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "signal). - `ACCEPTED` with a" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "to itself). Sort every labeled" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "→ **identity / leave-alone** pairs" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "event into these outcome buckets." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "(false-positive control; input should map" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "Handle the case where the" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "missing → `unresolved`, and report" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "following line is ambiguous or" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "that count honestly (don't force-classify)." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "**Report for Part 2:** -" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "Count per outcome bucket, with" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "`unresolved` shown separately. - Headline" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "number: **the calibration denominator** —" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "how many events land in" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "each of the three usable" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "groups (validated fixes → confusion" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "matrix; identity/leave-alone → false-positive control;" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "capitulation/fights → false-positive signal). **Output" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "format:** print a readable summary" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "machine-readable `harvest_manifest.json` alongside the input" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "to stdout, and write a" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "the corpus grows). No content" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "it's diffable across runs as" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "file with all counts (so" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "no full sentences in the" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "output. **Do not** generate frequency" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "Kotlin source, do not attempt" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "cleanup or segmentation. Measurement only." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "tables, do not touch the" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "--- That's the whole spec." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "dumps — aggregate stats only," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "Two things worth saying: the" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "parser is heuristic, so the" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "first run is a calibration" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "run — eyeball the bucket" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "rates and the app cross-tab," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "and expect to nudge the" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "thresholds once before trusting the" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "numbers. And when your agent" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "reports back, the two headline" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "denominators (trainable prose, and calibration" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "events) are the numbers that" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "unlock every downstream decision —" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "send those back to me" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "and we'll pick the next" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:44 | "step from real figures instead" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "of estimates. Right — the" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "script has to run where" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "the data lives, so here's" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "a handoff prompt for your" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "agent to build A-plus against" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "triage manifest for `usage_harvest.md`.** This" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "**Build `harvest_manifest.py` — a measurement-only" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "`usage_harvest.md` on the fleet. ---" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "is a diagnostic. It reads" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "and reports counts and provenance." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "the corpus, classifies each line," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "**It deletes nothing, edits nothing," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "— output is a report" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "only. Standalone Python 3, standard" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "library only (no pandas/nltk), runnable" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "and writes no cleaned corpus**" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "**Input:** path to `usage_harvest.md` as" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "in Termux or on Titan." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "a CLI arg. Parse each" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "line by its `[TAG]` prefix." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "Tags in play: `SESSION:VOICE`, `SESSION:TYPING`," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "`SESSION` (legacy), `ACCEPTED`, `REJECTED`, `MANUAL_FIX`," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "`INSISTED`, `NEW_WORD`, `UNKNOWN`. Preserve file" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "order — it's authoritative (append-mode" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "log). Extract the `app:` field" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "where present; bucket missing-app lines" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "as `UNKNOWN_APP`. **Part 1 —" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "Prose triage (SESSION lines only:" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "VOICE, TYPING, legacy SESSION).** Tag" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "each session line into exactly" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "one bucket, checked in this" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "priority order (first match wins):" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "1. `code_json` — line contains" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "code/JSON/config signatures: `{"`, `=>`, `Math.`," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "`const `, `function`, `git@`, `sudo" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "`, `./`, balanced `{...}` or" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "`[...]`, or high special-char density" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "(non-alphanumeric-non-space ratio > ~0.25). 2." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "`url_command` — contains `http://`/`https://`/`www.`, or" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "looks like a shell command/path" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "etc.). 3. `concatenated` — has" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "(leading `$`, `cd `, `/data/`," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "a token longer than ~22" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "chars, OR mean word length" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "is implausibly high for prose" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "(> ~12). 4. `filler_heavy` —" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "(VOICE only) filler ratio (`um`," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "`uh`, `like`, `you know`, `so`," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "`i mean`, repeated) exceeds ~30%" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "of tokens. This is a" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "prose. 5. `clean_prose` — everything" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "**downweight** flag, still counts as" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "else. Make the thresholds named" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "the file so they're tunable" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "constants at the top of" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "in one place. **Report for" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "Part 1:** - Per bucket:" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "total line count + %" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "of all session lines. -" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "**Cross-tab: app × bucket** (rows" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "= apps, cols = buckets," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "cells = counts). This is" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "the core provenance view —" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "it shows what we glean" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "and discard *and from where*." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "(sanity-check against the agent's earlier" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "- Per app: spaceless-line rate" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "findings, to confirm the parser" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "agrees with the prior scan)." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "- Headline number: **total `clean_prose`" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "real trainable-prose denominator.** **Part 2" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "REJECTED / INSISTED / NEW_WORD" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "~13% Chrome / 2% Termux" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "+ `filler_heavy` lines = the" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "— Labeled-event audit (ACCEPTED /" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "/ MANUAL_FIX).** For each `ACCEPTED`/`REJECTED`," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "line(s)** to classify real intent:" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "- `REJECTED` then a SESSION" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "line containing the reverted original" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "look at the **immediately following" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "→ **validated_reject** (reject was correct)." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "- `REJECTED` then `MANUAL_FIX` →" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "**manual_fix** (user fixed it themselves)." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "- `REJECTED` then a re-`ACCEPTED`/correction" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "for the same position →" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "**capitulation** (pushy bad suggestion —" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "false-positive signal). - `ACCEPTED` with" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "a genuine change → **validated_fix**" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "(confusion-matrix seed). - `INSISTED` and" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "`NEW_WORD` → **identity / leave-alone**" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "pairs (false-positive control; input should" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "map to itself). Sort every" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "labeled event into these outcome" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "buckets. Handle the case where" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "the following line is ambiguous" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "or missing → `unresolved`, and" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "report that count honestly (don't" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "force-classify). **Report for Part 2:**" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "- Count per outcome bucket," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "with `unresolved` shown separately. -" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "Headline number: **the calibration denominator**" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "— how many events land" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "in each of the three" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "usable groups (validated fixes →" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "confusion matrix; identity/leave-alone → false-positive" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "control; capitulation/fights → false-positive signal)." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "summary to stdout, and write" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "**Output format:** print a readable" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "a machine-readable `harvest_manifest.json` alongside the" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "(so it's diffable across runs" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "content dumps — aggregate stats" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "as the corpus grows). No" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "input file with all counts" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "frequency tables, do not touch" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "only, no full sentences in" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "the output. **Do not** generate" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "the Kotlin source, do not" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "attempt cleanup or segmentation. Measurement" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "only. --- That's the whole" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "spec. Two things worth saying:" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "the parser is heuristic, so" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "the first run is a" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "calibration run — eyeball the" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "bucket rates and the app" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "cross-tab, and expect to nudge" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "the thresholds once before trusting" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "the numbers. And when your" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "agent reports back, the two" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "headline denominators (trainable prose, and" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "calibration events) are the numbers" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "that unlock every downstream decision" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "— send those back to" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "me and we'll pick the" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:47 | "next step from real figures" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 03:55:53 | "nothing, and writes no cleaned" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "as a CLI arg. Parse" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "corpus** — output is a" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "each line by its `[TAG]`" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "line, and reports counts and" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "instead of estimates. Right —" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "standard library only (no pandas/nltk)," | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "runnable in Termux or on" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "provenance. **It deletes nothing, edits" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "(append-mode log). Extract the `app:`" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "your agent to build A-plus" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "--- **Build `harvest_manifest.py` — a" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "This is a diagnostic. It" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "— Prose triage (SESSION lines" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "against `usage_harvest.md` on the fleet." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "field where present; bucket missing-app" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "Tag each session line into" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "this priority order (first match" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "exactly one bucket, checked in" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "`Math.`, `const `, `function`, `git@`," | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "wins): 1. `code_json` — line" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "lines as `UNKNOWN_APP`. **Part 1" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "Titan. **Input:** path to `usage_harvest.md`" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "`SESSION:TYPING`, `SESSION` (legacy), `ACCEPTED`, `REJECTED`," | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "here's a handoff prompt for" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "report only. Standalone Python 3," | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "contains code/JSON/config signatures: `{"`, `=>`," | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "the script has to run" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "command/path (leading `$`, `cd `," | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "`MANUAL_FIX`, `INSISTED`, `NEW_WORD`, `UNKNOWN`. Preserve" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "~22 chars, OR mean word" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "has a token longer than" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "only: VOICE, TYPING, legacy SESSION).**" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "(`um`, `uh`, `like`, `you know`," | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "or `[...]`, or high special-char" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "~30% of tokens. This is" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "or looks like a shell" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "— (VOICE only) filler ratio" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "2. `url_command` — contains `http://`/`https://`/`www.`," | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "length is implausibly high for" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "a **downweight** flag, still counts" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "`sudo `, `./`, balanced `{...}`" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "as prose. 5. `clean_prose` —" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "where the data lives, so" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "for Part 1:** - Per" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "— it shows what we" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "is the core provenance view" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "% of all session lines." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "reads the corpus, classifies each" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "measurement-only triage manifest for `usage_harvest.md`.**" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "2 — Labeled-event audit (ACCEPTED" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "where*. - Per app: spaceless-line" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "prose (> ~12). 4. `filler_heavy`" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "rate (sanity-check against the agent's" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "tunable in one place. **Report" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "/ REJECTED / INSISTED /" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "prefix. Tags in play: `SESSION:VOICE`," | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "SESSION line containing the reverted" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "named constants at the top" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "Termux findings, to confirm the" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "scan). - Headline number: **total" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "- **Cross-tab: app × bucket**" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "file order — it's authoritative" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "with a genuine change →" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "buckets, cells = counts). This" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "themselves). - `REJECTED` then a" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "earlier ~13% Chrome / 2%" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "glean and discard *and from" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "and `NEW_WORD` → **identity /" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "`clean_prose` + `filler_heavy` lines =" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "outcome buckets. Handle the case" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "→ **manual_fix** (user fixed it" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "following line(s)** to classify real" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "NEW_WORD / MANUAL_FIX).** For each" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "land in each of the" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "re-`ACCEPTED`/correction for the same position" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "`/data/`, etc.). 3. `concatenated` —" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "— false-positive signal). - `ACCEPTED`" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "bucket: total line count +" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "**validated_fix** (confusion-matrix seed). - `INSISTED`" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "original → **validated_reject** (reject was" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "intent: - `REJECTED` then a" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "density (non-alphanumeric-non-space ratio > ~0.25)." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "everything else. Make the thresholds" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "(rows = apps, cols =" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "`so`, `i mean`, repeated) exceeds" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "every labeled event into these" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "bucket, with `unresolved` shown separately." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "ambiguous or missing → `unresolved`," | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "→ **capitulation** (pushy bad suggestion" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "parser agrees with the prior" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "and report that count honestly" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "where the following line is" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "should map to itself). Sort" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "leave-alone** pairs (false-positive control; input" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "denominator** — how many events" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "(don't force-classify). **Report for Part" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "2:** - Count per outcome" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "correct). - `REJECTED` then `MANUAL_FIX`" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "`ACCEPTED`/`REJECTED`, look at the **immediately" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "of the file so they're" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "the real trainable-prose denominator.** **Part" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "numbers that unlock every downstream" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "your agent reports back, the" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "two headline denominators (trainable prose," | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "false-positive control; capitulation/fights → false-positive" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "counts (so it's diffable across" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "nudge the thresholds once before" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "to me and we'll pick" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "generate frequency tables, do not" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "write a machine-readable `harvest_manifest.json` alongside" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "stats only, no full sentences" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "saying: the parser is heuristic," | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "not attempt cleanup or segmentation." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "three usable groups (validated fixes" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "a calibration run — eyeball" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "trusting the numbers. And when" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "the input file with all" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "No content dumps — aggregate" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "readable summary to stdout, and" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "decision — send those back" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "in the output. **Do not**" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "app cross-tab, and expect to" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "→ confusion matrix; identity/leave-alone →" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "- Headline number: **the calibration" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "Measurement only. --- That's the" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "so the first run is" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "signal). **Output format:** print a" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "whole spec. Two things worth" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "and calibration events) are the" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "the bucket rates and the" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "the next step from real" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "touch the Kotlin source, do" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 03:55:53 | "runs as the corpus grows)." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:03:32 | "figures instead of estimates. 📋" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "OMNIBOARD HARVEST CORPUS TRIAGE MANIFEST" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "============================================================ 📊 1. FILE METRICS" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "6 • Valid Log lines:" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "• Total lines: 63,587 •" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "Empty/Blank lines: 6 • Comments/Headers:" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "63,135 • Earliest Timestamp: 2025-12-24" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "02:28:06 🏷️ 2. EVENT CATEGORY" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "DISTRIBUTION • SESSION:VOICE 31,566 (50.00%)" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "07:08:41 • Latest Timestamp: 2026-07-03" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "• SESSION:TYPING 16,989 (26.91%) •" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "SESSION 11,441 (18.12%) • ACCEPTED" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "1,481 ( 2.35%) • REJECTED" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "1,219 ( 1.93%) • MANUAL_FIX" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "198 ( 0.31%) • INSISTED" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "183 ( 0.29%) • NEW_WORD" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "58 ( 0.09%) 📱 3." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "PROVENANCE BY APPLICATION (Top 10)" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "• com.termux 13,836 (21.91%) •" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "UNKNOWN_APP 13,774 (21.82%) • com.google.android.googlequicksearchbox" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "11,728 (18.58%) • com.google.android.apps.messaging 6,915" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "(10.95%) • com.anthropic.claude 3,975 (" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "6.30%) • com.facebook.orca 3,705 (" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "5.87%) • com.google.android.apps.labs.language.tailwind 3,296 (" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "5.22%) • com.carriez.flutter_hbb 1,675 (" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "2.65%) • com.openai.chatgpt 1025 (" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "1.62%) • com.beeper.android 646 (" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "1.02%) • ... and 40" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "more applications. 🔍 4. DATA" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "QUALITY TRIAGE A. Spaceless /" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "Concatenated Sessions: • Total Spaceless:" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "1,460 events - UNKNOWN_APP 354" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "- com.google.android.apps.messaging 322 ( 4.7%" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "( 2.6% of app sessions)" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "of app sessions) - com.termux" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "270 ( 2.0% of app" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "sessions) - com.facebook.orca 171 (" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "app sessions) B. Non-Conversational Logs" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "4.6% of app sessions) -" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "(Code, JSON, Settings): • Total" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "Code/JSON: 162 events - com.termux" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "sessions) - UNKNOWN_APP 35 (" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "com.google.android.googlequicksearchbox 100 ( 0.9% of" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "0.3% of app sessions) -" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "com.carriez.flutter_hbb 35 ( 2.1% of" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "app sessions) - com.google.android.googlequicksearchbox 20" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "( 0.2% of app sessions)" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "- com.google.android.apps.labs.language.tailwind 4 ( 0.1%" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "of app sessions) 🔄 5." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "(42.82%) -> Reverted and kept" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "1,219) • Rejection kept 522" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "fixed 36 ( 2.95%) ->" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "the original word • Rejection" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "Reverted and manually edited to" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "Reverted but accepted a correction" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "66 ( 0.5% of app" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "stem shortly after • Rejection" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "capitulated 66 ( 5.41%) ->" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "a different word • Rejection" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "untracked 595 (48.81%) -> No" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "REJECTION SEQUENCING OUTCOMES (Rejections =" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "boundary reached) ============================================================ 📝 END" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:03:32 | "clear outcome (app switch or" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:10:31 | "corpus. Standalone Python 3, standard" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "reconstruct spaces in the 1,460" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "writes nothing back to the" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "the wordninja package — it" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "library only. Do not use" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "OF MANIFEST Build segment_recovery.py —" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "concatenated conversational lines. Reversible, auditable," | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "ships a generic-English dictionary, which" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "Build the dictionary from Sam's" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "session lines (SESSION:VOICE / TYPING" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "Build the seed dictionary. From" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "is exactly what we're avoiding." | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "own data. Step 1 —" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "usage_harvest.md, take only the clean" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "count unigram frequencies. This is" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "not flagged spaceless and not" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "encodes Sam's real vocabulary (his" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "slang, names, common words) so" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "code/JSON). Tokenize on whitespace, lowercase," | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "the segmentation dictionary — it" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "so it's inspectable. Step 2" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "not generic English. Save it" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "segmentation reflects how he writes," | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "out as sam_unigram_seed.tsv (word, count)" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "segment) lines from Termux, Chrome," | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "(log as skipped_by_register, do not" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "(register-gated). Isolate the spaceless-flagged lines," | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "com.openai.chatgpt, com.beeper.android, and UNKNOWN_APP. Skip" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "but only attempt those from" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "and googlequicksearchbox — commands, URLs," | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "— Select what to repair" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "/ legacy SESSION that are" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "and search queries are legitimately" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "garbage. Step 3 — Segment" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "conversational apps: com.google.android.apps.messaging, com.facebook.orca, com.anthropic.claude," | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "spaceless and segmenting them produces" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "each target line, run a" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "via min-cost DP word-break. For" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "of a candidate word is" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "dynamic-programming (Viterbi-style) segmentation: the cost" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "-log(freq / total); unknown substrings" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "get a heavy length-scaled penalty." | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "Find the minimum-total-cost segmentation. Compute" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "a normalized confidence = total" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "cost divided by character count." | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "Step 4 — Triage by" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "a cost-per-char threshold (make it" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "confidence, don't emit garbage. Set" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "a named constant). Segmentations below" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "→ low_confidence (kept but flagged" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "it → high_confidence; above it" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "for manual review, never silently" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "trusted). Output — a reversible" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "mapping file, not an edited" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "corpus. Write segmentation_recovery.tsv with columns:" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "original_line, segmented_output, app, confidence_cost, tier" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "Nothing is overwritten; the original" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "stdout: total spaceless lines seen;" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "corpus is untouched. Report to" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "attempted vs. skipped-by-register (with per-app" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "counts); high- vs. low-confidence counts;" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "and a handful of anonymized-length" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "stats only (no full-sentence dumps)." | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "End with the headline: how" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "(high_confidence / low_confidence / skipped_by_register)." | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "at high confidence — that's" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "the number that tells us" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "how much clean texting prose" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "we reclaim. Do not: fix" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "the Kotlin source, touch anything" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "outside the target apps, or" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "many conversational lines were recovered" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:31 | "write back to usage_harvest.md. Reconstruction" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "Build segment_recovery.py — reconstruct spaces" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "back to the corpus. Standalone" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "in the 1,460 concatenated conversational" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "lines. Reversible, auditable, writes nothing" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "Python 3, standard library only." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "Do not use the wordninja" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "generic-English dictionary, which is exactly" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "package — it ships a" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "and measurement only. Where you" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "dictionary from Sam's own data." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "Step 1 — Build the" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "what we're avoiding. Build the" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "seed dictionary. From usage_harvest.md, take" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "common words) so segmentation reflects" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "real vocabulary (his slang, names," | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "com.google.android.apps.messaging, com.facebook.orca, com.anthropic.claude, com.openai.chatgpt, com.beeper.android," | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "queries are legitimately spaceless and" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "(SESSION:VOICE / TYPING / legacy" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "segmenting them produces garbage. Step" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "sam_unigram_seed.tsv (word, count) so it's" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "English. Save it out as" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "and UNKNOWN_APP. Skip (log as" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "attempt those from conversational apps:" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "only the clean session lines" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "3 — Segment via min-cost" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "candidate word is -log(freq /" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "line, run a dynamic-programming (Viterbi-style)" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "DP word-break. For each target" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "inspectable. Step 2 — Select" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "total); unknown substrings get a" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "confidence = total cost divided" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "heavy length-scaled penalty. Find the" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "minimum-total-cost segmentation. Compute a normalized" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "constant). Segmentations below it →" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "(kept but flagged for manual" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "review, never silently trusted). Output" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "what to repair (register-gated). Isolate" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "high_confidence; above it → low_confidence" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "segmentation_recovery.tsv with columns: original_line, segmented_output," | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "how he writes, not generic" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "threshold (make it a named" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "app, confidence_cost, tier (high_confidence /" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "— Triage by confidence, don't" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "spaceless and not code/JSON). Tokenize" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "by character count. Step 4" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "dictionary — it encodes Sam's" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "SESSION that are not flagged" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "spaceless lines seen; attempted vs." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "vs. low-confidence counts; and a" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "handful of anonymized-length stats only" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "on whitespace, lowercase, count unigram" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "emit garbage. Set a cost-per-char" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "(no full-sentence dumps). End with" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "from Termux, Chrome, and googlequicksearchbox" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "skipped_by_register, do not segment) lines" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "segmentation: the cost of a" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "the headline: how many conversational" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "low_confidence / skipped_by_register). Nothing is" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "untouched. Report to stdout: total" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "clean texting prose we reclaim." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "Do not: fix the Kotlin" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "the spaceless-flagged lines, but only" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "confidence — that's the number" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "to usage_harvest.md. Reconstruction and measurement" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "frequencies. This is the segmentation" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "— commands, URLs, and search" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "skipped-by-register (with per-app counts); high-" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "target apps, or write back" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "source, touch anything outside the" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "that tells us how much" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "lines were recovered at high" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "not an edited corpus. Write" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "overwritten; the original corpus is" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:10:44 | "— a reversible mapping file," | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-03 04:13:08 | "only. thiswhereweat:OkLetsdoagivemethepromptItsnotavailableknyourenvironmentwaitcanyoupleaseassembleyourrepliestoallmytheintenrtriageandrejectionanalydidThiswhatagentsaysLetsgoaheadandrecoverthesegmentsgivemeapromottogivetioagentandplewseadviseonireallydontwanttowplitmyregisterOkwellabouttheregisters." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:13:08 | "." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:13:08 | "." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[REJECTED] 2026-07-03 04:13:18 | gpt ← get (reverted) | ctx: "gpt" | trigram: "to gpt" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:13:41 | "heresthedewllikeimconstantlytalkingtogptoryouorgeminiaboutallofmydevlingoweirdappnamesvariouscommandsetxc." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[ACCEPTED] 2026-07-03 04:13:41 | etc → to | ctx: "etc" | trigram: "commands etc" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:13:41 | "." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[REJECTED] 2026-07-03 04:13:42 | etc ← to (reverted) | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[REJECTED] 2026-07-03 04:13:55 | cd ← do (reverted) | ctx: "cd" | trigram: "like cd" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[REJECTED] 2026-07-03 04:13:58 | ls ← lswr (reverted) | ctx: "ls" | trigram: "cd ls" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[ACCEPTED] 2026-07-03 04:13:59 | etc → etch | ctx: "etc" | trigram: "ls etc" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:13:59 | "Imnotinterestedinactuallinuxcommandslikecdlsetc." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[REJECTED] 2026-07-03 04:14:01 | etc ← etch (reverted) | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[ACCEPTED] 2026-07-03 04:14:14 | abbrevistions → abbreviations | ctx: "abbrevistions" | trigram: "some abbrevistions" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:14:17 | "Butidowantsomeabbrevistionslikeugh," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[REJECTED] 2026-07-03 04:14:20 | etc ← etch (reverted) | ctx: "etc" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[REJECTED] 2026-07-03 04:14:26 | etc ← at (reverted) | ctx: "etc" | trigram: "to etc" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:14:35 | "etcjustgotcorrectedtoetchihatethiskeyboardlol." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[MANUAL_FIX] 2026-07-03 04:14:35 | "etc" → "etcjustgotcorrectedtoetchihatethiskeyboardlol" | ctx: "lol" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[ACCEPTED] 2026-07-03 04:15:06 | righr → right | ctx: "righr" | trigram: "world righr" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:15:06 | "Butinanycaselikereallyidkifweneedtwomodelsjustlikeinclusethewordsiuseinmydevworldrighr?" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[ACCEPTED] 2026-07-03 04:15:11 | fundam → fundamental | ctx: "fundam" | trigram: "a fundam" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:15:17 | "Oristhereafundamdifferencenimfailingtosee?" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:15:22 | "Prose Results • Seed Vocabulary" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:15:22 | "Built: Generated sam_unigram_seed.tsv containing 10,783" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:15:22 | "### Execution Summary & Reclaimed" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:15:22 | "unique words extracted exclusively from" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:15:22 | "Sam's clean prose session lines" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:15:22 | "• Mappings Output: Saved the" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:15:22 | "(preserving slang, abbreviations, and names)." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:15:22 | "reversible space reconstruction mappings to" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:15:22 | "segmentation_recovery.tsv (untouched corpus). ================================================================================ 📈" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:15:22 | "SEGMENTATION RECOVERY REPORT (RECONSTRUCTED SPACES)" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:15:22 | "================================================================================ • Total Spaceless Lines" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:15:22 | "Seen: 1,752 • Attempted (Conversational):" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:15:22 | "📱 SKIPPED SESSIONS BY APP" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:15:22 | "PACKAGE (Top 5): • com.termux" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:15:22 | "1,094 • Skipped (Non-Conversational): 658" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:15:22 | "skipped • com.android.chrome: 107 skipped" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:15:22 | "• com.carriez.flutter_hbb: 23 skipped •" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:15:22 | "com.sirma.mobile.bible.android: 13 skipped 🎯 TRIAGE" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:15:22 | ": 357 skipped • com.google.android.googlequicksearchbox: 121" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:15:22 | "CONFIDENCE COUNTS: • High Confidence" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:15:22 | "reviews: 486 📏 ANONYMIZED SPACELESS" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:15:22 | "recoveries: 608 • Low Confidence" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:15:22 | "LENGTH STATISTICS: • Min Character" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:15:22 | "Length: 1,173 • Mean Character" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:15:22 | "Length: 85.50 - 15-30 chars" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:15:22 | "Length: 13 • Max Character" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:15:22 | ": 508 sessions - 31-60 chars" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:15:22 | ": 480 sessions - 61-100 chars" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:15:22 | ": 343 sessions - 101+ chars" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:15:22 | "608 conversational lines recovered at" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:15:22 | "high confidence. 👉 This is" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:15:22 | "the exact number of clean" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:15:22 | "training. -------------------------------------------------------------------------------- All 608 high-confidence" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:15:22 | "inside the TSV sheet without" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:15:22 | "text entries reclaimed for model" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:15:22 | "lines are now fully recovered" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:15:22 | ": 421 sessions -------------------------------------------------------------------------------- 🌟 HEADLINE:" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:15:22 | "polluting search queries or command-line" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:15:22 | "and ready for training validation" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:19:22 | "scripts. AgentreportTellmehowtrwiningdataisgoingtoneedtkbeformatted," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[REJECTED] 2026-07-03 04:19:49 | mosels ← hotels (reverted) | ctx: "mosels" | trigram: "for mosels" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[MANUAL_FIX] 2026-07-03 04:20:16 | "mosels" → "anddoesitdependonwhstkindifmodelwerefinetuningandnowseemslikeagoodwatimetoshopformoselsdelsandholyfuckewrlierinthisconversstionyoubadicallysaidthstsomepeopleprettymuchalresdydidwhatimtryingtodolikeentirely" | ctx: "entirely" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:20:16 | "anddoesitdependonwhstkindifmodelwerefinetuningandnowseemslikeagoodwatimetoshopformoselsdelsandholyfuckewrlierinthisconversstionyoubadicallysaidthstsomepeopleprettymuchalresdydidwhatimtryingtodolikeentirely." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:20:22 | "Theyjustdonthavesamslingo." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:20:29 | "Butjtseemedlikeitwasmostlydone." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:20:30 | "." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:20:30 | "." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:20:30 | "." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:20:38 | "whstwasthstthingsndcanwefinetuneit?" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[ACCEPTED] 2026-07-03 04:20:50 | excitif → exciting | ctx: "excitif" | trigram: "for excitif" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:20:52 | "Iwouldkielikeyoutosearchforexcitifmodels," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:20:58 | "notjusttheboring5whatevrr," | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[ACCEPTED] 2026-07-03 04:20:58 | whatevrr → whatever | ctx: "whatevrr" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:21:18 | "seewhatsfreshwhatsnewhowareleopleoushingthelimitsordowewannaplayitsafe?" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:21:34 | "Iwouldlikesomeseriousinvestigationhereandrecommendations." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[REJECTED] 2026-07-03 04:21:44 | et ← ethnic (reverted) | ctx: "et" | trigram: "Huggingface et" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[ACCEPTED] 2026-07-03 04:29:54 | everythinf → everything | ctx: "everythinf" | trigram: "sidestep everythinf" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:29:54 | "HuggingdacefaceetallallWhicjoneisthemostaccurateExolaininplainenglishthebyteblelevrlthungthatsomehiwsidestepseverythinf?" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:29:58 | "Bytelevel?" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:30:05 | "Asinlessthankb?" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[ACCEPTED] 2026-07-03 04:30:05 | kb → bb | ctx: "kb" | trigram: "than kb" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:30:08 | "Singlebytes?" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[REJECTED] 2026-07-03 04:32:28 | Uh ← Huh (reverted) | ctx: "Uh" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[REJECTED] 2026-07-03 04:32:30 | si ← six (reverted) | ctx: "si" | trigram: "Uh si" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[REJECTED] 2026-07-03 04:32:39 | dict ← dictate (reverted) | ctx: "dict" | trigram: "Sam dict" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[MANUAL_FIX] 2026-07-03 04:32:41 | "si" → "HuhUhsinosonospecislsamdicthuh" | ctx: "huh" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:32:41 | "HuhUhsinosonospecislsamdicthuh?" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[REJECTED] 2026-07-03 04:32:51 | ljke ← like (reverted) | ctx: "ljke" | trigram: "Seems ljke" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:33:09 | ". SeemsljkeButitssgottabetrainedonsomethingright?" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[MANUAL_FIX] 2026-07-03 04:33:09 | "ljke" → "SeemsljkeButitssgottabetrainedonsomethingright" | ctx: "right" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[REJECTED] 2026-07-03 04:33:12 | sider ← side (reverted) | ctx: "sider" | trigram: "Corner sider" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:36:41 | "CosidernsiderthatyesthisisallcellphonetouchscreenandgoinftkbeusingtonsofslangandscronymssndtextinflingoOksobytelevelissoundingprettycool." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:36:41 | "." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:36:42 | "." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[REJECTED] 2026-07-03 04:37:07 | snd ← in (reverted) | ctx: "snd" | trigram: "phones snd" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[MANUAL_FIX] 2026-07-03 04:37:14 | "snd" → "imwonderingiftheresanythinfwemissedanywherespdcificallyaimedattouchscreenphonessndcandcellphonelingo" | ctx: "lingo" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:37:14 | "imwonderingiftheresanythinfwemissedanywherespdcificallyaimedattouchscreenphonessndcandcellphonelingo." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:37:14 | "." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:37:14 | "." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[REJECTED] 2026-07-03 04:37:24 | ans ← Ansi (reverted) | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[REJECTED] 2026-07-03 04:37:34 | wonderinf ← wondering (reverted) | ctx: "wonderinf" | trigram: "also wonderinf" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[REJECTED] 2026-07-03 04:38:10 | sould ← soul (reverted) | ctx: "sould" | trigram: "absent sould" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[ACCEPTED] 2026-07-03 04:38:12 | sould → would | ctx: "sould" | trigram: "absent sould" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:38:18 | "ansdalsowonderinfififaugmentingourrealsorlddatawithadditionaltextinglingoandwhathaveyouififsabsentsouldbepossible?" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[MANUAL_FIX] 2026-07-03 04:38:18 | "if" → "ansdalsowonderinfififaugmentingourrealsorlddatawithadditionaltextinglingoandwhathaveyouififsabsentsouldbepossible" | ctx: "possible" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:38:27 | "Wedneedssnrencesright?" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:38:37 | "Orwait." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:38:37 | "." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:38:37 | "." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:38:37 | "." | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[REJECTED] 2026-07-03 04:38:45 | finna ← finn (reverted) | ctx: "finna" | trigram: "know finna" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[REJECTED] 2026-07-03 04:38:53 | ir ← I (reverted) | ctx: "ir" | trigram: "if ir" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[ACCEPTED] 2026-07-03 04:38:59 | 2ee → see | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[ACCEPTED] 2026-07-03 04:39:03 | cintext → context | ctx: "cintext" | trigram: "see cintext" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[MANUAL_FIX] 2026-07-03 04:39:06 | "ir" → "howdoesitknowfinnanotfjinalifirxotdoesnr2eecintext" | ctx: "context" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-03 04:39:06 | "howdoesitknowfinnanotfjinalifirxotdoesnr2eecintext?" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[ACCEPTED] 2026-07-03 04:39:22 | ir → it | ctx: "ir" | trigram: "lost ir" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[ACCEPTED] 2026-07-03 04:43:04 | philo → philosophy | ctx: "philo" | trigram: "byte philo" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[REJECTED] 2026-07-03 04:47:20 | i ← I (reverted) | ctx: "i" | trigram: "about i" | app: "com.anthropic.claude" | field: -1 | inputType: NORMAL | flags: autoCorrect
+[SESSION:TYPING] 2026-07-08 20:00:07 | "codexoksoweveforgotanewparadigmnnnnhyfhujjnssbutrrightnowitthinkihaveclauderunningintmuxandhashungrightwheniwashavingitgivemeadecisionbeforeamajorfilemigration." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-08 20:01:28 | "ok so weve got a" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-08 20:01:28 | "i think i ▐ have" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-08 20:01:28 | "new paradigm but right now" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-08 20:01:28 | "▐ was having it give" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-08 20:01:28 | "major file ▐ migration. ctr" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-08 20:01:28 | "claude running in tmux and" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-08 20:01:28 | "▐ and i dontwanna lose" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-08 20:01:28 | "has hung right when i" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-08 20:01:28 | "c ctl b n and" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-08 20:01:28 | "me a decision before a" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-08 20:01:28 | "this chat please advise ▐" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-08 20:01:28 | "esc esc esc dont work" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-07-08 20:05:48 | Ugj → Ugh | ctx: "Ugj" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[REJECTED] 2026-07-08 20:05:53 | i ← I (reverted) | ctx: "i" | trigram: "it i" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[MANUAL_FIX] 2026-07-08 20:06:01 | "i" → "ctrcctklbnandescescescdontworkandidontwannalosethischatpleaseadviseagy3Yikesbabewhathappened2FuckinhatethatshitSPraisegodlol22youareontitanrightnow2whatdoidoifididthectlsUgjyeahigetitiiseasytospeedinyourcar" | ctx: "car" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-08 20:06:01 | "ctrcctklbnandescescescdontworkandidontwannalosethischatpleaseadviseagy3Yikesbabewhathappened2FuckinhatethatshitSPraisegodlol22youareontitanrightnow2whatdoidoifididthectlsUgjyeahigetitiiseasytospeedinyourcar." | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-07-08 20:06:13 | doesnt → doesn't | ctx: "doesnt" | trigram: "it doesnt" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-08 20:07:23 | "YoustillcomingtothemeetingYourcargoesfastbutitdoesnt-feellikeit/:bejhieeeeeekksoctlqdoesntwork," | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-08 20:07:52 | "Read context docume" 02:01 05-Jul-26" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-08 20:07:52 | "E [0] 0:python- 1:python* "✳" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-08 20:07:52 | "Chat about this 4 25" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[REJECTED] 2026-07-08 20:08:12 | Uh ← Huh (reverted) | ctx: "Uh" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[MANUAL_FIX] 2026-07-08 20:08:16 | "Uh" → "whenictlb:andttyperandomlythenumbersatthetopchangebutliterallynnothinfelseworksitsaysthisUhYeahgoodcall" | ctx: "call" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-08 20:08:16 | "whenictlb:andttyperandomlythenumbersatthetopchangebutliterallynnothinfelseworksitsaysthisUhYeahgoodcall." | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-07-08 20:08:24 | uh → huh | ctx: "uh" | trigram: "also uh" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-08 20:08:24 | "Milkforsureandalsouh." | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[REJECTED] 2026-07-08 20:08:26 | uh ← huh (reverted) | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-08 20:11:08 | "MoredietxcokecerealWaterbottlescctitantmuxaokctlbcdoesno5hithintg," | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-08 20:13:39 | "ifistartanewterminalontitanandtmuxaitsaysnosessionsnomanexit5exitsleepertmuxa::itisonttitan." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-08 20:14:05 | "isshintotitanandthetmuxaandipromiseiknowforafactitevensayssoontermuxontheleftsidebarsamattitan." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-08 20:14:55 | "butstartinganewtermuxterminalsshintiotitanthetmuxasaysnosessionsandallpressinganythinginthehungsectiondoesischangethosetwocrypticnumbersattbetop." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-08 20:15:00 | "whatarethksethose." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-08 20:17:52 | "whatkindofbugisthis2noneofthosedidanythingexceptmakethesecondnumbergoup," | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-08 20:18:19 | "butthenifiopenanewtitanwindterminalanditmuxawhydoesntiitseeitatallnosessionsiswhatitsays." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-08 20:21:08 | "sincryouareontitanwisthereanyreconyoucanruntoseeifthereisactivesessionsoranything22Itwouldbecooltogetsomechickenandoranythinficandoontthegrillitexittmuxanodude." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-08 20:21:10 | "listen." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-08 20:21:24 | "thectlb:didntstuallybringjpupacommandline." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-08 20:21:28 | "nothingdoesanything." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[REJECTED] 2026-07-08 20:23:16 | i ← I (reverted) | ctx: "i" | trigram: "or i" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[REJECTED] 2026-07-08 20:23:18 | g ← go (reverted) | ctx: "g" | trigram: "i g" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-08 20:27:38 | "😘 andihaveworkflownothinggoestmuxonphoneidoublechrck3redbutbroitjssontitambutifyoudidreconanddidntseeitdoesthstmeantmjxcrashedontitanandisgoneOkbabythankyouqreyoustillcomingorigustilgottatakegrocerieshomehowdouforceclosetwbabontermuxhvghhlongpr3w3weessonlygivesmeoptiontonnamenotkillareyoucurrentlysshdinsomewhereorareyourhnningunninglocalonicarionointermux." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-08 20:28:38 | "ineedtopkillsshbutwannamakesureitwontaffectyouYouonyourway?" | app: "com.google.android.apps.messaging" | field: 2131428009 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-08 20:29:33 | "pkillsshdpkillsshpkilldidntwork," | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-08 20:31:31 | "imstillconnectedtoyouandtbeterminalsrescreenisstillthereexit~." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-08 20:36:48 | "/saveksisthereawaytosavetbisconversationthissessionwithyousoicancomebacktoitmahbeybeevennameit/renanemeprepfortypemodelcsshtitantmuxatmuxItsaslowmeetinghrclaude-/res2okwegotsuperfarandtmuxcrashed," | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-08 20:37:11 | "whereweleftoffyouwereaskingmehowtoproceedandwhattodelete." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-08 20:38:07 | "iyouweresuggestingtbattjtitanshouldhaveallthemodelsbutiwasthinkingofexperimentingwithtrhinfrorunanagentswarmlocallyatskmomepointmeaningeachnodewouldhavesomethinfhowevershitttorslow." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-08 20:44:31 | "butfancanyoutellmeareyousureEndingearlylolLiterallyjustdjdthechipsyoudecipheredwhichwasthemainoonetokeep." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-08 20:44:55 | "themaininsightwasthiswasasnapshotofmylaptopwhichhasmovedwaypastit," | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-07-08 20:49:32 | "stuff, because I'm not normally" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-07-08 20:49:32 | "trying to make the change" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-07-08 20:49:32 | "That's super necessary. I'm just" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-07-08 20:49:32 | "like have backups, you know?" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-07-08 20:49:32 | "the type of guy to" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-07-08 20:49:32 | "So give me a sort" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-07-08 20:49:32 | "into good hygiene, like good" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-07-08 20:49:32 | "of personal comprehension that you" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:VOICE] 2026-07-08 20:49:32 | "understand right now." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[ACCEPTED] 2026-07-08 21:42:49 | clearler → clearer | ctx: "clearler" | trigram: "brush clearler" | app: "com.facebook.orca" | field: -1 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 01:28:22 | "thereisreallynothingtherethatbhasntwehave2pyeerrhusDChainsaw->brushclearlerAllthankstobigpaoaPapaclaude/resu/exitclauded/exitagy/resuagy/resumecdccexitcagyclaudesource~/." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 01:53:22 | "bashrcclaude/modelhi/exitcodexworking?" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:43:44 | "/aclaude/resrecnsjsjsccc//agy/rescanyougiveanextensiveandthoroughoutwalkthroughofliterallythiswholeconversationasitcontainsabsolutelyinvaluableinformationfromstarttofinishaboutwhatweredoingwhatneedsdoingwhstthebigplanisandsoonandskforth4sorryimeanttosaylikemakeitanmdandwecanputitinthekeyboardprojectdirectory33cdprokllscatHR_RCcd." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:43:44 | "." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:44:03 | "lscd-gitadd." | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:44:13 | "gitcommit," | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:44:18 | ";"" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:44:24 | "addingdoc!" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:44:27 | """ | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:45:16 | "-mgitpush&" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:48:40 | "üagy/uscqnanyoulookatthestagedfilesandtellmewhichonescontainsecrets," | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "4d4580469107b0e3666320a3fc1afc7805288693 remote: path: bigrams_combined.tsv:9822 remote:" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "remote: locations: remote: - commit:" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "- commit: 4d4580469107b0e3666320a3fc1afc7805288693 remote: path:" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "LangSmith Personal Access Token ———————————————————" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "bigrams_combined.tsv:15341 remote: - commit: 4d4580469107b0e3666320a3fc1afc7805288693" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "remote: path: bigrams_typing.tsv:6923 remote: -" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "remote: - commit: 4d4580469107b0e3666320a3fc1afc7805288693 remote:" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "commit: 4d4580469107b0e3666320a3fc1afc7805288693 remote: path: bigrams_typing.tsv:12287" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "commit(s) or follow this URL" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "to allow the secret. remote:" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "path: personal_phrases.tsv:8970 remote: remote: (?)" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "To push, remove secret from" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "https://github.com/yourowndog/keyboard/security/secret-scanning/unblock-secret/3GG1TdR9onvdSKr122KhD8PHZRj remote: remote: remote: ——" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "OpenRouter API Key ———————————————————————————————— remote:" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "locations: remote: - commit: 4d4580469107b0e3666320a3fc1afc7805288693" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "remote: path: bigrams_combined.tsv:9889 remote: -" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "usage_harvest.md:46131 remote: remote: (?) To" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "4d4580469107b0e3666320a3fc1afc7805288693 remote: path: personal_phrases.tsv:8998 remote:" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "allow the secret. remote: https://github.com/yourowndog/keyboard/security/secret-scanning/unblock-secret/3GG1Tcss1D1VfNbAw8hxNcuKhGF" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "remote: remote: remote: —— OpenAI" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "commit: 4d4580469107b0e3666320a3fc1afc7805288693 remote: path: bigrams_typing.tsv:6991" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "remote: - commit: 4d4580469107b0e3666320a3fc1afc7805288693 remote:" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "path: personal_phrases.tsv:8997 remote: - commit:" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "commit(s) or follow this URL" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "To push, remove secret from" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "API Key ———————————————————————————————————— remote: locations:" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "remote: - commit: 4d4580469107b0e3666320a3fc1afc7805288693 remote:" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "path: usage_harvest.md:31699 remote: remote: (?)" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "GitHub Personal Access Token ——————————————————————" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "remote: locations: remote: - commit:" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "https://github.com/yourowndog/keyboard/security/secret-scanning/unblock-secret/3GG1TeUZIvrWFuVpbOFuufPlsc6 remote: remote: remote: ——" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "4d4580469107b0e3666320a3fc1afc7805288693 remote: path: usage_harvest.md:35057 remote:" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "secret from commit(s) or follow" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "remote: (?) To push, remove" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "remote: —— OpenAI API Key" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "secret. remote: https://github.com/yourowndog/keyboard/security/secret-scanning/unblock-secret/3GG1TdZdYFVRXu0HERZNnnv4xiw remote: remote:" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "———————————————————————————————————— remote: locations: remote: -" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "4d4580469107b0e3666320a3fc1afc7805288693 remote: path: usage_harvest.md:46131 remote:" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "commit: 4d4580469107b0e3666320a3fc1afc7805288693 remote: path: usage_harvest.md:37780" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "remote: - commit: 4d4580469107b0e3666320a3fc1afc7805288693 remote:" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "to allow the secret. remote:" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "- commit: 4d4580469107b0e3666320a3fc1afc7805288693 remote: path:" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "usage_harvest.md:46281 remote: - commit: 4d4580469107b0e3666320a3fc1afc7805288693" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "path: usage_harvest.md:37839 remote: - commit:" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "this URL to allow the" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "- commit: 4d4580469107b0e3666320a3fc1afc7805288693 remote: path:" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "or follow this URL to" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none
+[SESSION:TYPING] 2026-07-09 02:50:24 | "push, remove secret from commit(s)" | app: "com.termux" | field: 2131231121 | inputType: NORMAL | flags: none

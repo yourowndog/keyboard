@@ -1,8 +1,7 @@
 package dev.patrickgold.florisboard.ime.nlp
 
-import org.junit.Test
-import org.junit.Assert.*
 import dev.patrickgold.florisboard.ime.nlp.shared.CandidateScorer
+import kotlin.test.Test
 
 class SymSpellTest {
     @Test

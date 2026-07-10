@@ -50,7 +50,7 @@
     "shadow-color": "var(--cyan-neon)",
     "border-color": "var(--cyan-neon)"
   },
-  "key[code=97..122,65..90,32,44,46,47]": {
+  "key[code=97..122,65..90,32,44,46]": {
     "background": "var(--hull-700)",
     "foreground": "var(--cyan-bright)",
     "font-weight": "bold",
@@ -73,7 +73,7 @@
     "border-color": "var(--gold-prime)",
     "shape": "rounded-corner(4dp, 4dp, 4dp, 4dp)"
   },
-  "key[code=-206..-201,-35,-31,-33,34,45,95]": {
+  "key[code=-206..-201,-35,-31,-33,34,37,45,47,58,95]": {
     "background": "var(--hull-900)",
     "foreground": "var(--hull-300)",
     "border-color": "var(--hull-500)",

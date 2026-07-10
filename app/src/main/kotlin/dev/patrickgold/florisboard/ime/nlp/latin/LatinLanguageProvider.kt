@@ -17,9 +17,12 @@
 package dev.patrickgold.florisboard.ime.nlp.latin
 
 import android.content.Context
+import android.util.Log
+import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.appContext
 import dev.patrickgold.florisboard.ime.core.Subtype
 import dev.patrickgold.florisboard.ime.editor.EditorContent
+import dev.patrickgold.florisboard.ime.nlp.NeuralScorer
 import dev.patrickgold.florisboard.ime.nlp.SuggestionRequest
 import dev.patrickgold.florisboard.ime.nlp.SpellingProvider
 import dev.patrickgold.florisboard.ime.nlp.SmolLMClient
@@ -29,6 +32,7 @@ import dev.patrickgold.florisboard.ime.nlp.SpellingResult
 import dev.patrickgold.florisboard.ime.nlp.SuggestionCandidate
 import dev.patrickgold.florisboard.ime.nlp.SuggestionProvider
 import dev.patrickgold.florisboard.ime.nlp.WordSuggestionCandidate
+import dev.patrickgold.florisboard.ime.nlp.shared.BigramTable
 import dev.patrickgold.florisboard.lib.devtools.flogDebug
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -41,9 +45,32 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
     }
 
     private val appContext by context.appContext()
+    private val prefs by FlorisPreferenceStore
 
 
     private var ngramEngine: dev.patrickgold.florisboard.ime.nlp.NgramSuggestionEngine? = null
+    private var neuralScorer: NeuralScorer? = null
+
+    /**
+     * Last neural shadow decision + ngram top pick, exposed for NlpManager to persist
+     * to JSONL through the privacy-safe (editor-aware) harvest path.
+     * Cleared after each read to avoid stale repeats.
+     */
+    data class NeuralSnapshot(
+        val typed: String,
+        val prevWord: String?,
+        val ngramTop: String?,
+        val decision: NeuralScorer.Decision,
+    )
+    @Volatile var lastNeuralSnapshot: NeuralSnapshot? = null
+        private set
+
+    /** Consume the snapshot (returns it and clears). */
+    fun consumeNeuralSnapshot(): NeuralSnapshot? {
+        val snap = lastNeuralSnapshot
+        lastNeuralSnapshot = null
+        return snap
+    }
 
     fun isNgramEngineReady(): Boolean = ngramEngine != null
     fun getNgramUnigramCount(): Int = ngramEngine?.unigramLogFreq?.size ?: 0
@@ -85,6 +112,8 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         } catch (e: Exception) {
             dev.patrickgold.florisboard.lib.devtools.flogError { "Failed to load NgramEngine: ${e.message}" }
         }
+
+        neuralScorer = NeuralScorer.load(appContext)
     }
 
     override suspend fun spell(
@@ -121,7 +150,9 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         } else {
             textBeforeSelection
         }
-        val previousWord = lastWordBefore(textBeforeCurrentWord)
+        val previousWords = wordsBefore(textBeforeCurrentWord, max = 2)
+        val previousWord = previousWords.lastOrNull()
+        val previous2Word = if (previousWord == null) null else previousWords.dropLast(1).lastOrNull()
         // If there is no composing text, surface next-word bigram predictions.
         // For single chars like "i", fall through to engine for correction (i -> I).
         if (currentWordRaw.isBlank()) {
@@ -192,6 +223,35 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
             // Map SymSpell items to (Term, Distance) pairs
             val mappedCandidates = rawCandidates.map { candidate -> candidate.term to candidate.distance }
             val ngramRanked = engine.rank(mappedCandidates, currentWordRaw, previousWord)
+            val editOnlyCandidates = editCandidates.map { candidate -> candidate.term to candidate.distance }
+            val neuralDecision = neuralScorer?.scoreCandidates(
+                typed = currentWordRaw,
+                prevWord = previousWord,
+                prev2Word = previous2Word,
+                candidates = neuralCandidates(
+                    typed = currentWordRaw,
+                    rawCandidates = editOnlyCandidates,
+                    engine = engine,
+                    prevWord = previousWord,
+                ),
+                threshold = prefs.suggestion.neuralThreshold.get(),
+            )
+            if (prefs.suggestion.neuralScorerShadow.get() && neuralDecision != null) {
+                val ngramTopStr = ngramRanked.firstOrNull()?.text?.toString()
+                logNeuralShadow(
+                    typed = currentWordRaw,
+                    previousWord = previousWord,
+                    currentTop = ngramTopStr,
+                    decision = neuralDecision,
+                )
+                // Surface for NlpManager's privacy-safe JSONL logging
+                lastNeuralSnapshot = NeuralSnapshot(
+                    typed = currentWordRaw,
+                    prevWord = previousWord,
+                    ngramTop = ngramTopStr,
+                    decision = neuralDecision,
+                )
+            }
             
             // DISABLED: SmolLM neural reranking causes multi-second lag due to blocking HTTP calls
             // TODO: Implement async reranking - show n-gram results instantly, update after SmolLM responds
@@ -203,15 +263,14 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
             // }
             // val neuralRanked = SmolLMClient.rerank(contextPrefix, candidateTexts)
             
-            // Use n-gram ranking directly (no neural)
-            val rankedSuggestions = ngramRanked
-            
             // "Valid Word Immunity": Check if the user's raw input is already a valid dictionary word.
             // If it is, we should be VERY conservative about auto-correcting it to something else 
             // (e.g., don't change "baby" -> "Babylon").
-            val isInputValidWord = rankedSuggestions.any { 
+            val isInputValidWord = ngramRanked.any {
                 it.text.toString().equals(currentWordRaw, ignoreCase = true) 
             }
+            val liveNeuralDecision = neuralDecision.takeIf { prefs.suggestion.useNeuralScorer.get() }
+            val rankedSuggestions = ngramRanked
             
             return rankedSuggestions.map { candidate ->
                 if (candidate is WordSuggestionCandidate) {
@@ -230,7 +289,10 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
                     
                     // LOGIC: Commit if it's a change AND (it's a typo OR it's just a casing fix)
                     // If input is valid, we ONLY allow casing fixes. We REJECT different words.
-                    val shouldCommit = isChange && (!isInputValidWord || isCasingFix)
+                    val neuralAllowsCommit = liveNeuralDecision == null ||
+                        (liveNeuralDecision.shouldFire &&
+                            candidate.text.toString().equals(liveNeuralDecision.top.term, ignoreCase = true))
+                    val shouldCommit = isChange && (!isInputValidWord || isCasingFix) && neuralAllowsCommit
                     
                     // DEBUG: Uncomment to trace casing logic
                     // android.util.Log.d("LatinProvider", "Input: '$currentWordRaw' | Cand: '$casedText' | Valid: $isInputValidWord | Commit: $shouldCommit")
@@ -317,13 +379,60 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
     override suspend fun destroy() {
         // Here we have the chance to de-allocate memory and finish our work. However this might never be called if
         // the app process is killed (which will most likely always be the case).
+        neuralScorer?.close()
+        neuralScorer = null
     }
 
-    private fun lastWordBefore(text: String): String? {
-        if (text.isBlank()) return null
-        val trimmed = text.trimEnd()
-        val match = Regex("([A-Za-z']+)[^A-Za-z']*$").find(trimmed) ?: return null
-        return match.groupValues.getOrNull(1)
+    private fun wordsBefore(text: String, max: Int): List<String> {
+        if (text.isBlank()) return emptyList()
+        return Regex("[A-Za-z']+")
+            .findAll(text)
+            .map { it.value.lowercase() }
+            .toList()
+            .takeLast(max)
+    }
+
+    private fun neuralCandidates(
+        typed: String,
+        rawCandidates: List<Pair<String, Double>>,
+        engine: dev.patrickgold.florisboard.ime.nlp.NgramSuggestionEngine,
+        prevWord: String?,
+    ): List<NeuralScorer.Candidate> {
+        val typedLower = typed.lowercase()
+        val normalized = buildList {
+            add(typedLower to 0.0)
+            rawCandidates.forEach { (term, distance) ->
+                if (!term.equals(typedLower, ignoreCase = true)) {
+                    add(term.lowercase() to distance)
+                }
+            }
+        }.distinctBy { it.first }.take(NeuralScorer.MAX_CANDIDATES)
+
+        val bigramTable = BigramTable.get()
+        return normalized.map { (term, distance) ->
+            NeuralScorer.Candidate(
+                term = term,
+                editDistance = distance,
+                lnFreq = engine.unigramLogFreq[term] ?: 0.0,
+                bigramCount = if (prevWord == null) 0 else bigramTable?.getFrequency(prevWord, term) ?: 0,
+            )
+        }
+    }
+
+    private fun logNeuralShadow(
+        typed: String,
+        previousWord: String?,
+        currentTop: String?,
+        decision: NeuralScorer.Decision,
+    ) {
+        val neuralTop = decision.top.term
+        val agrees = currentTop?.equals(neuralTop, ignoreCase = true) == true
+        Log.i(
+            "NeuralShadow",
+            "model=v1 typed='$typed' prev='$previousWord' current='$currentTop' neural='$neuralTop' " +
+                "typedP=${decision.typedProbability} topP=${decision.top.probability} " +
+                "margin=${decision.margin} wouldFire=${decision.shouldFire} agrees=$agrees"
+        )
     }
 
 

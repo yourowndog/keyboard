@@ -50,7 +50,7 @@
     "text-overflow": "ellipsis",
     "shape": "cut-corner(12dp, 12dp, 12dp, 12dp)"
   },
-  "key[code=-202,-14,-11,-131,-4,-7,-9]": {
+  "key[code=-14,-11,-131,-4,-7,-9]": {
     "background": "var(--tac-amber-dark)",
     "foreground": "var(--tac-amber-gold)",
     "border-color": "var(--tac-amber-gold)",

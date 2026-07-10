@@ -9811,9 +9811,9 @@ then git	30
 git commit	30
 changes committed	30
 committed and	30
-export gemini_paid_api_key="aizasydfsc22c197mka4qkdo44oh-0mr3fssz_y	30
-gemini_paid_api_key="aizasydfsc22c197mka4qkdo44oh-0mr3fssz_y export	30
-export gemini_free_api_key="aizasyddzfac-k6cq0hafw29q7kvrjs6uqmczpc	30
+export gemini_paid_api_key="[REDACTED_SECRET]	30
+gemini_paid_api_key="[REDACTED_SECRET] export	30
+export gemini_free_api_key="[REDACTED_SECRET]	30
 alias flask='python3	30
 flask='python3 /storage/emulated/0/vault/ultima/scripts/run_tunnel.py	30
 /storage/emulated/0/vault/ultima/scripts/run_tunnel.py export	30
@@ -11044,7 +11044,7 @@ can't find	30
 up getting	30
 off with	30
 my claude	30
-sk-ant-oat01-ygr4ien3wtqzwf1mxldii1qit4sja69k-w0bcxqgmwziroybgkgoopwr06ql9q-ifqqdyd6_nvswgcf40dgz5q-am 8o9gaa	30
+[REDACTED_OPENAI_KEY] 8o9gaa	30
 my tokens	30
 who like	30
 exactly you	30
@@ -15723,7 +15723,7 @@ when life	20
 be together	20
 in love	20
 the reward	20
-0591-tmhssin2h21lcre235vtolojh4g403ep.apps.googleusercontent.com&code_challenge=c nhnhpzri3xxx4112iyjl6j0yplrfqswxutgabqvlye&code_challenge_method=s256&prompt=cons	20
+<REDACTED_GOOGLE_OAUTH_CLIENT_ID>&code_challenge=c nhnhpzri3xxx4112iyjl6j0yplrfqswxutgabqvlye&code_challenge_method=s256&prompt=cons	20
 nhnhpzri3xxx4112iyjl6j0yplrfqswxutgabqvlye&code_challenge_method=s256&prompt=cons ent&redirect_uri=https%3a%2f%2fantigravity.google%2foauth-callback&response_type=	20
 code&scope=https%3a%2f%2fwww.googleapis.com%2fauth%2fcloud-platform+https%3a%2f%2 fwww.googleapis.com%2fauth%2fuserinfo.email+https%3a%2f%2fwww.googleapis.com%2fau	20
 -bash /home/sam/.bashrc	20

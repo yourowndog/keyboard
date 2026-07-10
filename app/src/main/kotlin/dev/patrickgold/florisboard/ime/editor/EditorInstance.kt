@@ -67,6 +67,15 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
     // Harvest: word buffer to accumulate chars before logging
     private val currentWordBuffer = StringBuilder()
 
+    // Harvest: literal key trace for the current word, including backspaces ('⌫').
+    // Diverges from currentWordBuffer exactly when the user corrected themselves mid-word,
+    // which is the raw signal for fat-finger/typo modeling.
+    private val currentWordTrace = StringBuilder()
+
+    // Harvest: the auto-correct we already logged as ACCEPTED, so the word-boundary
+    // flush doesn't log the same correction twice (commitCompletion vs space flush).
+    private var lastLoggedAutoCorrect: AbstractEditorInstance.AutoCorrectUndoState? = null
+
     // Harvest: tracks the word the user started backspacing into (missed autocorrect detection)
     private var pendingManualCorrect: String? = null
 
@@ -113,6 +122,8 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         activeState.isActionsEditorVisible = false
         cachedAppContext = null       // Invalidate cache on new input view
         pendingManualCorrect = null  // Clear any in-progress manual correction tracking
+        currentWordBuffer.setLength(0)  // Word state never carries across fields
+        currentWordTrace.setLength(0)
         super.handleStartInputView(editorInfo, isRestart)
         val keyboardMode = when (editorInfo.inputAttributes.type) {
             InputAttributes.Type.NUMBER -> {
@@ -253,35 +264,21 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         // SESSION LOGGING: accumulate chars into words
         val isSpace = char == " "
         val isWordBoundary = isPunctuation || char == "\n" || isSpace
-        
-        if (isWordBoundary) {
-            // Flush accumulated word if any
-            if (currentWordBuffer.isNotEmpty()) {
-                val retyped = currentWordBuffer.toString()
-                // Log manual correction if user backspaced into committed text and retyped differently
-                val original = pendingManualCorrect
-                if (original != null) {
-                    if (!retyped.equals(original, ignoreCase = true)) {
-                        HarvestManager.logManualCorrection(original, retyped, getPreviousWord(), buildAppContext())
-                    }
-                    pendingManualCorrect = null
-                }
-                HarvestManager.addToSession(retyped, buildAppContext())
-                currentWordBuffer.setLength(0)
-            }
-            // Flush session on sentence terminators
-            if (isPunctuation || char == "\n") {
-                pendingManualCorrect = null  // Abandon tracking at sentence boundary
-                HarvestManager.flushSession(char, buildAppContext())
-            }
-        } else {
+
+        // Context words must be read before the commit mutates editor content
+        val (prevWord, prevPrevWord) = if (isWordBoundary) {
+            getContextWords(currentWordBuffer.toString())
+        } else null to null
+
+        if (!isWordBoundary) {
             // Accumulate char into current word
             currentWordBuffer.append(char)
+            currentWordTrace.append(char)
         }
-        
+
         val hasTrailingSpace = activeContent.getTextBeforeCursor(1).let { it.isNotEmpty() && it.last() == ' ' }
         val shouldEatTrailingSpace = isPunctuation && hasTrailingSpace
-        
+
         if (isInsertAutoSpaceAfterChar) {
             autoSpace.setActive()
         } else {
@@ -289,12 +286,72 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         }
         val isPhantomSpaceActive = phantomSpace.determine(char)
         phantomSpace.setInactive()
-        return super.commitChar(
+        val result = super.commitChar(
             char = char,
             deletePreviousSpace = isDeletePreviousSpace || shouldEatTrailingSpace,
             insertSpaceBeforeChar = isInsertAutoSpaceBeforeChar || isPhantomSpaceActive,
             insertSpaceAfterChar = isInsertAutoSpaceAfterChar,
         )
+        // Flush AFTER the commit so a word-separator-triggered autocorrect
+        // (commitTextInternal) has already recorded its undo state and the session
+        // logs what actually landed in the editor.
+        if (isWordBoundary) {
+            flushCurrentWordToSession(buildAppContext(), prevWord, prevPrevWord)
+            // Flush session on sentence terminators
+            if (isPunctuation || char == "\n") {
+                pendingManualCorrect = null  // Abandon tracking at sentence boundary
+                HarvestManager.flushSession(char, buildAppContext())
+            }
+        }
+        return result
+    }
+
+    /**
+     * Flushes the accumulated word (and its key trace) into the harvest session at a
+     * word boundary, resolving what actually landed in the editor:
+     *  - If the unified autocorrect (commitTextInternal) just replaced the word, log the
+     *    ACCEPTED event here — that path applies corrections without notifying the
+     *    harvest — and record the corrected form in the session.
+     *  - Otherwise record the typed word, with the manual-correction check preserved.
+     */
+    private fun flushCurrentWordToSession(ctx: AppContext?, prevWord: String?, prevPrevWord: String?) {
+        val typed = currentWordBuffer.toString()
+        val trace = currentWordTrace.toString()
+        currentWordBuffer.setLength(0)
+        currentWordTrace.setLength(0)
+
+        val undo = autoCorrectUndoState
+        val isFreshCorrection = undo != null && undo !== lastLoggedAutoCorrect &&
+            (typed.isEmpty() || undo.originalText.equals(typed, ignoreCase = true))
+        if (isFreshCorrection && undo != null) {
+            lastLoggedAutoCorrect = undo
+            HarvestManager.logAccepted(
+                typed = undo.originalText,
+                correctedTo = undo.correctedText,
+                prevWord = prevWord,
+                prevPrevWord = prevPrevWord,
+                appContext = ctx,
+                candidates = nlpManager.candidatesSnapshotFor(undo.originalText),
+                trace = trace.takeIf { it.isNotEmpty() && it != undo.correctedText },
+                auto = true,
+            )
+            pendingManualCorrect = null
+            HarvestManager.addToSession(
+                undo.correctedText, ctx,
+                trace = trace.takeIf { it.isNotEmpty() && it != undo.correctedText },
+            )
+            return
+        }
+        if (typed.isEmpty()) return
+        // Log manual correction if user backspaced into committed text and retyped differently
+        val original = pendingManualCorrect
+        if (original != null) {
+            if (!typed.equals(original, ignoreCase = true)) {
+                HarvestManager.logManualCorrection(original, typed, prevWord, ctx, trace = trace.takeIf { it != typed })
+            }
+            pendingManualCorrect = null
+        }
+        HarvestManager.addToSession(typed, ctx, trace = trace.takeIf { it != typed })
     }
 
     /**
@@ -313,6 +370,16 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         val isPhantomSpaceActive = phantomSpace.determine(text)
         autoSpace.setInactive()
         phantomSpace.setInactive()
+        // BUGFIX (session concatenation): the space key ALWAYS arrives here — handleSpace
+        // commits via commitText(" "), never commitChar(" ") — so leading whitespace must
+        // flush the word accumulated by commitChar, or typed words concatenate in the
+        // session log (worst in suggestions-off fields like Termux).
+        val isWhitespaceLeading = text.isNotEmpty() && (text.isBlank() || text.first().isWhitespace())
+        val needsWordFlush = isWhitespaceLeading || text == "\n"
+        // Context words must be read before the commit mutates editor content
+        val (prevWord, prevPrevWord) = if (needsWordFlush) {
+            getContextWords(currentWordBuffer.toString())
+        } else null to null
         return if (isPhantomSpaceActive) {
             super.commitText("$SPACE$text")
         } else {
@@ -322,13 +389,12 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
             // Text may be multi-word, so parse it
             val ctx = buildAppContext()
             if (text == "\n") {
-                // Flush word buffer first
-                if (currentWordBuffer.isNotEmpty()) {
-                    HarvestManager.addToSession(currentWordBuffer.toString(), ctx)
-                    currentWordBuffer.setLength(0)
-                }
+                flushCurrentWordToSession(ctx, prevWord, prevPrevWord)
                 HarvestManager.flushSession(text, ctx)
             } else {
+                if (isWhitespaceLeading) {
+                    flushCurrentWordToSession(ctx, prevWord, prevPrevWord)
+                }
                 // Parse text into words and add each
                 val words = text.split(Regex("\\s+")).filter { it.isNotEmpty() }
                 for (word in words) {
@@ -359,20 +425,32 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         
         return if (content.composing.isValid) {
             val original = content.composingText
-            val prevWord = getPreviousWord()
+            val (prevWord, prevPrevWord) = getContextWords(original)
             val ctx = buildAppContext()
+            val trace = currentWordTrace.toString()
             phantomSpace.setActive(showComposingRegion = false, candidate = candidate)
             super.finalizeComposingText(textWithSpace).also {
                 if (original.isNotEmpty() && text != original) {
                     // Track the word WITHOUT the space for the undo state, so our "trailing match" logic handles the space.
                     autoCorrectUndoState = AbstractEditorInstance.AutoCorrectUndoState(text, original)
+                    // Mark as logged so the word-boundary flush doesn't log it again
+                    lastLoggedAutoCorrect = autoCorrectUndoState
                     // Log accepted autocorrect for harvest
-                    HarvestManager.logAccepted(original, text, prevWord, getPreviousPreviousWord(), ctx)
+                    HarvestManager.logAccepted(
+                        original, text, prevWord, prevPrevWord, ctx,
+                        candidates = nlpManager.candidatesSnapshotFor(original),
+                        trace = trace.takeIf { it.isNotEmpty() && it != text },
+                        auto = false,
+                    )
                 } else if (original.isNotEmpty() && text.equals(original, ignoreCase = true)) {
                     // User explicitly picked their typed word - log as INSISTED
                     // This is a strong signal this word should be in the dictionary
                     HarvestManager.logInsisted(original, prevWord, ctx)
                 }
+                // The completed word replaces whatever chars were accumulated
+                currentWordBuffer.setLength(0)
+                currentWordTrace.setLength(0)
+                HarvestManager.addToSession(text, ctx, trace = trace.takeIf { it.isNotEmpty() && it != text })
             }
         } else {
             val isPhantomSpaceActive = phantomSpace.determine(textWithSpace)
@@ -471,6 +549,18 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
             if (content.composingText.isEmpty()) {
                 pendingManualCorrect = getPreviousWord()
             }
+        }
+        // Harvest: mirror the deletion into the word buffer and record it in the key
+        // trace. The trace ('wpr⌫⌫ord' → committed 'word') is the raw self-labeled
+        // typo signal for fat-finger modeling.
+        if (unit == OperationUnit.CHARACTERS && !content.selection.isSelectionMode && currentWordBuffer.isNotEmpty()) {
+            currentWordBuffer.deleteCharAt(currentWordBuffer.length - 1)
+            currentWordTrace.append('⌫')
+        }
+        if (unit == OperationUnit.WORDS) {
+            // Word-level deletes are edits, not typos — reset word tracking
+            currentWordBuffer.setLength(0)
+            currentWordTrace.setLength(0)
         }
         if (unit == OperationUnit.CHARACTERS) {
             if (phantomSpace.isActive && content.currentWord.isValid && prefs.glide.immediateBackspaceDeletesWord.get()) {
@@ -748,6 +838,25 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
             textBefore
         }
         return lastWord.takeIf { it.isNotEmpty() && it.all { c -> c.isLetter() } }
+    }
+
+    /**
+     * Context words (prev, prevPrev) for harvest logging at a word boundary. At that
+     * point the word being flushed is already committed editor text, so it must be
+     * skipped — getPreviousWord() would report the word as its own context.
+     */
+    private fun getContextWords(currentWord: String?): Pair<String?, String?> {
+        val textBefore = activeContent.textBeforeSelection.toString().trimEnd()
+        if (textBefore.isEmpty()) return null to null
+        val words = textBefore.split(Regex("\\s+")).filter { it.isNotBlank() }.toMutableList()
+        if (currentWord != null && currentWord.isNotEmpty() && words.isNotEmpty() &&
+            words.last().trimEnd { !it.isLetterOrDigit() }.equals(currentWord, ignoreCase = true)
+        ) {
+            words.removeAt(words.size - 1)
+        }
+        fun clean(fromEnd: Int): String? = words.getOrNull(words.size - fromEnd)
+            ?.takeIf { w -> w.isNotEmpty() && w.all { it.isLetter() || it == '\'' } }
+        return clean(1) to clean(2)
     }
 
     /**

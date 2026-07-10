@@ -4,6 +4,8 @@
 
 This is the cheat sheet for FlorisBoard customization in this fork. Read before touching layouts or key logic.
 
+Start with `KEYBOARD_LAYOUT_GUIDE.md` for the current source-of-truth map of layout JSON, registry files, merge behavior, rendering, hints, and width/height code paths. This file is a running field log and may contain older notes.
+
 ---
 
 ## 1) Layout Pipeline & Merge (critical)

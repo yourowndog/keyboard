@@ -71,7 +71,7 @@ object HarvestManager {
             }
         } catch (e: Exception) {
             android.util.Log.w("HarvestManager", "Can't write to Documents, trying app storage", e)
-            
+
             // Fallback to app-private storage
             harvestFile = File(context.filesDir, FILENAME)
             if (!harvestFile!!.exists()) {
@@ -79,6 +79,17 @@ object HarvestManager {
             }
             isInitialized = true
         }
+        // Structured JSONL log lives alongside the markdown log
+        harvestFile?.parentFile?.let { HarvestJsonl.init(it) }
+    }
+
+    /**
+     * Mirror an event into the structured JSONL log, honoring the password guard.
+     * Returns the jsonl event id, or -1 if blocked/unavailable.
+     */
+    private fun jsonl(type: String, appContext: AppContext?, vararg fields: Pair<String, Any?>): Long {
+        if (appContext?.isPassword == true || currentAppContext?.isPassword == true) return -1L
+        return HarvestJsonl.event(type, appContext ?: currentAppContext, fields.toList())
     }
     
     private fun writeHeader() {
@@ -109,9 +120,29 @@ object HarvestManager {
      * @param prevPrevWord The word before that (trigram context)
      * @param appContext App/field context for per-app learning
      */
-    fun logAccepted(typed: String, correctedTo: String, prevWord: String?, prevPrevWord: String? = null, appContext: AppContext? = null) {
+    fun logAccepted(
+        typed: String,
+        correctedTo: String,
+        prevWord: String?,
+        prevPrevWord: String? = null,
+        appContext: AppContext? = null,
+        candidates: List<Pair<String, Double>>? = null,
+        trace: String? = null,
+        auto: Boolean = false,
+    ) {
         if (typed == correctedTo) return // Not actually a correction
         append("ACCEPTED", "$typed → $correctedTo", prevWord, prevPrevWord, appContext)
+        val id = jsonl(
+            "AUTO_APPLIED", appContext,
+            "typed" to typed,
+            "applied" to correctedTo,
+            "prev" to prevWord,
+            "prev2" to prevPrevWord,
+            "auto" to auto,
+            "trace" to trace,
+            "candidates" to candidates,
+        )
+        HarvestJsonl.rememberApplied(id, typed, correctedTo)
     }
     
     /**
@@ -124,6 +155,14 @@ object HarvestManager {
      */
     fun logRejected(typed: String, rejectedCorrection: String, prevWord: String?, prevPrevWord: String? = null, appContext: AppContext? = null) {
         append("REJECTED", "$typed ← $rejectedCorrection (reverted)", prevWord, prevPrevWord, appContext)
+        jsonl(
+            "REVERTED", appContext,
+            "typed" to typed,
+            "rejected" to rejectedCorrection,
+            "prev" to prevWord,
+            "prev2" to prevPrevWord,
+            "undoes" to HarvestJsonl.findUndoId(typed, rejectedCorrection),
+        )
     }
     
     /**
@@ -140,6 +179,7 @@ object HarvestManager {
         if (word.contains("@") || word.contains("://")) return // URLs/emails
 
         append("NEW_WORD", word, prevWord, null, appContext)
+        jsonl("NEW_WORD", appContext, "word" to word, "prev" to prevWord)
     }
     
     /**
@@ -151,10 +191,17 @@ object HarvestManager {
      * @param prevWord Context word before the corrected word
      * @param appContext App/field context for per-app learning
      */
-    fun logManualCorrection(original: String, corrected: String, prevWord: String?, appContext: AppContext? = null) {
+    fun logManualCorrection(original: String, corrected: String, prevWord: String?, appContext: AppContext? = null, trace: String? = null) {
         if (original.isEmpty() || corrected.isEmpty()) return
         if (original.equals(corrected, ignoreCase = true)) return
         append("MANUAL_FIX", "\"$original\" → \"$corrected\"", prevWord, null, appContext)
+        jsonl(
+            "MANUAL_EDIT", appContext,
+            "before" to original,
+            "after" to corrected,
+            "prev" to prevWord,
+            "trace" to trace,
+        )
     }
 
     /**
@@ -170,6 +217,7 @@ object HarvestManager {
             logNewWord(word, prevWord, appContext)
         } else {
             append("INSISTED", word, prevWord, null, appContext)
+            jsonl("INSISTED", appContext, "word" to word, "prev" to prevWord)
         }
     }
     
@@ -184,6 +232,7 @@ object HarvestManager {
             logInsisted(typed, prevWord)
         } else {
             append("PICKED", "$typed → $picked (manual)", prevWord)
+            jsonl("USER_PICKED", null, "typed" to typed, "picked" to picked, "prev" to prevWord)
         }
     }
 
@@ -195,6 +244,7 @@ object HarvestManager {
      */
     fun logIntent(typed: String, rejected: String, intent: String) {
         append("INTENT", "Typed '$typed' → Auto-corrected to '$rejected' → User reverted & typed '$intent'. (Conclusion: '$typed' meant '$intent')", null)
+        jsonl("INTENT", null, "typed" to typed, "rejected" to rejected, "retyped" to intent)
     }
 
     /**
@@ -203,6 +253,18 @@ object HarvestManager {
      */
     fun logNoSuggestion(typed: String, prevWord: String? = null) {
         append("NO_SUGGESTION", "typed: \"$typed\" | no corrections offered", prevWord)
+        jsonl("NO_SUGGESTION", null, "typed" to typed, "prev" to prevWord)
+    }
+
+    /**
+     * Log the full candidate list (with confidences) the suggestion pipeline produced
+     * for the current composing text. Captured at decision time so training data has
+     * counterfactuals: which candidates were available, ranked how, when the user
+     * accepted/ignored/fought a correction. JSONL only — too verbose for the md log.
+     */
+    fun logSuggestionsShown(typed: String, prevWord: String?, candidates: List<Pair<String, Double>>) {
+        if (typed.isEmpty() || candidates.isEmpty()) return
+        jsonl("SUGGESTIONS_SHOWN", null, "typed" to typed, "prev" to prevWord, "candidates" to candidates)
     }
 
     /**
@@ -216,6 +278,7 @@ object HarvestManager {
     fun logMultiAttempt(attempts: List<String>, finalWord: String, prevWord: String? = null) {
         val attemptsStr = attempts.joinToString(" → ")
         append("MULTI_ATTEMPT", "attempts: [$attemptsStr] | final: \"$finalWord\"", prevWord)
+        jsonl("MULTI_ATTEMPT", null, "attempts" to attempts, "final" to finalWord, "prev" to prevWord)
     }
 
     /**
@@ -229,14 +292,59 @@ object HarvestManager {
     fun logSuggestionsIgnored(typed: String, suggestions: List<String>, finalTyped: String, prevWord: String? = null) {
         val suggestionsStr = suggestions.joinToString(", ")
         append("IGNORED_SUGGESTIONS", "typed: \"$typed\" | offered: [$suggestionsStr] | ignored all | final: \"$finalTyped\"", prevWord)
+        jsonl("IGNORED_SUGGESTIONS", null, "typed" to typed, "offered" to suggestions, "final" to finalTyped, "prev" to prevWord)
     }
 
     /**
      * Log when user makes many backspaces on a single word (struggle indicator).
      * High-effort words should get better suggestions or be added to dictionary.
      */
+    /**
+     * Log a neural shadow counterfactual: what the neural model would have done
+     * vs. what the current ngram-based system actually did. Privacy-safe: goes
+     * through jsonl() which blocks password fields via AppContext.
+     *
+     * @param typed     The raw typed word
+     * @param prevWord  Previous context word
+     * @param ngramTop  What the current ngram engine picked as top suggestion
+     * @param neuralTop The neural model's top-ranked candidate
+     * @param typedP    Probability the neural model assigned to "keep typed word"
+     * @param topP      Probability the neural model assigned to its top pick
+     * @param margin    topP - typedP; positive = neural wants to correct
+     * @param wouldFire Whether the neural model would have fired (margin > threshold)
+     * @param agrees    Whether neural top == ngram top
+     * @param ranked    Full ranked list from neural model [(term, probability), ...]
+     */
+    fun logNeuralShadow(
+        typed: String,
+        prevWord: String?,
+        ngramTop: String?,
+        neuralTop: String,
+        typedP: Float,
+        topP: Float,
+        margin: Float,
+        wouldFire: Boolean,
+        agrees: Boolean,
+        ranked: List<Pair<String, Float>>? = null,
+    ) {
+        jsonl(
+            "NEURAL_SHADOW", null,
+            "typed" to typed,
+            "prev" to prevWord,
+            "ngramTop" to ngramTop,
+            "neuralTop" to neuralTop,
+            "typedP" to typedP,
+            "topP" to topP,
+            "margin" to margin,
+            "wouldFire" to wouldFire,
+            "agrees" to agrees,
+            "ranked" to ranked,
+        )
+    }
+
     fun logBackspaceStorm(word: String, backspaceCount: Int, finalWord: String) {
         append("BACKSPACE_STORM", "word: \"$word\" | backspaces: $backspaceCount | final: \"$finalWord\"", null)
+        jsonl("BACKSPACE_STORM", null, "word" to word, "backspaces" to backspaceCount, "final" to finalWord)
     }
 
     /**
@@ -272,7 +380,7 @@ object HarvestManager {
 
     private var currentAppContext: AppContext? = null  // Track active field context
 
-    fun addToSession(word: String, appContext: AppContext? = null) {
+    fun addToSession(word: String, appContext: AppContext? = null, trace: String? = null) {
         synchronized(sessionBuffer) {
             // Update context if provided
             if (appContext != null) {
@@ -280,6 +388,13 @@ object HarvestManager {
             }
 
             if (currentAppContext?.isPassword == true) return
+
+            jsonl(
+                "WORD_COMMITTED", appContext,
+                "word" to word,
+                "trace" to trace,
+                "src" to currentSessionSource,
+            )
 
             if (sessionBuffer.isNotEmpty() && !word.matches(Regex("^[.,?!;:]$"))) {
                 sessionBuffer.append(" ")
@@ -317,6 +432,7 @@ object HarvestManager {
                 val ctx = appContext ?: currentAppContext
                 // Tag session with source (TYPING or VOICE)
                 append("SESSION:$currentSessionSource", "\"$sentence\"", null, null, ctx)
+                jsonl("SESSION_TEXT", ctx, "text" to sentence, "src" to currentSessionSource)
                 currentAppContext = null  // Clear after flush
             }
         }

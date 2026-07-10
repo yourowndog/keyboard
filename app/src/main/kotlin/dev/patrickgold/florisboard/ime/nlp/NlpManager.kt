@@ -77,7 +77,45 @@ class NlpManager(context: Context) {
     private val _nlpLogs = MutableStateFlow<List<NlpLogEvent>>(emptyList())
     val nlpLogs = _nlpLogs.asStateFlow()
 
+    // Last candidate list produced by the pipeline, keyed by the composing text it was
+    // generated for. Lets commit-time harvest events attach the counterfactual candidates.
+    @Volatile private var lastCandidatesSnapshot: Pair<String, List<Pair<String, Double>>>? = null
+
+    /** Candidates (text to confidence) last shown for [typed], or null if stale. */
+    fun candidatesSnapshotFor(typed: String): List<Pair<String, Double>>? {
+        val (snapTyped, candidates) = lastCandidatesSnapshot ?: return null
+        return if (snapTyped.equals(typed, ignoreCase = true)) candidates else null
+    }
+
     fun addLogEvent(typed: String, prevWord: String?, suggestions: List<SuggestionCandidate>) {
+        val candidatePairs = suggestions.take(8).map { it.text.toString() to it.confidence }
+        if (typed.isNotEmpty()) {
+            lastCandidatesSnapshot = typed to candidatePairs
+        }
+        HarvestManager.logSuggestionsShown(typed, prevWord, candidatePairs)
+
+        // Persist neural shadow decision to JSONL through the editor-aware
+        // (password-safe) harvest path. The snapshot was set by LatinLanguageProvider
+        // during suggest() and is consumed here to avoid stale repeats.
+        val latinProvider = runBlocking {
+            providers.withLock { it[LatinLanguageProvider.ProviderId]?.provider as? LatinLanguageProvider }
+        }
+        latinProvider?.consumeNeuralSnapshot()?.let { snap ->
+            val agrees = snap.ngramTop?.equals(snap.decision.top.term, ignoreCase = true) == true
+            HarvestManager.logNeuralShadow(
+                typed = snap.typed,
+                prevWord = snap.prevWord,
+                ngramTop = snap.ngramTop,
+                neuralTop = snap.decision.top.term,
+                typedP = snap.decision.typedProbability,
+                topP = snap.decision.top.probability,
+                margin = snap.decision.margin,
+                wouldFire = snap.decision.shouldFire,
+                agrees = agrees,
+                ranked = snap.decision.ranked.map { it.term to it.probability },
+            )
+        }
+
         val event = NlpLogEvent(
             timestamp = System.currentTimeMillis(),
             typed = typed,

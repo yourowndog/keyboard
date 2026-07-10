@@ -6912,9 +6912,9 @@ then git	30
 git commit	30
 changes committed	30
 committed and	30
-export gemini_paid_api_key="aizasydfsc22c197mka4qkdo44oh-0mr3fssz_y	30
-gemini_paid_api_key="aizasydfsc22c197mka4qkdo44oh-0mr3fssz_y export	30
-export gemini_free_api_key="aizasyddzfac-k6cq0hafw29q7kvrjs6uqmczpc	30
+export gemini_paid_api_key="[REDACTED_SECRET]	30
+gemini_paid_api_key="[REDACTED_SECRET] export	30
+export gemini_free_api_key="[REDACTED_SECRET]	30
 alias flask='python3	30
 flask='python3 /storage/emulated/0/vault/ultima/scripts/run_tunnel.py	30
 /storage/emulated/0/vault/ultima/scripts/run_tunnel.py export	30

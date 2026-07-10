@@ -47,7 +47,7 @@ Do NOT use Bash find/grep, Glob, or Grep tools for searching or navigating code 
 
 - **Single user only.** OmniBoard is built exclusively for Sam. Do not generalize analysis to "other users", "common typing patterns", or "average frequency distributions". The only patterns that matter are Sam's.
 
-- **Dictionary is hand-curated.** The word list was built from scratch drawing on AOSP and personally assembled sources. Do not suggest replacing or supplementing it with generic corpora or frequency lists from other projects.
+- **Dictionary rebuild in progress (2026-07).** The legacy word list was cobbled from four inconsistently-normalized sources and produces bad corrections (junk frequencies, missing linux/LLM vocabulary). Sam is NOT attached to it. The agreed plan: AOSP English wordlist as the frequency base, overlaid with vocabulary and frequencies mined from Sam's own harvest corpus, with bigrams rebuilt 100% from the harvest corpus. Do not treat the legacy dictionary or legacy bigram table as authoritative.
 
 - **Android user dictionary is not a solution.** The system user dictionary is wiped on every rebuild/reinstall. This is a structural incompatibility with the dev workflow, not a configuration problem. The harvest system exists precisely because persistent on-device learning cannot be relied on. Never suggest the user dictionary as a workaround for any learning or personalization problem.
 

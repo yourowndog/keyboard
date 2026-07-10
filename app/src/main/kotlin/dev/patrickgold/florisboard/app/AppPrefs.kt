@@ -529,6 +529,10 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "keyboard__hinted_symbols_mode",
             default = KeyHintMode.SMART_PRIORITY,
         )
+        val keyHintsVisible = boolean(
+            key = "keyboard__key_hints_visible",
+            default = false,
+        )
         val utilityKeyEnabled = boolean(
             key = "keyboard__utility_key_enabled",
             default = true,
@@ -826,6 +830,18 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
         val blockPossiblyOffensive = boolean(
             key = "suggestion__block_possibly_offensive",
             default = true,
+        )
+        val neuralScorerShadow = boolean(
+            key = "suggestion__neural_scorer_shadow",
+            default = true,
+        )
+        val useNeuralScorer = boolean(
+            key = "suggestion__use_neural_scorer",
+            default = false,
+        )
+        val neuralThreshold = float(
+            key = "suggestion__neural_threshold",
+            default = 0.30f,
         )
         val incognitoMode = enum(
             key = "suggestion__incognito_mode",
