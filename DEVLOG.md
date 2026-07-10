@@ -304,3 +304,7 @@
 * **Task:** Sanitized leaked credentials (API keys, GitHub tokens, cookies) from user harvest logs and bigram files, then amended the local commit.
 * **Files:** `usage_harvest.md`, `bigrams_combined.tsv`, `bigrams_typing.tsv`, `personal_phrases.tsv`, `DEVLOG.md`
 
+### 2026-07-09
+* **Task:** Enabled largeHeap in AndroidManifest.xml to resolve OutOfMemoryError crashes during Compose text rendering with high font scaling.
+* **Files:** `app/src/main/AndroidManifest.xml`
+

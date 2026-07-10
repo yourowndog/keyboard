@@ -36,6 +36,7 @@
 
     <application
         android:name="dev.patrickgold.florisboard.FlorisApplication"
+        android:largeHeap="true"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/backup_rules"
         android:fullBackupContent="@xml/backup_rules"
