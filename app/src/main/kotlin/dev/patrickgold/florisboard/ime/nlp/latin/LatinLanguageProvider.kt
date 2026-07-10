@@ -101,19 +101,29 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         // subtype.secondaryLocales.
 
         // SymSpell handles all suggestions/corrections - legacy dictionary code removed
-        
+
         // Initialize Ngram Engine for Ranking
         // Note: Only loads unigrams here. Bigrams are provided by the shared BigramTable singleton
         // which is loaded once in SymSpellManager.init()
-        try {
-            val unigrams = appContext.assets.open("ime/dict/unified_dictionary.tsv")
-            ngramEngine = dev.patrickgold.florisboard.ime.nlp.NgramSuggestionEngine.fromStreams(unigrams)
-            dev.patrickgold.florisboard.lib.devtools.flogInfo { "NgramSuggestionEngine loaded successfully" }
-        } catch (e: Exception) {
-            dev.patrickgold.florisboard.lib.devtools.flogError { "Failed to load NgramEngine: ${e.message}" }
+        // preload() fires on every subtype switch; both loads below are subtype-independent,
+        // so load once and keep. Reloading here previously leaked the replaced ONNX session
+        // and re-parsed the full unified dictionary each time.
+        if (ngramEngine == null) {
+            dev.patrickgold.florisboard.ime.nlp.MemProfiler.log("provider:ngram_load_start")
+            try {
+                val unigrams = appContext.assets.open("ime/dict/unified_dictionary.tsv")
+                ngramEngine = dev.patrickgold.florisboard.ime.nlp.NgramSuggestionEngine.fromStreams(unigrams)
+                dev.patrickgold.florisboard.lib.devtools.flogInfo { "NgramSuggestionEngine loaded successfully" }
+            } catch (e: Exception) {
+                dev.patrickgold.florisboard.lib.devtools.flogError { "Failed to load NgramEngine: ${e.message}" }
+            }
+            dev.patrickgold.florisboard.ime.nlp.MemProfiler.log("provider:ngram_load_done")
         }
 
-        neuralScorer = NeuralScorer.load(appContext)
+        if (neuralScorer == null) {
+            neuralScorer = NeuralScorer.load(appContext)
+            dev.patrickgold.florisboard.ime.nlp.MemProfiler.log("provider:neural_session_loaded")
+        }
     }
 
     override suspend fun spell(

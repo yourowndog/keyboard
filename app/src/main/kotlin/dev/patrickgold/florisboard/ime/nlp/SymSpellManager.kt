@@ -171,6 +171,7 @@ object SymSpellManager {
     fun init(context: Context, scope: CoroutineScope) {
         scope.launch(Dispatchers.IO) {
             try {
+                MemProfiler.log("symspell:init_start")
                 initStatus = "STEP1_DICT_MGR"
                 // Ensure DictionaryManager is ready
                 dev.patrickgold.florisboard.ime.dictionary.DictionaryManager.init(context)
@@ -194,6 +195,7 @@ object SymSpellManager {
                 initStatus = "STEP4b_UNIGRAM_READ(${unigramBytes.size}bytes)"
                 holder.loadUnigramTxtFile(unigramBytes)
                 initStatus = "STEP4c_UNIGRAM_DONE(wc=${holder.wordCount})"
+                MemProfiler.log("symspell:deletion_index_built")
 
                 initStatus = "STEP5_LOAD_BIGRAMS"
                 try {
@@ -203,8 +205,10 @@ object SymSpellManager {
                     // Non-fatal: SymSpell can work without bigrams loaded into its holder
                 }
 
+                MemProfiler.log("symspell:bigrams_loaded")
                 initStatus = "STEP6_BIGRAM_TABLE"
                 BigramTable.load(context)
+                MemProfiler.log("symspell:bigram_table_loaded")
 
                 initStatus = "STEP6b_PHRASE_TABLE"
                 try {
@@ -221,6 +225,7 @@ object SymSpellManager {
                 // 4. Build prefix index for autocomplete
                 appContextRef = context
                 buildPrefixIndex(context)
+                MemProfiler.log("symspell:prefix_index_built")
 
                 val loadedWords = holder.wordCount
                 loadedWordCount = loadedWords

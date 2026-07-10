@@ -141,6 +141,7 @@ object HarvestManager {
             "auto" to auto,
             "trace" to trace,
             "candidates" to candidates,
+            "shadow" to HarvestJsonl.findShadowId(typed),
         )
         HarvestJsonl.rememberApplied(id, typed, correctedTo)
     }
@@ -162,6 +163,7 @@ object HarvestManager {
             "prev" to prevWord,
             "prev2" to prevPrevWord,
             "undoes" to HarvestJsonl.findUndoId(typed, rejectedCorrection),
+            "shadow" to HarvestJsonl.findShadowId(typed),
         )
     }
     
@@ -201,6 +203,7 @@ object HarvestManager {
             "after" to corrected,
             "prev" to prevWord,
             "trace" to trace,
+            "shadow" to HarvestJsonl.findShadowId(original),
         )
     }
 
@@ -217,7 +220,7 @@ object HarvestManager {
             logNewWord(word, prevWord, appContext)
         } else {
             append("INSISTED", word, prevWord, null, appContext)
-            jsonl("INSISTED", appContext, "word" to word, "prev" to prevWord)
+            jsonl("INSISTED", appContext, "word" to word, "prev" to prevWord, "shadow" to HarvestJsonl.findShadowId(word))
         }
     }
     
@@ -232,7 +235,7 @@ object HarvestManager {
             logInsisted(typed, prevWord)
         } else {
             append("PICKED", "$typed → $picked (manual)", prevWord)
-            jsonl("USER_PICKED", null, "typed" to typed, "picked" to picked, "prev" to prevWord)
+            jsonl("USER_PICKED", null, "typed" to typed, "picked" to picked, "prev" to prevWord, "shadow" to HarvestJsonl.findShadowId(typed))
         }
     }
 
@@ -327,7 +330,7 @@ object HarvestManager {
         agrees: Boolean,
         ranked: List<Pair<String, Float>>? = null,
     ) {
-        jsonl(
+        val id = jsonl(
             "NEURAL_SHADOW", null,
             "typed" to typed,
             "prev" to prevWord,
@@ -340,6 +343,7 @@ object HarvestManager {
             "agrees" to agrees,
             "ranked" to ranked,
         )
+        HarvestJsonl.rememberShadow(id, typed)
     }
 
     fun logBackspaceStorm(word: String, backspaceCount: Int, finalWord: String) {

@@ -124,6 +124,26 @@ object HarvestJsonl {
         if (id >= 0) lastApplied = Applied(id, typed, applied)
     }
 
+    // Recent NEURAL_SHADOW event ids keyed by lowercased typed word, so outcome
+    // events (AUTO_APPLIED, REVERTED, MANUAL_EDIT, INSISTED, USER_PICKED) carry
+    // an exact join key back to the shadow prediction they resolve. Bounded LRU:
+    // an outcome can arrive several words after its shadow (e.g. a late revert),
+    // so keep more than just the last one.
+    private val recentShadows = object : LinkedHashMap<String, Long>(32, 0.75f, true) {
+        override fun removeEldestEntry(eldest: MutableMap.MutableEntry<String, Long>?) = size > 16
+    }
+
+    fun rememberShadow(id: Long, typed: String) {
+        if (id < 0 || typed.isEmpty()) return
+        synchronized(recentShadows) { recentShadows[typed.lowercase(Locale.US)] = id }
+    }
+
+    /** Event id of the most recent NEURAL_SHADOW for [typed], or null if none tracked. */
+    fun findShadowId(typed: String?): Long? {
+        if (typed.isNullOrEmpty()) return null
+        return synchronized(recentShadows) { recentShadows[typed.lowercase(Locale.US)] }
+    }
+
     /** Find the event id of the AUTO_APPLIED that a revert of (typed, rejected) undoes. */
     fun findUndoId(typed: String, rejected: String): Long? {
         val last = lastApplied ?: return null
