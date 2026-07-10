@@ -466,7 +466,16 @@ class NlpManager(context: Context) {
      * Returns null if no previous word exists (cursor at start or after non-word characters).
      */
     fun getPreviousWord(@Suppress("UNUSED_PARAMETER") subtype: Subtype): String? {
-        val textBefore = editorInstance.activeContent.textBeforeSelection.toString()
+        val content = editorInstance.activeContent
+        val textBeforeSelection = content.textBeforeSelection.toString()
+        // textBeforeSelection includes the composing word, so strip it — otherwise the
+        // "previous word" is just the word currently being typed.
+        val composing = content.composingText.toString()
+        val textBefore = if (composing.isNotEmpty() && textBeforeSelection.endsWith(composing)) {
+            textBeforeSelection.dropLast(composing.length)
+        } else {
+            textBeforeSelection
+        }
         if (textBefore.isBlank()) return null
         
         // Find the last complete word (skip any trailing spaces, then find word boundary)
