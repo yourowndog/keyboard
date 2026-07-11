@@ -28,7 +28,9 @@ object PersonalPreferences {
         "imo", "idk", "omg", "wtf", "smh", "ngl", "tbh", "fr", "wdym",
         "bday", "pls", "llms", "cs", "gen", "config", "ai",
         // Slang / informal
-        "im", "ya", "def", "tho", "nah", "ugh", "oof", "bruh", "cuz",
+        // NOTE: "im" must NOT go here — it suppresses the im -> I'm contraction
+        // fast-path, and the word then auto-corrects to "Important" downstream.
+        "ya", "def", "tho", "nah", "ugh", "oof", "bruh", "cuz",
         "g", "i",
     )
 

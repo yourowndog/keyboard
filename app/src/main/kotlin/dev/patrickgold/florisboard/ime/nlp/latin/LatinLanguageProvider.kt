@@ -318,7 +318,13 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
                     // ANTI_CORRECTIONS: corrections Sam has explicitly blocked may still be
                     // shown as suggestions, but must never auto-commit.
                     val isBlocked = dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isAntiCorrection(currentWordRaw, casedText)
-                    val shouldCommit = isChange && (!isInputValidWord || isCasingFix) && neuralAllowsCommit && !isBlocked
+                    // PERSONAL_VOCAB: the scorer culls these but culled candidates stay in
+                    // the ranked list, so the commit gate must enforce "never corrected" itself.
+                    val isProtectedVocab = dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isPersonalVocab(currentWordRaw)
+                    // Single letters committed with space are deliberate; only "i" -> "I"
+                    // (handled by its own fast-path above) is a wanted single-char correction.
+                    val isLongEnough = currentWordRaw.length >= 2 || isCasingFix
+                    val shouldCommit = isChange && (!isInputValidWord || isCasingFix) && neuralAllowsCommit && !isBlocked && !isProtectedVocab && isLongEnough
                     
                     // DEBUG: Uncomment to trace casing logic
                     // android.util.Log.d("LatinProvider", "Input: '$currentWordRaw' | Cand: '$casedText' | Valid: $isInputValidWord | Commit: $shouldCommit")
