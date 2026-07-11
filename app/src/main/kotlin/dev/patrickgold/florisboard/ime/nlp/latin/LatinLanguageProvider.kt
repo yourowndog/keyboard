@@ -202,18 +202,21 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         }
         
         // Fast-path for contractions: dont -> don't, etc.
-        // This MUST be checked before edit-distance lookup so missing apostrophes map correctly.
+        // Context-dependent words (were/we're, its/it's) resolve against the previous
+        // word; everything else comes from the plain shortcut map.
         // PersonalPreferences wins over the shortcut map: words Sam types intentionally
-        // (PERSONAL_VOCAB) and corrections he has explicitly blocked (ANTI_CORRECTIONS,
-        // e.g. were -> we're, its -> it's) must never blind-fire from here.
-        val contractionResult = dev.patrickgold.florisboard.ime.nlp.shared.CasingUtils.CONTRACTION_SHORTCUTS[currentWordRaw.lowercase()]
+        // (PERSONAL_VOCAB) and corrections he has explicitly blocked (ANTI_CORRECTIONS)
+        // must never blind-fire from here.
+        val contractionResult = dev.patrickgold.florisboard.ime.nlp.shared.CasingUtils.resolveContextualContraction(currentWordRaw, previousWord)
+            ?: dev.patrickgold.florisboard.ime.nlp.shared.CasingUtils.CONTRACTION_SHORTCUTS[currentWordRaw.lowercase()]
         if (contractionResult != null &&
             !dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isPersonalVocab(currentWordRaw) &&
             !dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isAntiCorrection(currentWordRaw, contractionResult)
         ) {
             return listOf(
                 WordSuggestionCandidate(
-                    text = contractionResult,
+                    // Match the typed casing so sentence-start "Were" becomes "We're", not "we're"
+                    text = dev.patrickgold.florisboard.ime.nlp.shared.CasingUtils.matchCasingPattern(currentWordRaw, contractionResult),
                     secondaryText = null,
                     isEligibleForAutoCommit = true,
                     sourceProvider = this

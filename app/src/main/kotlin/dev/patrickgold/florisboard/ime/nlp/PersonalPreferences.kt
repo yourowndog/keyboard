@@ -60,7 +60,9 @@ object PersonalPreferences {
         "ir" to listOf("iron"),
         "Congrats" to listOf("Contrast"),
         "domething" to listOf("something"),
-        "were" to listOf("we're"),
+        // "were" -> we're and "its" -> it's removed: handled context-aware by
+        // CasingUtils.resolveContextualContraction (blanket blocks were duct tape
+        // against the old blind shortcut map).
         "Kaylyn" to listOf("Kayla"),
         "ton" to listOf("top", "to"),
         "Quora" to listOf("Quota"),
@@ -79,7 +81,6 @@ object PersonalPreferences {
         "Duh" to listOf("Dug"),
         "dopesick" to listOf("homesick"),
         "Nugs" to listOf("Bugs"),
-        "its" to listOf("it's"),
         "tomcat" to listOf("tosca"),
         "deadhead" to listOf("deadbeat"),
         "junkie" to listOf("junk"),

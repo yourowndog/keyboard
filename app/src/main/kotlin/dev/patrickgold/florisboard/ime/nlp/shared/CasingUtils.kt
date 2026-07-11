@@ -49,10 +49,10 @@ object CasingUtils {
         "shouldnt" to "shouldn't",
         "youre" to "you're",
         "theyre" to "they're",
-        "were" to "we're",
+        // "were" and "its" are real words — handled context-aware by
+        // resolveContextualContraction(), never blindly from this map.
         "hes" to "he's",
         "shes" to "she's",
-        "its" to "it's",
         "thats" to "that's",
         "whats" to "what's",
         "whos" to "who's",
@@ -63,6 +63,40 @@ object CasingUtils {
         "km" to "I'm",     // context-dependent in SymSpell, but added here for safety
         "moms" to "Mom's",
     )
+
+    // Words preceding "were" that imply it should STAY "were" (past tense)
+    // e.g. "they were", "we were", "you were"
+    val PREV_WORDS_FOR_WERE = setOf(
+        "we", "they", "you", "there", "here", "who", "which", "what", "that", "these", "those"
+    )
+
+    // Words preceding "its" that imply possessive (should STAY "its")
+    // e.g. "lost its", "on its", "at its"
+    val PREV_WORDS_FOR_ITS_POSSESSIVE = setOf(
+        "lost", "on", "at", "in", "of", "with", "by", "for", "from",
+        "the", "a", "an", "this", "that", "these", "those",
+        "my", "your", "his", "her", "their", "our",
+    )
+
+    /**
+     * Context-aware apostrophe contractions for words that are ALSO real words.
+     * Sam relies on the keyboard for apostrophes, so "were" -> "we're" and
+     * "its" -> "it's" should fire — except when the previous word marks the
+     * literal reading (past-tense "were", possessive "its"). These rules lived
+     * in SymSpellManager.fix(), which is dead code; this is the live-path port.
+     *
+     * @return the contraction to apply, or null to leave the typed word alone.
+     */
+    fun resolveContextualContraction(typed: String, prevWord: String?): String? {
+        val prev = prevWord?.lowercase() ?: ""
+        return when (typed.lowercase()) {
+            // Default to "we're" (including at sentence start); keep "were" after past-tense subjects
+            "were" -> if (prev.isEmpty() || prev !in PREV_WORDS_FOR_WERE) "we're" else null
+            // Default to "it's" (the common case in casual texting); keep possessive after determiners/prepositions
+            "its" -> if (prev.isNotEmpty() && prev in PREV_WORDS_FOR_ITS_POSSESSIVE) null else "it's"
+            else -> null
+        }
+    }
 
     /**
      * Proper nouns that should always be capitalized.
