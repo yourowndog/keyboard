@@ -1,16 +1,6 @@
 package dev.patrickgold.florisboard.ime.nlp
 
 import android.content.Context
-import com.darkrockstudios.symspellkt.api.loadBigramTxtFile
-import com.darkrockstudios.symspellkt.api.loadUnigramTxtFile
-import com.darkrockstudios.symspellkt.common.DamerauLevenshteinDistance
-import com.darkrockstudios.symspellkt.common.Murmur3HashFunction
-import com.darkrockstudios.symspellkt.impl.SymSpell
-import com.darkrockstudios.symspellkt.impl.InMemoryDictionaryHolder
-import com.darkrockstudios.symspellkt.common.SpellCheckSettings
-import com.darkrockstudios.symspellkt.common.Verbosity
-import java.io.BufferedReader
-import java.io.InputStreamReader
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -20,9 +10,9 @@ import dev.patrickgold.florisboard.ime.core.KeyboardLayout
 import dev.patrickgold.florisboard.ime.nlp.shared.BigramTable
 import dev.patrickgold.florisboard.ime.nlp.shared.CasingUtils
 import dev.patrickgold.florisboard.ime.nlp.shared.CandidateScorer
+import dev.patrickgold.florisboard.ime.nlp.shared.DictionaryRepository
 
 object SymSpellManager {
-    private var symSpell: SymSpell? = null
     @Volatile private var isReady = false
     private var loadedWordCount: Int = 0
     private var lastError: String? = null
@@ -48,9 +38,7 @@ object SymSpellManager {
 
     // Config
     private const val MAX_EDIT_DISTANCE = 2
-    private const val PREFIX_LENGTH = 7
     private const val DICT_ASSET_PATH = "ime/dict/unified_dictionary.tsv"
-    private const val SWIPE_DICT_PATH = "ime/dict/unified_dictionary.tsv"  // Same dict for everything
     private const val BIGRAM_ASSET_PATH = "ime/dict/final_mobile_bigrams.tsv"
     // User overrides to Ensure these specific words/frequencies are respected
     private val USER_OVERRIDES = listOf(
@@ -146,9 +134,6 @@ object SymSpellManager {
     // Stores: Pair(OriginalTyped, RejectedCorrection-aka-what-it-became)
     @Volatile private var lastRejectedState: Pair<String, String>? = null
 
-    // Cached distance calculator — avoid allocating per lookup
-    private val distanceCalculator = DamerauLevenshteinDistance()
-
     // QWERTY Neighbor Map - now uses shared KeyboardLayout
     private val KEYBOARD_NEIGHBORS get() = KeyboardLayout.QWERTY_NEIGHBORS
     
@@ -171,41 +156,17 @@ object SymSpellManager {
     fun init(context: Context, scope: CoroutineScope) {
         scope.launch(Dispatchers.IO) {
             try {
-                MemProfiler.log("symspell:init_start")
+                MemProfiler.log("dict:init_start")
                 initStatus = "STEP1_DICT_MGR"
                 // Ensure DictionaryManager is ready
                 dev.patrickgold.florisboard.ime.dictionary.DictionaryManager.init(context)
 
-                initStatus = "STEP2_SETTINGS"
-                // 1. Initialize Engine Configuration
-                val settings = SpellCheckSettings(
-                    maxEditDistance = MAX_EDIT_DISTANCE.toDouble(),
-                    prefixLength = PREFIX_LENGTH,
-                    countThreshold = 1L
-                )
+                initStatus = "STEP2_LOAD_DICTIONARY"
+                // Single shared dictionary load; replaces SymSpell's deletion index
+                // (which cost ~9s and 100MB+ of heap) with scan-based candidate lookup.
+                DictionaryRepository.ensureLoaded(context)
+                MemProfiler.log("dict:repository_loaded")
 
-                initStatus = "STEP3_CREATE_SYMSPELL"
-                // 2. Create Instance with explicit holder so we can load unigrams + bigrams
-                val holder = InMemoryDictionaryHolder(settings, Murmur3HashFunction())
-                val instance = SymSpell(settings, DamerauLevenshteinDistance(), holder)
-
-                initStatus = "STEP4_LOAD_UNIGRAMS"
-                // 3. Load Real Dictionary from Assets (unigram + bigram)
-                val unigramBytes = context.assets.open(DICT_ASSET_PATH).use { it.readBytes() }
-                initStatus = "STEP4b_UNIGRAM_READ(${unigramBytes.size}bytes)"
-                holder.loadUnigramTxtFile(unigramBytes)
-                initStatus = "STEP4c_UNIGRAM_DONE(wc=${holder.wordCount})"
-                MemProfiler.log("symspell:deletion_index_built")
-
-                initStatus = "STEP5_LOAD_BIGRAMS"
-                try {
-                    holder.loadBigramTxtFile(context.assets.open(BIGRAM_ASSET_PATH).use { it.readBytes() })
-                } catch (bigramEx: Exception) {
-                    android.util.Log.w("SymSpellManager", "Bigram loading into SymSpell failed (non-fatal): ${bigramEx.message}")
-                    // Non-fatal: SymSpell can work without bigrams loaded into its holder
-                }
-
-                MemProfiler.log("symspell:bigrams_loaded")
                 initStatus = "STEP6_BIGRAM_TABLE"
                 BigramTable.load(context)
                 MemProfiler.log("symspell:bigram_table_loaded")
@@ -219,17 +180,16 @@ object SymSpellManager {
 
                 initStatus = "STEP7_USER_OVERRIDES"
                 // Inject must-win personal words until we wire user dictionary
-                USER_OVERRIDES.forEach { (word, freq) -> instance.createDictionaryEntry(word, freq) }
+                USER_OVERRIDES.forEach { (word, _) -> DictionaryRepository.addOverride(word) }
 
                 initStatus = "STEP8_PREFIX_INDEX"
                 // 4. Build prefix index for autocomplete
                 appContextRef = context
-                buildPrefixIndex(context)
-                MemProfiler.log("symspell:prefix_index_built")
+                buildPrefixIndex()
+                MemProfiler.log("dict:prefix_index_built")
 
-                val loadedWords = holder.wordCount
+                val loadedWords = DictionaryRepository.size
                 loadedWordCount = loadedWords
-                symSpell = instance
                 isReady = loadedWords > 0
                 initStatus = if (isReady) "DONE($loadedWords words, ${prefixIndex.size} prefixes)" else "DONE_EMPTY"
                 android.util.Log.i(
@@ -237,7 +197,7 @@ object SymSpellManager {
                     "Reflexes Ready: Loaded $loadedWords words from $DICT_ASSET_PATH with bigrams from $BIGRAM_ASSET_PATH, prefix index: ${prefixIndex.size} prefixes"
                 )
                 if (!isReady) {
-                    lastError = "Dictionary loaded 0 words (file was ${unigramBytes.size} bytes)"
+                    lastError = "Dictionary loaded 0 words from $DICT_ASSET_PATH"
                     android.util.Log.w("SymSpellManager", "Reflexes dictionary is empty; keeping autocorrect disabled")
                 }
             } catch (e: Exception) {
@@ -274,14 +234,12 @@ object SymSpellManager {
      */
     fun hasWord(word: String): Boolean {
         if (!isReady) return false
-        val instance = symSpell ?: return false
-        
+
         // Check user cache first
         if (userWordsCache.any { it.equals(word, ignoreCase = true) }) return true
-        
+
         // Check main dictionary
-        val matches = instance.lookup(word.lowercase(), Verbosity.Top, 0.0)
-        return matches.isNotEmpty() && matches.first().distance == 0.0
+        return DictionaryRepository.contains(word)
     }
 
     // Cache of user dictionary words for the current locale
@@ -356,7 +314,6 @@ object SymSpellManager {
             skipNextAutocorrect = false
             return input
         }
-        val instance = symSpell ?: return input
         // Handle single-letter inputs — return as-is (PERSONAL_VOCAB already handled "i" above)
         if (input.length == 1) {
             return input
@@ -377,23 +334,20 @@ object SymSpellManager {
 
         // TRUST REAL WORDS: If the user typed a valid dictionary word, we generally keep it.
         // HOWEVER, we must still check if it needs capitalization (christmas -> Christmas).
-        val exactMatches = instance.lookup(normalized, Verbosity.Top, 0.0)
-        android.util.Log.d("SymSpell", "[$input] exactMatches(dist=0): ${exactMatches.map { "${it.term}:${it.distance}" }}")
-        
-        if (exactMatches.isNotEmpty() && exactMatches.first().distance == 0.0) {
-            val match = exactMatches.first()
+        val exactMatch = DictionaryRepository.exactMatch(normalized)
+        if (exactMatch != null) {
             android.util.Log.d("SymSpell", "[$input] -> TRUST (exact match found) but applying casing")
             // Apply casing logic to the exact match (e.g. christmas -> Christmas)
-            return applyCasingPattern(input, match.term)
+            return applyCasingPattern(input, exactMatch)
         }
 
-        // Use Verbosity.All to ensure we find distance 2 candidates
-        val suggestions = instance.lookup(normalized, Verbosity.All, MAX_EDIT_DISTANCE.toDouble())
+        // All dictionary words within edit distance 2
+        val suggestions = DictionaryRepository.findWithinTwoEdits(normalized)
         android.util.Log.d("SymSpell", "[$input] suggestions(dist<=2): ${suggestions.take(5).map { "${it.term}:${it.distance}" }}")
-        
+
         // Also check if any user dictionary word is a close match and should win
         val bestUserMatch = userWordsCache.firstOrNull { userWord ->
-            val dist = distanceCalculator.getDistance(normalized, userWord.lowercase())
+            val dist = DictionaryRepository.distance(normalized, userWord)
             dist <= MAX_EDIT_DISTANCE
         }
         if (bestUserMatch != null) {
@@ -476,11 +430,6 @@ object SymSpellManager {
              android.util.Log.e("SymSpell_Debug", "NOT READY! isReady=false")
              return emptyList()
          }
-         val instance = symSpell ?: run {
-             android.util.Log.e("SymSpell_Debug", "symSpell instance is NULL!")
-             return emptyList()
-         }
-
          if (input.length == 1) {
              // Mirror the fix() behavior: keep exactly what the user typed.
              android.util.Log.d("SymSpell_Debug", "Single char input, returning as-is: '$input'")
@@ -489,8 +438,8 @@ object SymSpellManager {
 
         val normalized = input.lowercase()
         val upperCount = input.count { it.isUpperCase() }
-        val suggestions = instance.lookup(normalized, Verbosity.All, MAX_EDIT_DISTANCE.toDouble())
-        android.util.Log.d("SymSpell_Debug", "SymSpell.lookup returned ${suggestions.size} raw candidates")
+        val suggestions = DictionaryRepository.findWithinTwoEdits(normalized)
+        android.util.Log.d("SymSpell_Debug", "Dictionary lookup returned ${suggestions.size} raw candidates")
         val prev = previousWord?.lowercase()
         val ignoreManager = dev.patrickgold.florisboard.ime.dictionary.DictionaryManager.default()
 
@@ -570,10 +519,9 @@ object SymSpellManager {
      */
     fun findCandidates(input: String): List<RawCandidate> {
         if (!isReady) return emptyList()
-        val instance = symSpell ?: return emptyList()
-        
-        // Use Verbosity.All to get all candidates within edit distance
-        val suggestions = instance.lookup(input.lowercase(), Verbosity.All, MAX_EDIT_DISTANCE.toDouble())
+
+        // All dictionary words within edit distance 2
+        val suggestions = DictionaryRepository.findWithinTwoEdits(input.lowercase())
         
         // Filter out 2-letter garbage words
         return suggestions
@@ -612,63 +560,38 @@ object SymSpellManager {
      */
     fun getAllWords(context: Context): List<String> {
         if (!isReady) return emptyList()
-        
-        return try {
-            val words = mutableListOf<String>()
-            BufferedReader(InputStreamReader(context.assets.open(SWIPE_DICT_PATH))).useLines { lines ->
-                lines.forEach { line ->
-                    val parts = line.split('\t')
-                    if (parts.isNotEmpty()) {
-                        val word = parts[0].lowercase()
-                        if (word.isNotBlank() && word.length >= 2) {
-                            words.add(word)
-                        }
-                    }
-                }
-            }
-            android.util.Log.i("SymSpellManager", "Extracted ${words.size} words for swipe typing")
-            words
-        } catch (e: Exception) {
-            android.util.Log.w("SymSpellManager", "Failed to extract words for swipe", e)
-            emptyList()
-        }
+        val words = DictionaryRepository.lowercaseFrequencies.keys.filter { it.length >= 2 }
+        android.util.Log.i("SymSpellManager", "Extracted ${words.size} words for swipe typing")
+        return words
     }
     
     /**
      * Build prefix index from dictionary for fast autocomplete lookups.
      * Maps 1-3 character prefixes to words and their frequencies.
      */
-    private fun buildPrefixIndex(context: Context) {
+    private fun buildPrefixIndex() {
         try {
             val indexMap = mutableMapOf<String, MutableList<Pair<String, Long>>>()
-            
-            BufferedReader(InputStreamReader(context.assets.open(DICT_ASSET_PATH))).useLines { lines ->
-                lines.forEach { line ->
-                    val parts = line.split('\t')
-                    if (parts.size >= 2) {
-                        val word = parts[0].lowercase()
-                        val freq = parts[1].toLongOrNull() ?: 0L
-                        
-                        // Skip very short or blank words
-                        if (word.length < 2 || word.isBlank()) return@forEach
-                        
-                        // Filter 2-letter words to whitelist only
-                        if (word.length == 2 && !TWO_LETTER_WHITELIST.contains(word)) return@forEach
-                        
-                        // Index by 1, 2, and 3 character prefixes
-                        for (prefixLen in 1..minOf(3, word.length)) {
-                            val prefix = word.take(prefixLen)
-                            indexMap.getOrPut(prefix) { mutableListOf() }.add(word to freq)
-                        }
-                    }
+
+            for ((word, freq) in DictionaryRepository.lowercaseFrequencies) {
+                // Skip very short or blank words
+                if (word.length < 2 || word.isBlank()) continue
+
+                // Filter 2-letter words to whitelist only
+                if (word.length == 2 && !TWO_LETTER_WHITELIST.contains(word)) continue
+
+                // Index by 1, 2, and 3 character prefixes
+                for (prefixLen in 1..minOf(3, word.length)) {
+                    val prefix = word.take(prefixLen)
+                    indexMap.getOrPut(prefix) { mutableListOf() }.add(word to freq)
                 }
             }
-            
+
             // Sort each prefix's words by frequency (descending) and limit to top 100
             prefixIndex = indexMap.mapValues { (_, words) ->
                 words.sortedByDescending { it.second }.take(100)
             }
-            
+
             android.util.Log.i("SymSpellManager", "Built prefix index: ${prefixIndex.size} prefixes")
         } catch (e: Exception) {
             android.util.Log.e("SymSpellManager", "Failed to build prefix index", e)

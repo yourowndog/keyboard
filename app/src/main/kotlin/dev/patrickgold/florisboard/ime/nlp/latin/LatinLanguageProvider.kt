@@ -111,8 +111,12 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         if (ngramEngine == null) {
             dev.patrickgold.florisboard.ime.nlp.MemProfiler.log("provider:ngram_load_start")
             try {
-                val unigrams = appContext.assets.open("ime/dict/unified_dictionary.tsv")
-                ngramEngine = dev.patrickgold.florisboard.ime.nlp.NgramSuggestionEngine.fromStreams(unigrams)
+                // Share the repository's log-frequency map by reference instead of
+                // re-parsing the unified dictionary into a second 47MB copy.
+                dev.patrickgold.florisboard.ime.nlp.shared.DictionaryRepository.ensureLoaded(appContext)
+                ngramEngine = dev.patrickgold.florisboard.ime.nlp.NgramSuggestionEngine(
+                    unigramLogFreq = dev.patrickgold.florisboard.ime.nlp.shared.DictionaryRepository.logFrequencies,
+                )
                 dev.patrickgold.florisboard.lib.devtools.flogInfo { "NgramSuggestionEngine loaded successfully" }
             } catch (e: Exception) {
                 dev.patrickgold.florisboard.lib.devtools.flogError { "Failed to load NgramEngine: ${e.message}" }
@@ -197,10 +201,16 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
             )
         }
         
-        // Fast-path for contractions: im -> I'm, dont -> don't, etc.
-        // This MUST be checked before SymSpell so missing apostrophes map correctly.
+        // Fast-path for contractions: dont -> don't, etc.
+        // This MUST be checked before edit-distance lookup so missing apostrophes map correctly.
+        // PersonalPreferences wins over the shortcut map: words Sam types intentionally
+        // (PERSONAL_VOCAB) and corrections he has explicitly blocked (ANTI_CORRECTIONS,
+        // e.g. were -> we're, its -> it's) must never blind-fire from here.
         val contractionResult = dev.patrickgold.florisboard.ime.nlp.shared.CasingUtils.CONTRACTION_SHORTCUTS[currentWordRaw.lowercase()]
-        if (contractionResult != null) {
+        if (contractionResult != null &&
+            !dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isPersonalVocab(currentWordRaw) &&
+            !dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isAntiCorrection(currentWordRaw, contractionResult)
+        ) {
             return listOf(
                 WordSuggestionCandidate(
                     text = contractionResult,
@@ -302,7 +312,10 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
                     val neuralAllowsCommit = liveNeuralDecision == null ||
                         (liveNeuralDecision.shouldFire &&
                             candidate.text.toString().equals(liveNeuralDecision.top.term, ignoreCase = true))
-                    val shouldCommit = isChange && (!isInputValidWord || isCasingFix) && neuralAllowsCommit
+                    // ANTI_CORRECTIONS: corrections Sam has explicitly blocked may still be
+                    // shown as suggestions, but must never auto-commit.
+                    val isBlocked = dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isAntiCorrection(currentWordRaw, casedText)
+                    val shouldCommit = isChange && (!isInputValidWord || isCasingFix) && neuralAllowsCommit && !isBlocked
                     
                     // DEBUG: Uncomment to trace casing logic
                     // android.util.Log.d("LatinProvider", "Input: '$currentWordRaw' | Cand: '$casedText' | Valid: $isInputValidWord | Commit: $shouldCommit")

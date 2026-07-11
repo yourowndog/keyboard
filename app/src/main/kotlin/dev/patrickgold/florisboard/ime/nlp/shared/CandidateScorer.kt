@@ -35,6 +35,14 @@ object CandidateScorer {
     
     /** Bonus for typo + apostrophe (wint → won't). Negative = better. */
     private const val APOSTROPHE_TYPO_BONUS = -10.0
+
+    /**
+     * Minimum ln-frequency for a candidate to earn APOSTROPHE_TYPO_BONUS (~4900 raw).
+     * Real contractions clear it easily (she'll 7.8k, isn't 87k, it's 1.6M); junk
+     * possessives don't (function's 3.2k, thinking's 254, going's 168) — without this
+     * gate the bonus made "goin" correct to "going's" instead of "going".
+     */
+    private const val APOSTROPHE_TYPO_MIN_LOG_FREQ = 8.5
     
     /** Bonus for exact dictionary match (distance=0, spatial=0). Negative = better. */
     private const val EXACT_MATCH_BONUS = -100.0
@@ -140,7 +148,7 @@ object CandidateScorer {
             } else {
                 // Check if it's a close typo (wint → won't)
                 val spatial = spatialCost(typedNoApos, candidateNoApos)
-                if (spatial < 2.0) {
+                if (spatial < 2.0 && frequency >= APOSTROPHE_TYPO_MIN_LOG_FREQ) {
                     score += APOSTROPHE_TYPO_BONUS
                 }
             }

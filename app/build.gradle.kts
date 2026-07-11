@@ -219,8 +219,6 @@ dependencies {
     implementation(libs.androidx.profileinstaller)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.runtime)
-    // REFLEXES (SymSpell) - Hardcoded to bypass catalog error
-    implementation("com.darkrockstudios:SymSpellKt-android:3.4.0")
     implementation("com.microsoft.onnxruntime:onnxruntime-android:1.26.0")
 
     implementation(libs.cache4k)
