@@ -213,10 +213,17 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
             !dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isPersonalVocab(currentWordRaw) &&
             !dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isAntiCorrection(currentWordRaw, contractionResult)
         ) {
+            // Match the typed casing so "WERE" becomes "WE'RE", and capitalize at sentence
+            // start even when the typed word is lowercase (auto-caps missed or was defeated):
+            // the regular pipeline gets this from applyPredictedCasing, which this fast-path skips.
+            val casedContraction = dev.patrickgold.florisboard.ime.nlp.shared.CasingUtils.matchCasingPattern(currentWordRaw, contractionResult)
             return listOf(
                 WordSuggestionCandidate(
-                    // Match the typed casing so sentence-start "Were" becomes "We're", not "we're"
-                    text = dev.patrickgold.florisboard.ime.nlp.shared.CasingUtils.matchCasingPattern(currentWordRaw, contractionResult),
+                    text = if (dev.patrickgold.florisboard.ime.nlp.shared.CasingUtils.isAtSentenceStart(textBeforeCurrentWord)) {
+                        casedContraction.replaceFirstChar { it.titlecase() }
+                    } else {
+                        casedContraction
+                    },
                     secondaryText = null,
                     isEligibleForAutoCommit = true,
                     sourceProvider = this
