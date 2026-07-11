@@ -820,7 +820,10 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         // Learn the ignore pair so it persists
         dev.patrickgold.florisboard.ime.dictionary.DictionaryManager.default().learnUserIgnore(state.originalText, state.correctedText)
         // Log rejected autocorrect for harvest
-        HarvestManager.logRejected(state.originalText, state.correctedText, getPreviousWord(), getPreviousPreviousWord(), buildAppContext())
+        // At revert time the restored typed word is already committed text, so skip it
+        // when deriving context — getPreviousWord() would report it as its own prev.
+        val (revertPrev, revertPrev2) = getContextWords(state.originalText)
+        HarvestManager.logRejected(state.originalText, state.correctedText, revertPrev, revertPrev2, buildAppContext())
         autoCorrectUndoState = null
         return true
     }

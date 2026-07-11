@@ -47,8 +47,15 @@ class PrecomputedGestureCache(private val context: Context) {
             Log.d(TAG, "Loading precomputed gestures from $ASSET_PATH...")
             val startTime = System.currentTimeMillis()
             
-            val inputStream = context.assets.open(ASSET_PATH)
-            
+            val inputStream = try {
+                context.assets.open(ASSET_PATH)
+            } catch (e: java.io.FileNotFoundException) {
+                // No precomputed swipe data bundled yet (swipe model not trained) — not an error
+                Log.i(TAG, "No precomputed swipe data at $ASSET_PATH; skipping")
+                isLoaded = true
+                return
+            }
+
             // Read header
             val headerBuf = ByteArray(8)
             inputStream.read(headerBuf)
