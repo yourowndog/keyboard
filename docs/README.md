@@ -31,6 +31,8 @@ current behavior from plans, experiments, and history.
   coverage, and hard-won lessons.
 - [Development](development/building.md): local/Beksinski builds, tests, device
   validation, and repository organization.
+- [Agent reorientation](development/agent-reorientation.md): entering the
+  cleaned repository or recovering interrupted work safely.
 
 ## Truth hierarchy
 

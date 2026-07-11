@@ -7,7 +7,9 @@ distribution requirements.
 
 ## Orientation
 
-Read [docs/README.md](docs/README.md), then the relevant subsystem guide:
+Read [docs/README.md](docs/README.md), then
+[docs/development/agent-reorientation.md](docs/development/agent-reorientation.md)
+and the relevant subsystem guide:
 
 - Layouts, keys, geometry, popups, or customization:
   [docs/keyboard/README.md](docs/keyboard/README.md)
@@ -17,9 +19,9 @@ Read [docs/README.md](docs/README.md), then the relevant subsystem guide:
 - Voice and AI integrations: [docs/architecture/voice-ai.md](docs/architecture/voice-ai.md)
 - Builds and tests: [docs/development/building.md](docs/development/building.md)
 
-Do not infer current behavior from root handoffs, journals, conversation
-walkthroughs, generated reports, or documents calling themselves “reality.”
-They are being retained temporarily while verified knowledge is extracted.
+Do not infer current behavior from historical journals, generated reports, or
+documents calling themselves “reality.” Superseded root handoffs and manuals
+were removed after their durable knowledge was extracted.
 
 ## Working rules
 
@@ -45,4 +47,3 @@ remote build.
 The whole codebase matters, but layout/key programming/geometry and
 autocorrect/neural scoring are especially easy to misunderstand. Use their
 detailed guides and preserve hard-won behavior when changing them.
-
