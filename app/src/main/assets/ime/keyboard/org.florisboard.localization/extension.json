@@ -19,7 +19,7 @@
     {
       "id": "default",
       "label": "Default",
-      "symbolsPrecedingAutoSpace": ".,?\u203d!\"&%)]}\u00bb",
+      "symbolsPrecedingAutoSpace": ".,?\u203d!&%)]}\u00bb",
       "symbolsFollowingAutoSpace": "",
       "symbolsPrecedingPhantomSpace": ".,;:?\u203d!&%)]}\u00bb\u00a9\u00ae\u2122",
       "symbolsFollowingPhantomSpace": "\u00bf\u2e18\u00a1([{",

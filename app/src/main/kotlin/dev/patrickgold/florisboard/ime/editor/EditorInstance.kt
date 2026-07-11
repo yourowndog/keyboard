@@ -64,6 +64,11 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
     val phantomSpace = PhantomSpaceState()
     val massSelection = MassSelectionState()
 
+    // True when the last commit was a candidate commit that appended its own trailing
+    // space. Unlike phantomSpace this is NOT cleared by async selection updates, so the
+    // very next key press can reliably tell a keyboard-inserted space from a typed one.
+    private var lastCommitAppendedSpace = false
+
     // Harvest: word buffer to accumulate chars before logging
     private val currentWordBuffer = StringBuilder()
 
@@ -216,6 +221,7 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
     fun setSelection(start: Int, end: Int): Boolean {
         autoSpace.setInactive()
         phantomSpace.setInactive()
+        lastCommitAppendedSpace = false
         val selection = EditorRange.normalized(start, end)
         return super.setSelection(selection)
     }
@@ -231,7 +237,7 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
             punctuationRule.symbolsFollowingAutoSpace.contains(text.first())
     }
 
-    private fun shouldInsertAutoSpaceAfter(text: String): Boolean {
+    private fun shouldInsertAutoSpaceAfter(text: String, spaceWillBeEaten: Boolean): Boolean {
         if (!prefs.correction.autoSpacePunctuation.get() || text.isEmpty()) return false
         if (activeInfo.isRawInputEditor) return false
         if (activeState.keyVariation != KeyVariation.NORMAL) return false
@@ -239,7 +245,12 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         val punctuationRule = nlpManager.getActivePunctuationRule()
         val content = activeContent
         val textBefore = content.getTextBeforeCursor(3).let { textBefore ->
-            if (autoSpace.isActive && textBefore.isNotEmpty() && textBefore.last() == ' ') {
+            // A trailing space that is about to be eaten (or that our own auto-space
+            // inserted) is transparent here: punctuation eats it and re-adds its own
+            // space, so "work" -> auto-commit "Work " -> "." still yields "Work. ".
+            // Deliberately NOT based on phantomSpace: async selection updates can clear
+            // it between the candidate commit and the punctuation key landing.
+            if ((autoSpace.isActive || spaceWillBeEaten) && textBefore.isNotEmpty() && textBefore.last() == ' ') {
                 textBefore.dropLast(1)
             } else {
                 textBefore
@@ -251,16 +262,29 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
     }
 
     override fun commitChar(char: String): Boolean {
-        val isInsertAutoSpaceBeforeChar = shouldInsertAutoSpaceBefore(char)
-        val isInsertAutoSpaceAfterChar = shouldInsertAutoSpaceAfter(char)
-        val isDeletePreviousSpace = isInsertAutoSpaceAfterChar && autoSpace.isActive
-        
+        // Consume the candidate-space signal: it only ever applies to the key pressed
+        // immediately after the candidate commit.
+        val afterCandidateSpace = lastCommitAppendedSpace
+        lastCommitAppendedSpace = false
+
         // iOS/Gboard behavior: if we're typing punctuation and there's a trailing space,
         // delete the space. This makes "word " + "." = "word." instead of "word ."
         // Works for ANY trailing space before punctuation, not just phantom spaces.
         val punctuationRule = nlpManager.getActivePunctuationRule()
         val isPunctuation = char.isNotEmpty() && punctuationRule.symbolsPrecedingAutoSpace.contains(char.first())
-        
+
+        val hasTrailingSpace = activeContent.getTextBeforeCursor(1).let { it.isNotEmpty() && it.last() == ' ' }
+        // Apostrophes/quotes attach to the word before them: eat a trailing space the
+        // keyboard itself inserted (candidate/auto-commit appends one), but never a space
+        // the user typed deliberately. phantomSpace signals this too, but async selection
+        // updates can clear it before the next key lands; the local flag is race-free.
+        val attachesToWord = char == "'" || char == "\"" || char == "’"
+        val shouldEatTrailingSpace = (isPunctuation || (attachesToWord && (afterCandidateSpace || phantomSpace.isActive))) && hasTrailingSpace
+
+        val isInsertAutoSpaceBeforeChar = shouldInsertAutoSpaceBefore(char)
+        val isInsertAutoSpaceAfterChar = shouldInsertAutoSpaceAfter(char, spaceWillBeEaten = shouldEatTrailingSpace)
+        val isDeletePreviousSpace = isInsertAutoSpaceAfterChar && autoSpace.isActive
+
         // SESSION LOGGING: accumulate chars into words
         val isSpace = char == " "
         val isWordBoundary = isPunctuation || char == "\n" || isSpace
@@ -275,9 +299,6 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
             currentWordBuffer.append(char)
             currentWordTrace.append(char)
         }
-
-        val hasTrailingSpace = activeContent.getTextBeforeCursor(1).let { it.isNotEmpty() && it.last() == ' ' }
-        val shouldEatTrailingSpace = isPunctuation && hasTrailingSpace
 
         if (isInsertAutoSpaceAfterChar) {
             autoSpace.setActive()
@@ -370,6 +391,7 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         val isPhantomSpaceActive = phantomSpace.determine(text)
         autoSpace.setInactive()
         phantomSpace.setInactive()
+        lastCommitAppendedSpace = false
         // BUGFIX (session concatenation): the space key ALWAYS arrives here — handleSpace
         // commits via commitText(" "), never commitChar(" ") — so leading whitespace must
         // flush the word accumulated by commitChar, or typed words concatenate in the
@@ -422,7 +444,8 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         
         // We append a space to the candidate to match iOS/Gboard behavior (immediate separation).
         val textWithSpace = "$text$SPACE"
-        
+        lastCommitAppendedSpace = true
+
         return if (content.composing.isValid) {
             val original = content.composingText
             val (prevWord, prevPrevWord) = getContextWords(original)
@@ -538,6 +561,7 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
      */
     fun deleteBackwards(unit: OperationUnit): Boolean {
         val content = activeContent
+        lastCommitAppendedSpace = false
         // iOS-style undo: if the last commit auto-corrected, a single backspace restores the original word.
         if (unit == OperationUnit.CHARACTERS && tryRevertLastAutoCorrect()) {
             return true
@@ -585,6 +609,7 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
      */
     fun deleteForwards(unit: OperationUnit): Boolean {
         val content = activeContent
+        lastCommitAppendedSpace = false
         autoSpace.setInactive()
         phantomSpace.setInactive()
         return if (content.selection.isSelectionMode) {

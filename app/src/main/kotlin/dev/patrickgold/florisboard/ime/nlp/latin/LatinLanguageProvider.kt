@@ -233,12 +233,17 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         )
         val editCandidates = dev.patrickgold.florisboard.ime.nlp.SymSpellManager.findCandidates(currentWordRaw)
         
-        // Merge: prefix candidates first (they're what user is typing toward), then edit corrections
-        // Deduplicate by term
+        // Merge and deduplicate by term. Edit candidates FIRST: prefix candidates carry
+        // distance = 0 ("perfect prefix match"), so if the prefix copy of a word survives
+        // dedup it enters the ranker posing as an exact match and junk completions beat
+        // real corrections (dure -> Durex over sure). The edit copy has the true distance.
         val seenTerms = mutableSetOf<String>()
-        val rawCandidates = (prefixCandidates + editCandidates).filter { candidate ->
+        val rawCandidates = (editCandidates + prefixCandidates).filter { candidate ->
             seenTerms.add(candidate.term.lowercase())
         }
+        // Completions are predictions, not corrections: they may be shown (and tapped),
+        // but only edit-distance candidates may ever auto-commit (iOS/Gboard behavior).
+        val editTerms = editCandidates.mapTo(mutableSetOf()) { it.term.lowercase() }
         
         // 2. Rank using NgramEngine (The Judge)
         val engine = ngramEngine
@@ -324,7 +329,9 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
                     // Single letters committed with space are deliberate; only "i" -> "I"
                     // (handled by its own fast-path above) is a wanted single-char correction.
                     val isLongEnough = currentWordRaw.length >= 2 || isCasingFix
-                    val shouldCommit = isChange && (!isInputValidWord || isCasingFix) && neuralAllowsCommit && !isBlocked && !isProtectedVocab && isLongEnough
+                    // Prefix-only completions never auto-commit (see editTerms above).
+                    val isCorrection = candidate.text.toString().lowercase() in editTerms || isCasingFix
+                    val shouldCommit = isChange && (!isInputValidWord || isCasingFix) && neuralAllowsCommit && !isBlocked && !isProtectedVocab && isLongEnough && isCorrection
                     
                     // DEBUG: Uncomment to trace casing logic
                     // android.util.Log.d("LatinProvider", "Input: '$currentWordRaw' | Cand: '$casedText' | Valid: $isInputValidWord | Commit: $shouldCommit")

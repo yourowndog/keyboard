@@ -409,10 +409,11 @@ class NlpManager(context: Context) {
     }
 
     fun getAutoCommitCandidate(): SuggestionCandidate? {
-        // Since we now prepend the raw typed word (which is not eligible for auto-commit)
-        // we must search through the candidates to find the best auto-commit correction.
-        // We typically only want to look at the top few.
-        return activeCandidates.take(3).firstOrNull { it.isEligibleForAutoCommit }
+        // Search the whole ranked list for the best eligible correction: the top slots are
+        // often taken by the typed word and prefix completions, which are shown but never
+        // eligible ("arr" -> [arr, Array, Arrest, Are...] must still auto-commit "Are").
+        // Eligibility itself is gated hard in LatinLanguageProvider.shouldCommit.
+        return activeCandidates.firstOrNull { it.isEligibleForAutoCommit }
     }
 
     fun removeSuggestion(subtype: Subtype, candidate: SuggestionCandidate): Boolean {
