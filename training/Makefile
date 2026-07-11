@@ -6,8 +6,7 @@ PY := .venv/bin/python
 data: extract noise synth eval
 
 pull:
-	adb pull /sdcard/Documents/usage_harvest.jsonl ../usage_harvest.jsonl
-	adb pull /sdcard/Documents/usage_harvest.md ../usage_harvest.md
+	$(PY) ../tools/harvesting/snapshot_device.py --adb
 
 extract:
 	$(PY) extract.py

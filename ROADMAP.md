@@ -1,167 +1,120 @@
-# OmniBoard Roadmap
+# OmniBoard roadmap
 
-Features planned for upcoming development, roughly ordered by complexity.
+This file contains unfinished product work only. Implemented behavior belongs in
+the canonical documentation under `docs/`; experiments belong under `research/`.
 
----
+## Near-term validation and repair
 
-## 1. Hide Keyboard Button in Smartbar
+### Stabilize RTK integration
 
-**What:** Add a "hide keyboard" quick-action button to the smartbar so Sam can dismiss the keyboard and see the full screen without tapping outside an input field.
+The global RTK rewrite hook has repeatedly failed its integrity check and
+required `rtk init -g --auto-patch`. Determine which tool is rewriting
+`~/.claude/hooks/rtk-rewrite.sh`. Prefer explicit `rtk` command invocation from
+`AGENTS.md` and remove the global auto-rewrite hook if it remains contested.
 
-**Why:** Essential usability — reading content while a text field is focused is currently awkward.
+### Numeric-token autocorrect guard
 
-**Approach:**
-- Add a new `QuickActionButton` with code `KeyCode.VIEW_HIDE_KEYBOARD` (or trigger `FlorisImeService.requestHideSelf()`)
-- Add it to the smartbar quick-actions pool in `Smartbar.kt`
-- Give it a reasonable icon (arrow-down or keyboard-hide vector)
+Live validation reproduced `742` being auto-corrected to `PS2`. The provider
+defines a digits-only helper but does not apply it in the suggestion path. Add
+an early non-commit path for numeric tokens, cover mixed identifiers and version
+strings deliberately, and retain the captured REVERTED event as a regression
+fixture.
 
-**Files:** `Smartbar.kt`, `QuickActionButton.kt`, `FlorisImeUi.kt`
+### Ctrl and Tmux visual feedback
 
----
+Live validation confirmed both keys function, but Ctrl showed neither useful
+finger-down feedback nor a visible active state, and the `MOD` Tmux key showed
+no finger-down feedback. The renderer and selected LCARS stylesheets appear to
+request `:pressed`, so diagnose the runtime selector/recomposition result before
+changing palette values. Number-row and Shift feedback provide working controls.
 
-## 2. Phrase Prediction Row Toggle in Smartbar
+### Smartbar action customization
 
-**What:** The "phrase prediction row" (currently a settings toggle in Smartbar settings) should also be toggleable directly from the smartbar via a quick-action button — like a mode switch.
+Verify and repair action reordering, visibility toggles, and persistence. The
+microphone has historically behaved differently from the other actions, so test
+both ordinary quick actions and pinned/special actions across an IME restart.
 
-**Why:** Sam wants to flip it on/off mid-session without going into settings.
+### Phrase-row quick action
 
-**Approach:**
-- Read `prefs.smartbar.showPhraseRow` (or equivalent pref)
-- Add a smartbar button that toggles that pref in-place and triggers recompose
-- Button should visually reflect current state (active/inactive)
+The second phrase row and its settings preference are implemented. What remains
+is an optional quick action that toggles `prefs.smartbar.phraseRowEnabled`
+without opening settings and visibly indicates its state.
 
-**Files:** `Smartbar.kt`, `AppPrefs.kt`, `SmartbarScreen.kt`
+### Navigation semantics
 
----
+Home/End dispatch paths exist for key codes `-27` and `-28`. Validate their
+behavior in multiline editors, single-line fields, Termux, and selection mode.
+Change code only if those live tests show that an app interprets the current
+Ctrl+Move events incorrectly.
 
-## 3. Fix Smartbar Action Reordering / Customization
+### Harvest and neural-gate calibration
 
-**What:** The "Customize Actions" overflow in the smartbar is broken — the microphone is sticky but other actions can't be reordered or toggled on/off.
+Continue the snapshot -> review -> derive -> train -> shadow-evaluate cycle
+documented in `docs/autocorrect/harvesting.md` and `training/README.md`. Promote
+a model or enable live gating only after shadow data supports the threshold.
 
-**Why:** Sam can't control which quick-action buttons are visible.
+## Layout and ergonomics
 
-**Approach:**
-- Audit the drag-reorder and toggle logic in `Smartbar.kt` / quickaction layer
-- Likely a state persistence or LazyRow key bug — the list updates but doesn't save or re-render correctly
-- Fix persistence so changes survive keyboard restarts
+### Independent space-row model
 
-**Files:** `Smartbar.kt`, `QuickActionButton.kt`, prefs serialization
+The renderer recognizes a space row, but its source is still merged with the
+modifier layout. Consider an explicit third layout source only if independent
+height, padding, and scaling cannot be expressed cleanly in the current model.
+This is a layout-pipeline change and should be developed on its own branch.
 
----
+### Visual-width redistribution
 
-## 4. True Home/End Navigation (Fix « » Keys)
+Per-key padding currently changes visible bounds without reallocating the freed
+space to neighbors. Design a general spacer or row-allocation mechanism before
+adding more one-off bounds mutations. Touch bounds must remain intentional and
+separately testable from visible bounds.
 
-**What:** The `«` (code -27) and `»` (code -28) keys currently behave like reverse-tab / forward-tab rather than moving to the start/end of the text field. They should jump to start-of-field or start-of-line.
+### Remaining ergonomics backlog
 
-**Why:** Sam needs actual positional navigation, not focus cycling.
+- Dynamic alpha-key width controls.
+- Independently configurable spacing groups.
+- Intentional hitbox expansion near edges and narrow keys.
+- Audit and improve the period-key popup.
 
-**Approach:**
-- In `KeyboardManager.kt` key event handling, map codes -27/-28 to `InputConnection.performContextMenuAction(android.R.id.selectAll)` or direct `setSelection(0)` / `setSelection(length)` calls
-- Verify against `AbstractEditorInstance` selection API — `setSelection(start, end)` should be available
-- May need new KeyCode constants (e.g. `MOVE_START_OF_FIELD`, `MOVE_END_OF_FIELD`) to distinguish from existing line-start/end
+## Appearance
 
-**Files:** `KeyboardManager.kt`, `EditorInstance.kt`, `KeyCode.kt`
+### Transparent or frosted keyboard background
 
----
+Explore keyboard-window alpha first. True background blur is API- and
+window-compositor-dependent and needs device testing. Do not describe
+`width`, `height`, or `opacity` as Snygg properties: they are not in the
+generated schema. Any new control must be implemented in Kotlin/preferences
+and merely exposed alongside theming if appropriate.
 
-## 5. Transparent / Frosted Background Effect
+### Theme change provenance
 
-**What:** A bottom-offset bug accidentally revealed that the keyboard container background can be made transparent/semi-transparent, showing app content through the lower rows. Sam wants this as a real feature — controllable keyboard background transparency or frosted-glass effect.
+Prefer reviewable commits and a short rationale in theme documentation over an
+append-only root log. If theme iteration needs machine-readable provenance,
+add a tool under `tools/` and document the exact promotion workflow from
+`research/theme-archive/` into active assets.
 
-**Why:** Aesthetic + practical — see more of the screen while typing.
+## Implemented and awaiting live confirmation
 
-**Approach:**
-- The bug was triggered by `FlorisImeSizing` bottom offset shifting the keyboard window up while the background container stayed anchored — net effect: background didn't cover the bottom rows
-- To make it a feature: expose a `backgroundAlpha` or `backgroundBlur` parameter in the snygg theme system (or directly in `FlorisImeService` window flags)
-- Two sub-approaches:
-  - **Alpha only:** Set `window.decorView.background` alpha or use a Compose `Modifier.alpha()` on the keyboard surface — simple, works immediately
-  - **True blur/frosted glass:** Requires `RenderEffect.createBlurEffect` (API 31+) or a `BlurMaskFilter` — more complex but achievable on S25 Ultra
-- Add a theme property (e.g. `keyboard-background-alpha: 0.85`) to snygg stylesheets so it's theme-controlled
-- Consider adding a slider in keyboard appearance settings
+Password exclusion was confirmed during the 2026-07-11 device pass: ordinary
+marker text was harvested while the password-field attempt emitted no password
+variation events.
 
-**Files:** `FlorisImeService.kt`, `FlorisImeSizing.kt`, snygg stylesheet system, theme settings UI
+These are not roadmap implementation tasks:
 
----
+- Hide-keyboard behavior exists through `SwipeAction.HIDE_KEYBOARD`.
+- Tmux prefix key exists as `KeyCode.TMUX_PREFIX` (`-400`) and sends Ctrl+B.
+- Start/end navigation dispatch paths exist.
+- Phrase prediction and the optional second smartbar row exist.
+- Modifier-row visibility controls and spacebar long-press configuration exist.
 
-## 6. Independent Space Row (Architecture Refactor)
+See `docs/development/testing.md` for static checks and the forthcoming device
+validation checklist for behavioral confirmation.
 
-**What:** The spacebar row should be its own independently-controllable JSON row, not baked into the mod rows or scaled with them. This allows: independent height, independent padding above/below the spacebar, independent key sizing, and true layout flexibility.
+## Intentionally shelved
 
-**Why:** The current system merges the space row into mod-row scaling, making it impossible to e.g. add padding above the spacebar, shrink the mod keys without shrinking the space row, or treat the spacebar as a distinct layout zone.
-
-**Scope:** This is the largest change on this list — it touches the core layout computation pipeline.
-
-**Approach:**
-- Currently: `qwerty_wide.json` (characters) + `qwerty_wide_mod.json` (mod rows) are combined; the space row is row 1 of the mod file and gets `isSpaceRow = true` detection in `TextKeyboard.kt`
-- Target: Introduce a third JSON slot — `charactersMod/space/` (or a `spaceRow` field) — that is loaded independently and rendered as its own row with its own height factor, padding, and scaling rules
-- `LayoutManager.kt` would need to load/combine three row sources instead of two
-- `TextKeyboard.kt` layout algorithm would need to distinguish three row classes: alpha rows, space row, mod rows — each with their own `rowHeightFactor`
-- Enables: `spaceRowHeightFactor`, padding above/below space row, space row immune to `modKeyWidthFactor`
-
-**Files:** `LayoutManager.kt`, `KeyboardLayout.kt`, `TextKeyboard.kt`, `TextKeyboardLayout.kt`, layout JSON schema, `FlorisImeSizing.kt`
-
-**Tokens/risk:** High. Plan carefully before starting — consider doing on a feature branch.
-
----
-
-## 7. Key Padding "Smoosh" — Redistribute Space to Neighbors
-
-**What:** When a key has `flayPaddingLeft/Right` applied (currently ESC and Σ), the visual inset should cause neighboring keys to grow into that reclaimed space rather than leaving a visual gap. Currently the padding just shrinks the rendered key while the touch boundary stays the same allocated width — neighbors don't see the freed space.
-
-**Why:** The current padding approach works for the alignment fix but isn't a general-purpose "make this key visually smaller" tool. True smooshing would let you say "give ESC less visual weight" and have the adjacent key automatically fill in.
-
-**Approach:**
-- During layout, after computing `visibleBounds` for a key with padding, propagate the reclaimed pixel width to the immediately adjacent key's `visibleBounds.right` (left neighbor) or `visibleBounds.left` (right neighbor)
-- Alternatively: instead of padding the key itself, allocate a zero-width invisible spacer key on the outer edge — the real key takes its normal 1.00f width and the spacer absorbs the extra 0.25f
-- The spacer approach is cleaner architecturally and avoids patching the visibleBounds propagation loop
-
-**Files:** `TextKeyboard.kt`, `TextKey.kt`, possibly layout JSON schema (for explicit spacer keys)
-
----
-
-## 8. Theme Change Logging System
-
-**What:** Any edits to theme/snygg stylesheet files should be automatically logged to a persistent change log (similar to how `usage_harvest.md` logs typing events). This way, when an agent implements theme work in a session, it doesn't get lost — the next agent can read the log and bake changes into the actual default theme pack.
-
-**Why:** Theme tweaks made during sessions currently evaporate if they're only in `.flex` scratch files or never merged back into the asset stylesheets. A harvest-style log gives a paper trail.
-
-**Approach:**
-- Create `theme_changelog.md` at the repo root — append-only, one entry per change
-- Format: `[date] [file] [property changed] [old value] → [new value] [why]`
-- Could be maintained manually by convention or hooked into a write-watcher script
-- Agent instructions (in CLAUDE.md) should mandate writing a log entry whenever a theme file is edited
-- Periodic "bake-in" task: review log, apply approved entries to the canonical stylesheet assets, clear the log
-
-**Files:** `theme_changelog.md` (new), `CLAUDE.md` (add mandate), snygg asset stylesheets
-
----
-
-## 9. Tmux Prefix Key (Ctrl+B Combo Key)
-
-**What:** Add a dedicated key to the mod row (or smartbar) that fires `Ctrl+B` as a single tap — the tmux prefix. This lets Sam trigger tmux commands without holding CTRL and tapping B separately.
-
-**Why:** Sam uses tmux heavily. The current CTRL key requires two-tap combos. A single-tap tmux-prefix key would be a significant workflow improvement in terminal sessions.
-
-**Approach:**
-- Define a new `KeyCode` constant, e.g. `TMUX_PREFIX = -400` (or similar unused negative code)
-- In `KeyboardManager.kt`, handle that code by sending `Ctrl+B` as a key chord: `sendDownUpKeyEvents(KeyEvent.KEYCODE_B, KeyEvent.META_CTRL_ON)`
-- Add the key to `qwerty_wide_mod.json` (row 3, perhaps replacing or alongside ⚛) — or make it a smartbar quick-action button
-- Alternatively: generalize to a "chord key" concept — a key defined as `"chord": [-1, 98]` (CTRL + 'b') that any layout can use, making this reusable for other tmux/terminal combos
-
-**Files:** `KeyCode.kt`, `KeyboardManager.kt`, `qwerty_wide_mod.json`, possibly layout JSON schema for chord key type
-
----
-
-## Priority Order (suggested)
-
-| # | Feature | Effort | Impact |
-|---|---------|--------|--------|
-| 3 | Fix smartbar action reordering | Low | High |
-| 4 | True home/end nav | Low | Medium |
-| 1 | Hide keyboard button | Low | High |
-| 9 | Tmux prefix key (Ctrl+B) | Low | High |
-| 2 | Phrase prediction toggle button | Low | Medium |
-| 8 | Theme change logging | Low | Medium |
-| 5 | Transparent background | Medium | High |
-| 7 | Padding smoosh (redistribute to neighbors) | Medium | Medium |
-| 6 | Independent space row | Very High | Very High |
+- Glide typing code exists, but it has never produced acceptable behavior on
+  the target device and is not current product work.
+- Explicit Gemma actions remain in the app but are not part of the current
+  validation or development path.
+- The developer row works, but most of its practical role has moved to the
+  smartbar; retain it without prioritizing expansion.

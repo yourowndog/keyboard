@@ -28,8 +28,8 @@ from collections import Counter
 from common import (DATA, REPO, WORD_RE, MAX_TOKEN_LEN, classify_session,
                     is_letter_spaced, levenshtein, replay_trace, BACKSPACE)
 
-MD_PATH = REPO / "usage_harvest.md"
-JSONL_PATH = REPO / "usage_harvest.jsonl"
+MD_PATH = REPO / "data/harvest/raw/usage_harvest.md"
+JSONL_PATH = REPO / "data/harvest/raw/usage_harvest.jsonl"
 
 MD_LINE = re.compile(r"^\[([A-Z_]+(?::[A-Z]+)?)\] (\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}) \| (.*)$")
 

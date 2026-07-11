@@ -6,7 +6,7 @@
  * (accepted corrections, rejected corrections, new words) without losing data on reinstall.
  * 
  * Output: /sdcard/Documents/usage_harvest.md
- * Copy to repo: cp /sdcard/Documents/usage_harvest.md ~/vault/projects/keyboard/
+ * Capture to repo: python3 tools/harvesting/snapshot_device.py --adb
  */
 package dev.patrickgold.florisboard.ime.nlp
 
@@ -101,7 +101,7 @@ object HarvestManager {
                     out.println("This file is written to by the keyboard during use.")
                     out.println("Review periodically to update dictionary, ignore lists, etc.")
                     out.println()
-                    out.println("Copy to repo: `cp /sdcard/Documents/usage_harvest.md ~/vault/projects/keyboard/`")
+                    out.println("Capture with: `python3 tools/harvesting/snapshot_device.py --adb`")
                     out.println()
                     out.println("---")
                     out.println()
@@ -437,7 +437,11 @@ object HarvestManager {
                 // Tag session with source (TYPING or VOICE)
                 append("SESSION:$currentSessionSource", "\"$sentence\"", null, null, ctx)
                 jsonl("SESSION_TEXT", ctx, "text" to sentence, "src" to currentSessionSource)
-                currentAppContext = null  // Clear after flush
+                // Keep the active editor context after a sentence/session flush. NLP
+                // events (especially NEURAL_SHADOW) can be emitted immediately after
+                // this point and still belong to the same field. The next committed
+                // word replaces this context; retaining it also preserves the password
+                // guard until a non-password editor supplies a new context.
             }
         }
     }

@@ -106,11 +106,11 @@ def main():
     if len(sys.argv) > 1:
         path = Path(sys.argv[1])
     else:
-        path = REPO / "usage_harvest.jsonl"
+        path = REPO / "data/harvest/raw/usage_harvest.jsonl"
 
     if not path.exists():
         print(f"ERROR: {path} not found. Pull from device first:")
-        print(f"  rtk adb pull /sdcard/Documents/usage_harvest.jsonl {REPO}/")
+        print(f"  rtk adb pull /sdcard/Documents/usage_harvest.jsonl {REPO}/data/harvest/raw/")
         return 1
 
     events = load_shadow_events(path)

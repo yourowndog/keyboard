@@ -85,3 +85,10 @@ external/
 
 # Binary swipe assets (large)
 app/src/main/assets/ime/swipe/*.bin
+
+# Exact device harvest snapshots awaiting reviewed promotion
+data/harvest/inbox/
+
+# Python bytecode and validation caches
+__pycache__/
+*.py[cod]

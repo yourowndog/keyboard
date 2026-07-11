@@ -1,1 +1,0 @@
-dictionary=primary:vault/projects/keyboard/user_dict.txt;date=1764502781561;generated-by=dev.patrickgold.florisboard.debug;version=1
