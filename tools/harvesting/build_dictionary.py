@@ -19,8 +19,10 @@ Frequency model:
   - Personal counts map linearly onto the same axis, calibrated so the most
     frequent corpus word sits at 10^7: freq_p = count * (10^7 / max_count).
   - Words in both: max(base, personal). Personal-only words need evidence:
-    voice_count >= 2 (Whisper doesn't repeat typos) or typing_count >= 4
-    (habitual = intentional) or an explicit INSISTED/NEW_WORD event.
+    typing_count >= 4 (habitual = intentional), OR voice_count >= 2 CORROBORATED
+    by typing_count >= 1, OR explicit membership in approved_vocabulary.
+    Voice alone is NOT sufficient: Whisper repeats the same mis-transcription
+    consistently, so voice repetition manufactures phantom vocabulary.
 
 Usage:
   python3 build_dictionary.py            # writes to app/src/main/assets/ime/dict/
@@ -226,7 +228,14 @@ def main():
             continue
         if low in protected_exact_forms and low not in approved_vocabulary:
             continue
-        ok = (voice[low] >= VOICE_MIN or typing[low] >= TYPING_MIN or low in approved_vocabulary)
+        # Voice repetition alone must NOT admit a non-AOSP token. Whisper repeats the
+        # same hallucination consistently (Pyrrhus->Pyrus x11, Termux->Termlux x4), so a
+        # voice count is not independent evidence of a real word. A voice-only token must
+        # be corroborated by at least one of: explicit approval, real typing evidence, or
+        # another deliberately-defined trusted source.
+        typed_ok = typing[low] >= TYPING_MIN
+        voice_corroborated = voice[low] >= VOICE_MIN and typing[low] >= 1
+        ok = (typed_ok or voice_corroborated or low in approved_vocabulary)
         if not ok or len(low.strip("'")) < 2:
             continue
         surface = forms_by_low.get(low, (0, low))[1]
