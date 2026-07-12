@@ -1,9 +1,11 @@
 # Snygg Engine and Selectors
 
 > Status: Canonical  
-> Last verified: 2026-07-11  
+> Last verified: 2026-07-12
 > Verified against: generated stylesheet schema, `Snygg.kt`, `SnyggRule.kt`,
-> `FlorisImeUi.kt`, `TextKeyboardLayout.kt`, and packaged themes
+> `FlorisImeUi.kt`, `KeyboardState.kt`, `KeyboardManager.kt`,
+> `TextKeyboardLayout.kt`, `AbstractEditorInstance.kt`, `FlorisImeService.kt`,
+> and packaged themes
 
 ## Stylesheet rules
 
@@ -64,6 +66,7 @@ The key renderer supplies these attributes:
 - `mode`
 - `shiftstate`
 - `ctrlstate`: `none`, `active`, or `locked`
+- `tmuxstate`: `none` or `active`
 - `numberrowstate`: `none` or `active`
 - `devrowstate`: `none` or `active`
 
@@ -72,9 +75,14 @@ itself make the key use `:focus` or `:pressed`.
 
 ## Current toggle behavior
 
-Ctrl, number-row toggle, and developer-row toggle are rendered with the
-`:pressed` selector whenever active. The dedicated state attributes are also
-present and can be used for more precise rules.
+Ctrl, Tmux prefix, number-row toggle, and developer-row toggle are rendered
+with the `:pressed` selector whenever active. The dedicated state attributes
+are also present and can be used for more precise rules.
+
+Both keys use the normal `:pressed` selector during touch-down. Ctrl continues
+using it while active or locked. Tmux uses it after a successful Ctrl+B handoff
+to the active input connection, then its keyboard-owned visual latch remains
+pressed until the next non-Tmux key is released or the input session ends.
 
 Consequences:
 
@@ -83,6 +91,9 @@ Consequences:
 - Attribute rules can distinguish active from inactive keys.
 - Ctrl locked versus active is available through `ctrlstate`, even though both
   currently receive the pressed selector.
+- `tmuxstate` describes the keyboard's one-action visual latch. It records a
+  successful handoff to the active input connection, not proof that the target
+  application or tmux handled the prefix, which the keyboard cannot observe.
 - Documents claiming that `:focus` alone represents locked Ctrl do not describe
   the complete current renderer.
 

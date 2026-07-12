@@ -1,9 +1,9 @@
 # Keyboard Geometry and Hitboxes
 
 > Status: Canonical  
-> Last verified: 2026-07-11  
+> Last verified: 2026-07-12
 > Verified against: `TextKey.kt`, `TextKeyboard.kt`, `TextKeyboardLayout.kt`,
-> `FlorisImeSizing.kt`, and `KeyCustomization.kt`
+> `FlorisImeSizing.kt`, `FlorisImeService.kt`, and `KeyCustomization.kt`
 
 Key geometry is layered. Before changing a width or gap, identify which layer
 owns it.
@@ -58,6 +58,20 @@ row-counting change must be checked in both sizing and layout code.
 Upper, inner, and lower modifier-row gaps are subtracted from the layout height
 and then applied to positions in `TextKeyboardLayout`. They are not represented
 as JSON rows.
+
+### Bottom offset and IME insets
+
+Portrait and landscape bottom offset are different from row gaps. The offset is
+bottom padding inside the Snygg `window` box in `FlorisImeService.ImeUi()`, so
+the window background covers it and the measured input height includes it.
+`onComputeInsets()` uses that measured height for the visible, content, and
+touchable IME region. It is not an intentionally transparent or touch-through
+gap.
+
+On API 30 and newer, changing the offset also resizes the separate RGBA surface
+used behind Compose and inline-autofill content. See
+[Transparency and the IME surface](../theming/hard-won-lessons.md#transparency-and-the-ime-surface)
+before diagnosing a briefly see-through offset as geometry or theme alpha.
 
 ## Touch bounds versus visible bounds
 

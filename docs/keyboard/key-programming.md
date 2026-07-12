@@ -1,9 +1,11 @@
 # Key Programming
 
 > Status: Canonical  
-> Last verified: 2026-07-11  
+> Last verified: 2026-07-12
 > Verified against: `KeyCode.kt`, `TextKeyData.kt`, `ComputingEvaluator.kt`,
-> `LayoutManager.kt`, and `KeyboardManager.kt`
+> `LayoutManager.kt`, `KeyboardState.kt`, `TextKeyboardLayout.kt`, and
+> `KeyboardManager.kt`, plus `AbstractEditorInstance.kt` and
+> `FlorisImeService.kt`
 
 A programmable key has up to five separate concerns:
 
@@ -80,3 +82,9 @@ insertion. Their behavior depends on Android key events, editor behavior, and
 state clearing. Test them in the target application—especially Termux—rather
 than assuming a successful visual press means the event was delivered.
 
+Ctrl is a keyboard-owned latch and remains visually pressed while active or
+locked. Tmux prefix remains a one-shot Ctrl+B dispatch, but records a visual
+latch after the event is handed to an active input connection, until the next
+non-Tmux key is released or the input session ends. That latch does not pretend
+that the keyboard can observe tmux's external state or prove that the target
+application handled the event.

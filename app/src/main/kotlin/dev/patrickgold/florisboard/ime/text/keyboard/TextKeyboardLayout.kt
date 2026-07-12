@@ -100,6 +100,23 @@ import org.florisboard.lib.snygg.ui.rememberSnyggThemeQuery
 import kotlin.math.abs
 import kotlin.math.sqrt
 
+internal fun isTextKeyToggleActive(
+    code: Int,
+    isCtrlPressed: Boolean,
+    isCtrlLocked: Boolean,
+    isTmuxPrefixActive: Boolean,
+    isNumberRowEnabled: Boolean,
+    isDevRowEnabled: Boolean,
+): Boolean {
+    return when (code) {
+        KeyCode.CTRL -> isCtrlPressed || isCtrlLocked
+        KeyCode.TMUX_PREFIX -> isTmuxPrefixActive
+        KeyCode.TOGGLE_NUMBER_ROW -> isNumberRowEnabled
+        KeyCode.TOGGLE_DEV_ROW -> isDevRowEnabled
+        else -> false
+    }
+}
+
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -431,20 +448,23 @@ private fun TextKeyButton(
             evaluator.state.isCtrlPressed -> "active"
             else -> "none"
         },
+        FlorisImeUi.Attr.TmuxState to if (evaluator.state.isTmuxPrefixActive) "active" else "none",
         FlorisImeUi.Attr.NumberRowState to if (numberRowEnabled) "active" else "none",
         FlorisImeUi.Attr.DevRowState to if (devRowEnabled) "active" else "none",
     )
 
-    val isToggleActive = when (key.computedData.code) {
-        KeyCode.CTRL -> evaluator.state.isCtrlPressed || evaluator.state.isCtrlLocked
-        KeyCode.TOGGLE_NUMBER_ROW -> numberRowEnabled
-        KeyCode.TOGGLE_DEV_ROW -> devRowEnabled
-        else -> false
-    }
+    val isToggleActive = isTextKeyToggleActive(
+        code = key.computedData.code,
+        isCtrlPressed = evaluator.state.isCtrlPressed,
+        isCtrlLocked = evaluator.state.isCtrlLocked,
+        isTmuxPrefixActive = evaluator.state.isTmuxPrefixActive,
+        isNumberRowEnabled = numberRowEnabled,
+        isDevRowEnabled = devRowEnabled,
+    )
+
     val selector = when {
         !key.isEnabled -> SnyggSelector.DISABLED
-        key.isPressed -> SnyggSelector.PRESSED
-        isToggleActive -> SnyggSelector.PRESSED
+        key.isPressed || isToggleActive -> SnyggSelector.PRESSED
         else -> SnyggSelector.NONE
     }
     val size = remember(key, desiredKey) {

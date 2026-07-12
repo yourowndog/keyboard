@@ -54,6 +54,9 @@ import kotlin.properties.Delegates
  *          | 1        |          |          | Is Kana small
  *      111 |          |          |          | Ime Ui Mode
  *     1    |          |          |          | Layout Direction (0=LTR, 1=RTL)
+ *    1     |          |          |          | Ctrl pressed
+ *   1      |          |          |          | Ctrl locked
+ *  1       |          |          |          | Tmux prefix awaiting the next key
  *
  * <Byte 7> | <Byte 6> | <Byte 5> | <Byte 4> | Description
  * ---------|----------|----------|----------|---------------------------------
@@ -92,6 +95,7 @@ open class KeyboardState protected constructor(open var rawValue: ULong) {
         const val F_IS_KANA_SMALL: ULong =                  0x00800000u
         const val F_IS_CTRL_PRESSED: ULong =                0x10000000u
         const val F_IS_CTRL_LOCKED: ULong =                 0x20000000u
+        const val F_IS_TMUX_PREFIX_ACTIVE: ULong =          0x40000000u
 
         const val F_IS_RTL_LAYOUT_DIRECTION: ULong =        0x08000000u
 
@@ -241,6 +245,10 @@ open class KeyboardState protected constructor(open var rawValue: ULong) {
     var isCtrlLocked: Boolean
         get() = getFlag(F_IS_CTRL_LOCKED)
         set(v) { setFlag(F_IS_CTRL_LOCKED, v) }
+
+    var isTmuxPrefixActive: Boolean
+        get() = getFlag(F_IS_TMUX_PREFIX_ACTIVE)
+        set(v) { setFlag(F_IS_TMUX_PREFIX_ACTIVE, v) }
 
     var isKeyboardMinimized: Boolean
         get() = getFlag(F_IS_KEYBOARD_MINIMIZED)

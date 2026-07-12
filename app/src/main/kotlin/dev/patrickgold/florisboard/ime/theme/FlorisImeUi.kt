@@ -392,6 +392,7 @@ enum class FlorisImeUi(val elementName: String, val resId: Int?) {
         const val Mode = "mode"
         const val ShiftState = "shiftstate"
         const val CtrlState = "ctrlstate"
+        const val TmuxState = "tmuxstate"
         const val NumberRowState = "numberrowstate"
         const val DevRowState = "devrowstate"
     }

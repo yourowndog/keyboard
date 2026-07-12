@@ -91,12 +91,12 @@
     "border-color": "var(--coral-deep)",
     "shape": "cut-corner(12dp, 12dp, 12dp, 12dp)"
   },
-  "key[code=-1]:pressed": {
-    "background": "var(--coral-neon)",
+  "key[code=-1,-400]:pressed": {
+    "background": "var(--cyan-bright)",
     "foreground": "var(--text-inverse)",
     "shadow-elevation": "12dp",
-    "shadow-color": "var(--coral-neon)",
-    "border-color": "var(--coral-neon)"
+    "shadow-color": "var(--cyan-neon)",
+    "border-color": "var(--cyan-neon)"
   },
   "key[code=-1]:focus": {
     "background": "var(--coral-deep)",

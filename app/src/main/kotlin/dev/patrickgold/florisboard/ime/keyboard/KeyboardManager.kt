@@ -103,6 +103,10 @@ import java.util.concurrent.atomic.AtomicInteger
 
 private val DoubleSpacePeriodMatcher = """([^.!?‽\s]\s)""".toRegex()
 
+internal fun shouldClearTmuxPrefixVisualState(isActive: Boolean, nextKeyCode: Int): Boolean {
+    return isActive && nextKeyCode != KeyCode.TMUX_PREFIX
+}
+
 class KeyboardManager(
     context: Context,
     private val layoutPackRepository: LayoutPackRepository,
@@ -1043,6 +1047,9 @@ class KeyboardManager(
     }
 
     override fun onInputKeyUp(data: KeyData) = activeState.batchEdit {
+        if (shouldClearTmuxPrefixVisualState(activeState.isTmuxPrefixActive, data.code)) {
+            activeState.isTmuxPrefixActive = false
+        }
         val shouldConsumeCtrl = activeState.isCtrlPressed && data.code != KeyCode.CTRL
         if (shouldConsumeCtrl && sendCtrlChordIfNeeded(data)) {
             activeState.isCtrlPressed = false
@@ -1097,7 +1104,10 @@ class KeyboardManager(
                 FlorisImeService.showUi()
             }
             KeyCode.IME_HIDE_UI -> activeState.isKeyboardMinimized = true
-            KeyCode.TMUX_PREFIX -> editorInstance.sendDownUpKeyEvent(KeyEvent.KEYCODE_B, KeyEvent.META_CTRL_ON)
+            KeyCode.TMUX_PREFIX -> {
+                activeState.isTmuxPrefixActive =
+                    editorInstance.sendDownUpKeyEvent(KeyEvent.KEYCODE_B, KeyEvent.META_CTRL_ON)
+            }
             KeyCode.IME_PREV_SUBTYPE -> subtypeManager.switchToPrevSubtype()
             KeyCode.IME_NEXT_SUBTYPE -> subtypeManager.switchToNextSubtype()
             KeyCode.AI_GENERATE -> scope.launch(Dispatchers.IO) {

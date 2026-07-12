@@ -1,7 +1,7 @@
 # Layout Pipeline
 
 > Status: Canonical  
-> Last verified: 2026-07-11  
+> Last verified: 2026-07-12
 > Verified against: `LayoutManager.kt`, `LayoutArrangement.kt`, `KeyData.kt`,
 > layout extension assets, subtype assets, and `app/layoutbuilder`
 
@@ -77,6 +77,11 @@ rows:
 - Popup mappings and inline popup declarations are merged later when each
   `TextKey` is evaluated.
 
+The active QWERTY Wide modifier layout declares the period key's inline popup
+set as single quote, double quote, exclamation mark, and question mark. Its
+modifier row replaces the last row of the main QWERTY Wide layout, so editing
+the period popup in the main character file does not change this active key.
+
 ## Layout Builder packs
 
 Layout Builder packs use `LayoutPack`, `LayoutRow`, and `LayoutKey`, then enter
@@ -107,4 +112,3 @@ Important differences from bundled JSON:
    layout.
 6. Check evaluated key data and visibility.
 7. Only then debug geometry, rendering, or touch dispatch.
-

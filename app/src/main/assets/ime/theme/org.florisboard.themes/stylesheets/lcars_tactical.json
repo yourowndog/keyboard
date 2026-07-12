@@ -81,12 +81,12 @@
     "border-width": "2dp",
     "shape": "var(--shape-accent)"
   },
-  "key[code=-1]:pressed": {
-    "background": "var(--tac-red-neon)",
+  "key[code=-1,-400]:pressed": {
+    "background": "var(--tac-amber-gold)",
     "foreground": "var(--text-inverse)",
     "shadow-elevation": "12dp",
-    "shadow-color": "var(--tac-red-neon)",
-    "border-color": "var(--tac-red-neon)"
+    "shadow-color": "var(--tac-amber-gold)",
+    "border-color": "var(--tac-amber-gold)"
   },
   "key[code=-1]:focus": {
     "background": "var(--tac-red-alert)",

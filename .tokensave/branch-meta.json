@@ -1,0 +1,16 @@
+{
+  "default_branch": "main",
+  "branches": {
+    "repo-hygiene/canonical-reorganization": {
+      "db_file": "branches/repo-hygiene_canonical-reorganization.db",
+      "parent": "main",
+      "created_at": "1783761953",
+      "last_synced_at": "1783761953"
+    },
+    "main": {
+      "db_file": "tokensave.db",
+      "created_at": "1783724008",
+      "last_synced_at": "1783724008"
+    }
+  }
+}

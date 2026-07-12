@@ -20,14 +20,6 @@ an early non-commit path for numeric tokens, cover mixed identifiers and version
 strings deliberately, and retain the captured REVERTED event as a regression
 fixture.
 
-### Ctrl and Tmux visual feedback
-
-Live validation confirmed both keys function, but Ctrl showed neither useful
-finger-down feedback nor a visible active state, and the `MOD` Tmux key showed
-no finger-down feedback. The renderer and selected LCARS stylesheets appear to
-request `:pressed`, so diagnose the runtime selector/recomposition result before
-changing palette values. Number-row and Shift feedback provide working controls.
-
 ### Smartbar action customization
 
 Verify and repair action reordering, visibility toggles, and persistence. The
@@ -74,17 +66,18 @@ separately testable from visible bounds.
 - Dynamic alpha-key width controls.
 - Independently configurable spacing groups.
 - Intentional hitbox expansion near edges and narrow keys.
-- Audit and improve the period-key popup.
 
 ## Appearance
 
 ### Transparent or frosted keyboard background
 
-Explore keyboard-window alpha first. True background blur is API- and
-window-compositor-dependent and needs device testing. Do not describe
-`width`, `height`, or `opacity` as Snygg properties: they are not in the
-generated schema. Any new control must be implemented in Kotlin/preferences
-and merely exposed alongside theming if appropriate.
+The transparent IME host plus alpha-capable Snygg window color appears
+structurally capable of intentional translucency. The API 30+ RGBA SurfaceView
+also has a likely resize/redraw race that could explain the bottom-offset
+see-through glitch. Fix and device-test surface redraws across apps and inline
+autofill before exposing an alpha control. True background blur remains API-
+and window-compositor-dependent. Do not describe `width`, `height`, or
+`opacity` as Snygg properties: they are not in the generated schema.
 
 ### Theme change provenance
 
@@ -101,6 +94,13 @@ variation events.
 
 These are not roadmap implementation tasks:
 
+- The `org.florisboard.themes` LCARS Tactical and Neon variants now give Ctrl
+  and Tmux high-contrast active styling. Tmux keeps a visual latch after a
+  successful Ctrl+B handoff until the next non-Tmux key release. The next
+  installed build still needs a Termux visual confirmation.
+- QWERTY Wide period long-press now declares single quote, double quote,
+  exclamation mark, and question mark; confirm the rendered popup in the next
+  installed build.
 - Hide-keyboard behavior exists through `SwipeAction.HIDE_KEYBOARD`.
 - Tmux prefix key exists as `KeyCode.TMUX_PREFIX` (`-400`) and sends Ctrl+B.
 - Start/end navigation dispatch paths exist.
