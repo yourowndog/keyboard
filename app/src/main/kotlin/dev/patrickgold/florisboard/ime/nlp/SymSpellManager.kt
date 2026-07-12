@@ -160,6 +160,9 @@ object SymSpellManager {
                 initStatus = "STEP1_DICT_MGR"
                 // Ensure DictionaryManager is ready
                 dev.patrickgold.florisboard.ime.dictionary.DictionaryManager.init(context)
+                
+                // Initialize PersonalPreferences with context to load protected forms asset
+                dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.init(context)
 
                 initStatus = "STEP2_LOAD_DICTIONARY"
                 // Single shared dictionary load; replaces SymSpell's deletion index

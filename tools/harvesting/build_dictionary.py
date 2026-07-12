@@ -27,6 +27,7 @@ Usage:
   python3 build_dictionary.py --dry-run  # stats + sanity checks only
 """
 
+import json
 import math
 import re
 import sys
@@ -117,9 +118,13 @@ def load_aosp(path: Path):
 def mine_corpus(path: Path):
     voice, typing = Counter(), Counter()
     surfaces = Counter()          # (lower, surface) -> count
-    whitelist = set()             # INSISTED / NEW_WORD words
+    insisted_words = set()        # INSISTED events
+    new_words = set()             # NEW_WORD events
+    reverted_words = set()        # REJECTED reverted events
     bigrams, phrases = Counter(), Counter()
     kept_lines = dropped_lines = 0
+
+    re_reverted = re.compile(r"^([A-Za-z\x27]+)\s+←\s+([A-Za-z\x27]+)\s+\(reverted\)")
 
     with open(path, encoding="utf-8") as fh:
         for raw in fh:
@@ -127,10 +132,20 @@ def mine_corpus(path: Path):
             if not parsed:
                 continue
             tag, content = parsed
-            if tag in ("INSISTED", "NEW_WORD"):
+            if tag == "REJECTED":
+                m = re_reverted.match(content.strip())
+                if m:
+                    reverted_words.add(m.group(1).lower())
+                continue
+            if tag == "INSISTED":
                 word = content.strip().strip('"').lower()
                 if word and TOKEN_RE.fullmatch(word.strip("'") or ""):
-                    whitelist.add(word)
+                    insisted_words.add(word)
+                continue
+            if tag == "NEW_WORD":
+                word = content.strip().strip('"').lower()
+                if word and TOKEN_RE.fullmatch(word.strip("'") or ""):
+                    new_words.add(word)
                 continue
             if not tag.startswith("SESSION"):
                 continue
@@ -150,7 +165,7 @@ def mine_corpus(path: Path):
             for a, b, c in zip(lows, lows[1:], lows[2:]):
                 phrases[(a, b, c)] += 1
 
-    return voice, typing, surfaces, whitelist, bigrams, phrases, kept_lines, dropped_lines
+    return voice, typing, surfaces, insisted_words, new_words, reverted_words, bigrams, phrases, kept_lines, dropped_lines
 
 
 # --- build --------------------------------------------------------------------
@@ -158,8 +173,25 @@ def mine_corpus(path: Path):
 def main():
     dry_run = "--dry-run" in sys.argv
 
+    # Load reviewed vocabulary rules
+    rules_path = REPO / "dict_sources/personal_vocabulary.json"
+    with open(rules_path, encoding="utf-8") as fh:
+        rules = json.load(fh)
+
+    approved_vocabulary = {w.lower(): f for w, f in rules["approved_vocabulary"].items()}
+    approved_case_map = {w.lower(): w for w in rules["approved_vocabulary"]}
+    protected_exact_forms = {w.lower() for w in rules["protected_exact_forms"]}
+    protected_case_map = {w.lower(): w for w in rules["protected_exact_forms"]}
+    typo_mappings = {w.lower(): target.lower() for w, target in rules["typo_mappings"].items()}
+    quarantine = {w.lower() for w in rules["quarantine"]}
+
     base, f_max = load_aosp(AOSP_COMBINED)
-    voice, typing, surfaces, whitelist, bigrams, phrases, kept, dropped = mine_corpus(HARVEST)
+    
+    # Filter AOSP base to exclude typos, quarantine, and protected-only forms
+    base = {low: (surf, f) for low, (surf, f) in base.items()
+            if low not in typo_mappings and low not in quarantine and not (low in protected_exact_forms and low not in approved_vocabulary)}
+
+    voice, typing, surfaces, insisted, new_words, reverted, bigrams, phrases, kept, dropped = mine_corpus(HARVEST)
     total = voice + typing
 
     def base_freq(f: int) -> float:
@@ -179,34 +211,59 @@ def main():
         freq = base_freq(f)
         if low in total:
             freq = max(freq, total[low] * personal_scale)
+        if low in approved_vocabulary:
+            surface = approved_case_map.get(low, surface)
+            if approved_vocabulary[low] is not None:
+                freq = max(freq, approved_vocabulary[low])
         entries[low] = (surface, freq)
 
     admitted = []
+    # Admit personal vocabulary words if they meet clean session thresholds OR are explicitly approved
     for low, cnt in total.items():
         if low in entries:
             continue
-        ok = (voice[low] >= VOICE_MIN or typing[low] >= TYPING_MIN or low in whitelist)
+        if low in typo_mappings or low in quarantine:
+            continue
+        if low in protected_exact_forms and low not in approved_vocabulary:
+            continue
+        ok = (voice[low] >= VOICE_MIN or typing[low] >= TYPING_MIN or low in approved_vocabulary)
         if not ok or len(low.strip("'")) < 2:
             continue
         surface = forms_by_low.get(low, (0, low))[1]
-        entries[low] = (surface, cnt * personal_scale)
+        surface = approved_case_map.get(low, surface)
+        freq = cnt * personal_scale
+        if low in approved_vocabulary and approved_vocabulary[low] is not None:
+            freq = max(freq, approved_vocabulary[low])
+        entries[low] = (surface, freq)
         admitted.append((cnt, low))
-    # whitelisted words never seen in clean sessions still get a floor entry
-    for low in whitelist:
+
+    # Approved vocabulary words never seen in clean sessions
+    for low in approved_vocabulary:
         if low not in entries:
-            entries[low] = (low, max(FREQ_MIN * 10, total[low] * personal_scale))
+            if low in typo_mappings or low in quarantine:
+                continue
+            if len(low.strip("'")) < 2:
+                continue
+            surface = approved_case_map.get(low, low)
+            static_freq = approved_vocabulary[low]
+            if static_freq is None:
+                static_freq = FREQ_MIN * 10
+            freq = max(static_freq, total[low] * personal_scale)
+            entries[low] = (surface, freq)
             admitted.append((total[low], low))
 
     dict_keys = set(entries)
+    
+    # Sort deterministically
     out_bigrams = sorted(
         ((a, b, c) for (a, b), c in bigrams.items()
          if c >= BIGRAM_MIN and a in dict_keys and b in dict_keys),
-        key=lambda x: -x[2],
+        key=lambda x: (-x[2], x[0], x[1]),
     )
     out_phrases = sorted(
         ((a, b, c, n) for (a, b, c), n in phrases.items()
          if n >= PHRASE_MIN and a in dict_keys and b in dict_keys and c in dict_keys),
-        key=lambda x: -x[3],
+        key=lambda x: (-x[3], x[0], x[1], x[2]),
     )
 
     # --- report ---
@@ -230,15 +287,24 @@ def main():
         return
 
     with open(DICT_DIR / "unified_dictionary.tsv", "w", encoding="utf-8") as fh:
-        for low, (surface, freq) in sorted(entries.items(), key=lambda kv: -kv[1][1]):
+        # Sort deterministically by frequency descending, then alphabetically by lowercase word
+        for low, (surface, freq) in sorted(entries.items(), key=lambda kv: (-kv[1][1], kv[0])):
             fh.write(f"{surface}\t{int(round(freq))}\n")
+            
     with open(DICT_DIR / "final_mobile_bigrams.tsv", "w", encoding="utf-8") as fh:
         for a, b, c in out_bigrams:
             fh.write(f"{a} {b}\t{c}\n")
+            
     with open(DICT_DIR / "personal_phrases.tsv", "w", encoding="utf-8") as fh:
         for a, b, c, n in out_phrases:
             fh.write(f"{a} {b}\t{c}\t{n}\n")
-    print("\nwrote unified_dictionary.tsv, final_mobile_bigrams.tsv, personal_phrases.tsv")
+
+    with open(DICT_DIR / "protected_forms.txt", "w", encoding="utf-8") as fh:
+        # Sort protected exact forms alphabetically
+        for w in sorted(rules["protected_exact_forms"]):
+            fh.write(f"{w}\n")
+            
+    print("\nwrote unified_dictionary.tsv, final_mobile_bigrams.tsv, personal_phrases.tsv, protected_forms.txt")
 
 
 if __name__ == "__main__":

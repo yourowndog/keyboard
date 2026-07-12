@@ -22,7 +22,8 @@ object PersonalPreferences {
      * Checked case-insensitively — one lowercase entry covers all capitalizations.
      * Add abbreviations, slang, and shorthand here instead of anti-corrections.
      */
-    val PERSONAL_VOCAB = setOf(
+    @Volatile
+    var PERSONAL_VOCAB = setOf(
         // Abbreviations
         "bc", "rn", "tf", "lmk", "ppl", "msg", "thx", "sry", "btw",
         "imo", "idk", "omg", "wtf", "smh", "ngl", "tbh", "fr", "wdym",
@@ -34,8 +35,29 @@ object PersonalPreferences {
         "g", "i",
     )
 
+    fun init(context: android.content.Context) {
+        try {
+            val newVocab = PERSONAL_VOCAB.toMutableSet()
+            context.assets.open("ime/dict/protected_forms.txt").bufferedReader().useLines { lines ->
+                for (line in lines) {
+                    val word = line.trim().lowercase()
+                    if (word.isNotEmpty()) {
+                        newVocab.add(word)
+                    }
+                }
+            }
+            PERSONAL_VOCAB = newVocab
+        } catch (e: Exception) {
+            android.util.Log.e("PersonalPreferences", "Failed to load protected_forms.txt: ${e.message}")
+        }
+    }
+
     fun isPersonalVocab(typed: String): Boolean {
         return PERSONAL_VOCAB.contains(typed.lowercase())
+    }
+
+    fun isProtectedFromAutocorrect(word: String): Boolean {
+        return isPersonalVocab(word)
     }
 
     /**

@@ -210,7 +210,7 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         val contractionResult = dev.patrickgold.florisboard.ime.nlp.shared.CasingUtils.resolveContextualContraction(currentWordRaw, previousWord)
             ?: dev.patrickgold.florisboard.ime.nlp.shared.CasingUtils.CONTRACTION_SHORTCUTS[currentWordRaw.lowercase()]
         if (contractionResult != null &&
-            !dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isPersonalVocab(currentWordRaw) &&
+            !dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isProtectedFromAutocorrect(currentWordRaw) &&
             !dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isAntiCorrection(currentWordRaw, contractionResult)
         ) {
             // Match the typed casing so "WERE" becomes "WE'RE", and capitalize at sentence
@@ -332,7 +332,7 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
                     val isBlocked = dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isAntiCorrection(currentWordRaw, casedText)
                     // PERSONAL_VOCAB: the scorer culls these but culled candidates stay in
                     // the ranked list, so the commit gate must enforce "never corrected" itself.
-                    val isProtectedVocab = dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isPersonalVocab(currentWordRaw)
+                    val isProtectedVocab = dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isProtectedFromAutocorrect(currentWordRaw)
                     // Single letters committed with space are deliberate; only "i" -> "I"
                     // (handled by its own fast-path above) is a wanted single-char correction.
                     val isLongEnough = currentWordRaw.length >= 2 || isCasingFix
