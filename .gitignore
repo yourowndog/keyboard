@@ -92,3 +92,6 @@ data/harvest/inbox/
 # Python bytecode and validation caches
 __pycache__/
 *.py[cod]
+
+.tokensave/
+.claude/settings.local.json
