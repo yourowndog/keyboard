@@ -50,9 +50,6 @@ object CandidateScorer {
     /** Bonus for user dictionary words. Negative = better. */
     private const val USER_WORD_BONUS = -1000.0
     
-    /** Score for culled/filtered candidates. */
-    const val CULLED_SCORE = Double.MAX_VALUE
-    
     // Spatial cost constants (from existing spatialCost function)
     private const val SPATIAL_NEIGHBOR_COST = 0.5
     private const val SPATIAL_FAR_COST = 2.0
@@ -72,7 +69,7 @@ object CandidateScorer {
      * @param prevWord Previous word for bigram context (nullable, lowercase)
      * @param isInUserDict Whether candidate is in user's personal dictionary
      * @param frequency Log-frequency of candidate (0.0 if not using frequency)
-     * @return Score where lower is better. CULLED_SCORE if candidate should be filtered.
+     * @return Numerical ranking score where lower is better.
      */
     fun score(
         typed: String,
@@ -82,17 +79,6 @@ object CandidateScorer {
         isInUserDict: Boolean = false,
         frequency: Double = 0.0,
     ): Double {
-        // PERSONAL VOCAB: Never correct words Sam types intentionally as-is
-        if (dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isPersonalVocab(typed)) {
-            return CULLED_SCORE
-        }
-
-        // ANTI-CORRECTIONS: Filter out forbidden typed→candidate pairs
-        if (dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isAntiCorrection(typed, candidate)) {
-            android.util.Log.d("CandidateScorer", "ANTI-CORRECTION: $typed → $candidate")
-            return CULLED_SCORE  // Reject this candidate completely
-        }
-
         val typedNoApos = typed.replace("'", "")
         val candidateNoApos = candidate.replace("'", "")
         

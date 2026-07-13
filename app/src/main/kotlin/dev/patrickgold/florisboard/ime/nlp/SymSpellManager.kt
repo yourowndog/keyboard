@@ -38,6 +38,7 @@ object SymSpellManager {
     // Config
     private const val DICT_ASSET_PATH = "ime/dict/unified_dictionary.tsv"
     private const val BIGRAM_ASSET_PATH = "ime/dict/final_mobile_bigrams.tsv"
+    private const val CULLED_SCORE = Double.MAX_VALUE
     // User overrides to Ensure these specific words/frequencies are respected
     private val USER_OVERRIDES = listOf(
         "kiry" to Double.MAX_VALUE,
@@ -205,11 +206,14 @@ object SymSpellManager {
         val normalized = input.lowercase()
         val upperCount = input.count { it.isUpperCase() }
         val suggestions = DictionaryRepository.findWithinTwoEdits(normalized)
+            .filterNot { candidate -> PersonalPreferences.isAntiCorrection(input, candidate.term) }
         android.util.Log.d("SymSpell_Debug", "Dictionary lookup returned ${suggestions.size} raw candidates")
         val prev = previousWord?.lowercase()
         val ignoreManager = dev.patrickgold.florisboard.ime.dictionary.DictionaryManager.default()
 
-        val contractionTop = CONTRACTION_SHORTCUTS[normalized]?.let { applyCasingPattern(input, it) }
+        val contractionTop = CONTRACTION_SHORTCUTS[normalized]
+            ?.let { applyCasingPattern(input, it) }
+            ?.takeUnless { PersonalPreferences.isAntiCorrection(input, it) }
         val mapped = suggestions
             .sortedBy { candidate ->
                 val term = candidate.term
@@ -217,15 +221,15 @@ object SymSpellManager {
 
                 // CULLING: Filter out 2-letter words not in whitelist
                 if (lowerTerm.length == 2 && !TWO_LETTER_WHITELIST.contains(lowerTerm)) {
-                    return@sortedBy CandidateScorer.CULLED_SCORE
+                    return@sortedBy CULLED_SCORE
                 }
 
                 // Filter by ignore list and blacklist
                 if (ignoreManager.isUserIgnored(input, term)) {
-                    return@sortedBy CandidateScorer.CULLED_SCORE
+                    return@sortedBy CULLED_SCORE
                 }
                 if (BLACKLIST.contains(lowerTerm)) {
-                    return@sortedBy CandidateScorer.CULLED_SCORE
+                    return@sortedBy CULLED_SCORE
                 }
 
                 // Use unified scorer
@@ -238,7 +242,7 @@ object SymSpellManager {
                     isInUserDict = isUserWord,
                     frequency = candidate.frequency
                 )
-                if (score >= CandidateScorer.CULLED_SCORE - 0.1) {
+                if (score >= CULLED_SCORE - 0.1) {
                     android.util.Log.d("SymSpell_Debug", "CULLED: '$lowerTerm' (score=$score)")
                 }
                 score

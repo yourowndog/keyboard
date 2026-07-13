@@ -20,6 +20,15 @@ class AutocorrectBehaviorRegressionTest {
     }
 
     @Test
+    fun policyInputsStillReceiveOrdinaryNumericalScores() {
+        val protectedScore = CandidateScorer.score("bc", "be", 1.0, null)
+        val excludedPairScore = CandidateScorer.score("sams", "samson", 2.0, null)
+
+        assertTrue(protectedScore < Double.MAX_VALUE)
+        assertTrue(excludedPairScore < Double.MAX_VALUE)
+    }
+
+    @Test
     fun contractionsKeepTheirCurrentShortcutAndContextBehavior() {
         assertEquals("I'm", CasingUtils.CONTRACTION_SHORTCUTS["im"])
         assertEquals("I'd", CasingUtils.CONTRACTION_SHORTCUTS["id"])

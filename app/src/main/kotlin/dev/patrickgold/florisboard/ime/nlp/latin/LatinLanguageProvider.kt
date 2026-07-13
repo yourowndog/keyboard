@@ -284,8 +284,20 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
 
         val prefixCandidates = dev.patrickgold.florisboard.ime.nlp.SymSpellManager.findPrefixCandidates(
             currentWordRaw, previousWord, limit = 10
-        )
-        val editCandidates = dev.patrickgold.florisboard.ime.nlp.SymSpellManager.findCandidates(currentWordRaw)
+        ).filterNot { candidate ->
+            dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isAntiCorrection(
+                currentWordRaw,
+                candidate.term,
+            )
+        }
+        val editCandidates = dev.patrickgold.florisboard.ime.nlp.SymSpellManager
+            .findCandidates(currentWordRaw)
+            .filterNot { candidate ->
+                dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isAntiCorrection(
+                    currentWordRaw,
+                    candidate.term,
+                )
+            }
         
         // Merge and deduplicate by term. Edit candidates FIRST: prefix candidates carry
         // distance = 0 ("perfect prefix match"), so if the prefix copy of a word survives
@@ -372,11 +384,9 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
                         typedIsValidWord = isInputValidWord,
                         // Prefix-only completions never auto-commit (see editTerms above).
                         isEditDistanceCandidate = candidate.text.toString().lowercase() in editTerms,
-                        // ANTI_CORRECTIONS: corrections Sam has explicitly blocked may still be
-                        // shown as suggestions, but must never auto-commit.
+                        // Defense in depth for candidates produced by non-general paths.
                         isBlockedCorrection = dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isAntiCorrection(currentWordRaw, casedText),
-                        // PERSONAL_VOCAB: the scorer culls these but culled candidates stay in
-                        // the ranked list, so the commit gate must enforce "never corrected" itself.
+                        // PERSONAL_VOCAB is a commit veto, not ranking evidence.
                         typedIsProtectedVocab = dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isProtectedFromAutocorrect(currentWordRaw),
                         neuralVerdict = liveNeuralDecision?.let { decision ->
                             CommitPolicy.NeuralVerdict(
@@ -427,11 +437,24 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         val upperCount = currentWordRaw.count { it.isUpperCase() }
 
         return suggestions.map { word ->
+            val shouldCommit = upperCount < 2 && CommitPolicy.shouldCommit(CommitPolicy.Input(
+                typed = currentWordRaw,
+                casedCandidate = word,
+                rawCandidate = word,
+                typedIsValidWord = SymSpellManager.hasWord(currentWordRaw),
+                isEditDistanceCandidate = true,
+                isBlockedCorrection = dev.patrickgold.florisboard.ime.nlp.PersonalPreferences
+                    .isAntiCorrection(currentWordRaw, word),
+                typedIsProtectedVocab = dev.patrickgold.florisboard.ime.nlp.PersonalPreferences
+                    .isProtectedFromAutocorrect(currentWordRaw),
+                neuralVerdict = null,
+            ))
             WordSuggestionCandidate(
                 text = word,
                 secondaryText = null,
-                // Avoid auto-commit on uppercase-heavy tokens (acronyms/proper nouns)
-                isEligibleForAutoCommit = upperCount < 2,
+                // Preserve the uppercase-heavy guard while routing every other fallback
+                // decision through the same Gate as the primary engine.
+                isEligibleForAutoCommit = shouldCommit,
                 sourceProvider = this
             )
         }
