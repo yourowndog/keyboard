@@ -34,6 +34,7 @@ import dev.patrickgold.florisboard.ime.nlp.SuggestionProvider
 import dev.patrickgold.florisboard.ime.nlp.WordSuggestionCandidate
 import dev.patrickgold.florisboard.ime.nlp.shared.BigramTable
 import dev.patrickgold.florisboard.ime.nlp.shared.CommitPolicy
+import dev.patrickgold.florisboard.ime.nlp.shared.ContractionRules
 import dev.patrickgold.florisboard.ime.nlp.shared.WordSegmentation
 import dev.patrickgold.florisboard.lib.devtools.flogDebug
 import kotlinx.coroutines.Dispatchers
@@ -207,8 +208,8 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         // PersonalPreferences wins over the shortcut map: words Sam types intentionally
         // (PERSONAL_VOCAB) and corrections he has explicitly blocked (ANTI_CORRECTIONS)
         // must never blind-fire from here.
-        val contractionResult = dev.patrickgold.florisboard.ime.nlp.shared.CasingUtils.resolveContextualContraction(currentWordRaw, previousWord)
-            ?: dev.patrickgold.florisboard.ime.nlp.shared.CasingUtils.CONTRACTION_SHORTCUTS[currentWordRaw.lowercase()]
+        val contractionResult = ContractionRules.resolveContextual(currentWordRaw, previousWord)
+            ?: ContractionRules.SHORTCUTS[currentWordRaw.lowercase()]
         if (contractionResult != null &&
             !dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isProtectedFromAutocorrect(currentWordRaw) &&
             !dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isAntiCorrection(currentWordRaw, contractionResult)

@@ -10,10 +10,6 @@ object ContextualEvidence {
     private val DETERMINERS = setOf(
         "the", "this", "that", "these", "those", "a", "an", "some", "any", "each", "every",
     )
-    private val CONTRACTIONS = setOf(
-        "i'm", "i'd", "i'll", "i've", "we're", "we'll", "they're", "you're",
-        "he's", "she's", "it's", "that's", "what's", "who's", "here's", "there's",
-    )
     private val PREFER_IS_CONTEXTS = setOf(
         "this", "that", "it", "he", "she", "what", "which", "who", "there", "here",
     )
@@ -31,7 +27,7 @@ object ContextualEvidence {
         var penalty = 0.0
 
         if ((prevLower in POSSESSIVE_CONTEXTS || prevLower in DETERMINERS) &&
-            candidateLower in CONTRACTIONS
+            candidateLower in ContractionRules.SOFT_GRAMMAR_CANDIDATES
         ) {
             penalty += GRAMMAR_PENALTY
         }

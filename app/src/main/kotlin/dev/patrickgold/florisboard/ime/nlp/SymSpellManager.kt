@@ -9,6 +9,7 @@ import kotlin.math.max
 import dev.patrickgold.florisboard.ime.nlp.shared.BigramTable
 import dev.patrickgold.florisboard.ime.nlp.shared.CasingUtils
 import dev.patrickgold.florisboard.ime.nlp.shared.CandidateScorer
+import dev.patrickgold.florisboard.ime.nlp.shared.ContractionRules
 import dev.patrickgold.florisboard.ime.nlp.shared.DictionaryRepository
 
 object SymSpellManager {
@@ -59,39 +60,6 @@ object SymSpellManager {
         "idk" to Double.MAX_VALUE,     // Abbreviation "I don't know"
         "wtf" to Double.MAX_VALUE,     // Common abbrev
     )
-    // Prefer common contractions before running SymSpell so "im" maps to "I'm" instead of "pm".
-    private val CONTRACTION_SHORTCUTS = mapOf(
-        // "im" removed — now in PERSONAL_VOCAB (never corrected)
-        "i'm" to "I'm",
-        "ive" to "I've",
-        // "id" removed - now handled by context-aware logic in CandidateScorer
-        "ill" to "I'll",
-        "dont" to "don't",
-        "cant" to "can't",
-        "wont" to "won't",
-        "isnt" to "isn't",
-        "arent" to "aren't",
-        "doesnt" to "doesn't",
-        "didnt" to "didn't",
-        "wasnt" to "wasn't",
-        "werent" to "weren't",
-        "youre" to "you're",
-        "theyre" to "they're",
-        // "were" to "we're", // Removed: handled by CasingUtils.resolveContextualContraction
-        "lets" to "let's",
-        "thats" to "that's",
-        "whos" to "who's",
-        "whats" to "what's",
-        "wheres" to "where's",
-        "theres" to "there's",
-        // "well" to "we'll", // Removed: handled by CasingUtils.resolveContextualContraction
-        "hell" to "he'll",
-        "shell" to "she'll",
-        // "its" removed - now handled by CasingUtils.resolveContextualContraction
-        "ac" to "AC",      // air conditioning
-        "itd" to "it'd",   // sloppy it'd typing
-    )
-
     private val BLACKLIST = setOf("wont", "hows", "cant", "dont", "isnt", "arent", "didnt", "couldnt", "wouldnt", "shouldnt", "wasnt", "werent", "hasnt", "havent", "hadnt")
 
     // Bigram data now provided by shared BigramTable singleton
@@ -211,7 +179,7 @@ object SymSpellManager {
         val prev = previousWord?.lowercase()
         val ignoreManager = dev.patrickgold.florisboard.ime.dictionary.DictionaryManager.default()
 
-        val contractionTop = CONTRACTION_SHORTCUTS[normalized]
+        val contractionTop = ContractionRules.LEGACY_FALLBACK_SHORTCUTS[normalized]
             ?.let { applyCasingPattern(input, it) }
             ?.takeUnless { PersonalPreferences.isAntiCorrection(input, it) }
         val mapped = suggestions

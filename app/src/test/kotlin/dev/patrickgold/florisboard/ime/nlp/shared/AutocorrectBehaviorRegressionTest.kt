@@ -30,13 +30,15 @@ class AutocorrectBehaviorRegressionTest {
 
     @Test
     fun contractionsKeepTheirCurrentShortcutAndContextBehavior() {
-        assertEquals("I'm", CasingUtils.CONTRACTION_SHORTCUTS["im"])
-        assertEquals("I'd", CasingUtils.CONTRACTION_SHORTCUTS["id"])
+        assertEquals("I'm", ContractionRules.SHORTCUTS["im"])
+        assertEquals("I'd", ContractionRules.SHORTCUTS["id"])
+        assertEquals("where's", ContractionRules.LEGACY_FALLBACK_SHORTCUTS["wheres"])
+        assertNull(ContractionRules.LEGACY_FALLBACK_SHORTCUTS["id"])
 
-        assertEquals("we're", CasingUtils.resolveContextualContraction("were", "hello"))
-        assertNull(CasingUtils.resolveContextualContraction("were", "they"))
-        assertEquals("it's", CasingUtils.resolveContextualContraction("its", "think"))
-        assertNull(CasingUtils.resolveContextualContraction("its", "on"))
+        assertEquals("we're", ContractionRules.resolveContextual("were", "hello"))
+        assertNull(ContractionRules.resolveContextual("were", "they"))
+        assertEquals("it's", ContractionRules.resolveContextual("its", "think"))
+        assertNull(ContractionRules.resolveContextual("its", "on"))
     }
 
     @Test

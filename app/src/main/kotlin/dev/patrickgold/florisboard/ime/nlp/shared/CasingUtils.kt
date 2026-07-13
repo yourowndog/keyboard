@@ -22,84 +22,6 @@ package dev.patrickgold.florisboard.ime.nlp.shared
 object CasingUtils {
 
     /**
-     * Contractions that require specific casing (e.g., "im" -> "I'm").
-     * Keys should be lowercase without apostrophes.
-     */
-    val CONTRACTION_SHORTCUTS = mapOf(
-        "im" to "I'm",
-        "i'm" to "I'm",
-        "ive" to "I've",
-        "id" to "I'd",
-        "ill" to "I'll",
-        "dont" to "don't",
-        "cant" to "can't",
-        "wont" to "won't",
-        "wint" to "won't",  // Common typo for "won't"
-        "didnt" to "didn't",
-        "doesnt" to "doesn't",
-        "isnt" to "isn't",
-        "arent" to "aren't",
-        "wasnt" to "wasn't",
-        "werent" to "weren't",
-        "hasnt" to "hasn't",
-        "havent" to "haven't",
-        "hadnt" to "hadn't",
-        "couldnt" to "couldn't",
-        "wouldnt" to "wouldn't",
-        "shouldnt" to "shouldn't",
-        "youre" to "you're",
-        "theyre" to "they're",
-        // "were" and "its" are real words — handled context-aware by
-        // resolveContextualContraction(), never blindly from this map.
-        "hes" to "he's",
-        "shes" to "she's",
-        "thats" to "that's",
-        "whats" to "what's",
-        "whos" to "who's",
-        "lets" to "let's",
-        "ac" to "AC",      // air conditioning
-        "itd" to "it'd",   // sloppy it'd typing
-        "hows" to "how's",
-        "km" to "I'm",     // context-dependent in SymSpell, but added here for safety
-        "moms" to "Mom's",
-    )
-
-    // Words preceding "were" that imply it should STAY "were" (past tense)
-    // e.g. "they were", "we were", "you were"
-    val PREV_WORDS_FOR_WERE = setOf(
-        "we", "they", "you", "there", "here", "who", "which", "what", "that", "these", "those"
-    )
-
-    // Words preceding "its" that imply possessive (should STAY "its")
-    // e.g. "lost its", "on its", "at its"
-    val PREV_WORDS_FOR_ITS_POSSESSIVE = setOf(
-        "lost", "on", "at", "in", "of", "with", "by", "for", "from",
-        "the", "a", "an", "this", "that", "these", "those",
-        "my", "your", "his", "her", "their", "our",
-    )
-
-    /**
-     * Context-aware apostrophe contractions for words that are ALSO real words.
-     * Sam relies on the keyboard for apostrophes, so "were" -> "we're" and
-     * "its" -> "it's" should fire — except when the previous word marks the
-     * literal reading (past-tense "were", possessive "its"). These rules were
-     * ported here from SymSpellManager.fix() (dead code, since deleted); this
-     * is the only live implementation.
-     *
-     * @return the contraction to apply, or null to leave the typed word alone.
-     */
-    fun resolveContextualContraction(typed: String, prevWord: String?): String? {
-        val prev = prevWord?.lowercase() ?: ""
-        return when (typed.lowercase()) {
-            // Default to "we're" (including at sentence start); keep "were" after past-tense subjects
-            "were" -> if (prev.isEmpty() || prev !in PREV_WORDS_FOR_WERE) "we're" else null
-            // Default to "it's" (the common case in casual texting); keep possessive after determiners/prepositions
-            "its" -> if (prev.isNotEmpty() && prev in PREV_WORDS_FOR_ITS_POSSESSIVE) null else "it's"
-            else -> null
-        }
-    }
-
-    /**
      * Proper nouns that should always be capitalized.
      * Store in lowercase for lookup, output in title case.
      */
@@ -151,7 +73,7 @@ object CasingUtils {
         }
 
         // Apply contraction shortcuts (im -> I'm, etc.)
-        val contractionResult = CONTRACTION_SHORTCUTS[typed.lowercase()]
+        val contractionResult = ContractionRules.SHORTCUTS[typed.lowercase()]
         if (contractionResult != null && suggestion.replace("'", "").equals(typed, ignoreCase = true)) {
             return contractionResult
         }
