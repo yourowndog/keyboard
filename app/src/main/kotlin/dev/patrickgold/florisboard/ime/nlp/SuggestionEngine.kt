@@ -116,19 +116,9 @@ class NgramSuggestionEngine(
             scoredCandidates.add(candidate)
         }
 
-        val ranked = scoredCandidates
-            .sortedByDescending { it.confidence }
-            .toMutableList()
-
-        // Auto-commit: Mark top suggestion for auto-commit if different from input
-        if (ranked.isNotEmpty()) {
-            val top = ranked[0]
-            if (!top.text.toString().equals(originalInput, ignoreCase = true)) {
-                ranked[0] = top.copy(isEligibleForAutoCommit = true)
-            }
-        }
-
-        return ranked
+        // The Judge only orders candidates. Auto-commit eligibility is decided
+        // downstream by the commit gate (CommitPolicy in LatinLanguageProvider).
+        return scoredCandidates.sortedByDescending { it.confidence }
     }
 
     override fun predictNext(prevWord: String?, max: Int): List<String> {

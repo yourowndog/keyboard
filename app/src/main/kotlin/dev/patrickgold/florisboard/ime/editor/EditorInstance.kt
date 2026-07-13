@@ -837,11 +837,6 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
                 )
             )
         }
-        // Mark that the user rejected the last autocorrect so the next commit of the same token won't be re-corrected.
-        // Mark that the user rejected the last autocorrect so the next commit of the same token won't be re-corrected.
-        // SMART SESSION: Pass original and corrected text so SymSpellManager can infer intent if user types a new char
-        dev.patrickgold.florisboard.ime.nlp.SymSpellManager.markNextAsUserRejected(state.originalText, state.correctedText)
-        // Learn the ignore pair so it persists
         // Learn the ignore pair so it persists
         dev.patrickgold.florisboard.ime.dictionary.DictionaryManager.default().learnUserIgnore(state.originalText, state.correctedText)
         // Log rejected autocorrect for harvest

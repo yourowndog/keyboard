@@ -1,7 +1,7 @@
 # Live Autocorrect Pipeline
 
 > Status: Canonical  
-> Last verified: 2026-07-11  
+> Last verified: 2026-07-12
 > Verified against: `NlpManager.kt`, `LatinLanguageProvider.kt`,
 > `SymSpellManager.kt`, `DictionaryRepository.kt`, `SuggestionEngine.kt`,
 > `CandidateScorer.kt`, and editor commit/revert hooks
@@ -45,6 +45,15 @@ Candidates are deduplicated case-insensitively. The provider retains knowledge
 of which candidates came from edit retrieval because automatic correction must
 not fire merely because a completion ranked highly.
 
+Before general retrieval, `WordSegmentation` can recover one omitted space in a
+joined token such as `inthe`. A split is accepted only when the joined form is
+not itself a dictionary word, both halves are dictionary words, exactly one
+split survives, and the pair has observed bigram evidence. Ambiguous and
+unsupported splits are left unchanged. The ordinary personal-vocabulary,
+anti-correction, casing, and commit-policy safeguards still apply. When the
+neural Gate is live, segmentation is suggestion-only because the current model
+was not trained on multi-word candidates.
+
 ## Heuristic ranking
 
 `NgramSuggestionEngine.rank()` delegates penalty calculation to
@@ -75,6 +84,8 @@ first. The provider checks, among other things:
 - whether the change is a casing fix
 - whether the candidate came from correction retrieval
 - personal-vocabulary and anti-correction blocks
+- any typed token containing a digit; numeric values, mixed identifiers, and
+  version strings may be suggested but are never rewritten automatically
 - minimum input length
 - the optional neural decision gate
 
@@ -97,4 +108,3 @@ Editor commit and revert paths notify the NLP system and harvesting layer.
 Acceptance in a log is not necessarily proof that a correction was desired;
 sequence-aware review is required to distinguish accepted fixes, immediate
 reverts, manual fixes, insistence, and unresolved events.
-

@@ -33,6 +33,9 @@ import dev.patrickgold.florisboard.ime.nlp.SuggestionCandidate
 import dev.patrickgold.florisboard.ime.nlp.SuggestionProvider
 import dev.patrickgold.florisboard.ime.nlp.WordSuggestionCandidate
 import dev.patrickgold.florisboard.ime.nlp.shared.BigramTable
+import dev.patrickgold.florisboard.ime.nlp.shared.CandidateScorer
+import dev.patrickgold.florisboard.ime.nlp.shared.CommitPolicy
+import dev.patrickgold.florisboard.ime.nlp.shared.WordSegmentation
 import dev.patrickgold.florisboard.lib.devtools.flogDebug
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -76,8 +79,6 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
     fun getNgramUnigramCount(): Int = ngramEngine?.unigramLogFreq?.size ?: 0
 
     override val providerId = ProviderId
-
-    private fun String.isDigitsOnly(): Boolean = this.all { it.isDigit() }
 
     override suspend fun create() {
         // Here we initialize our provider, set up all things which are not language dependent.
@@ -210,7 +211,7 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         val contractionResult = dev.patrickgold.florisboard.ime.nlp.shared.CasingUtils.resolveContextualContraction(currentWordRaw, previousWord)
             ?: dev.patrickgold.florisboard.ime.nlp.shared.CasingUtils.CONTRACTION_SHORTCUTS[currentWordRaw.lowercase()]
         if (contractionResult != null &&
-            !dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isPersonalVocab(currentWordRaw) &&
+            !dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isProtectedFromAutocorrect(currentWordRaw) &&
             !dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isAntiCorrection(currentWordRaw, contractionResult)
         ) {
             // Match the typed casing so "WERE" becomes "WE'RE", and capitalize at sentence
@@ -235,6 +236,53 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         // 1. Retrieve candidates from SymSpell (The Retriever)
         //    - Prefix candidates: words starting with what user typed (autocomplete)
         //    - Edit-distance candidates: typo corrections
+        // Recover one omitted space only when the dictionary and harvested bigram table
+        // identify exactly one plausible split. A merely possible pair is not enough
+        // evidence to alter typed text.
+        val segmented = WordSegmentation.findUniqueHighConfidence(
+            input = currentWordRaw,
+            isWord = SymSpellManager::hasWord,
+            hasBigram = { left, right -> CandidateScorer.bigramScore(left, right).hasHit },
+        )
+        if (segmented != null &&
+            !dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isProtectedFromAutocorrect(currentWordRaw)
+        ) {
+            val casedSegmented = WordSegmentation.applyCasing(
+                typed = currentWordRaw,
+                segmented = segmented,
+                isSentenceStart = dev.patrickgold.florisboard.ime.nlp.shared.CasingUtils.isAtSentenceStart(textBeforeCurrentWord),
+            )
+            val isBlocked = dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isAntiCorrection(
+                currentWordRaw,
+                casedSegmented,
+            )
+            val neuralIsLive = prefs.suggestion.useNeuralScorer.get()
+            val shouldCommit = CommitPolicy.shouldCommit(CommitPolicy.Input(
+                typed = currentWordRaw,
+                casedCandidate = casedSegmented,
+                rawCandidate = segmented,
+                typedIsValidWord = false,
+                isEditDistanceCandidate = true,
+                isBlockedCorrection = isBlocked,
+                typedIsProtectedVocab = false,
+                // The model was not trained on multi-word candidates. If the Gate is live,
+                // show this candidate for tapping without bypassing its veto.
+                neuralVerdict = if (neuralIsLive) {
+                    CommitPolicy.NeuralVerdict(shouldFire = false, topTerm = segmented)
+                } else {
+                    null
+                },
+            ))
+            return listOf(
+                WordSuggestionCandidate(
+                    text = casedSegmented,
+                    secondaryText = null,
+                    isEligibleForAutoCommit = shouldCommit,
+                    sourceProvider = this,
+                )
+            )
+        }
+
         val prefixCandidates = dev.patrickgold.florisboard.ime.nlp.SymSpellManager.findPrefixCandidates(
             currentWordRaw, previousWord, limit = 10
         )
@@ -316,32 +364,31 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
                         textBeforeSelection = textBeforeCurrentWord
                     )
                     
-                    // Determine if we should auto-commit this candidate
-                    // 1. Must be a "change" (otherwise why commit?)
-                    val isChange = casedText != currentWordRaw
-                    // 2. Is this just a casing fix? (e.g. "english" -> "English")
-                    val isCasingFix = casedText.equals(currentWordRaw, ignoreCase = true)
-                    
-                    // LOGIC: Commit if it's a change AND (it's a typo OR it's just a casing fix)
-                    // If input is valid, we ONLY allow casing fixes. We REJECT different words.
-                    val neuralAllowsCommit = liveNeuralDecision == null ||
-                        (liveNeuralDecision.shouldFire &&
-                            candidate.text.toString().equals(liveNeuralDecision.top.term, ignoreCase = true))
-                    // ANTI_CORRECTIONS: corrections Sam has explicitly blocked may still be
-                    // shown as suggestions, but must never auto-commit.
-                    val isBlocked = dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isAntiCorrection(currentWordRaw, casedText)
-                    // PERSONAL_VOCAB: the scorer culls these but culled candidates stay in
-                    // the ranked list, so the commit gate must enforce "never corrected" itself.
-                    val isProtectedVocab = dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isPersonalVocab(currentWordRaw)
-                    // Single letters committed with space are deliberate; only "i" -> "I"
-                    // (handled by its own fast-path above) is a wanted single-char correction.
-                    val isLongEnough = currentWordRaw.length >= 2 || isCasingFix
-                    // Prefix-only completions never auto-commit (see editTerms above).
-                    val isCorrection = candidate.text.toString().lowercase() in editTerms || isCasingFix
-                    val shouldCommit = isChange && (!isInputValidWord || isCasingFix) && neuralAllowsCommit && !isBlocked && !isProtectedVocab && isLongEnough && isCorrection
-                    
-                    // DEBUG: Uncomment to trace casing logic
-                    // android.util.Log.d("LatinProvider", "Input: '$currentWordRaw' | Cand: '$casedText' | Valid: $isInputValidWord | Commit: $shouldCommit")
+                    // The Gate: CommitPolicy is the single authority on whether this
+                    // candidate may alter the typed text. All clauses live there.
+                    val shouldCommit = CommitPolicy.shouldCommit(CommitPolicy.Input(
+                        typed = currentWordRaw,
+                        casedCandidate = casedText,
+                        rawCandidate = candidate.text.toString(),
+                        typedIsValidWord = isInputValidWord,
+                        // Prefix-only completions never auto-commit (see editTerms above).
+                        isEditDistanceCandidate = candidate.text.toString().lowercase() in editTerms,
+                        // ANTI_CORRECTIONS: corrections Sam has explicitly blocked may still be
+                        // shown as suggestions, but must never auto-commit.
+                        isBlockedCorrection = dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isAntiCorrection(currentWordRaw, casedText),
+                        // PERSONAL_VOCAB: the scorer culls these but culled candidates stay in
+                        // the ranked list, so the commit gate must enforce "never corrected" itself.
+                        typedIsProtectedVocab = dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isProtectedFromAutocorrect(currentWordRaw),
+                        neuralVerdict = liveNeuralDecision?.let { decision ->
+                            CommitPolicy.NeuralVerdict(
+                                shouldFire = decision.shouldFire,
+                                topTerm = decision.top.term,
+                            )
+                        },
+                    ))
+
+                    // DEBUG: Uncomment to trace commit decisions
+                    // android.util.Log.d("LatinProvider", "Input: '$currentWordRaw' | Cand: '$casedText' | Blockers: ${CommitPolicy.blockers(...)}")
 
                     candidate.copy(
                         text = casedText,
