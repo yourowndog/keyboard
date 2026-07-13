@@ -45,6 +45,11 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         // Default user ID used for all subtypes, unless otherwise specified.
         // See `ime/core/Subtype.kt` Line 210 and 211 for the default usage
         const val ProviderId = "org.florisboard.nlp.providers.latin"
+
+        /** Logcat tag answering "which engine path ran?" for live diagnosis. */
+        private const val AUTOCORRECT_PATH_TAG = "AutocorrectPath"
+
+        private const val ENGINE_RECOVERY_COOLDOWN_MS = 30_000L
     }
 
     private val appContext by context.appContext()
@@ -53,6 +58,14 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
 
     private var ngramEngine: dev.patrickgold.florisboard.ime.nlp.NgramSuggestionEngine? = null
     private var neuralScorer: NeuralScorer? = null
+
+    /**
+     * Rate limit for re-attempting the engine load from suggest() after a
+     * failed init. A session whose preload threw (install churn, memory
+     * pressure) would otherwise stay silently in the SymSpell-only fallback
+     * until the next subtype switch or app restart.
+     */
+    private var lastEngineRecoveryAttemptMs = 0L
 
     /**
      * Last neural shadow decision + ngram top pick, exposed for NlpManager to persist
@@ -313,6 +326,14 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         val editTerms = editCandidates.mapTo(mutableSetOf()) { it.term.lowercase() }
         
         // 2. Rank using NgramEngine (The Judge)
+        if (ngramEngine == null) {
+            val now = System.currentTimeMillis()
+            if (now - lastEngineRecoveryAttemptMs >= ENGINE_RECOVERY_COOLDOWN_MS) {
+                lastEngineRecoveryAttemptMs = now
+                android.util.Log.w(AUTOCORRECT_PATH_TAG, "ngramEngine null at suggest(); retrying engine load")
+                preload(subtype)
+            }
+        }
         val engine = ngramEngine
         if (engine != null) {
             // Map SymSpell items to (Term, Distance) pairs
@@ -431,6 +452,10 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         }
 
         // Fallback to old logic if engine failed to load
+        android.util.Log.w(
+            AUTOCORRECT_PATH_TAG,
+            "fallback active: ngramEngine unavailable, SymSpell-only suggestions (len=${currentWordRaw.length})",
+        )
         val suggestions = dev.patrickgold.florisboard.ime.nlp.SymSpellManager.suggest(
             input = currentWordRaw,
             previousWord = previousWord,
