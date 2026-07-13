@@ -1,5 +1,7 @@
 package dev.patrickgold.florisboard.ime.nlp.shared
 
+import dev.patrickgold.florisboard.ime.core.KeyboardLayout
+
 /**
  * The Gate of the correction pipeline: the single authority on whether the
  * top-ranked candidate may alter the user's typed text.
@@ -79,9 +81,33 @@ object CommitPolicy {
             if (!neuralAllows) add(Blocker.NEURAL_VETO)
             if (input.isBlockedCorrection) add(Blocker.ANTI_CORRECTION)
             if (input.typedIsProtectedVocab) add(Blocker.PROTECTED_VOCAB)
-            if (isChange && input.typed.any { it.isDigit() }) add(Blocker.NUMERIC_TOKEN)
+            if (isChange && input.typed.any { it.isDigit() } &&
+                !isNumberRowSlip(input.typed, input.rawCandidate)
+            ) add(Blocker.NUMERIC_TOKEN)
             if (input.typed.length < 2 && !isCasingFix) add(Blocker.TOO_SHORT)
             if (!input.isEditDistanceCandidate && !isCasingFix) add(Blocker.NOT_A_CORRECTION)
         }
+    }
+
+    /**
+     * A single number-row fat-finger inside an otherwise alphabetic word
+     * (sugg3stions → suggestions, 5his → this) is a typo, not an identifier.
+     * Everything else containing a digit (742, PS2, v2, 3.14, H2O, hashes)
+     * stays data. The typed token's shape and its relation to the candidate
+     * are derived here from the strings themselves: exactly one digit, at
+     * least 3 chars, candidate purely alphabetic and same length, differing
+     * only at the digit position, and the replacement letter must sit
+     * adjacent to that digit on the keyboard.
+     */
+    private fun isNumberRowSlip(typed: String, candidate: String): Boolean {
+        if (typed.length < 3 || typed.length != candidate.length) return false
+        if (typed.count { it.isDigit() } != 1) return false
+        if (!candidate.all { it.isLetter() }) return false
+        val digitIdx = typed.indexOfFirst { it.isDigit() }
+        for (i in typed.indices) {
+            if (i == digitIdx) continue
+            if (!typed[i].equals(candidate[i], ignoreCase = true)) return false
+        }
+        return KeyboardLayout.isAdjacent(typed[digitIdx], candidate[digitIdx])
     }
 }

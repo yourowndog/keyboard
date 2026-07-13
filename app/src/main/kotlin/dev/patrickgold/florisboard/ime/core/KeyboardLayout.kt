@@ -17,6 +17,18 @@ object KeyboardLayout {
      * Rows are staggered to match physical QWERTY layout.
      */
     val QWERTY_POSITIONS: Map<Char, Pair<Float, Float>> = mapOf(
+        // Number row (above the top letter row): no offset. Present so that
+        // number-row fat-fingers (5 for t, 3 for e) carry real spatial evidence.
+        '1' to (0.0f to -1.0f),
+        '2' to (1.0f to -1.0f),
+        '3' to (2.0f to -1.0f),
+        '4' to (3.0f to -1.0f),
+        '5' to (4.0f to -1.0f),
+        '6' to (5.0f to -1.0f),
+        '7' to (6.0f to -1.0f),
+        '8' to (7.0f to -1.0f),
+        '9' to (8.0f to -1.0f),
+        '0' to (9.0f to -1.0f),
         // Row 0 (top): no offset
         'q' to (0.0f to 0.0f),
         'w' to (1.0f to 0.0f),

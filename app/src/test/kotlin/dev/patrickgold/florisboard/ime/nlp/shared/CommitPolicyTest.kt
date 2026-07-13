@@ -88,6 +88,22 @@ class CommitPolicyTest {
         assertTrue(CommitPolicy.shouldCommit(input))
     }
 
+    // A single number-row fat-finger with an adjacent-letter candidate is a
+    // typo (5his -> this); the digit veto must not swallow it.
+    @Test
+    fun numberRowSlipCommits() {
+        val input = baseInput().copy(typed = "5his", casedCandidate = "this", rawCandidate = "this")
+        assertTrue(CommitPolicy.shouldCommit(input))
+    }
+
+    // The same word-shaped token is still blocked when the candidate letter
+    // is nowhere near the digit on the keyboard (no fat-finger evidence).
+    @Test
+    fun digitWithoutAdjacencyEvidenceStaysBlocked() {
+        val input = baseInput().copy(typed = "5his", casedCandidate = "whis", rawCandidate = "whis")
+        assertTrue(Blocker.NUMERIC_TOKEN in CommitPolicy.blockers(input))
+    }
+
     // Prefix-only completions are predictions, not corrections (iOS/Gboard behavior).
     @Test
     fun prefixCompletionNeverCommits() {
