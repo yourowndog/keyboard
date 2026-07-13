@@ -61,6 +61,35 @@ object ContractionRules {
         "shell" to "she'll",
     )
 
+    /**
+     * Every contraction form the ranker may treat as an intended contraction.
+     * CandidateScorer's apostrophe bonuses require membership here; a random
+     * dictionary possessive (La's, function's) earns no contraction evidence
+     * from merely containing an apostrophe.
+     */
+    val LICENSED_FORMS: Set<String> = buildSet {
+        SHORTCUTS.values.forEach { add(it.lowercase()) }
+        LEGACY_FALLBACK_SHORTCUTS.values.forEach { add(it.lowercase()) }
+        addAll(SOFT_GRAMMAR_CANDIDATES)
+        addAll(
+            setOf(
+                "i'm", "i've", "i'd", "i'll",
+                "you're", "you've", "you'd", "you'll",
+                "we're", "we've", "we'd", "we'll",
+                "they're", "they've", "they'd", "they'll",
+                "he's", "he'd", "he'll", "she's", "she'd", "she'll",
+                "it's", "it'd", "it'll",
+                "don't", "can't", "won't", "isn't", "aren't", "wasn't", "weren't",
+                "hasn't", "haven't", "hadn't", "couldn't", "wouldn't", "shouldn't",
+                "didn't", "doesn't", "ain't", "mustn't", "mightn't", "needn't", "shan't",
+                "that's", "that'd", "that'll", "there's", "there'd", "there'll",
+                "here's", "what's", "what're", "what'd", "who's", "who're", "who'd", "who'll",
+                "where's", "when's", "why's", "how's", "this'll", "let's",
+                "y'all", "o'clock", "ma'am",
+            )
+        )
+    }
+
     private val PREV_WORDS_FOR_WERE = setOf(
         "we", "they", "you", "there", "here", "who", "which", "what", "that", "these", "those",
     )

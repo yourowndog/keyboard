@@ -71,6 +71,31 @@ class AutocorrectBehaviorRegressionTest {
         assertFalse(PersonalPreferences.isProtectedFromAutocorrect("id"))
     }
 
+    // Ranking evidence for the real dictionary rows behind the observed
+    // "las -> La's, L's ahead of last" defect: an unlicensed apostrophe
+    // candidate must not outrank an ordinary edit candidate.
+    @Test
+    fun unlicensedApostropheCandidateEarnsNoContractionEvidence() {
+        // ln-frequencies from the packaged unified_dictionary.tsv rows.
+        val laS = CandidateScorer.score("las", "la's", 1.0, null, frequency = kotlin.math.ln(1483.0))
+        val lS = CandidateScorer.score("las", "l's", 1.0, null, frequency = kotlin.math.ln(8211.0))
+        val last = CandidateScorer.score("las", "last", 1.0, null, frequency = kotlin.math.ln(361875.0))
+        val law = CandidateScorer.score("las", "law", 1.0, null, frequency = kotlin.math.ln(294082.0))
+
+        assertTrue(last < laS, "last must outrank La's (last=$last laS=$laS)")
+        assertTrue(last < lS, "last must outrank L's (last=$last lS=$lS)")
+        assertTrue(law < laS, "law must outrank La's (law=$law laS=$laS)")
+    }
+
+    @Test
+    fun licensedContractionKeepsItsApostropheEvidence() {
+        val licensed = CandidateScorer.score("dont", "don't", 1.0, null, frequency = 10.0)
+        val plain = CandidateScorer.score("dont", "dot", 1.0, null, frequency = 10.0)
+        assertTrue(licensed < plain, "don't must keep its contraction bonus over dot")
+        assertTrue("la's" !in ContractionRules.LICENSED_FORMS)
+        assertTrue("don't" in ContractionRules.LICENSED_FORMS)
+    }
+
     @Test
     fun contractionAfterDeterminerKeepsItsSoftGrammarPenalty() {
         val neutral = CandidateScorer.score(

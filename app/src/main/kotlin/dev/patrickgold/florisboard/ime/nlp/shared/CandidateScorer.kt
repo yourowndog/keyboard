@@ -95,8 +95,10 @@ object CandidateScorer {
             score += BIGRAM_NO_HIT_PENALTY
         }
         
-        // Apostrophe handling
-        if (candidate.contains('\'')) {
+        // Apostrophe handling — only contraction forms licensed by
+        // ContractionRules earn contraction evidence. Unlicensed dictionary
+        // possessives (La's, function's) rank on ordinary evidence alone.
+        if (candidate.contains('\'') && candidate.lowercase() in ContractionRules.LICENSED_FORMS) {
             if (candidateNoApos == typedNoApos) {
                 // Exact letter match (im → I'm)
                 score += APOSTROPHE_EXACT_BONUS
