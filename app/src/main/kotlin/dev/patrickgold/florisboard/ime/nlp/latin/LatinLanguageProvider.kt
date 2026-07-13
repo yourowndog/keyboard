@@ -33,7 +33,9 @@ import dev.patrickgold.florisboard.ime.nlp.SuggestionCandidate
 import dev.patrickgold.florisboard.ime.nlp.SuggestionProvider
 import dev.patrickgold.florisboard.ime.nlp.WordSuggestionCandidate
 import dev.patrickgold.florisboard.ime.nlp.shared.BigramTable
+import dev.patrickgold.florisboard.ime.nlp.shared.CandidateScorer
 import dev.patrickgold.florisboard.ime.nlp.shared.CommitPolicy
+import dev.patrickgold.florisboard.ime.nlp.shared.WordSegmentation
 import dev.patrickgold.florisboard.lib.devtools.flogDebug
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -236,6 +238,53 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         // 1. Retrieve candidates from SymSpell (The Retriever)
         //    - Prefix candidates: words starting with what user typed (autocomplete)
         //    - Edit-distance candidates: typo corrections
+        // Recover one omitted space only when the dictionary and harvested bigram table
+        // identify exactly one plausible split. A merely possible pair is not enough
+        // evidence to alter typed text.
+        val segmented = WordSegmentation.findUniqueHighConfidence(
+            input = currentWordRaw,
+            isWord = SymSpellManager::hasWord,
+            hasBigram = { left, right -> CandidateScorer.bigramScore(left, right).hasHit },
+        )
+        if (segmented != null &&
+            !dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isProtectedFromAutocorrect(currentWordRaw)
+        ) {
+            val casedSegmented = WordSegmentation.applyCasing(
+                typed = currentWordRaw,
+                segmented = segmented,
+                isSentenceStart = dev.patrickgold.florisboard.ime.nlp.shared.CasingUtils.isAtSentenceStart(textBeforeCurrentWord),
+            )
+            val isBlocked = dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isAntiCorrection(
+                currentWordRaw,
+                casedSegmented,
+            )
+            val neuralIsLive = prefs.suggestion.useNeuralScorer.get()
+            val shouldCommit = CommitPolicy.shouldCommit(CommitPolicy.Input(
+                typed = currentWordRaw,
+                casedCandidate = casedSegmented,
+                rawCandidate = segmented,
+                typedIsValidWord = false,
+                isEditDistanceCandidate = true,
+                isBlockedCorrection = isBlocked,
+                typedIsProtectedVocab = false,
+                // The model was not trained on multi-word candidates. If the Gate is live,
+                // show this candidate for tapping without bypassing its veto.
+                neuralVerdict = if (neuralIsLive) {
+                    CommitPolicy.NeuralVerdict(shouldFire = false, topTerm = segmented)
+                } else {
+                    null
+                },
+            ))
+            return listOf(
+                WordSuggestionCandidate(
+                    text = casedSegmented,
+                    secondaryText = null,
+                    isEligibleForAutoCommit = shouldCommit,
+                    sourceProvider = this,
+                )
+            )
+        }
+
         val prefixCandidates = dev.patrickgold.florisboard.ime.nlp.SymSpellManager.findPrefixCandidates(
             currentWordRaw, previousWord, limit = 10
         )
