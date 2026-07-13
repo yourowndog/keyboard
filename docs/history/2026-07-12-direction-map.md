@@ -72,10 +72,14 @@ Phase 2 (cluster the rules / separate the four layers) — **in progress, ~25%.*
 
 - [x] Forensic diagnosis + full live-path map + rules inventory (the hard conceptual work)
 - [x] Vocabulary data layer cleaned + voice-admission hole closed  ← *this session*
-- [ ] Delete confirmed dead code: `SymSpellManager.fix()` (0 refs), `rank()`'s auto-commit flag
-      (overwritten downstream)
-- [ ] **Extract one `CommitPolicy`** — the inline 7-clause `shouldCommit` predicate becomes a
+- [x] Delete confirmed dead code: `SymSpellManager.fix()` (0 refs), `rank()`'s auto-commit flag
+      (overwritten downstream) ← *done 2026-07-12; also removed orphans: `markNextAsUserRejected`
+      (write-only state), `PROPER_OVERRIDES` (0 refs), `PREV_WORDS_FOR_*` sets (live port is
+      `CasingUtils.resolveContextualContraction`), `KEYBOARD_NEIGHBORS`, `MAX_EDIT_DISTANCE`*
+- [x] **Extract one `CommitPolicy`** — the inline 7-clause `shouldCommit` predicate becomes a
       single pure, unit-tested function; the contradictory `rank()` flag is removed
+      ← *done 2026-07-12: `ime/nlp/shared/CommitPolicy.kt` (pure object, `blockers()` returns
+      named veto reasons in evaluation order), 14 unit tests in `CommitPolicyTest`*
 - [ ] Seed the **regression fixture corpus** (zsh≠ssh, numeric protection, valid-word immunity,
       contractions, protected forms, Termux family, show-but-never-commit, prefix vs correction)
 - [ ] De-duplicate the two contraction maps and the two protected-word sources

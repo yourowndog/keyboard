@@ -6,7 +6,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.math.ln
 import kotlin.math.max
-import dev.patrickgold.florisboard.ime.core.KeyboardLayout
 import dev.patrickgold.florisboard.ime.nlp.shared.BigramTable
 import dev.patrickgold.florisboard.ime.nlp.shared.CasingUtils
 import dev.patrickgold.florisboard.ime.nlp.shared.CandidateScorer
@@ -37,7 +36,6 @@ object SymSpellManager {
     private var appContextRef: Context? = null
 
     // Config
-    private const val MAX_EDIT_DISTANCE = 2
     private const val DICT_ASSET_PATH = "ime/dict/unified_dictionary.tsv"
     private const val BIGRAM_ASSET_PATH = "ime/dict/final_mobile_bigrams.tsv"
     // User overrides to Ensure these specific words/frequencies are respected
@@ -78,77 +76,21 @@ object SymSpellManager {
         "werent" to "weren't",
         "youre" to "you're",
         "theyre" to "they're",
-        // "were" to "we're", // Removed: handled by context logic in fix()
+        // "were" to "we're", // Removed: handled by CasingUtils.resolveContextualContraction
         "lets" to "let's",
         "thats" to "that's",
         "whos" to "who's",
         "whats" to "what's",
         "wheres" to "where's",
         "theres" to "there's",
-        // "well" to "we'll", // Removed: handled by context logic in fix()
+        // "well" to "we'll", // Removed: handled by CasingUtils.resolveContextualContraction
         "hell" to "he'll",
         "shell" to "she'll",
-        // "its" removed - now handled by context-aware logic in fix()
+        // "its" removed - now handled by CasingUtils.resolveContextualContraction
         "ac" to "AC",      // air conditioning
         "itd" to "it'd",   // sloppy it'd typing
     )
 
-    // Words preceding "its" that imply possessive (should STAY "its")
-    // e.g. "lost its", "on its", "at its", "the cat its" (rare but possible)
-    private val PREV_WORDS_FOR_ITS_POSSESSIVE = setOf(
-        "lost", "on", "at", "in", "of", "with", "by", "for", "from",
-        "the", "a", "an", "this", "that", "these", "those",
-        "my", "your", "his", "her", "their", "our",
-    )
-    val PROPER_OVERRIDES = setOf(
-        "kiry", "kiry's",
-        "sam", "sam's",
-        "I'd",
-        "mike", "mike's",
-        "john", "john's",
-        "elijah", "elijah's",
-        "dad", "dad's",
-        "mom", "mom's",
-        "violet", "violet's",
-        "levi", "levi's",
-        "pepa", "pepa's",
-        "mike", "mike's",
-        "tom", "tom's",
-        "tony", "tony's",
-        "ellie", "ellie's",
-        "otis", "otis's",
-        "rupert", "rupert's",
-        "dan", "dan's",
-        "tim", "tim's",
-        "claira", "claira's",
-        "christmas",
-        "aorus",
-        "gpu", "gpu's",
-        "cr",
-    )
-
-    // Tracks whether the last autocorrect was rejected; if so, skip autocorrect once.
-    @Volatile private var skipNextAutocorrect = false
-    
-    // SMART SESSION: Track rejection state to infer intent
-    // Stores: Pair(OriginalTyped, RejectedCorrection-aka-what-it-became)
-    @Volatile private var lastRejectedState: Pair<String, String>? = null
-
-    // QWERTY Neighbor Map - now uses shared KeyboardLayout
-    private val KEYBOARD_NEIGHBORS get() = KeyboardLayout.QWERTY_NEIGHBORS
-    
-    // Words preceding "were" that imply it should STAY "were" (past tense)
-    // e.g. "they were", "we were", "you were"
-    private val PREV_WORDS_FOR_WERE = setOf(
-        "we", "they", "you", "there", "here", "who", "which", "what", "that", "these", "those"
-    )
-
-    // Words preceding "well" that imply it should STAY "well" (adverb/interjection)
-    // e.g. "oh well", "very well", "doing well"
-    private val PREV_WORDS_FOR_WELL = setOf(
-        "oh", "ah", "very", "quite", "as", "doing", "went", "worked", "done", "known", "start", "damn"
-    )
-    
     private val BLACKLIST = setOf("wont", "hows", "cant", "dont", "isnt", "arent", "didnt", "couldnt", "wouldnt", "shouldnt", "wasnt", "werent", "hasnt", "havent", "hadnt")
 
     // Bigram data now provided by shared BigramTable singleton
@@ -227,11 +169,6 @@ object SymSpellManager {
         return CandidateScorer.spatialCost(typed, candidate)
     }
 
-    fun markNextAsUserRejected(originalTyped: String, rejectedCorrection: String) {
-        skipNextAutocorrect = true
-        lastRejectedState = Pair(originalTyped, rejectedCorrection)
-    }
-    
     /**
      * Check if a word exists in the dictionary (including user cache).
      */
@@ -252,180 +189,6 @@ object SymSpellManager {
         userWordsCache = words
     }
 
-    fun fix(input: String, previousWord: String? = null): String {
-        // SMART SESSION: Check if this input follows a rejection
-        lastRejectedState?.let { (originalTyped, rejectedCorrection) ->
-            // If user typed something new (input) immediately after rejecting,
-            // we assume 'originalTyped' was meant to be 'input'.
-            HarvestManager.logIntent(originalTyped, rejectedCorrection, input)
-            lastRejectedState = null
-        }
-    
-        val lower = input.lowercase()
-
-        // PERSONAL VOCAB: If Sam typed exactly what he meant, return it untouched.
-        // Must be checked before CONTRACTION_SHORTCUTS and all hardcoded early returns.
-        if (dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isPersonalVocab(input)) {
-            return input
-        }
-
-        // Fast-path for contractions so missing apostrophes don't divert to unrelated words.
-        CONTRACTION_SHORTCUTS[lower]?.let { contraction ->
-            return applyCasingPattern(input, contraction)
-        }
-        
-        // Context-aware contraction logic
-        if (lower == "were") {
-            val prev = previousWord?.lowercase() ?: ""
-            // If prev word is NOT in the list of "words that precede 'were'", assume "we're"
-            // Default to "we're" at start of sentence (prev is empty/null)
-            if (prev.isEmpty() || !PREV_WORDS_FOR_WERE.contains(prev)) {
-                return applyCasingPattern(input, "we're")
-            }
-        }
-        if (lower == "well") {
-            val prev = previousWord?.lowercase() ?: ""
-            // If prev word is NOT in list, assume "we'll"
-            // But "well" is common at start of sentence ("Well, ..."), so if prev is empty, keep "Well"
-            if (prev.isNotEmpty() && !PREV_WORDS_FOR_WELL.contains(prev)) {
-                return applyCasingPattern(input, "we'll")
-            }
-        }
-        // Context-aware "its" vs "it's"
-        if (lower == "its") {
-            val prev = previousWord?.lowercase() ?: ""
-            // After possessives/determiners/prepositions → keep "its" (possessive)
-            // Otherwise → "it's" (contraction, the 95% case in casual texting)
-            if (prev.isNotEmpty() && PREV_WORDS_FOR_ITS_POSSESSIVE.contains(prev)) {
-                return input // Keep "its"
-            }
-            return applyCasingPattern(input, "it's")
-        }
-        
-        // Typo fixes
-        if (lower == "ir") return "it"
-        if (lower == "s") return "a"
-        if (lower == "km") {
-             // 95% case: "km" -> "I'm". Exception: if prev word is a number?
-             // Simple heuristic: if prev word is NOT a number, do correcting.
-             // If we don't have number detection handy, just correct it as requested.
-             return applyCasingPattern(input, "I'm")
-        }
-
-        if (!isReady) return input
-        if (skipNextAutocorrect) {
-            skipNextAutocorrect = false
-            return input
-        }
-        // Handle single-letter inputs — return as-is (PERSONAL_VOCAB already handled "i" above)
-        if (input.length == 1) {
-            return input
-        }
-
-        // Reflexes: Fast correction
-        val normalized = input.lowercase()
-        val normalizedNoApos = normalized.replace("'", "")
-        
-        // Check against ignore list
-        val dictManager = dev.patrickgold.florisboard.ime.dictionary.DictionaryManager.default()
-        
-        // Check User Dictionary Cache (Highest Priority)
-        // If the user has explicitly added this word, we MUST respect it.
-        if (userWordsCache.any { it.equals(input, ignoreCase = true) }) {
-             return input
-        }
-
-        // TRUST REAL WORDS: If the user typed a valid dictionary word, we generally keep it.
-        // HOWEVER, we must still check if it needs capitalization (christmas -> Christmas).
-        val exactMatch = DictionaryRepository.exactMatch(normalized)
-        if (exactMatch != null) {
-            android.util.Log.d("SymSpell", "[$input] -> TRUST (exact match found) but applying casing")
-            // Apply casing logic to the exact match (e.g. christmas -> Christmas)
-            return applyCasingPattern(input, exactMatch)
-        }
-
-        // All dictionary words within edit distance 2
-        val suggestions = DictionaryRepository.findWithinTwoEdits(normalized)
-        android.util.Log.d("SymSpell", "[$input] suggestions(dist<=2): ${suggestions.take(5).map { "${it.term}:${it.distance}" }}")
-
-        // Also check if any user dictionary word is a close match and should win
-        val bestUserMatch = userWordsCache.firstOrNull { userWord ->
-            val dist = DictionaryRepository.distance(normalized, userWord)
-            dist <= MAX_EDIT_DISTANCE
-        }
-        if (bestUserMatch != null) {
-            // User added this word, prioritize it
-            return applyCasingPattern(input, bestUserMatch)
-        }
-
-        val prev = previousWord?.lowercase()
-
-        // If there is an apostrophe variant that is the same letters without apostrophe, prefer it.
-        val apostropheCandidate = suggestions.firstOrNull { cand ->
-            val candLower = cand.term.lowercase()
-            candLower.contains('\'') && candLower.replace("'", "") == normalizedNoApos
-        }
-
-        // Score and rank candidates using unified CandidateScorer
-        val scoredCandidates = suggestions.map { candidate ->
-            val term = candidate.term
-            val lowerTerm = term.lowercase()
-            
-            // CULLING: Filter out 2-letter words not in whitelist
-            if (lowerTerm.length == 2 && !TWO_LETTER_WHITELIST.contains(lowerTerm)) {
-                return@map Triple(candidate, CandidateScorer.CULLED_SCORE, "2-letter cull")
-            }
-            
-            // Filter by ignore list and blacklist
-            if (dictManager.isUserIgnored(input, term)) {
-                return@map Triple(candidate, CandidateScorer.CULLED_SCORE, "ignored")
-            }
-            if (BLACKLIST.contains(lowerTerm)) {
-                return@map Triple(candidate, CandidateScorer.CULLED_SCORE, "blacklist")
-            }
-            
-            // Use unified scorer for all other scoring
-            val isUserWord = userWordsCache.any { it.equals(term, ignoreCase = true) }
-            val score = CandidateScorer.score(
-                typed = normalized,
-                candidate = lowerTerm,
-                editDistance = candidate.distance,
-                prevWord = prev,
-                isInUserDict = isUserWord,
-                frequency = candidate.frequency
-            )
-            
-            Triple(candidate, score, "score=${"%.2f".format(score)}")
-        }.sortedBy { it.second }
-        
-        // Log top 3 candidates for debugging
-        if (scoredCandidates.isNotEmpty()) {
-            android.util.Log.d("SymSpell", "[$input] Top candidates: ${scoredCandidates.take(3).map { "${it.first.term}:${it.second}(${it.third})" }}")
-        }
-        
-        val suggestion = scoredCandidates.firstOrNull()?.first?.term ?: return input
-
-        // If we landed on the original input but have a matching apostrophe candidate, pick that instead.
-        val finalSuggestion = when {
-            suggestion == input && apostropheCandidate != null -> apostropheCandidate.term
-            else -> suggestion
-        }
-
-        // Check against ignore list
-        if (dictManager.isUserIgnored(input, finalSuggestion)) {
-            return input
-        }
-
-        // Heuristic: if the user typed multiple uppercase letters (likely an acronym/proper noun)
-        // and the suggestion doesn't match the same lowercase letters, keep the original.
-        val upperCount = input.count { it.isUpperCase() }
-        if (upperCount >= 2 && finalSuggestion.lowercase() != normalized) {
-            return input
-        }
-
-        return applyCasingPattern(input, finalSuggestion)
-    }
-
     fun suggest(input: String, previousWord: String? = null): List<String> {
          android.util.Log.d("SymSpell_Debug", "suggest() called: input='$input', prev='$previousWord'")
 
@@ -434,7 +197,7 @@ object SymSpellManager {
              return emptyList()
          }
          if (input.length == 1) {
-             // Mirror the fix() behavior: keep exactly what the user typed.
+             // Keep exactly what the user typed (single chars are never corrected here).
              android.util.Log.d("SymSpell_Debug", "Single char input, returning as-is: '$input'")
              return listOf(input)
          }

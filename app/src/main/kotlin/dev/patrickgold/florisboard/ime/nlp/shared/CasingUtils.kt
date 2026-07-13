@@ -82,8 +82,9 @@ object CasingUtils {
      * Context-aware apostrophe contractions for words that are ALSO real words.
      * Sam relies on the keyboard for apostrophes, so "were" -> "we're" and
      * "its" -> "it's" should fire — except when the previous word marks the
-     * literal reading (past-tense "were", possessive "its"). These rules lived
-     * in SymSpellManager.fix(), which is dead code; this is the live-path port.
+     * literal reading (past-tense "were", possessive "its"). These rules were
+     * ported here from SymSpellManager.fix() (dead code, since deleted); this
+     * is the only live implementation.
      *
      * @return the contraction to apply, or null to leave the typed word alone.
      */

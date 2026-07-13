@@ -2,8 +2,8 @@
  * CandidateScorer - Unified scoring for autocorrect and suggestions.
  * 
  * ## Architecture Role:
- * Single source of truth for candidate ranking. Both SymSpellManager.fix() (autocorrect)
- * and NgramSuggestionEngine.rank() (Smartbar) use this scorer.
+ * Single source of truth for candidate ranking, used by NgramSuggestionEngine.rank()
+ * (the Judge) and SymSpellManager.suggest() (fallback path).
  * 
  * ## Design for Neural Replacement:
  * - Flat primitives in (strings, doubles) → easy to serialize as features
