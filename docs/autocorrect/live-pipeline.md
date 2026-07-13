@@ -4,7 +4,8 @@
 > Last verified: 2026-07-12
 > Verified against: `NlpManager.kt`, `LatinLanguageProvider.kt`,
 > `SymSpellManager.kt`, `DictionaryRepository.kt`, `SuggestionEngine.kt`,
-> `CandidateScorer.kt`, and editor commit/revert hooks
+> `CandidateScorer.kt`, `ContextualEvidence.kt`, `CommitPolicy.kt`, and editor
+> commit/revert hooks
 
 ## Initialization
 
@@ -45,6 +46,11 @@ Candidates are deduplicated case-insensitively. The provider retains knowledge
 of which candidates came from edit retrieval because automatic correction must
 not fire merely because a completion ranked highly.
 
+Typed→candidate anti-correction pairs are excluded before general ranking.
+Protected vocabulary is different: alternatives may still receive ordinary
+scores and appear for manual selection, but `CommitPolicy` forbids replacing
+the protected typed form automatically.
+
 Before general retrieval, `WordSegmentation` can recover one omitted space in a
 joined token such as `inthe`. A split is accepted only when the joined form is
 not itself a dictionary word, both halves are dictionary words, exactly one
@@ -66,13 +72,13 @@ Signals currently include:
 - word frequency
 - previous-word bigram evidence
 - contraction/apostrophe handling
-- grammar and bigram penalties
-- personal vocabulary and anti-correction vetoes
-- special contextual handling for ambiguous forms such as `id`
+- soft grammar, bigram-conflict, and `id` ambiguity evidence supplied by
+  `ContextualEvidence`
 
-The code contains tuned constants and hard-coded personal/contextual knowledge.
-Document changes to those rules with evidence; do not present them as a general
-linguistic model.
+`CandidateScorer` contains numerical evidence only. `ContractionRules` owns the
+shortcut/context tables, anti-corrections are pair exclusions before ranking,
+and protected vocabulary is principally a Gate veto. Document changes to these
+rules with evidence; do not present them as a general linguistic model.
 
 ## Automatic commit eligibility
 
@@ -83,7 +89,7 @@ first. The provider checks, among other things:
 - whether the typed form is already valid
 - whether the change is a casing fix
 - whether the candidate came from correction retrieval
-- personal-vocabulary and anti-correction blocks
+- protected-vocabulary and defense-in-depth anti-correction blocks
 - any typed token containing a digit; numeric values, mixed identifiers, and
   version strings may be suggested but are never rewritten automatically
 - minimum input length

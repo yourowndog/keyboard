@@ -86,6 +86,10 @@ variation events.
 
 These are not roadmap implementation tasks:
 
+- The ranking cleanup now keeps anti-correction pair exclusion, protected-word
+  commit vetoes, contextual evidence, contraction rules, segmentation, and
+  numerical scoring in distinct components. Its regression suite is static;
+  confirm on the next installed build that ordinary suggestions feel unchanged.
 - Numeric-bearing tokens are now blocked from automatic commit by
   `CommitPolicy`, including digits-only values, mixed identifiers, and version
   strings. The captured `742` -> `PS2` revert is a regression fixture; confirm

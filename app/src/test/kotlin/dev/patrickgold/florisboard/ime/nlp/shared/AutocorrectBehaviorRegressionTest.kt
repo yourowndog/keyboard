@@ -12,6 +12,7 @@ class AutocorrectBehaviorRegressionTest {
     @Test
     fun protectedVocabularyAndAntiCorrectionsRemainDistinct() {
         assertTrue(PersonalPreferences.isProtectedFromAutocorrect("bc"))
+        assertTrue(PersonalPreferences.isProtectedFromAutocorrect("rn"))
         assertFalse(PersonalPreferences.isAntiCorrection("bc", "be"))
 
         assertTrue(PersonalPreferences.isAntiCorrection("sams", "samson"))
@@ -61,6 +62,11 @@ class AutocorrectBehaviorRegressionTest {
 
     @Test
     fun idToIdContractionRemainsAnExplicitPairExclusion() {
+        assertEquals(
+            -50.0,
+            ContextualEvidence.rankingPenalty("id", "i'd", "and"),
+            absoluteTolerance = 0.0001,
+        )
         assertTrue(PersonalPreferences.isAntiCorrection("id", "I'd"))
         assertFalse(PersonalPreferences.isProtectedFromAutocorrect("id"))
     }

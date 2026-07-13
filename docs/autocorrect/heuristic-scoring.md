@@ -1,9 +1,9 @@
 # Heuristic Candidate Scoring
 
 > Status: Canonical  
-> Last verified: 2026-07-11  
+> Last verified: 2026-07-12
 > Verified against: `CandidateScorer.kt`, `SuggestionEngine.kt`,
-> `KeyboardLayout`, bigram tables, and personal preferences
+> `ContextualEvidence.kt`, `KeyboardLayout`, and bigram tables
 
 The heuristic scorer assigns a penalty; lower is better. The suggestion engine
 converts the penalty to confidence by negating it and sorts descending.
@@ -23,10 +23,10 @@ The score begins with edit distance, then combines:
 - grammar and bigram-block penalties
 - selected context-specific ambiguity rules
 
-The exact constants live in `CandidateScorer.kt`; link to them rather than
-copying values into multiple documents. Changing a constant affects displayed
-ranking, auto-commit eligibility indirectly, swipe word scoring, and the
-candidate set seen by later logic.
+The exact constants live in `CandidateScorer.kt` and `ContextualEvidence.kt`;
+link to them rather than copying values into multiple documents. Changing a
+constant affects displayed ranking, auto-commit eligibility indirectly, swipe
+word scoring, and the candidate set seen by later logic.
 
 ## Physical model
 
@@ -39,12 +39,15 @@ Unknown characters receive the far-key fallback. Insertions/deletions are
 primarily represented through edit distance and length cost rather than a
 physical coordinate.
 
-## Vetoes and penalties
+## Eligibility and penalties
 
-Personal vocabulary and explicit anti-corrections can cull a candidate. Grammar
-and bigram conflicts currently add heavy penalties rather than necessarily
-deleting the candidate. This distinction matters: a penalized option may remain
-visible while a culled option cannot be selected.
+The Judge does not enforce personal policy. Typed→candidate anti-correction
+pairs are excluded before ranking. Protected vocabulary remains rankable, while
+`CommitPolicy` vetoes automatic replacement of the protected typed form.
+
+Grammar, bigram conflicts, and `id` ambiguity are soft numerical evidence from
+`ContextualEvidence`. They can reorder visible candidates but cannot authorize
+or forbid a commit.
 
 ## Safe tuning workflow
 
@@ -63,4 +66,3 @@ visible while a culled option cannot be selected.
 The NLP word-scoring interface is also used by glide typing. Swipe supplies its
 own geometry/path evidence and calls word scoring with different assumptions.
 Any scorer change should be checked for tap and glide regressions.
-
