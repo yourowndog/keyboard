@@ -33,7 +33,6 @@ import dev.patrickgold.florisboard.ime.nlp.SuggestionCandidate
 import dev.patrickgold.florisboard.ime.nlp.SuggestionProvider
 import dev.patrickgold.florisboard.ime.nlp.WordSuggestionCandidate
 import dev.patrickgold.florisboard.ime.nlp.shared.BigramTable
-import dev.patrickgold.florisboard.ime.nlp.shared.CandidateScorer
 import dev.patrickgold.florisboard.ime.nlp.shared.CommitPolicy
 import dev.patrickgold.florisboard.ime.nlp.shared.WordSegmentation
 import dev.patrickgold.florisboard.lib.devtools.flogDebug
@@ -242,7 +241,7 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         val segmented = WordSegmentation.findUniqueHighConfidence(
             input = currentWordRaw,
             isWord = SymSpellManager::hasWord,
-            hasBigram = { left, right -> CandidateScorer.bigramScore(left, right).hasHit },
+            hasBigram = { left, right -> BigramTable.get()?.hasHit(left, right) == true },
         )
         if (segmented != null &&
             !dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isProtectedFromAutocorrect(currentWordRaw)
