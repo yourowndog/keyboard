@@ -51,6 +51,8 @@ object CommitPolicy {
         ANTI_CORRECTION,
         /** Typed word is protected personal vocabulary. */
         PROTECTED_VOCAB,
+        /** Tokens containing digits are identifiers/data, not prose to rewrite. */
+        NUMERIC_TOKEN,
         /** Single letters are deliberate; only casing fixes may touch them. */
         TOO_SHORT,
         /** Prefix-only completion — a prediction, not a correction. */
@@ -77,6 +79,7 @@ object CommitPolicy {
             if (!neuralAllows) add(Blocker.NEURAL_VETO)
             if (input.isBlockedCorrection) add(Blocker.ANTI_CORRECTION)
             if (input.typedIsProtectedVocab) add(Blocker.PROTECTED_VOCAB)
+            if (isChange && input.typed.any { it.isDigit() }) add(Blocker.NUMERIC_TOKEN)
             if (input.typed.length < 2 && !isCasingFix) add(Blocker.TOO_SHORT)
             if (!input.isEditDistanceCandidate && !isCasingFix) add(Blocker.NOT_A_CORRECTION)
         }

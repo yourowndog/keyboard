@@ -84,6 +84,8 @@ first. The provider checks, among other things:
 - whether the change is a casing fix
 - whether the candidate came from correction retrieval
 - personal-vocabulary and anti-correction blocks
+- any typed token containing a digit; numeric values, mixed identifiers, and
+  version strings may be suggested but are never rewritten automatically
 - minimum input length
 - the optional neural decision gate
 

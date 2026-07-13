@@ -12,14 +12,6 @@ required `rtk init -g --auto-patch`. Determine which tool is rewriting
 `~/.claude/hooks/rtk-rewrite.sh`. Prefer explicit `rtk` command invocation from
 `AGENTS.md` and remove the global auto-rewrite hook if it remains contested.
 
-### Numeric-token autocorrect guard
-
-Live validation reproduced `742` being auto-corrected to `PS2`. The provider
-defines a digits-only helper but does not apply it in the suggestion path. Add
-an early non-commit path for numeric tokens, cover mixed identifiers and version
-strings deliberately, and retain the captured REVERTED event as a regression
-fixture.
-
 ### Smartbar action customization
 
 Verify and repair action reordering, visibility toggles, and persistence. The
@@ -94,6 +86,10 @@ variation events.
 
 These are not roadmap implementation tasks:
 
+- Numeric-bearing tokens are now blocked from automatic commit by
+  `CommitPolicy`, including digits-only values, mixed identifiers, and version
+  strings. The captured `742` -> `PS2` revert is a regression fixture; confirm
+  on the installed build that numeric suggestions remain non-destructive.
 - The `org.florisboard.themes` LCARS Tactical and Neon variants now give Ctrl
   and Tmux high-contrast active styling. Tmux keeps a visual latch after a
   successful Ctrl+B handoff until the next non-Tmux key release. The next

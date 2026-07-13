@@ -80,8 +80,6 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
 
     override val providerId = ProviderId
 
-    private fun String.isDigitsOnly(): Boolean = this.all { it.isDigit() }
-
     override suspend fun create() {
         // Here we initialize our provider, set up all things which are not language dependent.
     }
