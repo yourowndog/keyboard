@@ -21,6 +21,7 @@ import kotlin.math.min
 
 object DictionaryRepository {
     private const val DICT_ASSET_PATH = "ime/dict/unified_dictionary.tsv"
+    private const val LOG_TAG = "DictionaryRepository"
     private const val MAX_WORD_LENGTH = 34
     private const val MAX_EDIT_DISTANCE = 2
 
@@ -30,6 +31,7 @@ object DictionaryRepository {
     private class Bucket(val words: Array<String>, val masks: IntArray, val freqs: LongArray)
 
     @Volatile private var loaded = false
+    @Volatile private var diagnosticSink: (String) -> Unit = {}
     private val loadLock = Any()
 
     // lowercase word -> frequency
@@ -57,16 +59,31 @@ object DictionaryRepository {
      * Safe to call from multiple threads; only the first call does work.
      */
     fun ensureLoaded(context: Context) {
+        // Keep Android diagnostics at the Android entry point. Pure JVM callers
+        // use the no-op sink and never touch android.util.Log.
+        diagnosticSink = { message -> android.util.Log.i(LOG_TAG, message) }
         if (loaded) return
-        synchronized(loadLock) {
-            if (loaded) return
-            val freq = HashMap<String, Long>(220_000)
-            val display = HashMap<String, String>(64_000)
-            val logFreq = HashMap<String, Double>(220_000)
-            val byLength = Array(MAX_WORD_LENGTH + 1) { ArrayList<Triple<String, Int, Long>>() }
+        loadFromReader(context.assets.open(DICT_ASSET_PATH).bufferedReader())
+        diagnosticSink("Loaded $size words from $DICT_ASSET_PATH")
+    }
 
-            context.assets.open(DICT_ASSET_PATH).bufferedReader().useLines { lines ->
-                for (line in lines) {
+    /**
+     * Parse a dictionary TSV stream and build all lookup structures. Split
+     * from [ensureLoaded] so assembled-pipeline JVM tests can load the real
+     * packaged asset without an Android Context. Safe to call from multiple
+     * threads; only the first call does work.
+     */
+    fun loadFromReader(reader: java.io.BufferedReader) {
+        reader.use { input ->
+            if (loaded) return@use
+            synchronized(loadLock) {
+                if (loaded) return@synchronized
+                val freq = HashMap<String, Long>(220_000)
+                val display = HashMap<String, String>(64_000)
+                val logFreq = HashMap<String, Double>(220_000)
+                val byLength = Array(MAX_WORD_LENGTH + 1) { ArrayList<Triple<String, Int, Long>>() }
+
+                for (line in input.lineSequence()) {
                     val tab = line.indexOf('\t')
                     if (tab <= 0) continue
                     val raw = line.substring(0, tab)
@@ -82,23 +99,22 @@ object DictionaryRepository {
                         byLength[lower.length].add(Triple(lower, charMask(lower), f))
                     }
                 }
-            }
 
-            // Frequencies may have been updated after bucket insertion for duplicate
-            // lowercase forms; rebuild bucket freqs from the final map.
-            buckets = Array(MAX_WORD_LENGTH + 1) { len ->
-                val entries = byLength[len]
-                if (entries.isEmpty()) null else Bucket(
-                    words = Array(entries.size) { entries[it].first },
-                    masks = IntArray(entries.size) { entries[it].second },
-                    freqs = LongArray(entries.size) { freq[entries[it].first] ?: entries[it].third },
-                )
+                // Frequencies may have been updated after bucket insertion for duplicate
+                // lowercase forms; rebuild bucket freqs from the final map.
+                buckets = Array(MAX_WORD_LENGTH + 1) { len ->
+                    val entries = byLength[len]
+                    if (entries.isEmpty()) null else Bucket(
+                        words = Array(entries.size) { entries[it].first },
+                        masks = IntArray(entries.size) { entries[it].second },
+                        freqs = LongArray(entries.size) { freq[entries[it].first] ?: entries[it].third },
+                    )
+                }
+                freqMap = freq
+                displayMap = display
+                logFreqMap = logFreq
+                loaded = true
             }
-            freqMap = freq
-            displayMap = display
-            logFreqMap = logFreq
-            loaded = true
-            android.util.Log.i("DictionaryRepository", "Loaded ${freq.size} words from $DICT_ASSET_PATH")
         }
     }
 
@@ -146,7 +162,7 @@ object DictionaryRepository {
         // Sample lookup latency so regressions show up in logcat without profiling
         if (lookupCounter.incrementAndGet() % 32 == 1) {
             val micros = (System.nanoTime() - start) / 1000
-            android.util.Log.i("DictionaryRepository", "findWithinTwoEdits('$typed') -> ${result.size} candidates in ${micros}us")
+            diagnosticSink("findWithinTwoEdits('$typed') -> ${result.size} candidates in ${micros}us")
         }
         return result
     }
