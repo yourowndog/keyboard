@@ -37,10 +37,10 @@ import dev.patrickgold.florisboard.ime.nlp.shared.CandidateProvenance
 import dev.patrickgold.florisboard.ime.nlp.shared.CommitCandidateEvidence
 import dev.patrickgold.florisboard.ime.nlp.shared.CommitPolicy
 import dev.patrickgold.florisboard.ime.nlp.shared.CommitRequestEvidence
-import dev.patrickgold.florisboard.ime.nlp.shared.ContractionRules
 import dev.patrickgold.florisboard.ime.nlp.shared.CorrectionDecision
 import dev.patrickgold.florisboard.ime.nlp.shared.NeuralBypassReason
 import dev.patrickgold.florisboard.ime.nlp.shared.NeuralEvidence
+import dev.patrickgold.florisboard.ime.nlp.shared.ShortcutCorrection
 import dev.patrickgold.florisboard.ime.nlp.shared.TypedLexicalStatus
 import dev.patrickgold.florisboard.ime.nlp.shared.WordSegmentation
 import dev.patrickgold.florisboard.lib.devtools.flogDebug
@@ -123,9 +123,7 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
 
         // SymSpell handles all suggestions/corrections - legacy dictionary code removed
 
-        // Initialize Ngram Engine for Ranking
-        // Note: Only loads unigrams here. Bigrams are provided by the shared BigramTable singleton
-        // which is loaded once in SymSpellManager.init()
+        // Only unigrams are retained by the engine; bigrams stay in BigramTable.
         // preload() fires on every subtype switch; both loads below are subtype-independent,
         // so load once and keep. Reloading here previously leaked the replaced ONNX session
         // and re-parsed the full unified dictionary each time.
@@ -210,86 +208,32 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
             return emptyList()
         }
 
-        // Special case: lone "i" -> "I" (SymSpell doesn't return "i" as candidate)
-        if (currentWordRaw.equals("i", ignoreCase = true)) {
-            val casedCandidate = "I"
-            val requestEvidence = CommitRequestEvidence(
-                typed = currentWordRaw,
-                typedLexicalStatus = lexicalStatus(SymSpellManager.hasWord(currentWordRaw)),
-                typedIsProtectedVocab = dev.patrickgold.florisboard.ime.nlp.PersonalPreferences
-                    .isProtectedFromAutocorrect(currentWordRaw),
-                neuralEvidence = NeuralEvidence.Bypassed(NeuralBypassReason.CASING_FAST_PATH),
-            )
-            val decision = CorrectionDecision.evaluate(
-                request = requestEvidence,
-                candidate = CommitCandidateEvidence(
-                    raw = casedCandidate,
-                    cased = casedCandidate,
-                    provenance = CandidateProvenance.CASING_RULE,
-                    isBlockedCorrection = dev.patrickgold.florisboard.ime.nlp.PersonalPreferences
-                        .isAntiCorrection(currentWordRaw, casedCandidate),
-                ),
-            )
-            return listOf(
-                WordSuggestionCandidate(
-                    text = casedCandidate,
-                    secondaryText = null,
-                    isEligibleForAutoCommit = decision.shouldCommit,
-                    sourceProvider = this
-                )
-            )
-        }
-        
-        // Fast-path for contractions: dont -> don't, etc.
-        // Context-dependent words (were/we're, its/it's) resolve against the previous
-        // word; everything else comes from the plain shortcut map.
-        // PersonalPreferences wins over the shortcut map: words Sam types intentionally
-        // (PERSONAL_VOCAB) and corrections he has explicitly blocked (ANTI_CORRECTIONS)
-        // must never blind-fire from here.
-        val contractionResult = ContractionRules.resolveContextual(currentWordRaw, previousWord)
-            ?: ContractionRules.SHORTCUTS[currentWordRaw.lowercase()]
-        val contractionIsProtected = dev.patrickgold.florisboard.ime.nlp.PersonalPreferences
+        // Shortcut resolution and evidence assembly are pure and shared with the
+        // asset-backed pipeline tests. Personal vetoes remain real Gate inputs.
+        val shortcutIsProtected = dev.patrickgold.florisboard.ime.nlp.PersonalPreferences
             .isProtectedFromAutocorrect(currentWordRaw)
-        val contractionIsBlocked = contractionResult != null &&
-            dev.patrickgold.florisboard.ime.nlp.PersonalPreferences
-                .isAntiCorrection(currentWordRaw, contractionResult)
-        if (contractionResult != null &&
-            !contractionIsProtected &&
-            !contractionIsBlocked
-        ) {
-            // Match the typed casing so "WERE" becomes "WE'RE", and capitalize at sentence
-            // start even when the typed word is lowercase (auto-caps missed or was defeated):
-            // the regular pipeline gets this from applyPredictedCasing, which this fast-path skips.
-            val casedContraction = dev.patrickgold.florisboard.ime.nlp.shared.CasingUtils.matchCasingPattern(currentWordRaw, contractionResult)
-            val finalContraction = if (dev.patrickgold.florisboard.ime.nlp.shared.CasingUtils.isAtSentenceStart(textBeforeCurrentWord)) {
-                casedContraction.replaceFirstChar { it.titlecase() }
-            } else {
-                casedContraction
-            }
-            val requestEvidence = CommitRequestEvidence(
-                typed = currentWordRaw,
-                typedLexicalStatus = lexicalStatus(SymSpellManager.hasWord(currentWordRaw)),
-                typedIsProtectedVocab = contractionIsProtected,
-                neuralEvidence = NeuralEvidence.Bypassed(
-                    NeuralBypassReason.LICENSED_CONTRACTION_FAST_PATH,
-                ),
-            )
-            val contractionDecision = CorrectionDecision.evaluate(
-                request = requestEvidence,
-                candidate = CommitCandidateEvidence(
-                    raw = contractionResult,
-                    cased = finalContraction,
-                    provenance = CandidateProvenance.CONTRACTION_RULE,
-                    isBlockedCorrection = contractionIsBlocked,
-                ),
-            )
+        val shortcut = ShortcutCorrection.resolve(
+            typed = currentWordRaw,
+            isSentenceStart = dev.patrickgold.florisboard.ime.nlp.shared.CasingUtils
+                .isAtSentenceStart(textBeforeCurrentWord),
+            typedLexicalStatus = lexicalStatus(SymSpellManager.hasWord(currentWordRaw)),
+            typedIsProtectedVocab = shortcutIsProtected,
+            isBlockedCorrection = { candidate ->
+                dev.patrickgold.florisboard.ime.nlp.PersonalPreferences
+                    .isAntiCorrection(currentWordRaw, candidate)
+            },
+        )
+        val shouldReturnShortcut = shortcut != null &&
+            (shortcut.provenance == CandidateProvenance.CASING_RULE ||
+                (!shortcutIsProtected && !shortcut.isBlockedCorrection))
+        if (shortcut != null && shouldReturnShortcut) {
             return listOf(
                 WordSuggestionCandidate(
-                    text = finalContraction,
+                    text = shortcut.casedCandidate,
                     secondaryText = null,
-                    isEligibleForAutoCommit = contractionDecision.shouldCommit,
-                    sourceProvider = this
-                )
+                    isEligibleForAutoCommit = shortcut.decision.shouldCommit,
+                    sourceProvider = this,
+                ),
             )
         }
 

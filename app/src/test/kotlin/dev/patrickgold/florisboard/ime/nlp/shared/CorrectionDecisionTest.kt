@@ -24,11 +24,13 @@ class CorrectionDecisionTest {
         cased: String = raw,
         provenance: CandidateProvenance = CandidateProvenance.EDIT_DISTANCE,
         blocked: Boolean = false,
+        contractionLicense: ContractionLicense? = null,
     ) = CommitCandidateEvidence(
         raw = raw,
         cased = cased,
         provenance = provenance,
         isBlockedCorrection = blocked,
+        contractionLicense = contractionLicense,
     )
 
     @Test
@@ -43,6 +45,17 @@ class CorrectionDecisionTest {
             ),
         )
         assertEquals(listOf(Blocker.NOT_A_CORRECTION), completion.blockers)
+    }
+
+    @Test
+    fun protectedIdCannotFallThroughToAnOrdinaryEditCommit() {
+        val verdict = CorrectionDecision.evaluate(
+            request = request(typed = "id", protected = true),
+            candidate = candidate(raw = "it"),
+        )
+
+        assertEquals(listOf(Blocker.PROTECTED_VOCAB), verdict.blockers)
+        assertFalse(verdict.shouldCommit)
     }
 
     @Test
@@ -72,21 +85,23 @@ class CorrectionDecisionTest {
     }
 
     @Test
-    fun contractionProvenanceLicensesOnlyTheNamedRulePath() {
+    fun explicitContractionLicenseAuthorizesOnlyTheEvidencedRulePath() {
+        val resolution = requireNotNull(ContractionRules.resolveStatic("dont"))
         val typed = request(
-            typed = "were",
+            typed = "dont",
             lexicalStatus = TypedLexicalStatus.KNOWN_WORD,
             neural = NeuralEvidence.Bypassed(NeuralBypassReason.LICENSED_CONTRACTION_FAST_PATH),
         )
         val contraction = candidate(
-            raw = "we're",
+            raw = resolution.candidate,
             provenance = CandidateProvenance.CONTRACTION_RULE,
+            contractionLicense = resolution.license,
         )
         assertTrue(CorrectionDecision.evaluate(typed, contraction).shouldCommit)
 
         val unlicensed = CorrectionDecision.evaluate(
             request = typed,
-            candidate = contraction.copy(provenance = CandidateProvenance.PREFIX_COMPLETION),
+            candidate = contraction.copy(contractionLicense = null),
         )
         assertEquals(
             listOf(Blocker.VALID_WORD_IMMUNITY, Blocker.NOT_A_CORRECTION),
@@ -95,18 +110,85 @@ class CorrectionDecisionTest {
     }
 
     @Test
+    fun contractionLicenseCannotAuthorizeAnotherPairOrProvenance() {
+        val dont = requireNotNull(ContractionRules.resolveStatic("dont"))
+        val cant = requireNotNull(ContractionRules.resolveStatic("cant"))
+        val typedDont = request(
+            typed = "dont",
+            lexicalStatus = TypedLexicalStatus.KNOWN_WORD,
+            neural = NeuralEvidence.Bypassed(NeuralBypassReason.LICENSED_CONTRACTION_FAST_PATH),
+        )
+        val licensedDont = candidate(
+            raw = dont.candidate,
+            provenance = CandidateProvenance.CONTRACTION_RULE,
+            contractionLicense = dont.license,
+        )
+        val expected = listOf(
+            Blocker.INVALID_CONTRACTION_LICENSE,
+            Blocker.VALID_WORD_IMMUNITY,
+            Blocker.NOT_A_CORRECTION,
+        )
+
+        assertEquals(
+            expected,
+            CorrectionDecision.evaluate(
+                typedDont,
+                licensedDont.copy(provenance = CandidateProvenance.PREFIX_COMPLETION),
+            ).blockers,
+        )
+        assertEquals(
+            expected,
+            CorrectionDecision.evaluate(
+                typedDont,
+                licensedDont.copy(raw = "can't", cased = "can't"),
+            ).blockers,
+        )
+        assertEquals(
+            expected,
+            CorrectionDecision.evaluate(
+                request = typedDont.copy(typed = "cant"),
+                candidate = licensedDont,
+            ).blockers,
+        )
+        assertEquals(
+            expected,
+            CorrectionDecision.evaluate(
+                typedDont,
+                licensedDont.copy(contractionLicense = cant.license),
+            ).blockers,
+        )
+        assertEquals(
+            expected,
+            CorrectionDecision.evaluate(
+                typedDont,
+                licensedDont.copy(cased = "do not"),
+            ).blockers,
+        )
+        assertEquals(
+            listOf(Blocker.INVALID_CONTRACTION_LICENSE),
+            CorrectionDecision.evaluate(
+                request = request(),
+                candidate = candidate(contractionLicense = dont.license),
+            ).blockers,
+            "incoherent license evidence rejects an otherwise valid edit candidate",
+        )
+    }
+
+    @Test
     fun neuralEvaluationStillVetoesLicensedContractions() {
+        val resolution = requireNotNull(ContractionRules.resolveStatic("dont"))
         val result = CorrectionDecision.evaluate(
             request = request(
-                typed = "were",
+                typed = "dont",
                 lexicalStatus = TypedLexicalStatus.KNOWN_WORD,
                 neural = NeuralEvidence.Evaluated(
-                    CommitPolicy.NeuralVerdict(shouldFire = false, topTerm = "we're"),
+                    CommitPolicy.NeuralVerdict(shouldFire = false, topTerm = resolution.candidate),
                 ),
             ),
             candidate = candidate(
-                raw = "we're",
+                raw = resolution.candidate,
                 provenance = CandidateProvenance.CONTRACTION_RULE,
+                contractionLicense = resolution.license,
             ),
         )
         assertEquals(listOf(Blocker.NEURAL_VETO), result.blockers)

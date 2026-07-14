@@ -104,14 +104,14 @@ class CommitPolicyTest {
         assertTrue(Blocker.NUMERIC_TOKEN in CommitPolicy.blockers(input))
     }
 
-    // A ContractionRules license overrides valid-word immunity (were -> we're)
+    // A verified static ContractionRules license overrides valid-word immunity (dont -> don't)
     // and stands in for edit-distance provenance the contraction path lacks.
     @Test
     fun licensedContractionCommitsDespiteTypedBeingValidWord() {
         val input = baseInput().copy(
-            typed = "were",
-            casedCandidate = "we're",
-            rawCandidate = "we're",
+            typed = "dont",
+            casedCandidate = "don't",
+            rawCandidate = "don't",
             typedIsValidWord = true,
             isEditDistanceCandidate = false,
             isLicensedContraction = true,
@@ -169,6 +169,15 @@ class CommitPolicyTest {
             neuralVerdict = CommitPolicy.NeuralVerdict(shouldFire = true, topTerm = "The"),
         )
         assertTrue(CommitPolicy.shouldCommit(input))
+    }
+
+    @Test
+    fun invalidContractionLicenseEvidenceAlwaysBlocks() {
+        val input = baseInput().copy(hasInvalidContractionLicense = true)
+        assertEquals(
+            listOf(Blocker.INVALID_CONTRACTION_LICENSE),
+            CommitPolicy.blockers(input),
+        )
     }
 
     @Test

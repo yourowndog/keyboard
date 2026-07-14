@@ -1,7 +1,7 @@
 # Heuristic Candidate Scoring
 
 > Status: Canonical  
-> Last verified: 2026-07-13
+> Last verified: 2026-07-14
 > Verified against: `CandidateScorer.kt`, `SuggestionEngine.kt`,
 > `ContextualEvidence.kt`, `ContractionRules.kt`, `CommitPolicy.kt`,
 > `CorrectionDecision.kt`, `KeyboardLayout`, and bigram tables
@@ -63,12 +63,15 @@ Grammar, bigram conflicts, and `id` ambiguity are soft numerical evidence from
 `ContextualEvidence`. They can reorder visible candidates but cannot authorize
 or forbid a commit.
 
-Contraction licensing has two distinct consumers. The Judge consults
-`LICENSED_FORMS` before granting apostrophe bonuses; the shortcut path supplies
-`CONTRACTION_RULE` provenance to `CorrectionDecision`, which derives the
-licensed-contraction input for `CommitPolicy`. That authorization may waive
-valid-word immunity and missing edit-retrieval provenance. A ranking bonus does
-not itself provide Gate authorization.
+Contraction knowledge has two distinct consumers. The Judge consults
+`LICENSED_FORMS` before granting apostrophe bonuses; membership affects ranking
+only and never grants commit authority. The shortcut path receives an opaque
+static-rule license from `ContractionRules`, bound to the normalized typed form,
+exact raw candidate, and `CONTRACTION_RULE` provenance. `CorrectionDecision`
+revalidates the binding before it may waive valid-word immunity or missing
+edit-retrieval provenance. Provenance, an apostrophe bonus, or a license issued
+for another pair cannot authorize a commit. Ambiguous valid words such as
+`were` and `its` receive no left-context shortcut license.
 
 ## Runtime boundary
 

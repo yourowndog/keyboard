@@ -70,9 +70,9 @@ object PersonalPreferences {
         "ir" to listOf("iron"),
         "Congrats" to listOf("Contrast"),
         "domething" to listOf("something"),
-        // "were" -> we're and "its" -> it's removed: handled context-aware by
-        // ContractionRules.resolveContextual (blanket blocks were duct tape
-        // against the old blind shortcut map).
+        // "were" -> we're and "its" -> it's are intentionally absent. Left
+        // context cannot safely disambiguate them, so valid-word immunity keeps
+        // the literal text while the normal suggestion path remains available.
         "Kaylyn" to listOf("Kayla"),
         "ton" to listOf("top", "to"),
         "Quora" to listOf("Quota"),

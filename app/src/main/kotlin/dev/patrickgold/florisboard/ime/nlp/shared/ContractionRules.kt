@@ -1,7 +1,32 @@
 package dev.patrickgold.florisboard.ime.nlp.shared
 
+enum class ContractionLicenseKind {
+    STATIC_RULE,
+}
+
+/** Opaque commit authority issued only with an exact ContractionRules resolution. */
+sealed interface ContractionLicense {
+    val kind: ContractionLicenseKind
+    val normalizedTyped: String
+    val rawCandidate: String
+    val provenance: CandidateProvenance
+}
+
 /** Canonical contraction data; consumers retain distinct behavior scopes. */
 object ContractionRules {
+    private class StaticRuleLicense(
+        override val normalizedTyped: String,
+        override val rawCandidate: String,
+    ) : ContractionLicense {
+        override val kind = ContractionLicenseKind.STATIC_RULE
+        override val provenance = CandidateProvenance.CONTRACTION_RULE
+    }
+
+    data class Resolution(
+        val candidate: String,
+        val license: ContractionLicense,
+    )
+
     /** General shortcuts used by the primary suggestion path and casing. */
     val SHORTCUTS = mapOf(
         "im" to "I'm",
@@ -27,7 +52,7 @@ object ContractionRules {
         "shouldnt" to "shouldn't",
         "youre" to "you're",
         "theyre" to "they're",
-        // Real words "were" and "its" are handled only by resolveContextual().
+        // Ambiguous valid words "were" and "its" deliberately have no shortcut.
         "hes" to "he's",
         "shes" to "she's",
         "thats" to "that's",
@@ -90,22 +115,31 @@ object ContractionRules {
         )
     }
 
-    private val PREV_WORDS_FOR_WERE = setOf(
-        "we", "they", "you", "there", "here", "who", "which", "what", "that", "these", "those",
-    )
-    private val PREV_WORDS_FOR_ITS_POSSESSIVE = setOf(
-        "lost", "on", "at", "in", "of", "with", "by", "for", "from",
-        "the", "a", "an", "this", "that", "these", "those",
-        "my", "your", "his", "her", "their", "our",
-    )
+    /** Issues an exact license only for an explicit static shortcut. */
+    fun resolveStatic(typed: String): Resolution? {
+        val normalizedTyped = typed.lowercase()
+        val candidate = SHORTCUTS[normalizedTyped] ?: return null
+        return Resolution(
+            candidate = candidate,
+            license = StaticRuleLicense(
+                normalizedTyped = normalizedTyped,
+                rawCandidate = candidate,
+            ),
+        )
+    }
 
-    /** Resolves contractions whose unpunctuated spelling is also a valid word. */
-    fun resolveContextual(typed: String, prevWord: String?): String? {
-        val prev = prevWord?.lowercase() ?: ""
-        return when (typed.lowercase()) {
-            "were" -> if (prev.isEmpty() || prev !in PREV_WORDS_FOR_WERE) "we're" else null
-            "its" -> if (prev.isNotEmpty() && prev in PREV_WORDS_FOR_ITS_POSSESSIVE) null else "it's"
-            else -> null
-        }
+    /** Revalidates the opaque license at the final evidence boundary. */
+    fun isValidLicense(
+        typed: String,
+        rawCandidate: String,
+        provenance: CandidateProvenance,
+        license: ContractionLicense?,
+    ): Boolean {
+        val staticLicense = license as? StaticRuleLicense ?: return false
+        if (provenance != CandidateProvenance.CONTRACTION_RULE) return false
+        if (staticLicense.provenance != provenance) return false
+        if (staticLicense.normalizedTyped != typed.lowercase()) return false
+        if (staticLicense.rawCandidate != rawCandidate) return false
+        return SHORTCUTS[staticLicense.normalizedTyped] == staticLicense.rawCandidate
     }
 }

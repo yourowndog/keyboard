@@ -1,7 +1,7 @@
 # Live Autocorrect Pipeline
 
 > Status: Canonical  
-> Last verified: 2026-07-13
+> Last verified: 2026-07-14
 > Verified against: `NlpManager.kt`, `LatinLanguageProvider.kt`,
 > `SymSpellManager.kt`, `DictionaryRepository.kt`, `SuggestionEngine.kt`,
 > `CandidateScorer.kt`, `ContextualEvidence.kt`, `ContractionRules.kt`,
@@ -41,13 +41,24 @@ ordinary typo-correction path.
 
 ## Shortcuts
 
-Before general retrieval, the provider handles selected high-confidence cases,
-including single `i` casing and contextual/static contraction shortcuts. These
-paths route commit eligibility through `CorrectionDecision` and `CommitPolicy`.
+Before general retrieval, the provider handles selected high-confidence cases:
+single `i` casing and explicit static contraction shortcuts. These paths
+assemble their evidence through the shared, pure `ShortcutCorrection` seam,
+then route commit eligibility through `CorrectionDecision` and `CommitPolicy`.
 Contraction shortcuts also pass through personal-vocabulary and typed→candidate
-anti-correction protections. `ContractionRules` supplies the explicit license
-that lets a shortcut replace a dictionary-valid form such as contextual `were`
-and stand in for edit-distance provenance that the fast path does not have.
+anti-correction protections.
+
+Static forms such as `dont` → `don't` carry an opaque rule license bound to the
+normalized typed form, exact raw candidate, and `CONTRACTION_RULE` provenance.
+`CorrectionDecision` revalidates that binding before it can waive valid-word
+immunity or missing edit-retrieval provenance. A missing, mismatched, reused, or
+wrong-provenance license fails closed.
+
+Ambiguous valid words such as `were` and `its` have no shortcut license. Left
+context alone never auto-commits `we're` or `it's`; those forms continue through
+normal retrieval and may remain visible suggestions, while valid-word immunity
+preserves the literal text. Sentence-start state is used only to case an
+already-licensed static output such as `Dont` → `Don't`, not as grammar evidence.
 
 These shortcut paths run before neural candidate scoring and record named bypass
 reasons: `CASING_FAST_PATH` or `LICENSED_CONTRACTION_FAST_PATH`. This is an
@@ -111,7 +122,7 @@ Signals currently include:
   `ContextualEvidence`
 
 `CandidateScorer` contains numerical evidence only. `ContractionRules` owns the
-shortcut/context tables and the set of licensed contraction forms. Large
+shortcut tables and the set of licensed contraction forms. Large
 apostrophe bonuses require membership in that set; an arbitrary dictionary
 possessive such as `La's` or `function's` receives only ordinary ranking
 evidence. Anti-corrections are pair exclusions before ranking, and protected

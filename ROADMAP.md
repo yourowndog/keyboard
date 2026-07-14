@@ -40,9 +40,13 @@ a model or enable live gating only after shadow data supports the threshold.
 ### Autocorrect provider and fallback parity
 
 The pure commit-evidence adapter and asset-backed component tests now prevent
-provider and tests from independently inventing `CommitPolicy` booleans. What
-remains is provider-level coverage of final ordering, casing, shortcut context,
-engine mode, and eligibility. The SymSpell-only path still reports explicit
+provider and tests from independently inventing `CommitPolicy` booleans. Casing
+and explicit static-contraction shortcuts also share a production evidence
+assembler with asset-backed coverage of effective packaged personal vocabulary,
+a real anti-correction, casing, exact static-license binding, and preservation
+of ambiguous valid words such as `were` and `its`. What remains is provider-level
+coverage of final ordering, casing, returned eligibility, and engine mode. The
+SymSpell-only path still reports explicit
 `LEGACY_FALLBACK` provenance because its string-only API loses the source of
 each candidate; retain per-candidate provenance there before tightening parity
 with the primary path. Finish with an on-device commit/revert and engine-
@@ -107,7 +111,12 @@ These are not roadmap implementation tasks:
   now allowed when its candidate differs only by the adjacent replacement
   letter. Static fixtures cover both sides, including the captured `742` ->
   `PS2` revert; confirm on the installed build that word-shaped slips correct
-  while numeric suggestions remain non-destructive.
+  while numeric suggestions remain non-destructive. Known minor quirk (deferred,
+  not a regression): the number-row slip candidate emits its canonical lowercase
+  form and does not inherit the typed casing, so `5his` at a sentence start
+  yields `this` rather than `This`, and `5HIS` yields `this` rather than `THIS`.
+  Casing propagation for this path is out of scope for the current
+  stabilization.
 - The `org.florisboard.themes` LCARS Tactical and Neon variants now give Ctrl
   and Tmux high-contrast active styling. Tmux keeps a visual latch after a
   successful Ctrl+B handoff until the next non-Tmux key release. The next

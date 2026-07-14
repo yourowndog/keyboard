@@ -30,16 +30,16 @@ class AutocorrectBehaviorRegressionTest {
     }
 
     @Test
-    fun contractionsKeepTheirCurrentShortcutAndContextBehavior() {
+    fun contractionsKeepStaticShortcutsWhileAmbiguousValidWordsStayUnlicensed() {
         assertEquals("I'm", ContractionRules.SHORTCUTS["im"])
         assertEquals("I'd", ContractionRules.SHORTCUTS["id"])
         assertEquals("where's", ContractionRules.LEGACY_FALLBACK_SHORTCUTS["wheres"])
         assertNull(ContractionRules.LEGACY_FALLBACK_SHORTCUTS["id"])
 
-        assertEquals("we're", ContractionRules.resolveContextual("were", "hello"))
-        assertNull(ContractionRules.resolveContextual("were", "they"))
-        assertEquals("it's", ContractionRules.resolveContextual("its", "think"))
-        assertNull(ContractionRules.resolveContextual("its", "on"))
+        assertNull(ContractionRules.resolveStatic("were"))
+        assertNull(ContractionRules.resolveStatic("its"))
+        assertTrue("we're" in ContractionRules.LICENSED_FORMS)
+        assertTrue("it's" in ContractionRules.LICENSED_FORMS)
     }
 
     @Test
@@ -61,14 +61,14 @@ class AutocorrectBehaviorRegressionTest {
     }
 
     @Test
-    fun idToIdContractionRemainsAnExplicitPairExclusion() {
+    fun idContractionVetoAndTokenProtectionRemainEffective() {
         assertEquals(
             -50.0,
             ContextualEvidence.rankingPenalty("id", "i'd", "and"),
             absoluteTolerance = 0.0001,
         )
         assertTrue(PersonalPreferences.isAntiCorrection("id", "I'd"))
-        assertFalse(PersonalPreferences.isProtectedFromAutocorrect("id"))
+        assertTrue(PersonalPreferences.isProtectedFromAutocorrect("id"))
     }
 
     // Ranking evidence for the real dictionary rows behind the observed

@@ -51,6 +51,7 @@ data class CommitCandidateEvidence(
     val cased: String,
     val provenance: CandidateProvenance,
     val isBlockedCorrection: Boolean,
+    val contractionLicense: ContractionLicense? = null,
 )
 
 /**
@@ -91,6 +92,15 @@ object CorrectionDecision {
 
             is NeuralEvidence.Evaluated -> neural.verdict
         }
+        val isLicensedContraction = candidate.cased.equals(candidate.raw, ignoreCase = true) &&
+            ContractionRules.isValidLicense(
+                typed = request.typed,
+                rawCandidate = candidate.raw,
+                provenance = candidate.provenance,
+                license = candidate.contractionLicense,
+            )
+        val hasInvalidContractionLicense = candidate.contractionLicense != null &&
+            !isLicensedContraction
         val input = CommitPolicy.Input(
             typed = request.typed,
             casedCandidate = candidate.cased,
@@ -100,7 +110,8 @@ object CorrectionDecision {
             isBlockedCorrection = candidate.isBlockedCorrection,
             typedIsProtectedVocab = request.typedIsProtectedVocab,
             neuralVerdict = neuralVerdict,
-            isLicensedContraction = candidate.provenance == CandidateProvenance.CONTRACTION_RULE,
+            isLicensedContraction = isLicensedContraction,
+            hasInvalidContractionLicense = hasInvalidContractionLicense,
         )
         return Verdict(
             blockers = CommitPolicy.blockers(input),

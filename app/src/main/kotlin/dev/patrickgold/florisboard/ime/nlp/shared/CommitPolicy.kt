@@ -48,18 +48,22 @@ object CommitPolicy {
          */
         val neuralVerdict: NeuralVerdict?,
         /**
-         * Candidate is authorized by ContractionRules (dont → don't,
-         * contextual were → we're). The license is what permits replacing a
-         * token that is itself a valid dictionary word, and stands in for
-         * edit-distance provenance the contraction path never had.
+         * [CorrectionDecision] verified an exact static ContractionRules license
+         * for this typed form and raw candidate (for example, dont → don't).
+         * The verified license may replace a dictionary-valid token and stands
+         * in for edit-distance provenance the shortcut path never had.
          */
         val isLicensedContraction: Boolean = false,
+        /** A non-null contraction license was supplied but failed exact validation. */
+        val hasInvalidContractionLicense: Boolean = false,
     )
 
     /** Everything that can veto a commit, in evaluation order. */
     enum class Blocker {
         /** Candidate is byte-identical to the typed text — nothing to commit. */
         NO_CHANGE,
+        /** Supplied contraction-license evidence is incoherent or belongs elsewhere. */
+        INVALID_CONTRACTION_LICENSE,
         /** Typed word is valid, and the candidate is a different word (not a casing fix). */
         VALID_WORD_IMMUNITY,
         /** Neural gate is live and either declined to fire or backs a different candidate. */
@@ -92,6 +96,7 @@ object CommitPolicy {
 
         return buildList {
             if (!isChange) add(Blocker.NO_CHANGE)
+            if (input.hasInvalidContractionLicense) add(Blocker.INVALID_CONTRACTION_LICENSE)
             if (input.typedIsValidWord && !isCasingFix && !input.isLicensedContraction) {
                 add(Blocker.VALID_WORD_IMMUNITY)
             }
