@@ -37,6 +37,17 @@ Continue the snapshot -> review -> derive -> train -> shadow-evaluate cycle
 documented in `docs/autocorrect/harvesting.md` and `training/README.md`. Promote
 a model or enable live gating only after shadow data supports the threshold.
 
+### Autocorrect provider and fallback parity
+
+The pure commit-evidence adapter and asset-backed component tests now prevent
+provider and tests from independently inventing `CommitPolicy` booleans. What
+remains is provider-level coverage of final ordering, casing, shortcut context,
+engine mode, and eligibility. The SymSpell-only path still reports explicit
+`LEGACY_FALLBACK` provenance because its string-only API loses the source of
+each candidate; retain per-candidate provenance there before tightening parity
+with the primary path. Finish with an on-device commit/revert and engine-
+recovery pass before treating this cleanup as behaviorally closed.
+
 ## Layout and ergonomics
 
 ### Independent space-row model
@@ -90,10 +101,13 @@ These are not roadmap implementation tasks:
   commit vetoes, contextual evidence, contraction rules, segmentation, and
   numerical scoring in distinct components. Its regression suite is static;
   confirm on the next installed build that ordinary suggestions feel unchanged.
-- Numeric-bearing tokens are now blocked from automatic commit by
-  `CommitPolicy`, including digits-only values, mixed identifiers, and version
-  strings. The captured `742` -> `PS2` revert is a regression fixture; confirm
-  on the installed build that numeric suggestions remain non-destructive.
+- Numeric data remains blocked from automatic commit by `CommitPolicy`,
+  including digits-only values, mixed identifiers, and version strings. A
+  narrowly shaped single number-row slip inside an otherwise alphabetic word is
+  now allowed when its candidate differs only by the adjacent replacement
+  letter. Static fixtures cover both sides, including the captured `742` ->
+  `PS2` revert; confirm on the installed build that word-shaped slips correct
+  while numeric suggestions remain non-destructive.
 - The `org.florisboard.themes` LCARS Tactical and Neon variants now give Ctrl
   and Tmux high-contrast active styling. Tmux keeps a visual latch after a
   successful Ctrl+B handoff until the next non-Tmux key release. The next

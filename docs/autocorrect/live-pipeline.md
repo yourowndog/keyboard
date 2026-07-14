@@ -1,10 +1,11 @@
 # Live Autocorrect Pipeline
 
 > Status: Canonical  
-> Last verified: 2026-07-12
+> Last verified: 2026-07-13
 > Verified against: `NlpManager.kt`, `LatinLanguageProvider.kt`,
 > `SymSpellManager.kt`, `DictionaryRepository.kt`, `SuggestionEngine.kt`,
-> `CandidateScorer.kt`, `ContextualEvidence.kt`, `CommitPolicy.kt`, and editor
+> `CandidateScorer.kt`, `ContextualEvidence.kt`, `ContractionRules.kt`,
+> `CorrectionDecision.kt`, `CommitPolicy.kt`, `KeyboardLayout.kt`, and editor
 > commit/revert hooks
 
 ## Initialization
@@ -19,6 +20,16 @@ The current English path loads:
 Earlier `frequency_dictionary_en.txt`, `frequency_bigram_en.txt`, and MediaPipe
 model references are historical.
 
+If the n-gram engine is null when a suggestion request arrives, the provider
+retries engine preload subject to a recovery cooldown and logs the attempt under
+the `AutocorrectPath` tag. If recovery still leaves the engine unavailable, the
+provider logs that the SymSpell-only fallback is active (including only the
+typed-token length, not its contents). The fallback preserves its uppercase-
+heavy guard and routes its remaining auto-commit decisions through
+`CorrectionDecision` and `CommitPolicy`. It records the named neural bypass
+reason `ENGINE_UNAVAILABLE`; it does not pretend that the neural model approved
+the fallback candidate.
+
 ## Context extraction
 
 `LatinLanguageProvider` separates the composing word from preceding editor text
@@ -32,8 +43,32 @@ ordinary typo-correction path.
 
 Before general retrieval, the provider handles selected high-confidence cases,
 including single `i` casing and contextual/static contraction shortcuts. These
-still pass through personal-vocabulary and anti-correction protections where
-implemented.
+paths route commit eligibility through `CorrectionDecision` and `CommitPolicy`.
+Contraction shortcuts also pass through personal-vocabulary and typed→candidate
+anti-correction protections. `ContractionRules` supplies the explicit license
+that lets a shortcut replace a dictionary-valid form such as contextual `were`
+and stand in for edit-distance provenance that the fast path does not have.
+
+These shortcut paths run before neural candidate scoring and record named bypass
+reasons: `CASING_FAST_PATH` or `LICENSED_CONTRACTION_FAST_PATH`. This is an
+explicit orchestration choice, not evidence that the neural model evaluated or
+approved the shortcut. Any change to shortcut neural behavior must choose and
+test whether the shortcut is evaluated, vetoed, or deliberately exempted.
+
+## Neural evidence at the decision boundary
+
+`CorrectionDecision` keeps neural state explicit until the final adaptation to
+the low-level `CommitPolicy` input:
+
+| Orchestration state | `NeuralEvidence` | Decision behavior |
+| --- | --- | --- |
+| Normal path, model evaluated | `Evaluated(verdict)` | Forwards the verdict unchanged; a rejection or different top candidate remains an authoritative neural veto. |
+| Normal path, neural scorer disabled or unavailable | `Disabled` | Records that no evaluation occurred; the adapter supplies no low-level neural veto. |
+| Casing, licensed-contraction, or engine-unavailable fallback path | `Bypassed(reason)` | Preserves the named reason; the adapter supplies no low-level neural veto. |
+| Candidate unsupported by the model | `UnsupportedCandidate` | Produces a rejecting low-level verdict, so the candidate remains suggestion-only. |
+
+Only `CorrectionDecision` translates `Disabled` and `Bypassed` into the absence
+of a low-level neural veto. Callers do not pass an ambiguous null verdict.
 
 ## Retrieval
 
@@ -76,9 +111,12 @@ Signals currently include:
   `ContextualEvidence`
 
 `CandidateScorer` contains numerical evidence only. `ContractionRules` owns the
-shortcut/context tables, anti-corrections are pair exclusions before ranking,
-and protected vocabulary is principally a Gate veto. Document changes to these
-rules with evidence; do not present them as a general linguistic model.
+shortcut/context tables and the set of licensed contraction forms. Large
+apostrophe bonuses require membership in that set; an arbitrary dictionary
+possessive such as `La's` or `function's` receives only ordinary ranking
+evidence. Anti-corrections are pair exclusions before ranking, and protected
+vocabulary is principally a Gate veto. Document changes to these rules with
+evidence; do not present them as a general linguistic model.
 
 ## Automatic commit eligibility
 
@@ -90,10 +128,19 @@ first. The provider checks, among other things:
 - whether the change is a casing fix
 - whether the candidate came from correction retrieval
 - protected-vocabulary and defense-in-depth anti-correction blocks
-- any typed token containing a digit; numeric values, mixed identifiers, and
-  version strings may be suggested but are never rewritten automatically
+- whether a digit-bearing token is the one narrowly allowed number-row slip:
+  exactly one digit in a token of at least three characters, a same-length
+  alphabetic candidate, no other differing position, and a replacement letter
+  adjacent to the digit in the fixed keyboard model
 - minimum input length
-- the optional neural decision gate
+- the explicit neural evidence state and, when evaluated, its authoritative
+  verdict
+
+All other changed digit-bearing forms remain blocked from automatic commit,
+including numeric values, mixed identifiers, versions, decimal-like strings,
+chemical-style forms, and hash-like data. The exception classifies the relation
+between typed text and one candidate; merely looking word-like or containing a
+single digit is not enough.
 
 The typed word is added to the suggestions when it is not already present and
 is never itself marked for auto-commit.
@@ -114,3 +161,14 @@ Editor commit and revert paths notify the NLP system and harvesting layer.
 Acceptance in a log is not necessarily proof that a correction was desired;
 sequence-aware review is required to distinguish accepted fixes, immediate
 reverts, manual fixes, insistence, and unresolved events.
+
+## Forensic provenance
+
+The [autocorrect regression forensic record](autocorrect-regression-forensic-record.md)
+remains a historical investigation frozen at its stated revision. Subsequent
+source changes narrowly repaired the digit classifier (`f0ed5e0e`), licensed
+apostrophe evidence (`91788123`), and added engine recovery/fallback logging
+(`5bdad2d9`). Those implementation facts are **Confirmed from source**. The
+record's questions marked **Unresolved** about which path, model state, or APK
+ran during the observed device session remain **Unresolved**; these source fixes
+do not retroactively establish device behavior.

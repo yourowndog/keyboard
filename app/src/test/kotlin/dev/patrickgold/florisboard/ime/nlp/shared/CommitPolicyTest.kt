@@ -104,6 +104,37 @@ class CommitPolicyTest {
         assertTrue(Blocker.NUMERIC_TOKEN in CommitPolicy.blockers(input))
     }
 
+    // A ContractionRules license overrides valid-word immunity (were -> we're)
+    // and stands in for edit-distance provenance the contraction path lacks.
+    @Test
+    fun licensedContractionCommitsDespiteTypedBeingValidWord() {
+        val input = baseInput().copy(
+            typed = "were",
+            casedCandidate = "we're",
+            rawCandidate = "we're",
+            typedIsValidWord = true,
+            isEditDistanceCandidate = false,
+            isLicensedContraction = true,
+        )
+        assertTrue(CommitPolicy.shouldCommit(input))
+    }
+
+    // Without the license the same evidence stays blocked on both clauses.
+    @Test
+    fun unlicensedValidWordReplacementStaysBlocked() {
+        val input = baseInput().copy(
+            typed = "were",
+            casedCandidate = "we're",
+            rawCandidate = "we're",
+            typedIsValidWord = true,
+            isEditDistanceCandidate = false,
+        )
+        assertEquals(
+            listOf(Blocker.VALID_WORD_IMMUNITY, Blocker.NOT_A_CORRECTION),
+            CommitPolicy.blockers(input),
+        )
+    }
+
     // Prefix-only completions are predictions, not corrections (iOS/Gboard behavior).
     @Test
     fun prefixCompletionNeverCommits() {

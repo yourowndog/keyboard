@@ -22,6 +22,7 @@ object CommitPolicy {
         val topTerm: String,
     )
 
+    /** Low-level Gate input; production orchestration should use [CorrectionDecision]. */
     data class Input(
         /** Raw composing text as typed (trimmed). */
         val typed: String,
@@ -31,14 +32,28 @@ object CommitPolicy {
         val rawCandidate: String,
         /** Typed word already exists in the dictionary (Valid Word Immunity). */
         val typedIsValidWord: Boolean,
-        /** Candidate came from edit-distance retrieval; prefix-only completions never commit. */
+        /**
+         * Candidate has correction provenance. The historical name is retained
+         * here; [CorrectionDecision] derives it from explicit provenance for
+         * edits, segmentation, and the acknowledged legacy fallback.
+         */
         val isEditDistanceCandidate: Boolean,
         /** ANTI_CORRECTIONS: user has explicitly blocked typed→candidate. */
         val isBlockedCorrection: Boolean,
         /** PERSONAL_VOCAB: typed word must never be autocorrected. */
         val typedIsProtectedVocab: Boolean,
-        /** Null when the neural scorer is disabled — the gate then defers to heuristics. */
+        /**
+         * Null means no low-level neural veto. [CorrectionDecision] preserves
+         * whether that came from disabled scoring or a named bypass.
+         */
         val neuralVerdict: NeuralVerdict?,
+        /**
+         * Candidate is authorized by ContractionRules (dont → don't,
+         * contextual were → we're). The license is what permits replacing a
+         * token that is itself a valid dictionary word, and stands in for
+         * edit-distance provenance the contraction path never had.
+         */
+        val isLicensedContraction: Boolean = false,
     )
 
     /** Everything that can veto a commit, in evaluation order. */
@@ -77,7 +92,9 @@ object CommitPolicy {
 
         return buildList {
             if (!isChange) add(Blocker.NO_CHANGE)
-            if (input.typedIsValidWord && !isCasingFix) add(Blocker.VALID_WORD_IMMUNITY)
+            if (input.typedIsValidWord && !isCasingFix && !input.isLicensedContraction) {
+                add(Blocker.VALID_WORD_IMMUNITY)
+            }
             if (!neuralAllows) add(Blocker.NEURAL_VETO)
             if (input.isBlockedCorrection) add(Blocker.ANTI_CORRECTION)
             if (input.typedIsProtectedVocab) add(Blocker.PROTECTED_VOCAB)
@@ -85,7 +102,9 @@ object CommitPolicy {
                 !isNumberRowSlip(input.typed, input.rawCandidate)
             ) add(Blocker.NUMERIC_TOKEN)
             if (input.typed.length < 2 && !isCasingFix) add(Blocker.TOO_SHORT)
-            if (!input.isEditDistanceCandidate && !isCasingFix) add(Blocker.NOT_A_CORRECTION)
+            if (!input.isEditDistanceCandidate && !isCasingFix && !input.isLicensedContraction) {
+                add(Blocker.NOT_A_CORRECTION)
+            }
         }
     }
 
