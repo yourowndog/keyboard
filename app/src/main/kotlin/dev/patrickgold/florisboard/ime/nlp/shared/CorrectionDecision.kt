@@ -9,9 +9,12 @@ enum class CandidateProvenance {
     CASING_RULE,
 
     /**
-     * The legacy SymSpell-only path currently loses per-candidate provenance.
-     * Keeping that limitation explicit is safer than pretending fallback has
-     * the same evidence as primary retrieval.
+     * A fallback candidate whose specific correction provenance could not be
+     * established. Stage 2 preserves real provenance (edit distance, contraction
+     * rule) through the SymSpell-only path, so this now marks only the honest
+     * "no correction evidence" case — e.g. the engine returned the typed word
+     * verbatim. It is treated as NOT a correction and therefore cannot
+     * auto-commit on ranking alone.
      */
     LEGACY_FALLBACK,
 }
@@ -74,12 +77,13 @@ object CorrectionDecision {
     ): Verdict {
         val hasCorrectionProvenance = when (candidate.provenance) {
             CandidateProvenance.EDIT_DISTANCE,
-            CandidateProvenance.SEGMENTATION,
-            CandidateProvenance.LEGACY_FALLBACK -> true
+            CandidateProvenance.SEGMENTATION -> true
 
             CandidateProvenance.PREFIX_COMPLETION,
             CandidateProvenance.CONTRACTION_RULE,
-            CandidateProvenance.CASING_RULE -> false
+            CandidateProvenance.CASING_RULE,
+            // No established correction evidence — must not auto-commit on rank alone.
+            CandidateProvenance.LEGACY_FALLBACK -> false
         }
         val neuralVerdict = when (val neural = request.neuralEvidence) {
             NeuralEvidence.Disabled,

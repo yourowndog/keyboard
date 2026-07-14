@@ -5,6 +5,24 @@ the canonical documentation under `docs/`; experiments belong under `research/`.
 
 ## Near-term validation and repair
 
+### Autocorrect and suggestions in `noSuggestions` fields
+
+Autocorrect currently never fires in fields that set `TYPE_TEXT_FLAG_NO_SUGGESTIONS`
+(search boxes, AI prompt bars, Termux, URL bars). Root cause is
+`AbstractEditorInstance.shouldDetermineComposingRegion`, which returns false when
+that flag is set, so no composing region is established and the NLP layer never
+sees an active word. Confirmed from device harvest (2026-07-14); this is inherited
+FlorisBoard behavior, not a correction-engine regression.
+
+The desired behavior is **not** a blanket removal of the flag check. Split the two
+concerns: allow a composing region so **suggestions** appear in text
+`noSuggestions` fields (including URL bars and Termux, where suggestions are
+genuinely helpful), but keep **automatic commit** off wherever it would corrupt
+input — URI and email variations, and Termux — while allowing it in ordinary
+search / prompt boxes. Suggestions everywhere; auto-commit only where safe. This
+is an editor-layer change with real blast radius; develop it with on-device
+validation across a search box, a URL bar, a Termux session, and an email field.
+
 ### Stabilize RTK integration
 
 The global RTK rewrite hook has repeatedly failed its integrity check and
@@ -44,13 +62,16 @@ provider and tests from independently inventing `CommitPolicy` booleans. Casing
 and explicit static-contraction shortcuts also share a production evidence
 assembler with asset-backed coverage of effective packaged personal vocabulary,
 a real anti-correction, casing, exact static-license binding, and preservation
-of ambiguous valid words such as `were` and `its`. What remains is provider-level
-coverage of final ordering, casing, returned eligibility, and engine mode. The
-SymSpell-only path still reports explicit
-`LEGACY_FALLBACK` provenance because its string-only API loses the source of
-each candidate; retain per-candidate provenance there before tightening parity
-with the primary path. Finish with an on-device commit/revert and engine-
-recovery pass before treating this cleanup as behaviorally closed.
+of ambiguous valid words such as `were` and `its`. The SymSpell-only path no
+longer crosses a string-only boundary: `SymSpellManager.suggest` now returns
+structured `FallbackCandidate`s carrying real provenance, edit distance,
+contraction license, and `FallbackEngineMode`, and the `FallbackCorrection`
+adapter routes that evidence through the same `CorrectionDecision`/`CommitPolicy`
+Gate as the primary path. `LEGACY_FALLBACK` now marks only the honest
+"no correction evidence" case and can no longer auto-commit on rank alone. What
+remains is provider-level coverage of final ordering, casing, and returned
+eligibility, then an on-device commit/revert and engine-recovery pass before
+treating this cleanup as behaviorally closed.
 
 ## Layout and ergonomics
 

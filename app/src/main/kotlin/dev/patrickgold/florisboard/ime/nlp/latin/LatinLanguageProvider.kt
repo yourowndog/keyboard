@@ -38,7 +38,7 @@ import dev.patrickgold.florisboard.ime.nlp.shared.CommitCandidateEvidence
 import dev.patrickgold.florisboard.ime.nlp.shared.CommitPolicy
 import dev.patrickgold.florisboard.ime.nlp.shared.CommitRequestEvidence
 import dev.patrickgold.florisboard.ime.nlp.shared.CorrectionDecision
-import dev.patrickgold.florisboard.ime.nlp.shared.NeuralBypassReason
+import dev.patrickgold.florisboard.ime.nlp.shared.FallbackCorrection
 import dev.patrickgold.florisboard.ime.nlp.shared.NeuralEvidence
 import dev.patrickgold.florisboard.ime.nlp.shared.ShortcutCorrection
 import dev.patrickgold.florisboard.ime.nlp.shared.TypedLexicalStatus
@@ -462,36 +462,34 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
             AUTOCORRECT_PATH_TAG,
             "fallback active: ngramEngine unavailable, SymSpell-only suggestions (len=${currentWordRaw.length})",
         )
-        val suggestions = dev.patrickgold.florisboard.ime.nlp.SymSpellManager.suggest(
+        val fallbackCandidates = dev.patrickgold.florisboard.ime.nlp.SymSpellManager.suggest(
             input = currentWordRaw,
             previousWord = previousWord,
         )
         val upperCount = currentWordRaw.count { it.isUpperCase() }
-        val requestEvidence = CommitRequestEvidence(
-            typed = currentWordRaw,
-            typedLexicalStatus = lexicalStatus(SymSpellManager.hasWord(currentWordRaw)),
-            typedIsProtectedVocab = dev.patrickgold.florisboard.ime.nlp.PersonalPreferences
-                .isProtectedFromAutocorrect(currentWordRaw),
-            neuralEvidence = NeuralEvidence.Bypassed(NeuralBypassReason.ENGINE_UNAVAILABLE),
-        )
+        val typedLexicalStatus = lexicalStatus(SymSpellManager.hasWord(currentWordRaw))
+        val typedIsProtectedVocab = dev.patrickgold.florisboard.ime.nlp.PersonalPreferences
+            .isProtectedFromAutocorrect(currentWordRaw)
 
-        return suggestions.map { word ->
-            val decision = CorrectionDecision.evaluate(
-                request = requestEvidence,
-                candidate = CommitCandidateEvidence(
-                    raw = word,
-                    cased = word,
-                    provenance = CandidateProvenance.LEGACY_FALLBACK,
-                    isBlockedCorrection = dev.patrickgold.florisboard.ime.nlp.PersonalPreferences
-                        .isAntiCorrection(currentWordRaw, word),
-                ),
+        return fallbackCandidates.map { candidate ->
+            // Route each candidate's real evidence (provenance, edit distance,
+            // contraction license, engine mode) through the shared Gate. Neural
+            // scoring is recorded as bypassed because the engine is unavailable,
+            // never fabricated as evaluated or approved.
+            val outcome = FallbackCorrection.resolve(
+                typed = currentWordRaw,
+                candidate = candidate,
+                typedLexicalStatus = typedLexicalStatus,
+                typedIsProtectedVocab = typedIsProtectedVocab,
+                isBlockedCorrection = dev.patrickgold.florisboard.ime.nlp.PersonalPreferences
+                    .isAntiCorrection(currentWordRaw, candidate.casedCandidate),
             )
             WordSuggestionCandidate(
-                text = word,
+                text = candidate.casedCandidate,
                 secondaryText = null,
                 // Preserve the uppercase-heavy guard while routing every other fallback
                 // decision through the same Gate as the primary engine.
-                isEligibleForAutoCommit = upperCount < 2 && decision.shouldCommit,
+                isEligibleForAutoCommit = upperCount < 2 && outcome.decision.shouldCommit,
                 sourceProvider = this
             )
         }

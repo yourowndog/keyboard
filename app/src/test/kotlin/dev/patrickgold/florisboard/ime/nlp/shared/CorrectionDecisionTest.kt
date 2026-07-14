@@ -210,7 +210,10 @@ class CorrectionDecisionTest {
     }
 
     @Test
-    fun fallbackLimitationIsExplicitButPreservesCurrentPlainTypoDecision() {
+    fun fallbackWithoutCorrectionProvenanceCannotAutoCommitOnRankAlone() {
+        // Stage 2: LEGACY_FALLBACK now means "no established correction evidence".
+        // A top-ranked candidate with no correction provenance must not auto-commit,
+        // and the bypass reason must be preserved truthfully in the verdict.
         val fallback = candidate(provenance = CandidateProvenance.LEGACY_FALLBACK)
         val result = CorrectionDecision.evaluate(
             request = request(
@@ -218,8 +221,8 @@ class CorrectionDecisionTest {
             ),
             candidate = fallback,
         )
-        assertTrue(result.shouldCommit)
-        assertFalse(Blocker.NOT_A_CORRECTION in result.blockers)
+        assertFalse(result.shouldCommit)
+        assertTrue(Blocker.NOT_A_CORRECTION in result.blockers)
         assertEquals(CandidateProvenance.LEGACY_FALLBACK, result.candidateProvenance)
         assertEquals(
             NeuralEvidence.Bypassed(NeuralBypassReason.ENGINE_UNAVAILABLE),
@@ -228,7 +231,11 @@ class CorrectionDecisionTest {
     }
 
     @Test
-    fun primaryAndFallbackPlainTyposHavePolicyParity() {
+    fun primaryAndFallbackPlainTyposHavePolicyParityForEquivalentEvidence() {
+        // The parity the architecture actually promises: identical provenance
+        // (a real edit correction) yields identical policy on both paths. The
+        // fallback path differs only in recording the neural bypass, which does
+        // not veto here.
         val primary = CorrectionDecision.evaluate(
             request = request(),
             candidate = candidate(provenance = CandidateProvenance.EDIT_DISTANCE),
@@ -237,10 +244,11 @@ class CorrectionDecisionTest {
             request = request(
                 neural = NeuralEvidence.Bypassed(NeuralBypassReason.ENGINE_UNAVAILABLE),
             ),
-            candidate = candidate(provenance = CandidateProvenance.LEGACY_FALLBACK),
+            candidate = candidate(provenance = CandidateProvenance.EDIT_DISTANCE),
         )
 
         assertEquals(primary.blockers, fallback.blockers)
         assertEquals(primary.shouldCommit, fallback.shouldCommit)
+        assertTrue(fallback.shouldCommit)
     }
 }

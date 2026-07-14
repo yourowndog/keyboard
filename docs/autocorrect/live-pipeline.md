@@ -24,11 +24,17 @@ If the n-gram engine is null when a suggestion request arrives, the provider
 retries engine preload subject to a recovery cooldown and logs the attempt under
 the `AutocorrectPath` tag. If recovery still leaves the engine unavailable, the
 provider logs that the SymSpell-only fallback is active (including only the
-typed-token length, not its contents). The fallback preserves its uppercase-
-heavy guard and routes its remaining auto-commit decisions through
-`CorrectionDecision` and `CommitPolicy`. It records the named neural bypass
-reason `ENGINE_UNAVAILABLE`; it does not pretend that the neural model approved
-the fallback candidate.
+typed-token length, not its contents). `SymSpellManager.suggest` returns
+structured `FallbackCandidate`s that retain each candidate's true provenance
+(`EDIT_DISTANCE` with its real edit distance, `CONTRACTION_RULE` with any exact
+static license, or `LEGACY_FALLBACK` for a verbatim typed word the engine could
+not correct) plus its `FallbackEngineMode`. The provider passes that real
+evidence through the shared `FallbackCorrection` adapter into
+`CorrectionDecision` and `CommitPolicy` — the same Gate the primary path uses —
+so a candidate with no correction provenance cannot auto-commit on ranking
+alone. The fallback preserves its uppercase-heavy guard and records the named
+neural bypass reason `ENGINE_UNAVAILABLE`; it does not pretend that the neural
+model approved the fallback candidate.
 
 ## Context extraction
 

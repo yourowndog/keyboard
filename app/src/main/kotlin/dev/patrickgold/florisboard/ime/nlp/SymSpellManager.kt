@@ -8,9 +8,12 @@ import kotlin.math.ln
 import kotlin.math.max
 import dev.patrickgold.florisboard.ime.nlp.shared.BigramTable
 import dev.patrickgold.florisboard.ime.nlp.shared.CasingUtils
+import dev.patrickgold.florisboard.ime.nlp.shared.CandidateProvenance
 import dev.patrickgold.florisboard.ime.nlp.shared.CandidateScorer
 import dev.patrickgold.florisboard.ime.nlp.shared.ContractionRules
 import dev.patrickgold.florisboard.ime.nlp.shared.DictionaryRepository
+import dev.patrickgold.florisboard.ime.nlp.shared.FallbackCandidate
+import dev.patrickgold.florisboard.ime.nlp.shared.FallbackEngineMode
 
 object SymSpellManager {
     @Volatile private var isReady = false
@@ -158,7 +161,15 @@ object SymSpellManager {
         userWordsCache = words
     }
 
-    fun suggest(input: String, previousWord: String? = null): List<String> {
+    /**
+     * SymSpell-only fallback retrieval used when the primary ngram/neural engine
+     * is unavailable. Returns structured [FallbackCandidate]s that retain each
+     * candidate's true provenance, real edit distance, contraction license, and
+     * engine mode, instead of collapsing everything to a bare string. The Gate
+     * decision is made downstream by [FallbackCorrection]; this method only
+     * establishes truthful retrieval evidence.
+     */
+    fun suggest(input: String, previousWord: String? = null): List<FallbackCandidate> {
          android.util.Log.d("SymSpell_Debug", "suggest() called: input='$input', prev='$previousWord'")
 
          if (!isReady) {
@@ -167,8 +178,9 @@ object SymSpellManager {
          }
          if (input.length == 1) {
              // Keep exactly what the user typed (single chars are never corrected here).
+             // No correction evidence exists — represent it as a verbatim candidate.
              android.util.Log.d("SymSpell_Debug", "Single char input, returning as-is: '$input'")
-             return listOf(input)
+             return listOf(literalCandidate(input))
          }
 
         val normalized = input.lowercase()
@@ -179,9 +191,24 @@ object SymSpellManager {
         val prev = previousWord?.lowercase()
         val ignoreManager = dev.patrickgold.florisboard.ime.dictionary.DictionaryManager.default()
 
-        val contractionTop = ContractionRules.LEGACY_FALLBACK_SHORTCUTS[normalized]
-            ?.let { applyCasingPattern(input, it) }
-            ?.takeUnless { PersonalPreferences.isAntiCorrection(input, it) }
+        // The contraction shortcut is a CONTRACTION_RULE candidate, not an edit.
+        // Attach the exact static license only when ContractionRules can issue one;
+        // shortcuts without a licensed form (e.g. wheres) stay unlicensed rather
+        // than borrowing fabricated edit-distance authority.
+        val contractionRaw = ContractionRules.LEGACY_FALLBACK_SHORTCUTS[normalized]
+        val contractionTop = contractionRaw
+            ?.let { raw ->
+                val cased = applyCasingPattern(input, raw)
+                if (PersonalPreferences.isAntiCorrection(input, cased)) return@let null
+                FallbackCandidate(
+                    rawCandidate = raw,
+                    casedCandidate = cased,
+                    provenance = CandidateProvenance.CONTRACTION_RULE,
+                    editDistance = null,
+                    engineMode = FallbackEngineMode.SYMSPELL_ONLY,
+                    contractionLicense = ContractionRules.resolveStatic(normalized)?.license,
+                )
+            }
         val mapped = suggestions
             .sortedBy { candidate ->
                 val term = candidate.term
@@ -222,7 +249,14 @@ object SymSpellManager {
                     android.util.Log.d("SymSpell_Debug", "Filtered uppercase: '$term'")
                     null
                 } else {
-                    applyCasingPattern(input, term)
+                    // Genuine edit-distance correction: retain the real distance.
+                    FallbackCandidate(
+                        rawCandidate = term,
+                        casedCandidate = applyCasingPattern(input, term),
+                        provenance = CandidateProvenance.EDIT_DISTANCE,
+                        editDistance = candidate.distance,
+                        engineMode = FallbackEngineMode.SYMSPELL_ONLY,
+                    )
                 }
             }
         android.util.Log.d("SymSpell_Debug", "After filtering: ${mapped.size} candidates")
@@ -230,8 +264,8 @@ object SymSpellManager {
             if (contractionTop != null) {
                 add(contractionTop)
                 if (mapped.isNotEmpty()) {
-                    // If the top mapped suggestion is the same as contraction, skip it
-                    if (mapped.first() != contractionTop) {
+                    // If the top mapped suggestion is the same word as the contraction, skip it
+                    if (mapped.first().casedCandidate != contractionTop.casedCandidate) {
                         addAll(mapped)
                     } else {
                         addAll(mapped.drop(1))
@@ -242,10 +276,27 @@ object SymSpellManager {
             }
         }
 
-        val finalResult = if (withContraction.isNotEmpty()) withContraction else listOf(input)
-        android.util.Log.d("SymSpell_Debug", "suggest() returning ${finalResult.size} suggestions: $finalResult")
+        val finalResult = if (withContraction.isNotEmpty()) withContraction else listOf(literalCandidate(input))
+        android.util.Log.d(
+            "SymSpell_Debug",
+            "suggest() returning ${finalResult.size} suggestions: ${finalResult.map { it.casedCandidate }}",
+        )
         return finalResult
     }
+
+    /**
+     * A verbatim candidate: the fallback engine had no correction to offer, so it
+     * returns the typed word unchanged. Carries no correction provenance — the
+     * Gate treats it as non-committable, which is truthful rather than a fabricated
+     * edit.
+     */
+    private fun literalCandidate(input: String) = FallbackCandidate(
+        rawCandidate = input,
+        casedCandidate = input,
+        provenance = CandidateProvenance.LEGACY_FALLBACK,
+        editDistance = null,
+        engineMode = FallbackEngineMode.SYMSPELL_ONLY,
+    )
 
     data class RawCandidate(val term: String, val distance: Double)
 

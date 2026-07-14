@@ -68,7 +68,7 @@ cause of the recurring autocorrect pain — and we fixed the data half of it.
 
 Phase 1 (consolidate the substrate: DictionaryRepository) — **done** (per 2026-07-11 map).
 
-Phase 2 (cluster the rules / separate the four layers) — **in progress, ~25%.**
+Phase 2 (cluster the rules / separate the four layers) — **in progress, ~60% (2026-07-14).**
 
 - [x] Forensic diagnosis + full live-path map + rules inventory (the hard conceptual work)
 - [x] Vocabulary data layer cleaned + voice-admission hole closed  ← *this session*
@@ -80,8 +80,17 @@ Phase 2 (cluster the rules / separate the four layers) — **in progress, ~25%.*
       single pure, unit-tested function; the contradictory `rank()` flag is removed
       ← *done 2026-07-12: `ime/nlp/shared/CommitPolicy.kt` (pure object, `blockers()` returns
       named veto reasons in evaluation order), 14 unit tests in `CommitPolicyTest`*
-- [ ] Seed the **regression fixture corpus** (zsh≠ssh, numeric protection, valid-word immunity,
-      contractions, protected forms, Termux family, show-but-never-commit, prefix vs correction)
+- [x] Seed the **regression fixture corpus** — asset-backed assembled-pipeline regression tests
+      cover numeric protection, valid-word immunity, contractions, protected forms, anti-correction,
+      casing, prefix-vs-correction, and the fallback path ← *done 2026-07-14 (commit 59d0f8e9)*
+- [x] **Route every commit decision through one Gate** — `CorrectionDecision` now assembles typed
+      evidence (`CommitRequestEvidence` / `CommitCandidateEvidence`) and is the sole commit
+      boundary for the primary path, the casing/contraction shortcuts, and the SymSpell-only
+      fallback. The fallback no longer crosses a string-only boundary: `SymSpellManager.suggest`
+      returns `FallbackCandidate`s carrying truthful per-candidate provenance + real edit distance,
+      and the pure `FallbackCorrection` adapter routes that evidence through the same Gate.
+      `LEGACY_FALLBACK` now marks only the honest "no correction evidence" case and cannot
+      auto-commit on rank alone ← *done 2026-07-14 (commit 83d3298a + Stage 2 fallback provenance)*
 - [ ] De-duplicate the two contraction maps and the two protected-word sources
 - [ ] Purify the Judge: move the personal-vocab / anti-correction *culls* out of `CandidateScorer`
       and into Retriever/CommitPolicy so ranking is pure evidence
@@ -93,9 +102,14 @@ Phase 3 (feedback integrity + neural) — **not started**
 
 Phase 4 (personal weighted edit-cost model) — **future / design only.**
 
-Rough overall read: the *map is fully drawn* and the substrate + data layer are clean. The
-structural code refactor (the visible "paradigm shift") is early — call it 20–30% of the way
-through the stabilization work, but the remaining steps are small, ordered, and low-ambiguity.
+Rough overall read (updated 2026-07-14): the *map is fully drawn*, the substrate + data layer are
+clean, and the single commit Gate now exists — `CommitPolicy` + `CorrectionDecision` are the sole
+commit boundary for every path including the SymSpell-only fallback, with an asset-backed
+regression suite. Call it ~60% of the way through the stabilization work. The remaining Phase-2
+steps are the two de-duplications and purifying the Judge — small, ordered, and low-ambiguity.
+Next bug-queue item (separate from the refactor): autocorrect never fires in `noSuggestions`
+fields (search boxes, Termux, URL bars) because `shouldDetermineComposingRegion` gates on that
+flag — suggestions everywhere is wanted, auto-commit only where safe. See `ROADMAP.md`.
 
 ## The shadow-eventId gap (the "bummer")
 
