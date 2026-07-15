@@ -33,6 +33,7 @@ current behavior from plans, experiments, and history.
   validation, and repository organization.
 - [Agent reorientation](development/agent-reorientation.md): entering the
   cleaned repository or recovering interrupted work safely.
+- [Historical refactor docs](file:///home/sam/projects/keyboard/docs/archive/autocorrect-refactor-2026/README.md): Completed autocorrect refactor (July 2026) planning and checkpoints.
 
 ## Truth hierarchy
 
