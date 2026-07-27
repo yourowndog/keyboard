@@ -20,6 +20,7 @@ import dev.patrickgold.florisboard.ime.keyboard.Key
 import dev.patrickgold.florisboard.ime.keyboard.Keyboard
 import dev.patrickgold.florisboard.ime.keyboard.VerticalAlignment
 import dev.patrickgold.florisboard.ime.keyboard.KeyboardMode
+import dev.patrickgold.florisboard.ime.keyboard.computeLayoutRowHeight
 import dev.patrickgold.florisboard.ime.popup.PopupMapping
 import kotlin.math.abs
 
@@ -85,19 +86,14 @@ class TextKeyboard(
 
         var currentPosY = 0.0f
         for ((r, row) in rows().withIndex()) {
-            val hasExtraRows = rowCount >= 5
-            val rowHeight = if (hasExtraRows) {
-                val topModCount = (rowCount - 3 - bottomModRowCount).coerceAtLeast(0)
-                val modRowCount = bottomModRowCount + topModCount
-                val alphaRowCount = rowCount - modRowCount
-                val effectiveRowCount = (alphaRowCount * alphaRowHeightFactor) + (modRowCount * bottomRowHeightFactor)
-                val baseHeight = keyboardHeight / effectiveRowCount
-
-                val isModHeightRow = r < topModCount || r >= rowCount - bottomModRowCount
-                if (isModHeightRow) baseHeight * bottomRowHeightFactor else baseHeight * alphaRowHeightFactor
-            } else {
-                keyboardHeight / rowCount.toFloat()
-            }
+            val rowHeight = computeLayoutRowHeight(
+                rowIndex = r,
+                rowCount = rowCount,
+                bottomModRowCount = bottomModRowCount,
+                keyboardHeight = keyboardHeight,
+                alphaRowHeightFactor = alphaRowHeightFactor,
+                bottomRowHeightFactor = bottomRowHeightFactor,
+            )
 
             // Per-row base unit width (no slider multiplier, so sliders don't self-cancel).
             // Alpha rows share baseAlphaUnitWidth. Mod-only rows each compute their own so
