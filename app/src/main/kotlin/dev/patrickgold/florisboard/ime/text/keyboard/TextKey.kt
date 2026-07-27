@@ -35,6 +35,9 @@ import dev.patrickgold.florisboard.ime.text.key.KeyVariation
 import dev.patrickgold.florisboard.lib.lowercase
 
 class TextKey(override val data: AbstractKeyData) : Key(data) {
+    /** Structural allocation before the derived touch and visual layers. */
+    val structuralBounds = dev.patrickgold.florisboard.lib.FlorisRect.empty()
+
     var isAlpha: Boolean = true
     var computedData: KeyData = TextKeyData.UNSPECIFIED
         private set

@@ -31,6 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -40,6 +41,11 @@ import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.ime.smartbar.ExtendedActionsPlacement
 import dev.patrickgold.florisboard.ime.smartbar.SmartbarLayout
 import dev.patrickgold.florisboard.ime.text.keyboard.TextKeyboard
+import dev.patrickgold.florisboard.ime.text.keyboard.TextKeyboardGeometry
+import dev.patrickgold.florisboard.ime.text.keyboard.TextKeyboardGeometryCacheKey
+import dev.patrickgold.florisboard.ime.text.keyboard.TextKeyboardGeometryConfig
+import dev.patrickgold.florisboard.ime.text.keyboard.TextKeyboardGeometryResolver
+import dev.patrickgold.florisboard.ime.text.keyboard.TextKeyboardGeometrySolution
 import dev.patrickgold.florisboard.keyboardManager
 import dev.patrickgold.florisboard.lib.observeAsTransformingState
 import dev.patrickgold.florisboard.lib.util.ViewUtils
@@ -63,37 +69,112 @@ object FlorisImeSizing {
 
     @Composable
     fun keyboardUiHeight(): Dp {
+        val density = LocalDensity.current
+        return with(density) {
+            keyboardGeometry().structural.frame.height.toDp()
+        }
+    }
+
+    /**
+     * Resolves the immutable geometry owner used by both frame sizing and TextKeyboard placement.
+     */
+    @Composable
+    fun keyboardGeometry(
+        evaluatorOverride: ComputingEvaluator? = null,
+        availableWidthPxOverride: Float? = null,
+    ): TextKeyboardGeometry {
         val prefs by FlorisPreferenceStore
         val bottomRowHeightFactor by prefs.keyboard.bottomRowHeightFactor.observeAsTransformingState { it / 100f }
         val alphaRowHeightFactor by prefs.keyboard.alphaRowHeightFactor.observeAsTransformingState { it / 100f }
+        val alphaKeyWidthFactor by prefs.keyboard.alphaKeyWidth.observeAsTransformingState { it / 100f }
+        val modKeyWidthFactor by prefs.keyboard.modKeyWidth.observeAsTransformingState { it / 100f }
+        val alphaSpacingH by prefs.keyboard.alphaSpacingHorizontal.observeAsState()
+        val alphaSpacingV by prefs.keyboard.alphaSpacingVertical.observeAsState()
+        val modSpacingH by prefs.keyboard.modSpacingHorizontal.observeAsState()
+        val modSpacingV by prefs.keyboard.modSpacingVertical.observeAsState()
         val modRowUpperGap by prefs.keyboard.modRowUpperGap.observeAsState()
         val modRowInnerGap by prefs.keyboard.modRowInnerGap.observeAsState()
         val modRowLowerGap by prefs.keyboard.modRowLowerGap.observeAsState()
-        
+
         val context = LocalContext.current
+        val density = LocalDensity.current
+        val configuration = LocalConfiguration.current
         val keyboardManager by context.keyboardManager()
-        val evaluator by keyboardManager.activeEvaluator.collectAsState()
+        val activeEvaluator by keyboardManager.activeEvaluator.collectAsState()
         val lastCharactersEvaluator by keyboardManager.lastCharactersEvaluator.collectAsState()
-        val keyboard = when (evaluator.keyboard.mode) {
-            KeyboardMode.CHARACTERS,
+        val evaluator = evaluatorOverride ?: activeEvaluator
+        val keyboard = evaluator.keyboard as TextKeyboard
+        val usesCharactersFrame = when (keyboard.mode) {
             KeyboardMode.NUMERIC_ADVANCED,
             KeyboardMode.SYMBOLS,
-            KeyboardMode.SYMBOLS2 -> lastCharactersEvaluator.keyboard as TextKeyboard
-            else -> evaluator.keyboard as TextKeyboard
+            KeyboardMode.SYMBOLS2 -> true
+            else -> false
         }
-        // Dynamic Frame Logic: Sum of Parts
-        // Bottom mod rows come from the keyboard's bottomModRowCount.
-        // Any rows beyond the standard (3 alpha + bottomModCount) are 'Extension' rows at the top.
-        // Both Extension and Mod rows use the bottomRowHeightFactor.
-        // Gaps are only added when the keyboard has mod rows.
-        return computeKeyboardFrameHeight(
-            rawRowCount = keyboard.rowCount,
-            bottomModRowCount = keyboard.bottomModRowCount,
-            rowBaseHeight = keyboardRowBaseHeight.value,
-            alphaRowHeightFactor = alphaRowHeightFactor,
-            bottomRowHeightFactor = bottomRowHeightFactor,
-            gapTotal = (modRowUpperGap + modRowInnerGap + modRowLowerGap).toFloat(),
-        ).dp
+        val frameSourceKeyboard = if (usesCharactersFrame) {
+            lastCharactersEvaluator.keyboard as TextKeyboard
+        } else {
+            keyboard
+        }
+        val orientation = if (configuration.isOrientationLandscape()) {
+            dev.patrickgold.florisboard.ime.keyboard.geometry.GeometryOrientation.LANDSCAPE
+        } else {
+            dev.patrickgold.florisboard.ime.keyboard.geometry.GeometryOrientation.PORTRAIT
+        }
+        val availableWidthPx = availableWidthPxOverride ?: with(density) {
+            configuration.screenWidthDp.dp.toPx()
+        }
+        val config = with(density) {
+            TextKeyboardGeometryConfig(
+                rowBaseHeight = keyboardRowBaseHeight.toPx().toDouble(),
+                bottomRowHeightFactor = bottomRowHeightFactor.toDouble(),
+                alphaRowHeightFactor = alphaRowHeightFactor.toDouble(),
+                alphaKeyWidthFactor = alphaKeyWidthFactor.toDouble(),
+                modKeyWidthFactor = modKeyWidthFactor.toDouble(),
+                alphaSpacingHorizontal = alphaSpacingH.dp.toPx().toDouble(),
+                alphaSpacingVertical = alphaSpacingV.dp.toPx().toDouble(),
+                modSpacingHorizontal = modSpacingH.dp.toPx().toDouble(),
+                modSpacingVertical = modSpacingV.dp.toPx().toDouble(),
+                modRowUpperGap = modRowUpperGap.dp.toPx().toDouble(),
+                modRowInnerGap = modRowInnerGap.dp.toPx().toDouble(),
+                modRowLowerGap = modRowLowerGap.dp.toPx().toDouble(),
+                orientation = orientation,
+            )
+        }
+        val cacheKey = TextKeyboardGeometryCacheKey(
+            evaluatorVersion = evaluator.version,
+            frameSourceVersion = if (usesCharactersFrame) lastCharactersEvaluator.version else -1,
+            availableWidthPx = availableWidthPx.toInt(),
+            config = config,
+        )
+        return remember(keyboard, frameSourceKeyboard, cacheKey) {
+            val fitToHeight = if (usesCharactersFrame) {
+                resolveGeometry(frameSourceKeyboard, availableWidthPx.toDouble(), config).structural.frame.height.toDouble()
+            } else {
+                null
+            }
+            resolveGeometry(keyboard, availableWidthPx.toDouble(), config, fitToHeight)
+        }
+    }
+
+    private fun resolveGeometry(
+        keyboard: TextKeyboard,
+        availableWidth: Double,
+        config: TextKeyboardGeometryConfig,
+        fitToHeight: Double? = null,
+    ): TextKeyboardGeometry {
+        return when (
+            val solution = TextKeyboardGeometryResolver.solve(
+                keyboard = keyboard,
+                availableWidth = availableWidth,
+                config = config,
+                fitToHeight = fitToHeight,
+            )
+        ) {
+            is TextKeyboardGeometrySolution.Solved -> solution.geometry
+            is TextKeyboardGeometrySolution.Unsatisfiable -> error(
+                "Unable to solve ${keyboard.mode} keyboard geometry: ${solution.reasons.joinToString()}",
+            )
+        }
     }
 
     @Composable

@@ -50,7 +50,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
@@ -79,18 +78,15 @@ import dev.patrickgold.florisboard.ime.text.key.KeyVariation
 import dev.patrickgold.florisboard.ime.theme.FlorisImeUi
 import dev.patrickgold.florisboard.ime.text.gestures.GlideTrailShape
 import dev.patrickgold.florisboard.keyboardManager
-import dev.patrickgold.florisboard.lib.FlorisRect
 import dev.patrickgold.florisboard.lib.Pointer
 import dev.patrickgold.florisboard.lib.PointerMap
 import dev.patrickgold.florisboard.lib.devtools.LogTopic
 import dev.patrickgold.florisboard.lib.devtools.flogDebug
-import dev.patrickgold.florisboard.lib.observeAsTransformingState
 import dev.patrickgold.florisboard.lib.toIntOffset
 import dev.patrickgold.jetpref.datastore.model.observeAsState
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.onFailure
 import kotlinx.coroutines.isActive
-import org.florisboard.lib.android.isOrientationLandscape
 import org.florisboard.lib.compose.DisposableLifecycleEffect
 import org.florisboard.lib.snygg.SnyggSelector
 import org.florisboard.lib.snygg.ui.SnyggBox
@@ -124,10 +120,32 @@ fun TextKeyboardLayout(
     modifier: Modifier = Modifier,
     evaluator: ComputingEvaluator,
     isPreview: Boolean = false,
+): Unit {
+    BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
+        val geometry = FlorisImeSizing.keyboardGeometry(
+            evaluatorOverride = evaluator,
+            availableWidthPxOverride = constraints.maxWidth.toFloat(),
+        )
+        TextKeyboardLayoutContent(
+            modifier = Modifier.fillMaxWidth(),
+            evaluator = evaluator,
+            isPreview = isPreview,
+            geometry = geometry,
+        )
+    }
+}
+
+@SuppressLint("UnusedBoxWithConstraintsScope")
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+private fun TextKeyboardLayoutContent(
+    modifier: Modifier,
+    evaluator: ComputingEvaluator,
+    isPreview: Boolean,
+    geometry: TextKeyboardGeometry,
 ): Unit = with(LocalDensity.current) {
     val prefs by FlorisPreferenceStore
     val context = LocalContext.current
-    val configuration = LocalConfiguration.current
     val glideTypingManager by context.glideTypingManager()
 
     val keyboard = evaluator.keyboard as TextKeyboard
@@ -179,7 +197,7 @@ fun TextKeyboardLayout(
     BoxWithConstraints(
         modifier = modifier
             .fillMaxWidth()
-            .height(FlorisImeSizing.keyboardUiHeight())
+            .height(geometry.structural.frame.height.toDp())
             .onGloballyPositioned { coords ->
                 controller.size = coords.size.toSize()
             }
@@ -234,61 +252,15 @@ fun TextKeyboardLayout(
                 }
             },
     ) {
-        val keyboardWidth = constraints.maxWidth.toFloat()
-        val keyboardHeight = constraints.maxHeight.toFloat()
-        val keyMarginH by prefs.keyboard.keySpacingHorizontal.observeAsTransformingState { it.dp.toPx() }
-        val keyMarginV by prefs.keyboard.keySpacingVertical.observeAsTransformingState { it.dp.toPx() }
-        val alphaKeyWidthFactor by prefs.keyboard.alphaKeyWidth.observeAsTransformingState { it / 100f }
-        val modKeyWidthFactor by prefs.keyboard.modKeyWidth.observeAsTransformingState { it / 100f }
-        val alphaMarginH by prefs.keyboard.alphaSpacingHorizontal.observeAsTransformingState { it.dp.toPx() }
-        val alphaMarginV by prefs.keyboard.alphaSpacingVertical.observeAsTransformingState { it.dp.toPx() }
-        val modMarginH by prefs.keyboard.modSpacingHorizontal.observeAsTransformingState { it.dp.toPx() }
-        val modMarginV by prefs.keyboard.modSpacingVertical.observeAsTransformingState { it.dp.toPx() }
-        val bottomRowHeightFactor by prefs.keyboard.bottomRowHeightFactor.observeAsTransformingState { it / 100f }
-        val alphaRowHeightFactor by prefs.keyboard.alphaRowHeightFactor.observeAsTransformingState { it / 100f }
-        val modRowUpperGap by prefs.keyboard.modRowUpperGap.observeAsTransformingState { it.dp.toPx() }
-        val modRowInnerGap by prefs.keyboard.modRowInnerGap.observeAsTransformingState { it.dp.toPx() }
-        val modRowLowerGap by prefs.keyboard.modRowLowerGap.observeAsTransformingState { it.dp.toPx() }
         val keyCustomizationsJson by prefs.keyboard.keyCustomizations.observeAsState()
-        val keyboardRowBaseHeight = FlorisImeSizing.keyboardRowBaseHeight
 
-        val desiredKey = remember(
-            keyboard, keyboardWidth, keyboardHeight, keyMarginH, keyMarginV,
-            alphaKeyWidthFactor, modKeyWidthFactor, alphaMarginH, alphaMarginV, modMarginH, modMarginV,
-            keyboardRowBaseHeight, bottomRowHeightFactor, alphaRowHeightFactor, modRowUpperGap,
-            modRowInnerGap, modRowLowerGap, keyCustomizationsJson, evaluator
-        ) {
+        val desiredKey = remember(keyboard, geometry, keyCustomizationsJson) {
             TextKey(data = TextKeyData.UNSPECIFIED).also { desiredKey ->
-                desiredKey.touchBounds.apply {
-                    width = keyboardWidth / 10f
-                    height = when (keyboard.mode) {
-                        KeyboardMode.CHARACTERS,
-                        KeyboardMode.NUMERIC_ADVANCED,
-                        KeyboardMode.SYMBOLS,
-                        KeyboardMode.SYMBOLS2 -> {
-                            (keyboardHeight / keyboard.rowCount)
-                                .coerceAtMost(keyboardRowBaseHeight.toPx() * 1.12f)
-                        }
-                        else -> keyboardRowBaseHeight.toPx()
-                    }
-                }
-                desiredKey.visibleBounds.applyFrom(desiredKey.touchBounds).deflateBy(keyMarginH, keyMarginV)
+                desiredKey.touchBounds.applyFrom(geometry.popupReferenceBounds.toFlorisRect())
+                desiredKey.visibleBounds.applyFrom(desiredKey.touchBounds)
+                keyboard.applyGeometry(geometry)
                 
-                // Calculate total gap height to subtract from layout height
-                // This ensures keys are sized based on content height, not including the gaps
-                val rowCount = keyboard.rowCount
-                val totalGaps = if (rowCount >= 2) {
-                    modRowUpperGap + modRowInnerGap + modRowLowerGap
-                } else {
-                    0f
-                }
                 
-                keyboard.layout(
-                    keyboardWidth, keyboardHeight - totalGaps, desiredKey, true,
-                    bottomRowHeightFactor, alphaRowHeightFactor, alphaKeyWidthFactor,
-                    modKeyWidthFactor,
-                    alphaMarginH, alphaMarginV, modMarginH, modMarginV
-                )
                 
                 // Apply per-key customizations from prefs
                 val customizations = dev.patrickgold.florisboard.ime.keyboard.KeyCustomizationManager.parseFromJson(keyCustomizationsJson)
@@ -322,69 +294,13 @@ fun TextKeyboardLayout(
                         }
                     }
                 }
-                // Apply mod row gaps (upper/inner/lower)
-                if (rowCount >= 2) {
-                    for ((rowIndex, row) in keyboard.arrangement.withIndex()) {
-                        // Upper mod row (N-2)
-                        // Only affected by upperGap (shifting down)
-                        if (rowIndex == rowCount - 2) {
-                            if (modRowUpperGap > 0) {
-                                for (key in row) {
-                                    key.visibleBounds.top += modRowUpperGap
-                                    key.visibleBounds.bottom += modRowUpperGap
-                                    key.touchBounds.top += modRowUpperGap
-                                    key.touchBounds.bottom += modRowUpperGap
-                                }
-                            }
-                        }
-                        // Lower mod row (N-1)
-                        // Affected by upperGap + innerGap (shifting down)
-                        // AND lowerGap (extending down into bezel)
-                        if (rowIndex == rowCount - 1) {
-                            val totalTopShift = modRowUpperGap + modRowInnerGap
-                            for (key in row) {
-                                if (totalTopShift > 0) {
-                                    key.visibleBounds.top += totalTopShift
-                                    key.visibleBounds.bottom += totalTopShift
-                                    key.touchBounds.top += totalTopShift
-                                    key.touchBounds.bottom += totalTopShift
-                                }
-                                if (modRowLowerGap > 0) {
-                                    // Only extend touch bounds into the lower gap/bezel
-                                    // Visible bounds remain at their content size to create a visual gap
-                                    key.touchBounds.bottom += modRowLowerGap
-                                }
-                            }
-                        }
-                    }
-                }
             }
         }
 
         val popupUiController = rememberPopupUiController(
             key1 = keyboard,
             key2 = desiredKey,
-            boundsProvider = { key ->
-                val keyPopupWidth: Float
-                val keyPopupHeight: Float
-                when {
-                    configuration.isOrientationLandscape() -> {
-                        keyPopupWidth = desiredKey.visibleBounds.width * 1.0f
-                        keyPopupHeight = desiredKey.visibleBounds.height * 3.0f
-                    }
-                    else -> {
-                        keyPopupWidth = desiredKey.visibleBounds.width * 1.1f
-                        keyPopupHeight = desiredKey.visibleBounds.height * 2.5f
-                    }
-                }
-                val keyPopupDiffX = (key.visibleBounds.width - keyPopupWidth) / 2.0f
-                FlorisRect.new().apply {
-                    left = key.visibleBounds.left + keyPopupDiffX
-                    top = key.visibleBounds.bottom - keyPopupHeight
-                    right = left + keyPopupWidth
-                    bottom = top + keyPopupHeight
-                }
-            },
+            boundsProvider = { key -> geometry.popupBoundsFor(key.visibleBounds) },
             isSuitableForBasicPopup = { key ->
                 if (key is TextKey) {
                     val keyCode = key.computedData.code

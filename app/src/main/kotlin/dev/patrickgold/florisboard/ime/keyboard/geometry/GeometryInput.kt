@@ -72,6 +72,9 @@ data class GeometryItem(
     val heightFactor: Double = 1.0,
     val verticalAlignment: VerticalAlignment = VerticalAlignment.BOTTOM,
     val kind: GeometryItemKind = GeometryItemKind.KEY,
+    val touchExpansionHorizontal: Double = 0.0,
+    val visualPaddingLeftRatio: Double = 0.0,
+    val visualPaddingRightRatio: Double = 0.0,
 )
 
 /**

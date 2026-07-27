@@ -75,6 +75,9 @@ data class SolvedItem(
     val declaredHeightFactor: Double,
     /** Declared, not applied. Stage 03 resolves the visual rectangle's vertical offset with it. */
     val declaredVerticalAlignment: VerticalAlignment,
+    val declaredTouchExpansionHorizontal: Double,
+    val declaredVisualPaddingLeftRatio: Double,
+    val declaredVisualPaddingRightRatio: Double,
 )
 
 /** A placed row. [bounds] spans the full content width; [items] sit inside it. */

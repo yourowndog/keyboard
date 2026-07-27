@@ -1,107 +1,137 @@
 # Keyboard Geometry and Hitboxes
 
-> Status: Canonical  
-> Last verified: 2026-07-12
-> Verified against: `TextKey.kt`, `TextKeyboard.kt`, `TextKeyboardLayout.kt`,
-> `FlorisImeSizing.kt`, `FlorisImeService.kt`, and `KeyCustomization.kt`
+> Status: Canonical
+> Last verified: 2026-07-27
+> Verified against: `TextKeyboardGeometry.kt`, `KeyboardGeometrySolver.kt`,
+> `FlorisImeSizing.kt`, `TextKeyboardLayout.kt`, `FlorisImeService.kt`,
+> `KeyCustomization.kt`
 
-Key geometry is layered. Before changing a width or gap, identify which layer
-owns it.
+Keyboard geometry is layered. Before changing a width, height, gap, or hitbox,
+identify which layer owns it.
 
-## Geometry layers
+## Live geometry pipeline
 
 ```text
-layout structure or Layout Pack units
-  -> TextKey intrinsic factors by evaluated key code
-  -> row reference width and row-class multiplier
-  -> touch bounds
-  -> visual spacing and intrinsic padding
-  -> visible bounds
-  -> alpha hitbox expansion
-  -> per-key customization adjustments
-  -> Compose placement
+explicit semantic rows
+  -> role-keyed height/width/gap/spacing policy
+  -> one immutable solver result for frame, rows, keys, and structural gaps
+  -> derived touch bounds
+  -> derived visible bounds
+  -> visual-only legacy key customization
+  -> Compose placement and pointer dispatch
 ```
 
-## Intrinsic factors
+`FlorisImeSizing.keyboardGeometry()` owns the live solution. The same immutable
+`TextKeyboardGeometry` supplies the keyboard frame height and the bounds applied
+to every `TextKey`; Compose no longer reruns row-height arithmetic.
 
-`TextKey.compute()` assigns width, grow, shrink, height, alignment, and selected
-edge padding based on keyboard mode and evaluated key code. Examples include a
-wide spacebar, enlarged Enter/Tab/Ctrl, and narrower navigation keys.
+The old `TextKeyboard.layout()` and `KeyboardGeometryArithmetic` remain only as
+legacy characterization seams. Production sizing and placement do not consume
+`bottomModRowCount`, row-count thresholds, Space detection, or `isAlpha` to
+decide what a row is.
 
-For a Layout Builder pack, `KeyboardManager` overwrites the evaluated key's
-width/grow/shrink values with `LayoutKey.units` after computation.
+## Semantic row policy
 
-## Row classes
+Geometry policy is keyed by `SemanticRowRole`:
 
-`TextKeyboard.layout()` classifies each row:
+- `ALPHA`, `NUMERIC`, `SYMBOL`, and `EXTENSION` rows define the shared entry
+  width grid.
+- `PRIMARY_ACTION` consumes that grid without widening it and is immune to both
+  legacy width sliders.
+- `CODING_UTILITY` rows use the utility width and spacing policy.
+- `EXTENSION` and `CODING_UTILITY` use the short-row height factor.
+- All other row roles use the ordinary row-height factor.
 
-- **Alpha row**: at least one key has `isAlpha = true`.
-- **Space row**: non-alpha row containing code `32`.
-- **Modifier row**: neither alpha nor space row.
+Role, stable identity, provenance, behavioral policy, and solved geometry remain
+separate. `GeometryPolicyRef.Unassigned` is intentional: the live resolver uses
+one role-keyed policy bundle and does not require per-row persisted references.
 
-Alpha rows share a reference unit width based on the widest alpha row. Modifier
-rows calculate their own reference width. The space row uses the alpha reference
-width but a multiplier of `1.0`, making it immune to both width sliders.
+Legacy width preferences above 100% formerly created structural overflow and
+clipping. The live validation boundary caps those inputs at 100%, because the
+shared solver's structural allocations must remain inside the frame. Values
+below 100% continue to produce centered narrower rows. Stage 07 owns the later
+structural-customization model.
 
-The reference unit widths are deliberately calculated without slider factors;
-the factors are applied only to final pixel widths. Including a slider in both
-the reference denominator and final width makes it cancel itself out—the
-historical “slider math trap.”
+## Heights and semantic gaps
 
-## Height
+Intrinsic frames are the sum of solved row heights and declared semantic
+boundary gaps. Symbols, Symbols2, and Numeric-Advanced retain their current
+Characters-height behavior by solving their own rows with an explicit fitted
+frame target; the final result still owns both frame and placement.
 
-Layouts with at least five rows separate alpha and modifier height factors.
-`bottomModRowCount` and inferred top extension rows determine which rows receive
-which factor. `FlorisImeSizing` performs related total-height calculations, so a
-row-counting change must be checked in both sizing and layout code.
+The three existing Coding gap controls map only to the Coding-utility block:
 
-Upper, inner, and lower modifier-row gaps are subtracted from the layout height
-and then applied to positions in `TextKeyboardLayout`. They are not represented
-as JSON rows.
+- above the first `CODING_UTILITY` row;
+- within adjacent `CODING_UTILITY` rows;
+- below the final `CODING_UTILITY` row.
+
+When Coding utilities are hidden, or when the active keyboard is Numeric,
+Phone, Symbols, or a layout pack without utility roles, those gaps do not move
+positional rows. There is no `N-2`/`N-1` mutation after layout.
 
 ### Bottom offset and IME insets
 
-Portrait and landscape bottom offset are different from row gaps. The offset is
-bottom padding inside the Snygg `window` box in `FlorisImeService.ImeUi()`, so
-the window background covers it and the measured input height includes it.
-`onComputeInsets()` uses that measured height for the visible, content, and
-touchable IME region. It is not an intentionally transparent or touch-through
-gap.
+Portrait and landscape bottom offsets are separate from solved row geometry.
+The offset remains bottom padding inside the Snygg `window` box in
+`FlorisImeService.ImeUi()`, so the window background covers it and the measured
+input-view height includes it.
 
-On API 30 and newer, changing the offset also resizes the separate RGBA surface
-used behind Compose and inline-autofill content. See
+`onComputeInsets()` uses the measured input-view height for the visible,
+content, and touchable IME region. On API 30 and newer, changing the offset also
+resizes the separate RGBA surface behind Compose inline-autofill content.
+
+See
 [Transparency and the IME surface](../theming/hard-won-lessons.md#transparency-and-the-ime-surface)
-before diagnosing a briefly see-through offset as geometry or theme alpha.
+before diagnosing a briefly see-through offset as geometry rather than theme
+alpha.
 
-## Touch bounds versus visible bounds
+## Structural, touch, and visible bounds
 
+- `structuralBounds` are the non-overlapping solver allocation.
 - `touchBounds` select which key receives a pointer.
 - `visibleBounds` place and size the rendered Snygg key.
-- Spacing and `flayPaddingLeft/Right` shrink visible bounds without necessarily
-  surrendering the corresponding touch area.
-- Alpha touch bounds are expanded horizontally by 20% of their horizontal
-  spacing.
-- The final row may extend its touch bounds downward into the remaining bezel.
 
-This separation is intentional: a visually narrow key can retain a forgiving
-touch target.
+Item height factors and vertical alignment derive an allocated key rectangle
+from its structural row band. Row spacing and explicit left/right padding then
+derive visible bounds. The legacy alpha-key horizontal touch expansion is
+carried as an explicit item declaration; it no longer determines row identity.
+
+Only the named bottom-edge policy extends final-row touch bounds to the solved
+frame bottom. It covers the declared lower Coding gap while leaving the keycap
+visual bounds unchanged. Inner structural gaps remain between touch rows.
+Layout-pack spacers retain structural width but receive empty touch and visual
+bounds.
+
+## Popup geometry
+
+Popup reference size is derived from the median visible entry-key geometry in
+the immutable solution. Popup bounds use that reference, the actual anchor
+key's visible bounds, orientation-specific multipliers, and the solved frame.
+Preview popups are horizontally clamped at the frame edges; extended-popup
+anchoring continues to use `PopupUiController`.
 
 ## Per-key customization
 
-Runtime customization is stored as JSON keyed by integer key code. It can
-adjust padding and width/height factors for the configured special keys. It is
-applied after the base layout pass in `TextKeyboardLayout`.
+Runtime customization is still stored as JSON keyed by integer key code. Stage
+03 deliberately preserves it as a visual-only post-derivation adjustment:
+padding and width/height factors mutate `visibleBounds`, not structural or touch
+bounds. Stage 07 owns its structural migration.
 
-Because customization is keyed by code, every occurrence of that code receives
-the customization. It is not currently keyed by row, layout component, or key
+Because customization is keyed by code, every occurrence of the same code
+receives the customization. It is not keyed by row, layout component, or key
 instance.
 
-## Safe debugging method
+## Safe debugging and validation
 
-1. Record the evaluated key code and whether the row is alpha, space, or mod.
-2. Determine the intrinsic `flayWidthFactor`.
-3. Check for Layout Pack unit replacement.
-4. Check the applicable row width and height preferences.
-5. Compare touch and visible bounds using the developer overlay.
-6. Check per-key customization JSON.
-7. Test edge and neighbor touches on device before accepting the change.
+1. Record the normalized row stable ID and semantic role.
+2. Inspect the immutable `TextKeyboardGeometry` frame, rows, gaps, and item
+   structural bounds.
+3. Compare derived touch and visible bounds.
+4. Check layout-pack units and explicit spacer provenance.
+5. Check visual-only per-key customization JSON.
+6. Confirm the active orientation and any Characters fitted-frame source.
+7. Use the developer touch-boundary overlay.
+8. Validate bottom-edge taps, gap controls, and popup edge placement on device.
+
+Source and unit tests establish conservation and coordinate policy, but final
+touch, popup, bezel, and IME-window behavior still requires device validation.

@@ -36,7 +36,7 @@ import kotlin.math.abs
  * @param bottomModRowCount **deprecated compatibility projection.** Despite the name it is not a
  *   count of the keyboard's bottom modifier rows; it is the legacy number that sizing and layout
  *   still divide by. Read [semantics] for what rows actually are. Removed once the geometry
- *   authorities consume semantic roles.
+ *   authorities consume semantic roles. Live Stage 03 sizing and placement no longer read it.
  */
 class TextKeyboard(
     val arrangement: Array<Array<TextKey>>,

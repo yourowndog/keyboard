@@ -112,7 +112,8 @@ enum class PackRoleSource {
  * Reference to the geometry policy a row is laid out under.
  *
  * Stage 01 introduces the field but no policies: geometry still comes from the legacy compatibility
- * projection. Stage 02 replaces [Unassigned] with real policy references.
+ * projection. The live Stage 03 resolver consumes one role-keyed policy bundle, so per-row
+ * references remain deliberately [Unassigned] until a persisted policy model needs them.
  */
 sealed interface GeometryPolicyRef {
     data object Unassigned : GeometryPolicyRef

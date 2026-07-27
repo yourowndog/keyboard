@@ -326,6 +326,9 @@ object KeyboardGeometrySolver {
                 bounds = GeometryRect(left = left, top = top, right = cursorX.roundToPx(), bottom = bottom),
                 declaredHeightFactor = item.heightFactor,
                 declaredVerticalAlignment = item.verticalAlignment,
+                declaredTouchExpansionHorizontal = item.touchExpansionHorizontal,
+                declaredVisualPaddingLeftRatio = item.visualPaddingLeftRatio,
+                declaredVisualPaddingRightRatio = item.visualPaddingRightRatio,
             )
         }
         return RowPlacement(items, overflowBy = max(0.0, totalRowWidth - contentWidth))
@@ -391,10 +394,22 @@ object KeyboardGeometrySolver {
                 if (item.stableId.isBlank()) reasons += "every item needs a non-blank stable ID"
                 else if (!itemIds.add(item.stableId)) reasons += "duplicate item ID '${item.stableId}'"
                 requireFiniteNonNegative(item.widthUnits, "item '${item.stableId}' width units")
-                if (!item.heightFactor.isFinite() || item.heightFactor <= 0.0) {
-                    reasons += "item '${item.stableId}' height factor must be finite and positive"
-                }
+            if (!item.heightFactor.isFinite() || item.heightFactor <= 0.0) {
+                reasons += "item '${item.stableId}' height factor must be finite and positive"
             }
+            requireFiniteNonNegative(
+                item.touchExpansionHorizontal,
+                "item '${item.stableId}' horizontal touch expansion",
+            )
+            requireFiniteNonNegative(
+                item.visualPaddingLeftRatio,
+                "item '${item.stableId}' left visual padding ratio",
+            )
+            requireFiniteNonNegative(
+                item.visualPaddingRightRatio,
+                "item '${item.stableId}' right visual padding ratio",
+            )
+        }
         }
 
         for (element in plan.elements) {
