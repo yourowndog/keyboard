@@ -2,6 +2,12 @@ package dev.patrickgold.florisboard.ime.keyboard.geometry
 
 import dev.patrickgold.florisboard.ime.keyboard.DefaultComputingEvaluator
 import dev.patrickgold.florisboard.ime.keyboard.KeyboardMode
+import dev.patrickgold.florisboard.ime.keyboard.KeyboardSemantics
+import dev.patrickgold.florisboard.ime.keyboard.LayoutPackRowSemantics
+import dev.patrickgold.florisboard.ime.keyboard.NormalizedRowsBuilder
+import dev.patrickgold.florisboard.ime.keyboard.PackRoleSource
+import dev.patrickgold.florisboard.ime.keyboard.RowProvenance
+import dev.patrickgold.florisboard.ime.keyboard.SemanticRowRole
 import dev.patrickgold.florisboard.ime.popup.PopupMapping
 import dev.patrickgold.florisboard.ime.text.key.KeyCode
 import dev.patrickgold.florisboard.ime.text.key.KeyType
@@ -59,18 +65,47 @@ object GeometryFixtures {
         key(KeyCode.ENTER, isAlpha = false, type = KeyType.ENTER_EDITING),
     )
 
+    /**
+     * Builds a fixture keyboard. [roles] is parallel to [rows] and states what each row is; the
+     * fixtures declare it explicitly for the same reason production composition does.
+     */
     fun keyboard(
         rows: List<Array<TextKey>>,
+        roles: List<SemanticRowRole>,
         mode: KeyboardMode = KeyboardMode.CHARACTERS,
         bottomModRowCount: Int = 2,
         extendedPopupMapping: PopupMapping? = null,
-    ): TextKeyboard = TextKeyboard(
-        arrangement = rows.toTypedArray(),
-        mode = mode,
-        extendedPopupMapping = extendedPopupMapping,
-        extendedPopupMappingDefault = null,
-        bottomModRowCount = bottomModRowCount,
-    )
+        provenance: (Int) -> RowProvenance = { RowProvenance.Synthetic },
+    ): TextKeyboard {
+        require(roles.size == rows.size) { "fixture declares ${roles.size} roles for ${rows.size} rows" }
+        val semantics = NormalizedRowsBuilder().apply {
+            roles.forEachIndexed { index, role -> add(role, provenance(index)) }
+        }.build()
+        return TextKeyboard(
+            arrangement = rows.toTypedArray(),
+            mode = mode,
+            extendedPopupMapping = extendedPopupMapping,
+            extendedPopupMappingDefault = null,
+            bottomModRowCount = bottomModRowCount,
+            semantics = semantics,
+        )
+    }
+
+    /** A sentinel keyboard: no rows, no row semantics. */
+    fun sentinel(mode: KeyboardMode, kind: dev.patrickgold.florisboard.ime.keyboard.SentinelKind): TextKeyboard =
+        TextKeyboard(
+            arrangement = emptyArray(),
+            mode = mode,
+            extendedPopupMapping = null,
+            extendedPopupMappingDefault = null,
+            bottomModRowCount = 2,
+            semantics = KeyboardSemantics.Sentinel(kind),
+        )
+
+    private val ALPHA = SemanticRowRole.ALPHA
+    private val PRIMARY = SemanticRowRole.PRIMARY_ACTION
+    private val UTILITY = SemanticRowRole.CODING_UTILITY
+    private val EXTENSION = SemanticRowRole.EXTENSION
 
     // ---------------------------------------------------------------------------------------
     // Coding profile (today's default experience)
@@ -86,6 +121,7 @@ object GeometryFixtures {
             modRow(7),
             modRow(7),
         ),
+        roles = listOf(ALPHA, ALPHA, ALPHA, PRIMARY, UTILITY, UTILITY),
         bottomModRowCount = 2,
     )
 
@@ -100,6 +136,7 @@ object GeometryFixtures {
             alphaRow(9),
             primaryActionRow(),
         ),
+        roles = listOf(ALPHA, ALPHA, ALPHA, PRIMARY),
         bottomModRowCount = 0,
     )
 
@@ -114,6 +151,7 @@ object GeometryFixtures {
             modRow(7),
             modRow(7),
         ),
+        roles = listOf(EXTENSION, ALPHA, ALPHA, ALPHA, PRIMARY, UTILITY, UTILITY),
         bottomModRowCount = 2,
     )
 
@@ -128,6 +166,7 @@ object GeometryFixtures {
             modRow(7),
             modRow(7),
         ),
+        roles = listOf(EXTENSION, ALPHA, ALPHA, ALPHA, PRIMARY, UTILITY, UTILITY),
         bottomModRowCount = 2,
     )
 
@@ -143,6 +182,7 @@ object GeometryFixtures {
             modRow(7),
             modRow(7),
         ),
+        roles = listOf(EXTENSION, EXTENSION, ALPHA, ALPHA, ALPHA, PRIMARY, UTILITY, UTILITY),
         bottomModRowCount = 2,
     )
 
@@ -162,12 +202,14 @@ object GeometryFixtures {
 
     fun characters(): TextKeyboard = keyboard(
         rows = listOf(alphaRow(10), alphaRow(9), alphaRow(9), primaryActionRow()),
+        roles = listOf(ALPHA, ALPHA, ALPHA, PRIMARY),
         mode = KeyboardMode.CHARACTERS,
         bottomModRowCount = 2,
     )
 
     fun wideSymbols(): TextKeyboard = keyboard(
         rows = listOf(alphaRow(10), alphaRow(10), alphaRow(9), primaryActionRow()),
+        roles = listOf(SemanticRowRole.SYMBOL, SemanticRowRole.SYMBOL, SemanticRowRole.SYMBOL, PRIMARY),
         mode = KeyboardMode.SYMBOLS,
         bottomModRowCount = 2,
     )
@@ -179,17 +221,20 @@ object GeometryFixtures {
     private fun fourUniformRows(perRow: Int): List<Array<TextKey>> =
         List(4) { alphaRow(perRow) }
 
+    /** These rows are numeric-entry rows. They no longer have to claim to be alpha rows to say so. */
+    private val fourNumericRoles = List(4) { SemanticRowRole.NUMERIC }
+
     fun numeric(): TextKeyboard =
-        keyboard(fourUniformRows(3), mode = KeyboardMode.NUMERIC, bottomModRowCount = 2)
+        keyboard(fourUniformRows(3), fourNumericRoles, mode = KeyboardMode.NUMERIC, bottomModRowCount = 2)
 
     fun numericAdvanced(): TextKeyboard =
-        keyboard(fourUniformRows(4), mode = KeyboardMode.NUMERIC_ADVANCED, bottomModRowCount = 2)
+        keyboard(fourUniformRows(4), fourNumericRoles, mode = KeyboardMode.NUMERIC_ADVANCED, bottomModRowCount = 2)
 
     fun phone(): TextKeyboard =
-        keyboard(fourUniformRows(3), mode = KeyboardMode.PHONE, bottomModRowCount = 2)
+        keyboard(fourUniformRows(3), fourNumericRoles, mode = KeyboardMode.PHONE, bottomModRowCount = 2)
 
     fun phone2(): TextKeyboard =
-        keyboard(fourUniformRows(3), mode = KeyboardMode.PHONE2, bottomModRowCount = 2)
+        keyboard(fourUniformRows(3), fourNumericRoles, mode = KeyboardMode.PHONE2, bottomModRowCount = 2)
 
     // ---------------------------------------------------------------------------------------
     // Layout pack
@@ -200,17 +245,49 @@ object GeometryFixtures {
      * that composition has already dropped. Layout-pack rows lose their row IDs at runtime and all
      * keys default to alpha.
      */
-    fun layoutPackWithSpacersAndUnits(): TextKeyboard = keyboard(
-        rows = listOf(
-            arrayOf(
-                key('q'.code, isAlpha = true, widthUnits = 1.5f),
-                key('w'.code, isAlpha = true, widthUnits = 0.5f),
-                key(KeyCode.UNSPECIFIED, isAlpha = true, widthUnits = 2f), // spacer
-                key('e'.code, isAlpha = true, widthUnits = 1f),
+    fun layoutPackWithSpacersAndUnits(): TextKeyboard {
+        // Pack row ids that name nothing recognisable, which is what every pack on disk looks like
+        // today. Each row therefore resolves through the compatibility fallback, and says so.
+        val rowIds = listOf("row-1", "row-2", "row-3")
+        return keyboard(
+            rows = listOf(
+                arrayOf(
+                    key('q'.code, isAlpha = true, widthUnits = 1.5f),
+                    key('w'.code, isAlpha = true, widthUnits = 0.5f),
+                    key(KeyCode.UNSPECIFIED, isAlpha = true, widthUnits = 2f), // spacer
+                    key('e'.code, isAlpha = true, widthUnits = 1f),
+                ),
+                alphaRow(9),
+                primaryActionRow(),
             ),
-            alphaRow(9),
-            primaryActionRow(),
-        ),
-        bottomModRowCount = 2,
-    )
+            roles = rowIds.map { LayoutPackRowSemantics.resolve(it).first },
+            bottomModRowCount = 2,
+            provenance = { index ->
+                RowProvenance.Pack(
+                    packId = "fixture-pack",
+                    rowId = rowIds[index],
+                    sourceRowIndex = index,
+                    roleSource = LayoutPackRowSemantics.resolve(rowIds[index]).second,
+                )
+            },
+        )
+    }
+
+    /** A pack whose row ids name their roles, so nothing has to be inferred. */
+    fun layoutPackWithDeclaredRoles(): TextKeyboard {
+        val rowIds = listOf("alpha", "alpha", "primary_action")
+        return keyboard(
+            rows = listOf(alphaRow(10), alphaRow(9), primaryActionRow()),
+            roles = rowIds.map { LayoutPackRowSemantics.resolve(it).first },
+            bottomModRowCount = 2,
+            provenance = { index ->
+                RowProvenance.Pack(
+                    packId = "declared-pack",
+                    rowId = rowIds[index],
+                    sourceRowIndex = index,
+                    roleSource = PackRoleSource.DECLARED_ROW_ID,
+                )
+            },
+        )
+    }
 }

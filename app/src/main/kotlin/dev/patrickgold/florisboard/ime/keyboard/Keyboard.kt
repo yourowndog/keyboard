@@ -118,6 +118,14 @@ val PlaceholderLoadingKeyboard = TextKeyboard(
     mode = KeyboardMode.CHARACTERS,
     extendedPopupMapping = null,
     extendedPopupMappingDefault = null,
+    // Compatibility projection, unchanged: the placeholder is shown for a few frames while the real
+    // layout loads, and its frame height must keep matching what follows it.
+    bottomModRowCount = 2,
+    // Every row is loading chrome. None of them is an alpha, action or utility row, and none of them
+    // is ever persisted or customized.
+    semantics = NormalizedRowsBuilder().apply {
+        repeat(4) { add(SemanticRowRole.PLACEHOLDER, RowProvenance.Synthetic) }
+    }.build(),
 )
 
 val SmartbarQuickActionsKeyboard = TextKeyboard(
@@ -125,4 +133,10 @@ val SmartbarQuickActionsKeyboard = TextKeyboard(
     mode = KeyboardMode.SMARTBAR_QUICK_ACTIONS,
     extendedPopupMapping = null,
     extendedPopupMappingDefault = null,
+    // Compatibility projection, unchanged. This value is meaningless for a keyboard with no rows,
+    // but it is still pixel-coupled through FlorisImeSizing.keyboardUiHeight(), which coerces a
+    // zero row count up to 4 and partitions it using this number. Correcting it to 0 would move
+    // real pixels, so Stage 01 records the truth in `semantics` and leaves the projection alone.
+    bottomModRowCount = 2,
+    semantics = KeyboardSemantics.Sentinel(SentinelKind.SMARTBAR_QUICK_ACTIONS),
 )

@@ -1,5 +1,7 @@
 package dev.patrickgold.florisboard.ime.keyboard.geometry
 
+import dev.patrickgold.florisboard.ime.keyboard.KeyboardMode
+import dev.patrickgold.florisboard.ime.keyboard.SentinelKind
 import dev.patrickgold.florisboard.ime.keyboard.computeFrameRowPartition
 import dev.patrickgold.florisboard.ime.keyboard.computeKeyboardFrameHeight
 import dev.patrickgold.florisboard.ime.keyboard.computeLayoutRowHeight
@@ -455,7 +457,7 @@ class GeometryAuthorityCharacterizationTest {
     @COMPATIBILITY("layout() is a no-op for keyboards with no rows.")
     @Test
     fun `layout leaves empty keyboards untouched`() {
-        val sentinel = GeometryFixtures.keyboard(rows = emptyList())
+        val sentinel = GeometryFixtures.sentinel(KeyboardMode.EDITING, SentinelKind.EDITING)
 
         sentinel.layout(
             keyboardWidth = 1000f,

@@ -18,24 +18,60 @@ package dev.patrickgold.florisboard.ime.text.keyboard
 
 import dev.patrickgold.florisboard.ime.keyboard.Key
 import dev.patrickgold.florisboard.ime.keyboard.Keyboard
+import dev.patrickgold.florisboard.ime.keyboard.KeyboardSemantics
+import dev.patrickgold.florisboard.ime.keyboard.NormalizedRow
+import dev.patrickgold.florisboard.ime.keyboard.SemanticRowRole
+import dev.patrickgold.florisboard.ime.keyboard.SentinelKind
 import dev.patrickgold.florisboard.ime.keyboard.VerticalAlignment
 import dev.patrickgold.florisboard.ime.keyboard.KeyboardMode
 import dev.patrickgold.florisboard.ime.keyboard.computeLayoutRowHeight
+import dev.patrickgold.florisboard.ime.keyboard.validateAgainst
 import dev.patrickgold.florisboard.ime.popup.PopupMapping
 import kotlin.math.abs
 
+/**
+ * @param semantics what each row of [arrangement] is, as known by whichever code composed it. Every
+ *   construction site declares this explicitly — there is no default, because a keyboard that
+ *   inherits semantics it never stated is exactly the failure this model exists to prevent.
+ * @param bottomModRowCount **deprecated compatibility projection.** Despite the name it is not a
+ *   count of the keyboard's bottom modifier rows; it is the legacy number that sizing and layout
+ *   still divide by. Read [semantics] for what rows actually are. Removed once the geometry
+ *   authorities consume semantic roles.
+ */
 class TextKeyboard(
     val arrangement: Array<Array<TextKey>>,
     override val mode: KeyboardMode,
     val extendedPopupMapping: PopupMapping?,
     val extendedPopupMappingDefault: PopupMapping?,
     val bottomModRowCount: Int = 2,
+    val semantics: KeyboardSemantics,
 ) : Keyboard() {
+    init {
+        semantics.validateAgainst(arrangement.size)
+    }
+
     val rowCount: Int
         get() = arrangement.size
 
     val keyCount: Int
         get() = arrangement.sumOf { it.size }
+
+    /** The semantic rows, parallel to [arrangement]. Empty for a sentinel keyboard. */
+    val semanticRows: List<NormalizedRow>
+        get() = when (val s = semantics) {
+            is KeyboardSemantics.Rows -> s.rows
+            is KeyboardSemantics.Sentinel -> emptyList()
+        }
+
+    /** Which sentinel this keyboard is, or null if it carries rows. */
+    val sentinelKind: SentinelKind?
+        get() = (semantics as? KeyboardSemantics.Sentinel)?.kind
+
+    /** The semantics of the row at [index], or null if [index] is out of range. */
+    fun rowSemantics(index: Int): NormalizedRow? = semanticRows.getOrNull(index)
+
+    /** The rows carrying [role], in arrangement order. */
+    fun rowsWithRole(role: SemanticRowRole): List<NormalizedRow> = semanticRows.filter { it.role == role }
 
     override fun getKeyForPos(pointerX: Float, pointerY: Float): TextKey? {
         for (key in keys()) {
