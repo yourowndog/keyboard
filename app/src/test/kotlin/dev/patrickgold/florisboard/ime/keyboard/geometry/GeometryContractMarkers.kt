@@ -35,3 +35,14 @@ annotation class KNOWN_DEFECT(val reason: String)
 @Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS)
 annotation class MIGRATION_FIXTURE(val reason: String)
+
+/**
+ * A difference between a legacy authority and its replacement that the migration intends.
+ *
+ * Added in Stage 02 for comparison-mode assertions, where the point of the test is that the two
+ * sides disagree. [reason] must name the defect being fixed, so that an unclassified difference —
+ * one nobody decided about — cannot pass as an intentional one.
+ */
+@Retention(AnnotationRetention.SOURCE)
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS)
+annotation class EXPECTED_FIX(val reason: String)
