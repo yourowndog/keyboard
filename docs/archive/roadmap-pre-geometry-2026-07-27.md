@@ -23,13 +23,6 @@ search / prompt boxes. Suggestions everywhere; auto-commit only where safe. This
 is an editor-layer change with real blast radius; develop it with on-device
 validation across a search box, a URL bar, a Termux session, and an email field.
 
-### Stabilize RTK integration
-
-The global RTK rewrite hook has repeatedly failed its integrity check and
-required `rtk init -g --auto-patch`. Determine which tool is rewriting
-`~/.claude/hooks/rtk-rewrite.sh`. Prefer explicit `rtk` command invocation from
-`AGENTS.md` and remove the global auto-rewrite hook if it remains contested.
-
 ### Smartbar action customization
 
 Verify and repair action reordering, visibility toggles, and persistence. The
