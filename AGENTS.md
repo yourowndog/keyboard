@@ -48,16 +48,18 @@ The whole codebase matters, but layout/key programming/geometry and
 autocorrect/neural scoring are especially easy to misunderstand. Use their
 detailed guides and preserve hard-won behavior when changing them.
 
-## Code Exploration Policy
+## Exploration and Indexing Policy (jCodemunch & jDocMunch)
 
-Always use jCodemunch-MCP tools for code navigation. Never fall back to Read, Grep, Glob, or Bash for code exploration.
-**Exception:** Use `Read` when you need to edit a file — the agent harness requires a `Read` before `Edit`/`Write` will succeed. Use jCodemunch tools to *find and understand* code, then `Read` only the specific file you're about to modify.
+Preserve context tokens at all costs. Always use **jCodemunch** for code navigation and **jDocMunch** for documentation/textual navigation whenever appropriate, rather than dumping full files or using raw shell tools for exploration.
 
-**Start any session:**
-1. `resolve_repo { "path": "." }` — confirm the project is indexed. If not: `index_folder { "path": "." }`
-2. `suggest_queries` — when the repo is unfamiliar
+**Session Start & Index Maintenance:**
+1. **Refresh Code Index**: Run `resolve_repo { "path": "." }` / `uvx jcodemunch-mcp index .` to verify/refresh the code index (750 source code files, ~4,462 symbols).
+2. **Refresh Doc Index**: Verify/refresh the documentation index via `jdocmunch-mcp` (995 docs/schemas/textual files, ~13,455 sections).
+3. `suggest_queries` — when exploring unfamiliar areas of the codebase or documentation.
 
-**Finding code:**
+**Code Exploration (jCodemunch):**
+- Always use jCodemunch-MCP tools for code navigation. Never fall back to Read, Grep, Glob, or Bash for code exploration.
+- **Exception:** Use `Read` only when you need to edit a file — the agent harness requires a `Read` before `Edit`/`Write` will succeed.
 - symbol by name → `search_symbols` (add `kind=`, `language=`, `file_pattern=`, `decorator=` to narrow)
 - decorator-aware queries → `search_symbols(decorator="X")` to find symbols with a specific decorator (e.g. `@property`, `@route`); combine with set-difference to find symbols *lacking* a decorator (e.g. "which endpoints lack CSRF protection?")
 - string, comment, config value → `search_text` (supports regex, `context_lines`)

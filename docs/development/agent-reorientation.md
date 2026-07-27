@@ -9,18 +9,20 @@ whose conversation predates the repository reorganization.
 ## Boot sequence
 
 1. Read the root `AGENTS.md` and `docs/README.md`.
-2. Read `docs/architecture/system-map.md` for ownership and runtime flow.
-3. Read the closest subsystem index before searching code:
+2. Verify and refresh indices: run jCodemunch (`resolve_repo` / `uvx jcodemunch-mcp index .`) for code (750 files) and jDocMunch (`jdocmunch-mcp`) for textual docs (995 files).
+3. Use **jDocMunch** section retrieval and **jCodemunch** symbol navigation whenever appropriate to preserve context tokens.
+4. Read `docs/architecture/system-map.md` for ownership and runtime flow.
+5. Read the closest subsystem index before searching code:
    - keyboard construction: `docs/keyboard/README.md`
    - autocorrect and neural scoring: `docs/autocorrect/README.md`
    - themes: `docs/theming/README.md`
    - builds and validation: `docs/development/building.md` and `testing.md`
-4. Inspect `git status`, the current branch, and recent commits. Never assume a
+6. Inspect `git status`, the current branch, and recent commits. Never assume a
    previously dirty worktree is still dirty after another agent has organized
    or committed it.
-5. State the task you believe you are resuming, the evidence for that belief,
+7. State the task you believe you are resuming, the evidence for that belief,
    what is complete, what remains, and which live-test observations matter.
-6. Ask Sam only about ambiguity that cannot be resolved from conversation,
+8. Ask Sam only about ambiguity that cannot be resolved from conversation,
    commits, canonical docs, tests, or current runtime evidence.
 
 ## Interrupted-task recovery
