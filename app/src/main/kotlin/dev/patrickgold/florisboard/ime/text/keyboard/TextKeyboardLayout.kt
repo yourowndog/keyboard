@@ -65,8 +65,13 @@ import dev.patrickgold.florisboard.ime.editor.OperationUnit
 import dev.patrickgold.florisboard.ime.input.InputEventDispatcher
 import dev.patrickgold.florisboard.ime.keyboard.ComputingEvaluator
 import dev.patrickgold.florisboard.ime.keyboard.FlorisImeSizing
+import dev.patrickgold.florisboard.ime.keyboard.KeyCustomizationManager
 import dev.patrickgold.florisboard.ime.keyboard.KeyboardMode
 import dev.patrickgold.florisboard.ime.keyboard.SpaceBarMode
+import dev.patrickgold.florisboard.ime.keyboard.geometry.FramePolicy
+import dev.patrickgold.florisboard.ime.keyboard.geometry.GeometryOrientation
+import dev.patrickgold.florisboard.ime.keyboard.geometry.TextKeyboardGeometryBridge
+import dev.patrickgold.florisboard.ime.keyboard.geometry.rememberGeometryPreferences
 import dev.patrickgold.florisboard.ime.popup.ExceptionsForKeyCodes
 import dev.patrickgold.florisboard.ime.popup.PopupUiController
 import dev.patrickgold.florisboard.ime.popup.rememberPopupUiController
@@ -84,6 +89,7 @@ import dev.patrickgold.florisboard.lib.Pointer
 import dev.patrickgold.florisboard.lib.PointerMap
 import dev.patrickgold.florisboard.lib.devtools.LogTopic
 import dev.patrickgold.florisboard.lib.devtools.flogDebug
+import dev.patrickgold.florisboard.lib.devtools.flogError
 import dev.patrickgold.florisboard.lib.observeAsTransformingState
 import dev.patrickgold.florisboard.lib.toIntOffset
 import dev.patrickgold.jetpref.datastore.model.observeAsState
@@ -236,129 +242,82 @@ fun TextKeyboardLayout(
     ) {
         val keyboardWidth = constraints.maxWidth.toFloat()
         val keyboardHeight = constraints.maxHeight.toFloat()
-        val keyMarginH by prefs.keyboard.keySpacingHorizontal.observeAsTransformingState { it.dp.toPx() }
-        val keyMarginV by prefs.keyboard.keySpacingVertical.observeAsTransformingState { it.dp.toPx() }
-        val alphaKeyWidthFactor by prefs.keyboard.alphaKeyWidth.observeAsTransformingState { it / 100f }
-        val modKeyWidthFactor by prefs.keyboard.modKeyWidth.observeAsTransformingState { it / 100f }
-        val alphaMarginH by prefs.keyboard.alphaSpacingHorizontal.observeAsTransformingState { it.dp.toPx() }
-        val alphaMarginV by prefs.keyboard.alphaSpacingVertical.observeAsTransformingState { it.dp.toPx() }
-        val modMarginH by prefs.keyboard.modSpacingHorizontal.observeAsTransformingState { it.dp.toPx() }
-        val modMarginV by prefs.keyboard.modSpacingVertical.observeAsTransformingState { it.dp.toPx() }
-        val bottomRowHeightFactor by prefs.keyboard.bottomRowHeightFactor.observeAsTransformingState { it / 100f }
-        val alphaRowHeightFactor by prefs.keyboard.alphaRowHeightFactor.observeAsTransformingState { it / 100f }
-        val modRowUpperGap by prefs.keyboard.modRowUpperGap.observeAsTransformingState { it.dp.toPx() }
-        val modRowInnerGap by prefs.keyboard.modRowInnerGap.observeAsTransformingState { it.dp.toPx() }
-        val modRowLowerGap by prefs.keyboard.modRowLowerGap.observeAsTransformingState { it.dp.toPx() }
         val keyCustomizationsJson by prefs.keyboard.keyCustomizations.observeAsState()
-        val keyboardRowBaseHeight = FlorisImeSizing.keyboardRowBaseHeight
+        val rowBaseHeight = FlorisImeSizing.keyboardRowBaseHeight
+        val geometryPrefs = rememberGeometryPreferences(
+            rowBaseHeight = rowBaseHeight.toPx().toDouble(),
+            convertLength = { it.dp.toPx().toDouble() },
+        )
+        val geometryOrientation = if (configuration.isOrientationLandscape()) {
+            GeometryOrientation.LANDSCAPE
+        } else {
+            GeometryOrientation.PORTRAIT
+        }
 
+        // The whole geometry of this keyboard, solved once and written onto its keys.
+        //
+        // Every input the placement depends on is a key of this `remember`, and nothing else is: a
+        // preference change produces a different `geometryPrefs` value and recomputes exactly once,
+        // and a change geometry does not depend on recomputes nothing. There is no post-layout
+        // structural mutation after this block — what the solver decided is what the keys carry.
         val desiredKey = remember(
-            keyboard, keyboardWidth, keyboardHeight, keyMarginH, keyMarginV,
-            alphaKeyWidthFactor, modKeyWidthFactor, alphaMarginH, alphaMarginV, modMarginH, modMarginV,
-            keyboardRowBaseHeight, bottomRowHeightFactor, alphaRowHeightFactor, modRowUpperGap,
-            modRowInnerGap, modRowLowerGap, keyCustomizationsJson, evaluator
+            keyboard, keyboardWidth, keyboardHeight, geometryPrefs, geometryOrientation,
+            keyCustomizationsJson,
         ) {
-            TextKey(data = TextKeyData.UNSPECIFIED).also { desiredKey ->
-                desiredKey.touchBounds.apply {
-                    width = keyboardWidth / 10f
-                    height = when (keyboard.mode) {
-                        KeyboardMode.CHARACTERS,
-                        KeyboardMode.NUMERIC_ADVANCED,
-                        KeyboardMode.SYMBOLS,
-                        KeyboardMode.SYMBOLS2 -> {
-                            (keyboardHeight / keyboard.rowCount)
-                                .coerceAtMost(keyboardRowBaseHeight.toPx() * 1.12f)
-                        }
-                        else -> keyboardRowBaseHeight.toPx()
-                    }
-                }
-                desiredKey.visibleBounds.applyFrom(desiredKey.touchBounds).deflateBy(keyMarginH, keyMarginV)
-                
-                // Calculate total gap height to subtract from layout height
-                // This ensures keys are sized based on content height, not including the gaps
-                val rowCount = keyboard.rowCount
-                val totalGaps = if (rowCount >= 2) {
-                    modRowUpperGap + modRowInnerGap + modRowLowerGap
-                } else {
-                    0f
-                }
-                
-                keyboard.layout(
-                    keyboardWidth, keyboardHeight - totalGaps, desiredKey, true,
-                    bottomRowHeightFactor, alphaRowHeightFactor, alphaKeyWidthFactor,
-                    modKeyWidthFactor,
-                    alphaMarginH, alphaMarginV, modMarginH, modMarginV
+            val reference = TextKey(data = TextKeyData.UNSPECIFIED)
+            val result = TextKeyboardGeometryBridge.solve(
+                keyboard = keyboard,
+                prefs = geometryPrefs,
+                availableWidth = keyboardWidth.toDouble(),
+                // The frame height was already decided by FlorisImeSizing, from this same
+                // description of this same keyboard. The rows share out what it granted them.
+                framePolicy = FramePolicy.FitToHeight(keyboardHeight.toDouble()),
+                orientation = geometryOrientation,
+            )
+            for (diagnostic in result.diagnostics) {
+                flogError(LogTopic.TEXT_KEYBOARD_VIEW) { "geometry: $diagnostic" }
+            }
+            val geometry = when (result) {
+                is TextKeyboardGeometryBridge.Result.Solved -> result.geometry
+                is TextKeyboardGeometryBridge.Result.Fallback -> result.geometry
+                // Unsatisfiable even at the canonical baseline: nothing is written, so the keys keep
+                // whatever coherent bounds they last had rather than being left half-placed.
+                is TextKeyboardGeometryBridge.Result.Unavailable -> null
+            }
+            if (geometry != null) {
+                TextKeyboardGeometryBridge.applyTo(
+                    keyboard = keyboard,
+                    geometry = geometry,
+                    extendTouchBoundariesDownwards = true,
                 )
-                
-                // Apply per-key customizations from prefs
-                val customizations = dev.patrickgold.florisboard.ime.keyboard.KeyCustomizationManager.parseFromJson(keyCustomizationsJson)
+                TextKeyboardGeometryBridge.referenceCell(geometry, reference.visibleBounds)
+                reference.touchBounds.applyFrom(reference.visibleBounds)
+
+                // Per-key customizations are presentation only: they reshape the keycap a user has
+                // explicitly resized, and never the structural allocation or the touch bounds, so a
+                // customized key cannot open a dead strip or steal a neighbour's touches.
+                val customizations = KeyCustomizationManager.parseFromJson(keyCustomizationsJson)
                 for (key in keyboard.keys()) {
-                    val custom = customizations[(key as? TextKey)?.computedData?.code]
-                    if (custom != null) {
-                        // Apply height factor by scaling visible bounds
-                        if (custom.heightFactor != 1.0f) {
-                            val currentHeight = key.visibleBounds.height
-                            val newHeight = currentHeight * custom.heightFactor
-                            val heightDelta = newHeight - currentHeight
-                            key.visibleBounds.top -= heightDelta / 2
-                            key.visibleBounds.bottom += heightDelta / 2
-                        }
-                        
-                        // Apply width factor by scaling visible bounds
-                        if (custom.widthFactor != 1.0f) {
-                            val currentWidth = key.visibleBounds.width
-                            val newWidth = currentWidth * custom.widthFactor
-                            val widthDelta = newWidth - currentWidth
-                            key.visibleBounds.left -= widthDelta / 2
-                            key.visibleBounds.right += widthDelta / 2
-                        }
-                        
-                        // Apply padding to visible bounds (convert dp to px)
-                        key.visibleBounds.apply {
-                            top += custom.paddingTop.dp.toPx()
-                            bottom -= custom.paddingBottom.dp.toPx()
-                            left += custom.paddingLeft.dp.toPx()
-                            right -= custom.paddingRight.dp.toPx()
-                        }
+                    val custom = customizations[key.computedData.code] ?: continue
+                    if (custom.heightFactor != 1.0f) {
+                        val delta = key.visibleBounds.height * (custom.heightFactor - 1.0f)
+                        key.visibleBounds.top -= delta / 2
+                        key.visibleBounds.bottom += delta / 2
                     }
-                }
-                // Apply mod row gaps (upper/inner/lower)
-                if (rowCount >= 2) {
-                    for ((rowIndex, row) in keyboard.arrangement.withIndex()) {
-                        // Upper mod row (N-2)
-                        // Only affected by upperGap (shifting down)
-                        if (rowIndex == rowCount - 2) {
-                            if (modRowUpperGap > 0) {
-                                for (key in row) {
-                                    key.visibleBounds.top += modRowUpperGap
-                                    key.visibleBounds.bottom += modRowUpperGap
-                                    key.touchBounds.top += modRowUpperGap
-                                    key.touchBounds.bottom += modRowUpperGap
-                                }
-                            }
-                        }
-                        // Lower mod row (N-1)
-                        // Affected by upperGap + innerGap (shifting down)
-                        // AND lowerGap (extending down into bezel)
-                        if (rowIndex == rowCount - 1) {
-                            val totalTopShift = modRowUpperGap + modRowInnerGap
-                            for (key in row) {
-                                if (totalTopShift > 0) {
-                                    key.visibleBounds.top += totalTopShift
-                                    key.visibleBounds.bottom += totalTopShift
-                                    key.touchBounds.top += totalTopShift
-                                    key.touchBounds.bottom += totalTopShift
-                                }
-                                if (modRowLowerGap > 0) {
-                                    // Only extend touch bounds into the lower gap/bezel
-                                    // Visible bounds remain at their content size to create a visual gap
-                                    key.touchBounds.bottom += modRowLowerGap
-                                }
-                            }
-                        }
+                    if (custom.widthFactor != 1.0f) {
+                        val delta = key.visibleBounds.width * (custom.widthFactor - 1.0f)
+                        key.visibleBounds.left -= delta / 2
+                        key.visibleBounds.right += delta / 2
+                    }
+                    key.visibleBounds.apply {
+                        top += custom.paddingTop.dp.toPx()
+                        bottom -= custom.paddingBottom.dp.toPx()
+                        left += custom.paddingLeft.dp.toPx()
+                        right -= custom.paddingRight.dp.toPx()
                     }
                 }
             }
+            reference
         }
 
         val popupUiController = rememberPopupUiController(

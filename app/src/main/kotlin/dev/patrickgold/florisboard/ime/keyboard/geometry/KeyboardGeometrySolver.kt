@@ -27,9 +27,10 @@ import kotlin.math.roundToInt
  * the same input. It has no dependency on Compose, `Context`, preferences, or the keyboard object,
  * which is why it can be exercised exhaustively from unit tests.
  *
- * Stage 02 runs this **beside** the legacy authorities, not instead of them. Nothing in the
- * production render path calls it yet; `LegacyGeometryComparator` in the test sources is the only
- * consumer, and it exists to make the differences legible before any cutover.
+ * This is the production authority for placement. Both geometry consumers reach it through
+ * [TextKeyboardGeometryBridge] — `FlorisImeSizing` for the frame height, `TextKeyboardLayout` for
+ * the rows and keys inside that frame — so there is no second arithmetic to disagree with. The
+ * legacy authorities it replaced (`Keyboard.layout()` and `KeyboardGeometryArithmetic`) are gone.
  *
  * See [SolvedGeometry] for the coordinate convention and rounding ownership, and
  * `omniboard-artifacts/implementation/keyboard-geometry/02-shared-solver.md` for the stage

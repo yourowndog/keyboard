@@ -73,46 +73,26 @@ abstract class Key(open val data: AbstractKeyData) {
     open val visibleBounds: FlorisRect = FlorisRect.empty()
 
     /**
-     * Specifies how much this key is willing to shrink if too many keys are in a keyboard row. A value of 0.0
-     * indicates that the key does not want to shrink in such scenario. This value should not be set manually, only
-     * by the key's compute method and is used in the layout process to determine the real key width.
+     * The structural width this key was *authored* with, in units, or null if it has none.
+     *
+     * Only a user Layout Pack sets this: a pack author who wrote an asymmetric row meant it, and
+     * that asymmetry survives untouched. Every other key leaves this null and is measured by
+     * [dev.patrickgold.florisboard.ime.keyboard.geometry.KeyboardGeometryPolicy], which is the sole
+     * authority on what an ordinary key is worth.
+     *
+     * There is deliberately no general-purpose per-key width, grow, shrink, height or padding field
+     * here any more. Those were the intrinsic table that let key geometry be decided in five places
+     * at once; geometry is now stated once, by role, and derived.
      */
-    open var flayShrink: Float = 0f
+    open var authoredWidthUnits: Float? = null
 
     /**
-     * Specifies how much this key is willing to grow if too few keys are in a keyboard row. A value of 0.0
-     * indicates that the key does not want to grow in such scenario. This value should not be set manually, only
-     * by the key's compute method and is used in the layout process to determine the real key width.
+     * True when this key is a Layout Pack spacer: it occupies structural width but is not a key.
+     *
+     * Distinct from `!isVisible`, which means "this key exists but the evaluator hid it" and
+     * collapses the cell to zero width.
      */
-    open var flayGrow: Float = 0f
-
-    /**
-     * Specifies the relative proportional width this key aims to get in respective to the keyboard view's desired key
-     * width. A value of 1.0 indicates that the key wants to be exactly as wide as the desired key width, a value of
-     * 0.0 is basically equivalent to setting [isVisible] to false. This value should not be set manually, only
-     * by the key's compute method and is used in the layout process to determine the real key width.
-     */
-    open var flayWidthFactor: Float = 0f
-
-    /**
-     * Specifies the relative proportional height this key aims to get in respective to the row's base height.
-     * A value of 1.0 means the key uses the row's full height, values > 1.0 allow the key to extend beyond.
-     * This value should not be set manually, only by the key's compute method.
-     */
-    open var flayHeightFactor: Float = 1.0f
-
-    /**
-     * Specifies how this key should be vertically aligned when its height differs from neighboring keys.
-     */
-    open var flayVerticalAlignment: VerticalAlignment = VerticalAlignment.BOTTOM
-
-    /**
-     * Per-key padding values in dp. These are applied to the visible bounds during layout.
-     */
-    open var flayPaddingTop: Float = 0f
-    open var flayPaddingBottom: Float = 0f
-    open var flayPaddingLeft: Float = 0f
-    open var flayPaddingRight: Float = 0f
+    open var isStructuralSpacer: Boolean = false
 
     /**
      * The computed UI label of this key. This value is used by the keyboard view to temporarily save the label string

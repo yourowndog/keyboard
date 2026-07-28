@@ -37,6 +37,9 @@ import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowInsetsCompat
 import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
+import dev.patrickgold.florisboard.ime.keyboard.geometry.GeometryOrientation
+import dev.patrickgold.florisboard.ime.keyboard.geometry.TextKeyboardGeometryBridge
+import dev.patrickgold.florisboard.ime.keyboard.geometry.rememberGeometryPreferences
 import dev.patrickgold.florisboard.ime.smartbar.ExtendedActionsPlacement
 import dev.patrickgold.florisboard.ime.smartbar.SmartbarLayout
 import dev.patrickgold.florisboard.ime.text.keyboard.TextKeyboard
@@ -61,19 +64,23 @@ object FlorisImeSizing {
         @ReadOnlyComposable
         get() = LocalSmartbarHeight.current
 
+    /**
+     * The keyboard frame's height, taken from the same solve that places the keys.
+     *
+     * There is no frame arithmetic here any more. `TextKeyboardGeometryBridge` is asked for the
+     * intrinsic height of the very rows the layout is about to place, under the very preferences it
+     * is about to place them with, so the frame and its contents cannot disagree about how tall a
+     * utility row is or how many gaps there are.
+     */
     @Composable
     fun keyboardUiHeight(): Dp {
-        val prefs by FlorisPreferenceStore
-        val bottomRowHeightFactor by prefs.keyboard.bottomRowHeightFactor.observeAsTransformingState { it / 100f }
-        val alphaRowHeightFactor by prefs.keyboard.alphaRowHeightFactor.observeAsTransformingState { it / 100f }
-        val modRowUpperGap by prefs.keyboard.modRowUpperGap.observeAsState()
-        val modRowInnerGap by prefs.keyboard.modRowInnerGap.observeAsState()
-        val modRowLowerGap by prefs.keyboard.modRowLowerGap.observeAsState()
-        
+        val configuration = LocalConfiguration.current
         val context = LocalContext.current
         val keyboardManager by context.keyboardManager()
         val evaluator by keyboardManager.activeEvaluator.collectAsState()
         val lastCharactersEvaluator by keyboardManager.lastCharactersEvaluator.collectAsState()
+        // Symbols and Numeric-Advanced deliberately keep the frame of the Characters surface they
+        // were opened from, so switching layers does not resize the window under the user's thumb.
         val keyboard = when (evaluator.keyboard.mode) {
             KeyboardMode.CHARACTERS,
             KeyboardMode.NUMERIC_ADVANCED,
@@ -81,20 +88,32 @@ object FlorisImeSizing {
             KeyboardMode.SYMBOLS2 -> lastCharactersEvaluator.keyboard as TextKeyboard
             else -> evaluator.keyboard as TextKeyboard
         }
-        // Dynamic Frame Logic: Sum of Parts
-        // Bottom mod rows come from the keyboard's bottomModRowCount.
-        // Any rows beyond the standard (3 alpha + bottomModCount) are 'Extension' rows at the top.
-        // Both Extension and Mod rows use the bottomRowHeightFactor.
-        // Gaps are only added when the keyboard has mod rows.
-        return computeKeyboardFrameHeight(
-            rawRowCount = keyboard.rowCount,
-            bottomModRowCount = keyboard.bottomModRowCount,
-            rowBaseHeight = keyboardRowBaseHeight.value,
-            alphaRowHeightFactor = alphaRowHeightFactor,
-            bottomRowHeightFactor = bottomRowHeightFactor,
-            gapTotal = (modRowUpperGap + modRowInnerGap + modRowLowerGap).toFloat(),
-        ).dp
+        // Everything in this function is in dp, including the geometry preferences, so the solved
+        // frame height is a dp value directly.
+        val geometryPrefs = rememberGeometryPreferences(
+            rowBaseHeight = keyboardRowBaseHeight.value.toDouble(),
+            convertLength = { it.toDouble() },
+        )
+        val orientation = if (configuration.isOrientationLandscape()) {
+            GeometryOrientation.LANDSCAPE
+        } else {
+            GeometryOrientation.PORTRAIT
+        }
+        val solvedHeight = remember(keyboard, geometryPrefs, configuration.screenWidthDp, orientation) {
+            TextKeyboardGeometryBridge.frameHeight(
+                keyboard = keyboard,
+                prefs = geometryPrefs,
+                availableWidth = configuration.screenWidthDp.toDouble(),
+                orientation = orientation,
+            )
+        }
+        // A sentinel keyboard has no rows to measure. Four canonical rows is what the loading and
+        // editing placeholders occupy, and is the height the window has always reserved for them.
+        return (solvedHeight?.toFloat() ?: (keyboardRowBaseHeight.value * FALLBACK_ROW_COUNT)).dp
     }
+
+    /** Rows reserved for a keyboard that declares none, so the window never collapses to nothing. */
+    private const val FALLBACK_ROW_COUNT = 4
 
     @Composable
     fun smartbarUiHeight(): Dp {

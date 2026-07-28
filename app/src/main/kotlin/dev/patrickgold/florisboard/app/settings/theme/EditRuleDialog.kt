@@ -605,13 +605,6 @@ private fun TextKeyDataPreviewBox(
                 override val mode = KeyboardMode.NUMERIC_ADVANCED
                 override fun getKeyForPos(pointerX: Float, pointerY: Float) = error("not implemented")
                 override fun keys() = error("not implemented")
-                override fun layout(
-                    keyboardWidth: Float, keyboardHeight: Float, desiredKey: Key,
-                    extendTouchBoundariesDownwards: Boolean, bottomRowHeightFactor: Float,
-                    alphaRowHeightFactor: Float, alphaKeyWidthFactor: Float,
-                    modKeyWidthFactor: Float, alphaSpacingH: Float, alphaSpacingV: Float,
-                    modSpacingH: Float, modSpacingV: Float,
-                ) = error("not implemented")
             }
 
             override fun context() = context

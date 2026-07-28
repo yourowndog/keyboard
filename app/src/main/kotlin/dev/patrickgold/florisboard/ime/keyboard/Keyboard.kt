@@ -50,24 +50,10 @@ abstract class Keyboard {
      */
     abstract fun keys(): Iterator<Key>
 
-    /**
-     * Layouts the keys according the the dimensions and parameters provided by given arguments. This method's
-     * exact behavior is highly dependent aon the actual subclass.
-     */
-    abstract fun layout(
-        keyboardWidth: Float,
-        keyboardHeight: Float,
-        desiredKey: Key,
-        extendTouchBoundariesDownwards: Boolean,
-        bottomRowHeightFactor: Float = 0.75f,
-        alphaRowHeightFactor: Float = 1.0f,
-        alphaKeyWidthFactor: Float = 1.0f,
-        modKeyWidthFactor: Float = 1.0f,
-        alphaSpacingH: Float = 0f,
-        alphaSpacingV: Float = 0f,
-        modSpacingH: Float = 0f,
-        modSpacingV: Float = 0f,
-    )
+    // A keyboard no longer lays itself out. Placement is solved by
+    // `dev.patrickgold.florisboard.ime.keyboard.geometry.KeyboardGeometrySolver` and written onto
+    // the keys by `TextKeyboardGeometryBridge`, so there is one authority for where a key goes
+    // instead of a per-subclass method that each frame consumer had to reproduce.
 }
 
 val PlaceholderLoadingKeyboard = TextKeyboard(

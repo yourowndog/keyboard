@@ -28,17 +28,24 @@ import dev.patrickgold.florisboard.ime.text.keyboard.TextKeyboard
  */
 object GeometryFixtures {
 
-    /** Builds a computed [TextKey]. [isAlpha] is applied after `compute` because `compute` resets it. */
+    /**
+     * Builds a computed [TextKey]. [isAlpha] is applied after `compute` because `compute` resets it.
+     *
+     * [authoredUnits] is left null for ordinary keys, which is what makes them ordinary: their width
+     * comes from [KeyboardGeometryPolicy]. Only Layout Pack fixtures state one.
+     */
     fun key(
         code: Int,
         isAlpha: Boolean,
-        widthUnits: Float = 1f,
+        authoredUnits: Float? = null,
         type: KeyType = KeyType.CHARACTER,
+        isSpacer: Boolean = false,
     ): TextKey {
         return TextKey(TextKeyData(type = type, code = code, label = code.toLabel())).also {
             it.compute(DefaultComputingEvaluator)
             it.isAlpha = isAlpha
-            it.flayWidthFactor = widthUnits
+            it.authoredWidthUnits = authoredUnits
+            it.isStructuralSpacer = isSpacer
         }
     }
 
@@ -51,17 +58,25 @@ object GeometryFixtures {
     fun alphaRow(count: Int): Array<TextKey> =
         Array(count) { key(code = 'a'.code + (it % 26), isAlpha = true) }
 
-    /** A row of [count] non-alpha keys, each one unit wide. */
+    /** A row of [count] non-alpha keys, each one canonical unit wide. */
     fun modRow(count: Int): Array<TextKey> =
         Array(count) { key(code = KeyCode.UNSPECIFIED - it, isAlpha = false, type = KeyType.MODIFIER) }
 
+    /** A coding utility row: [count] equal structural cells, nine in the shipped layout. */
+    fun utilityRow(count: Int = 9): Array<TextKey> = modRow(count)
+
     /**
-     * The primary action row: shift/symbols, space, enter. Space carries literal code 32, which is
-     * what the layout code keys its "space row" branch off.
+     * The canonical primary action row: `Tab | comma | Space | period | Enter`.
+     *
+     * No key here declares a width. Tab and Enter are 1.5 units and Space grows because
+     * [KeyboardGeometryPolicy] says so for this role — which is precisely what the fixtures need to
+     * be able to observe.
      */
-    fun primaryActionRow(spaceUnits: Float = 4f): Array<TextKey> = arrayOf(
-        key(KeyCode.VIEW_SYMBOLS, isAlpha = false, type = KeyType.SYSTEM_GUI),
-        key(KeyCode.SPACE, isAlpha = false, widthUnits = spaceUnits),
+    fun primaryActionRow(): Array<TextKey> = arrayOf(
+        key(KeyCode.TAB, isAlpha = false, type = KeyType.MODIFIER),
+        key(','.code, isAlpha = false),
+        key(KeyCode.SPACE, isAlpha = false),
+        key('.'.code, isAlpha = false),
         key(KeyCode.ENTER, isAlpha = false, type = KeyType.ENTER_EDITING),
     )
 
@@ -118,8 +133,8 @@ object GeometryFixtures {
             alphaRow(9),
             alphaRow(9),
             primaryActionRow(),
-            modRow(7),
-            modRow(7),
+            utilityRow(),
+            utilityRow(),
         ),
         roles = listOf(ALPHA, ALPHA, ALPHA, PRIMARY, UTILITY, UTILITY),
         bottomModRowCount = 2,
@@ -148,8 +163,8 @@ object GeometryFixtures {
             alphaRow(9),
             alphaRow(9),
             primaryActionRow(),
-            modRow(7),
-            modRow(7),
+            utilityRow(),
+            utilityRow(),
         ),
         roles = listOf(EXTENSION, ALPHA, ALPHA, ALPHA, PRIMARY, UTILITY, UTILITY),
         bottomModRowCount = 2,
@@ -163,8 +178,8 @@ object GeometryFixtures {
             alphaRow(9),
             alphaRow(9),
             primaryActionRow(),
-            modRow(7),
-            modRow(7),
+            utilityRow(),
+            utilityRow(),
         ),
         roles = listOf(EXTENSION, ALPHA, ALPHA, ALPHA, PRIMARY, UTILITY, UTILITY),
         bottomModRowCount = 2,
@@ -179,8 +194,8 @@ object GeometryFixtures {
             alphaRow(9),
             alphaRow(9),
             primaryActionRow(),
-            modRow(7),
-            modRow(7),
+            utilityRow(),
+            utilityRow(),
         ),
         roles = listOf(EXTENSION, EXTENSION, ALPHA, ALPHA, ALPHA, PRIMARY, UTILITY, UTILITY),
         bottomModRowCount = 2,
@@ -252,10 +267,10 @@ object GeometryFixtures {
         return keyboard(
             rows = listOf(
                 arrayOf(
-                    key('q'.code, isAlpha = true, widthUnits = 1.5f),
-                    key('w'.code, isAlpha = true, widthUnits = 0.5f),
-                    key(KeyCode.UNSPECIFIED, isAlpha = true, widthUnits = 2f), // spacer
-                    key('e'.code, isAlpha = true, widthUnits = 1f),
+                    key('q'.code, isAlpha = true, authoredUnits = 1.5f),
+                    key('w'.code, isAlpha = true, authoredUnits = 0.5f),
+                    key(KeyCode.UNSPECIFIED, isAlpha = true, authoredUnits = 2f, isSpacer = true), // spacer
+                    key('e'.code, isAlpha = true, authoredUnits = 1f),
                 ),
                 alphaRow(9),
                 primaryActionRow(),

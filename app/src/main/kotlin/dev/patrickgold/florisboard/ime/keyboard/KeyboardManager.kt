@@ -460,13 +460,14 @@ class KeyboardManager(
                 if (usesLayoutPack) {
                     val layoutPackData = key.data as? LayoutPackKeyData
                     if (layoutPackData != null) {
-                        val width = layoutPackData.widthUnits.coerceAtLeast(0f)
-                        key.flayWidthFactor = width
-                        key.flayGrow = width
-                        key.flayShrink = width
+                        // An authored unit is preserved exactly. The geometry policy supplies a
+                        // canonical width only where the pack author did not state one, so a pack's
+                        // deliberate asymmetry survives normalization.
+                        key.authoredWidthUnits = layoutPackData.widthUnits.coerceAtLeast(0f)
                         if (layoutPackData.isSpacer) {
                             key.isEnabled = false
                             key.isVisible = false
+                            key.isStructuralSpacer = true
                         }
                     }
                 }
