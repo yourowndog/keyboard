@@ -94,4 +94,5 @@ __pycache__/
 *.py[cod]
 
 .tokensave/
+.serena/
 .claude/settings.local.json
