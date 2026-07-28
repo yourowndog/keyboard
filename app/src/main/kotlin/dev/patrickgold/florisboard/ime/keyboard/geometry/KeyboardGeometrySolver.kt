@@ -309,7 +309,23 @@ object KeyboardGeometrySolver {
         bottom: Int,
     ): RowPlacement {
         val scale = input.overrides.itemWidthScale(row.role)
-        val totalRowWidth = row.totalWidthUnits * unitWidth * scale
+        val fixedWidths = row.items.map { it.widthUnits * unitWidth * scale }
+        val fixedTotal = fixedWidths.sum()
+
+        // Flexible growth. Whatever width the fixed demand leaves over is shared among the items
+        // that declare a grow weight, in proportion to it. Nothing here consults an item's kind,
+        // code, or position: an item grows because it says it grows. A row without growers, or one
+        // whose unit width already fits it to the content area, is placed exactly as before.
+        val totalGrowWeight = row.items.sumOf { it.growWeight }
+        val remainder = contentWidth - fixedTotal
+        val widths = if (totalGrowWeight > 0.0 && remainder > 0.0) {
+            row.items.mapIndexed { index, item ->
+                fixedWidths[index] + remainder * (item.growWeight / totalGrowWeight)
+            }
+        } else {
+            fixedWidths
+        }
+        val totalRowWidth = widths.sum()
 
         var cursorX = contentLeft + when (input.widthPolicy.alignment) {
             RowAlignment.START -> 0.0
@@ -317,9 +333,9 @@ object KeyboardGeometrySolver {
             RowAlignment.END -> contentWidth - totalRowWidth
         }
 
-        val items = row.items.map { item ->
+        val items = row.items.mapIndexed { index, item ->
             val left = cursorX.roundToPx()
-            cursorX += item.widthUnits * unitWidth * scale
+            cursorX += widths[index]
             SolvedItem(
                 stableId = item.stableId,
                 kind = item.kind,
@@ -391,6 +407,7 @@ object KeyboardGeometrySolver {
                 if (item.stableId.isBlank()) reasons += "every item needs a non-blank stable ID"
                 else if (!itemIds.add(item.stableId)) reasons += "duplicate item ID '${item.stableId}'"
                 requireFiniteNonNegative(item.widthUnits, "item '${item.stableId}' width units")
+                requireFiniteNonNegative(item.growWeight, "item '${item.stableId}' grow weight")
                 if (!item.heightFactor.isFinite() || item.heightFactor <= 0.0) {
                     reasons += "item '${item.stableId}' height factor must be finite and positive"
                 }

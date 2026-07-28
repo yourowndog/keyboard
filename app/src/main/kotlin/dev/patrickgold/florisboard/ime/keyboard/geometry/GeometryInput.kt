@@ -62,6 +62,11 @@ enum class RowAlignment {
  * @param stableId identifies this item in the solved result. Unique within the whole input.
  * @param widthUnits structural width in units. Neighbours reflow when this changes, because a
  *   row's unit width is derived from the units its items declare.
+ * @param growWeight how eagerly this item absorbs the row's leftover width, relative to its
+ *   growable peers. Zero means fixed: the item is exactly [widthUnits] wide. A row whose items all
+ *   declare zero behaves exactly as it did before growth existed. Growth is a property of the item,
+ *   never of its position — the primary action row's Space grows because Space says so, not because
+ *   it is the third of five.
  * @param heightFactor declared for later stages. Stage 02 does not apply it: the structural
  *   rectangle is the row band, and visual/touch inflation belongs to Stage 03.
  * @param verticalAlignment likewise declared for Stage 03, not applied here.
@@ -69,6 +74,7 @@ enum class RowAlignment {
 data class GeometryItem(
     val stableId: String,
     val widthUnits: Double,
+    val growWeight: Double = 0.0,
     val heightFactor: Double = 1.0,
     val verticalAlignment: VerticalAlignment = VerticalAlignment.BOTTOM,
     val kind: GeometryItemKind = GeometryItemKind.KEY,
