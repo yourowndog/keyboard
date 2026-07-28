@@ -36,8 +36,9 @@ Geometry policy is keyed by `SemanticRowRole`:
 
 - `ALPHA`, `NUMERIC`, `SYMBOL`, and `EXTENSION` rows define the shared entry
   width grid.
-- `PRIMARY_ACTION` consumes that grid without widening it and is immune to both
-  legacy width sliders.
+- `PRIMARY_ACTION` solves its own row reference and is immune to both legacy
+  width sliders. This preserves its distinct role and keeps legitimate action
+  rows wider than the entry grid contained.
 - `CODING_UTILITY` rows use the utility width and spacing policy.
 - `EXTENSION` and `CODING_UTILITY` use the short-row height factor.
 - All other row roles use the ordinary row-height factor.
@@ -51,6 +52,11 @@ clipping. The live validation boundary caps those inputs at 100%, because the
 shared solver's structural allocations must remain inside the frame. Values
 below 100% continue to produce centered narrower rows. Stage 07 owns the later
 structural-customization model.
+
+Malformed persisted factors, spacings, and gaps are not rewritten or passed
+unchecked to the live solver. The production boundary substitutes neutral,
+contained values and logs every correction. The pure solver still reports the
+original invalid input as unsatisfiable when tested directly.
 
 ## Heights and semantic gaps
 
@@ -120,6 +126,12 @@ bounds. Stage 07 owns its structural migration.
 Because customization is keyed by code, every occurrence of the same code
 receives the customization. It is not keyed by row, layout component, or key
 instance.
+
+The settings screen exposes a reversible neutral-baseline action for device
+validation. It stores the exact active legacy JSON in
+`keyboard__key_customizations_backup` before setting
+`keyboard__key_customizations` to `{}`. Restoring reinstates the saved payload.
+This is a safety bridge, not the Stage 07 identity/schema migration.
 
 ## Safe debugging and validation
 

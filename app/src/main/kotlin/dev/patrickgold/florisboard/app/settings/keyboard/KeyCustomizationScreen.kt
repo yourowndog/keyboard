@@ -20,11 +20,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -37,6 +40,7 @@ import dev.patrickgold.florisboard.lib.compose.FlorisScreen
 import dev.patrickgold.jetpref.datastore.model.observeAsState
 import dev.patrickgold.jetpref.datastore.ui.ExperimentalJetPrefDatastoreUi
 import dev.patrickgold.jetpref.datastore.ui.PreferenceGroup
+import dev.patrickgold.jetpref.material.ui.JetPrefAlertDialog
 import dev.patrickgold.jetpref.material.ui.JetPrefDropdown
 import kotlinx.coroutines.launch
 import org.florisboard.lib.compose.stringRes
@@ -49,11 +53,13 @@ fun KeyCustomizationScreen() = FlorisScreen {
 
     val customizableKeys = KeyCustomizationManager.customizableKeys
     var selectedKeyIndex by remember { mutableIntStateOf(0) }
+    var showNeutralResetConfirmation by remember { mutableStateOf(false) }
     val selectedKey = customizableKeys[selectedKeyIndex]
 
     content {
         val scope = rememberCoroutineScope()
         val keyCustomizationsJson by prefs.keyboard.keyCustomizations.observeAsState()
+        val keyCustomizationsBackup by prefs.keyboard.keyCustomizationsBackup.observeAsState()
         
         val currentCustomization = remember(keyCustomizationsJson, selectedKey.code) {
             KeyCustomizationManager.getForKey(keyCustomizationsJson, selectedKey.code) ?: KeyCustomization()
@@ -62,6 +68,52 @@ fun KeyCustomizationScreen() = FlorisScreen {
         fun updateCustomization(newCustomization: KeyCustomization) {
             val newJson = KeyCustomizationManager.setForKey(keyCustomizationsJson, selectedKey.code, newCustomization)
             scope.launch { prefs.keyboard.keyCustomizations.set(newJson) }
+        }
+
+        PreferenceGroup(
+            title = stringRes(R.string.pref__keyboard__key_customization__neutral_baseline),
+        ) {
+            Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+                Text(stringRes(R.string.pref__keyboard__key_customization__neutral_baseline_summary))
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(
+                    onClick = { showNeutralResetConfirmation = true },
+                    enabled = keyCustomizationsJson.isNotBlank() &&
+                        keyCustomizationsJson.trim() != KeyCustomizationManager.NEUTRAL_JSON,
+                ) {
+                    Text(stringRes(R.string.pref__keyboard__key_customization__use_neutral))
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedButton(
+                    onClick = {
+                        scope.launch {
+                            this@content.prefs.keyboard.keyCustomizations.set(keyCustomizationsBackup)
+                        }
+                    },
+                    enabled = keyCustomizationsBackup.isNotBlank(),
+                ) {
+                    Text(stringRes(R.string.pref__keyboard__key_customization__restore_backup))
+                }
+            }
+        }
+
+        if (showNeutralResetConfirmation) {
+            JetPrefAlertDialog(
+                title = stringRes(R.string.pref__keyboard__key_customization__neutral_confirm_title),
+                confirmLabel = stringRes(R.string.pref__keyboard__key_customization__use_neutral),
+                dismissLabel = stringRes(R.string.action__cancel),
+                onDismiss = { showNeutralResetConfirmation = false },
+                onConfirm = {
+                    val reset = KeyCustomizationManager.neutralReset(keyCustomizationsJson)
+                    scope.launch {
+                        this@content.prefs.keyboard.keyCustomizationsBackup.set(reset.backupJson)
+                        this@content.prefs.keyboard.keyCustomizations.set(reset.activeJson)
+                    }
+                    showNeutralResetConfirmation = false
+                },
+            ) {
+                Text(stringRes(R.string.pref__keyboard__key_customization__neutral_confirm_message))
+            }
         }
 
         PreferenceGroup(title = stringRes(R.string.pref__keyboard__key_customization__select_key)) {

@@ -46,7 +46,10 @@ import dev.patrickgold.florisboard.ime.text.keyboard.TextKeyboardGeometryCacheKe
 import dev.patrickgold.florisboard.ime.text.keyboard.TextKeyboardGeometryConfig
 import dev.patrickgold.florisboard.ime.text.keyboard.TextKeyboardGeometryResolver
 import dev.patrickgold.florisboard.ime.text.keyboard.TextKeyboardGeometrySolution
+import dev.patrickgold.florisboard.ime.text.keyboard.sanitizedForProduction
 import dev.patrickgold.florisboard.keyboardManager
+import dev.patrickgold.florisboard.lib.devtools.LogTopic
+import dev.patrickgold.florisboard.lib.devtools.flogWarning
 import dev.patrickgold.florisboard.lib.observeAsTransformingState
 import dev.patrickgold.florisboard.lib.util.ViewUtils
 import dev.patrickgold.jetpref.datastore.model.observeAsState
@@ -123,7 +126,7 @@ object FlorisImeSizing {
         val availableWidthPx = availableWidthPxOverride ?: with(density) {
             configuration.screenWidthDp.dp.toPx()
         }
-        val config = with(density) {
+        val rawConfig = with(density) {
             TextKeyboardGeometryConfig(
                 rowBaseHeight = keyboardRowBaseHeight.toPx().toDouble(),
                 bottomRowHeightFactor = bottomRowHeightFactor.toDouble(),
@@ -140,19 +143,31 @@ object FlorisImeSizing {
                 orientation = orientation,
             )
         }
+        val productionInput = remember(rawConfig, availableWidthPx) {
+            rawConfig.sanitizedForProduction(availableWidthPx.toDouble()).also { sanitized ->
+                sanitized.corrections.forEach { correction ->
+                    flogWarning(LogTopic.LAYOUT_MANAGER) {
+                        "Using neutral live geometry value for ${correction.field}: " +
+                            "persisted=${correction.persistedValue}, live=${correction.liveValue}"
+                    }
+                }
+            }
+        }
+        val config = productionInput.config
+        val availableWidth = availableWidthPx.toDouble()
         val cacheKey = TextKeyboardGeometryCacheKey(
             evaluatorVersion = evaluator.version,
             frameSourceVersion = if (usesCharactersFrame) lastCharactersEvaluator.version else -1,
-            availableWidthPx = availableWidthPx.toInt(),
+            availableWidthPx = availableWidth.toInt(),
             config = config,
         )
         return remember(keyboard, frameSourceKeyboard, cacheKey) {
             val fitToHeight = if (usesCharactersFrame) {
-                resolveGeometry(frameSourceKeyboard, availableWidthPx.toDouble(), config).structural.frame.height.toDouble()
+                resolveGeometry(frameSourceKeyboard, availableWidth, config).structural.frame.height.toDouble()
             } else {
                 null
             }
-            resolveGeometry(keyboard, availableWidthPx.toDouble(), config, fitToHeight)
+            resolveGeometry(keyboard, availableWidth, config, fitToHeight)
         }
     }
 

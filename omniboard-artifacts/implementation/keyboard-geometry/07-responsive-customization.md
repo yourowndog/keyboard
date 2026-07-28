@@ -35,6 +35,11 @@ Do not preserve an ambiguous `widthFactor` or `heightFactor` meaning.
    - retain ambiguous entries in a recoverable legacy bucket or require explicit user resolution;
    - never silently apply one old code-based width to every matching key instance.
 7. Ensure edits update observable solver inputs and do not rely on post-layout rectangle mutation.
+8. Provide independent role-level height, horizontal spacing, vertical spacing/padding, and width
+   policy controls for Alpha, Primary Action, and Coding Utility. Do not extend the legacy
+   Alpha/Mod binary model.
+9. Make every eligible key instance addressable, including comma, period, Space, Tab, and Enter,
+   without global key-code collisions across modes or roles.
 
 ## Required tests
 
@@ -63,4 +68,3 @@ Provide a manual script that deliberately widens adjacent keys, changes row heig
 Separate customization identity/schema migration from UI controls and legacy post-layout removal.
 
 Finish with the standard report-back.
-

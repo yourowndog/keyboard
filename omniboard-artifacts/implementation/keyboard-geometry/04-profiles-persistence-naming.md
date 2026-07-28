@@ -23,7 +23,11 @@ Establish truthful Text/Coding profile identity and scoped persistence while pre
 
 1. Introduce a versioned, idempotent preference migration.
 2. Preserve rollback/unknown-data safety to the extent supported by the existing preference system.
-3. Add truthful display terminology for Text and Coding.
+3. Add truthful display terminology for Text and Coding. User-facing row-policy
+   labels must distinguish Alpha, Primary Action, and Coding Utility.
+   Compatibility preference keys containing `mod` or `bottom_row` may remain
+   internal until their values are migrated; they must not dictate display
+   terminology.
 4. Introduce stable internal layout IDs and compatibility aliases only after locating every persisted or referenced identifier.
 5. Keep current bundled Coding composition working while names migrate.
 6. Provide a settings-level profile selector or an internal selector seam if the actual Text layout is intentionally deferred to Stage 08. The application must never select a nonexistent/incomplete Text runtime by default.
@@ -56,4 +60,3 @@ Do not blindly rename `qwerty_wide` files or component IDs. First inventory usag
 Keep the persistence migration isolated from user-facing naming/selector wiring where practical.
 
 Finish with the standard report-back, including old-to-new preference mappings.
-

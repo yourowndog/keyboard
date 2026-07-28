@@ -458,6 +458,12 @@
     <string name="pref__keyboard__key_customization__padding_bottom" comment="Slider label">Bottom: {v} dp</string>
     <string name="pref__keyboard__key_customization__padding_left" comment="Slider label">Left: {v} dp</string>
     <string name="pref__keyboard__key_customization__padding_right" comment="Slider label">Right: {v} dp</string>
+    <string name="pref__keyboard__key_customization__neutral_baseline" comment="Preference group title">Legacy geometry overrides</string>
+    <string name="pref__keyboard__key_customization__neutral_baseline_summary" comment="Preference summary">Save the current legacy per-key values, then remove them from the live keyboard to start from neutral geometry.</string>
+    <string name="pref__keyboard__key_customization__use_neutral" comment="Button label">Use neutral baseline</string>
+    <string name="pref__keyboard__key_customization__restore_backup" comment="Button label">Restore saved overrides</string>
+    <string name="pref__keyboard__key_customization__neutral_confirm_title" comment="Dialog title">Use neutral key geometry?</string>
+    <string name="pref__keyboard__key_customization__neutral_confirm_message" comment="Dialog message">The current legacy per-key JSON will be preserved inside OmniBoard before its live overrides are cleared. Other keyboard preferences are not changed.</string>
     <string name="pref__keyboard__group_keypress__label" comment="Preference group title">Key press</string>
     <string name="pref__keyboard__popup_enabled__label" comment="Preference title">Popup Visibility</string>
     <string name="pref__keyboard__popup_enabled__summary" comment="Preference summary">Show popup when you press a key</string>

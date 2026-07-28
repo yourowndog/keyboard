@@ -37,6 +37,13 @@ data class KeyCustomization(
  * Manager for per-key customizations stored as JSON in preferences.
  */
 object KeyCustomizationManager {
+    const val NEUTRAL_JSON = "{}"
+
+    data class NeutralReset(
+        val activeJson: String,
+        val backupJson: String,
+    )
+
     private val json = Json { ignoreUnknownKeys = true }
     
     /**
@@ -58,6 +65,16 @@ object KeyCustomizationManager {
      */
     fun toJson(customizations: Map<Int, KeyCustomization>): String {
         return json.encodeToString(customizations)
+    }
+
+    /**
+     * Preserves the exact legacy payload while activating a genuinely neutral override layer.
+     */
+    fun neutralReset(currentJson: String): NeutralReset {
+        return NeutralReset(
+            activeJson = NEUTRAL_JSON,
+            backupJson = currentJson,
+        )
     }
     
     /**

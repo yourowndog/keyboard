@@ -637,6 +637,10 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "keyboard__key_customizations",
             default = "{}",
         )
+        val keyCustomizationsBackup = string(
+            key = "keyboard__key_customizations_backup",
+            default = "",
+        )
         val bottomOffsetPortrait = int(
             key = "keyboard__bottom_offset_portrait",
             default = 0,

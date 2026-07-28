@@ -1,6 +1,7 @@
 package dev.patrickgold.florisboard.ime.text.keyboard
 
 import dev.patrickgold.florisboard.ime.keyboard.DefaultComputingEvaluator
+import dev.patrickgold.florisboard.ime.keyboard.KeyboardMode
 import dev.patrickgold.florisboard.ime.keyboard.LayoutPackKeyData
 import dev.patrickgold.florisboard.ime.keyboard.SemanticRowRole
 import dev.patrickgold.florisboard.ime.keyboard.geometry.GeometryFixtures
@@ -236,5 +237,105 @@ class TextKeyboardGeometryTest {
 
         assertEquals(1.0, input.overrides.itemWidthScale(SemanticRowRole.ALPHA))
         assertEquals(1.0, input.overrides.itemWidthScale(SemanticRowRole.CODING_UTILITY))
+    }
+
+    @Test
+    fun `Symbols Primary Action owns its width reference and cannot crash at device width`() {
+        val entryRows = List(3) { row ->
+            Array(10) { column ->
+                GeometryFixtures.key(
+                    code = 33 + row * 10 + column,
+                    isAlpha = false,
+                )
+            }
+        }
+        val primaryAction = floatArrayOf(1.25f, 0.8f, 1f, 5f, 1f, 0.72f, 0.72f, 0.72f)
+            .mapIndexed { index, width ->
+                GeometryFixtures.key(
+                    code = 200 + index,
+                    isAlpha = false,
+                    widthUnits = width,
+                )
+            }
+            .toTypedArray()
+        val keyboard = GeometryFixtures.keyboard(
+            rows = entryRows + listOf(primaryAction),
+            roles = listOf(
+                SemanticRowRole.SYMBOL,
+                SemanticRowRole.SYMBOL,
+                SemanticRowRole.SYMBOL,
+                SemanticRowRole.PRIMARY_ACTION,
+            ),
+            mode = KeyboardMode.SYMBOLS,
+        )
+        val deviceConfig = portrait.copy(alphaSpacingHorizontal = 4.95)
+        val legacySharedUnit = (1440.0 - 2.0 * deviceConfig.alphaSpacingHorizontal) / 10.0
+        assertEquals(
+            1603.1421,
+            legacySharedUnit * primaryAction.sumOf { it.flayWidthFactor.toDouble() },
+            absoluteTolerance = 0.0001,
+        )
+
+        val geometry = solve(
+            keyboard = keyboard,
+            config = deviceConfig,
+            width = 1440.0,
+        )
+
+        assertEquals(1440, geometry.structural.frame.width)
+        geometry.structural.rows.forEach { row ->
+            assertTrue(row.bounds.left >= geometry.structural.content.left)
+            assertTrue(row.bounds.right <= geometry.structural.content.right)
+            row.items.zipWithNext().forEach { (left, right) ->
+                assertEquals(left.bounds.right, right.bounds.left)
+                assertFalse(left.bounds.overlaps(right.bounds))
+            }
+        }
+        geometry.keys.flatten().forEach { key ->
+            assertTrue(key.visibleBounds.left >= geometry.structural.frame.left)
+            assertTrue(key.visibleBounds.right <= geometry.structural.frame.right)
+            assertTrue(key.touchBounds.left >= geometry.structural.frame.left)
+            assertTrue(key.touchBounds.right <= geometry.structural.frame.right)
+        }
+    }
+
+    @Test
+    fun `malformed persisted production values recover to neutral deterministic inputs`() {
+        val malformed = portrait.copy(
+            bottomRowHeightFactor = Double.NaN,
+            alphaRowHeightFactor = -2.0,
+            alphaKeyWidthFactor = 1.4,
+            modKeyWidthFactor = 0.0,
+            alphaSpacingHorizontal = 1000.0,
+            alphaSpacingVertical = -1.0,
+            modSpacingHorizontal = Double.POSITIVE_INFINITY,
+            modSpacingVertical = 1000.0,
+            modRowUpperGap = -8.0,
+        )
+
+        val first = malformed.sanitizedForProduction(availableWidth = 1440.0)
+        val second = malformed.sanitizedForProduction(availableWidth = 1440.0)
+
+        assertEquals(first, second)
+        assertEquals(1.0, first.config.bottomRowHeightFactor)
+        assertEquals(1.0, first.config.alphaRowHeightFactor)
+        assertEquals(1.0, first.config.alphaKeyWidthFactor)
+        assertEquals(1.0, first.config.modKeyWidthFactor)
+        assertEquals(0.0, first.config.alphaSpacingHorizontal)
+        assertEquals(0.0, first.config.alphaSpacingVertical)
+        assertEquals(0.0, first.config.modSpacingHorizontal)
+        assertEquals(0.0, first.config.modSpacingVertical)
+        assertEquals(0.0, first.config.modRowUpperGap)
+        assertTrue(first.corrections.isNotEmpty())
+
+        val geometry = solve(
+            keyboard = GeometryFixtures.defaultCoding(),
+            config = first.config,
+            width = 1440.0,
+        )
+        geometry.structural.rows.forEach { row ->
+            assertTrue(row.bounds.left >= geometry.structural.frame.left)
+            assertTrue(row.bounds.right <= geometry.structural.frame.right)
+        }
     }
 }

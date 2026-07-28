@@ -71,6 +71,125 @@ data class TextKeyboardGeometryConfig(
     val orientation: GeometryOrientation,
 )
 
+data class GeometryConfigCorrection(
+    val field: String,
+    val persistedValue: Double,
+    val liveValue: Double,
+)
+
+data class SanitizedTextKeyboardGeometryConfig(
+    val config: TextKeyboardGeometryConfig,
+    val corrections: List<GeometryConfigCorrection>,
+)
+
+/**
+ * Production-only validation for persisted geometry preferences.
+ *
+ * The pure solver must continue rejecting invalid input. This boundary instead keeps malformed
+ * stored values intact while substituting neutral, deterministic live values and reporting every
+ * substitution to the caller for diagnostics.
+ */
+fun TextKeyboardGeometryConfig.sanitizedForProduction(
+    availableWidth: Double,
+): SanitizedTextKeyboardGeometryConfig {
+    val corrections = mutableListOf<GeometryConfigCorrection>()
+
+    fun positiveOrNeutral(field: String, value: Double): Double {
+        val liveValue = if (value.isFinite() && value > 0.0) value else 1.0
+        if (liveValue != value) {
+            corrections += GeometryConfigCorrection(field, value, liveValue)
+        }
+        return liveValue
+    }
+
+    fun containedWidthOrNeutral(field: String, value: Double): Double {
+        val positiveValue = positiveOrNeutral(field, value)
+        val liveValue = positiveValue.coerceAtMost(1.0)
+        if (liveValue != positiveValue) {
+            corrections += GeometryConfigCorrection(field, value, liveValue)
+        }
+        return liveValue
+    }
+
+    fun nonNegativeOrNeutral(field: String, value: Double): Double {
+        val liveValue = if (value.isFinite() && value >= 0.0) value else 0.0
+        if (liveValue != value) {
+            corrections += GeometryConfigCorrection(field, value, liveValue)
+        }
+        return liveValue
+    }
+
+    val bottomRowHeightFactor = positiveOrNeutral("bottomRowHeightFactor", bottomRowHeightFactor)
+    val alphaRowHeightFactor = positiveOrNeutral("alphaRowHeightFactor", alphaRowHeightFactor)
+    val alphaSpacingHorizontal = nonNegativeOrNeutral(
+        "alphaSpacingHorizontal",
+        alphaSpacingHorizontal,
+    ).takeIf { it * 2.0 < availableWidth } ?: 0.0
+    val modSpacingHorizontal = nonNegativeOrNeutral(
+        "modSpacingHorizontal",
+        modSpacingHorizontal,
+    ).takeIf { it * 2.0 < availableWidth } ?: 0.0
+    val shortestRowHeight = rowBaseHeight * minOf(bottomRowHeightFactor, alphaRowHeightFactor)
+    val alphaSpacingVertical = nonNegativeOrNeutral(
+        "alphaSpacingVertical",
+        alphaSpacingVertical,
+    ).takeIf { it * 2.0 < shortestRowHeight } ?: 0.0
+    val modSpacingVertical = nonNegativeOrNeutral(
+        "modSpacingVertical",
+        modSpacingVertical,
+    ).takeIf { it * 2.0 < shortestRowHeight } ?: 0.0
+
+    fun recordContainmentFallback(field: String, persistedValue: Double, liveValue: Double) {
+        if (persistedValue != liveValue && corrections.none { it.field == field }) {
+            corrections += GeometryConfigCorrection(field, persistedValue, liveValue)
+        }
+    }
+
+    recordContainmentFallback(
+        "alphaSpacingHorizontal",
+        this.alphaSpacingHorizontal,
+        alphaSpacingHorizontal,
+    )
+    recordContainmentFallback(
+        "modSpacingHorizontal",
+        this.modSpacingHorizontal,
+        modSpacingHorizontal,
+    )
+    recordContainmentFallback(
+        "alphaSpacingVertical",
+        this.alphaSpacingVertical,
+        alphaSpacingVertical,
+    )
+    recordContainmentFallback(
+        "modSpacingVertical",
+        this.modSpacingVertical,
+        modSpacingVertical,
+    )
+
+    return SanitizedTextKeyboardGeometryConfig(
+        config = copy(
+            bottomRowHeightFactor = bottomRowHeightFactor,
+            alphaRowHeightFactor = alphaRowHeightFactor,
+            alphaKeyWidthFactor = containedWidthOrNeutral(
+                "alphaKeyWidthFactor",
+                alphaKeyWidthFactor,
+            ),
+            modKeyWidthFactor = containedWidthOrNeutral(
+                "modKeyWidthFactor",
+                modKeyWidthFactor,
+            ),
+            alphaSpacingHorizontal = alphaSpacingHorizontal,
+            alphaSpacingVertical = alphaSpacingVertical,
+            modSpacingHorizontal = modSpacingHorizontal,
+            modSpacingVertical = modSpacingVertical,
+            modRowUpperGap = nonNegativeOrNeutral("modRowUpperGap", modRowUpperGap),
+            modRowInnerGap = nonNegativeOrNeutral("modRowInnerGap", modRowInnerGap),
+            modRowLowerGap = nonNegativeOrNeutral("modRowLowerGap", modRowLowerGap),
+        ),
+        corrections = corrections,
+    )
+}
+
 data class GeometryFloatRect(
     val left: Float,
     val top: Float,
@@ -239,7 +358,7 @@ object TextKeyboardGeometryResolver {
             widthPolicy = RowWidthPolicy(
                 sharedReference = SharedWidthReference(
                     measuredRoles = ENTRY_ROLES,
-                    consumerRoles = ENTRY_ROLES + SemanticRowRole.PRIMARY_ACTION,
+                    consumerRoles = ENTRY_ROLES,
                     insetH = config.alphaSpacingHorizontal * 2.0,
                 ),
             ),
