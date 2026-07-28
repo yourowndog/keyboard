@@ -179,3 +179,73 @@ Device validation should cover:
 - layout-pack rows and spacer dead zones
 - width preferences below, at, and above 100%
 - developer touch-boundary overlay versus rendered keycaps
+
+## Device-validation reconciliation
+
+The first installed Stage 03 build (`0.5.0-debug+5f525118`) exposed two
+independent problems.
+
+### Persisted legacy customization baseline
+
+`KeyCustomization()` and the `keyboard__key_customizations` preference default
+are neutral: zero padding and `1.0` width/height factors, encoded as `{}`. The
+installed APK did not contain different defaults. Replacement installation
+preserved this earlier app-data payload:
+
+- Enter: top padding `20`
+- Tab: top padding `20`
+- Space: top padding `20`, height `1.1`, width `0.8`
+- Shift: right padding `20`, height `0.7`, width `1.4`
+- Delete: left padding `20`, height `0.7`, width `1.4`
+
+No comma or period entry was present. The JSON is parsed once and applied once,
+after solving, to `visibleBounds`. Global integer-key-code identity means the
+same code receives the same visual override in every occurrence; Stage 07 owns
+the instance-aware migration and solver-backed reflow.
+
+The reconciliation adds an explicit reversible neutral baseline. Before active
+customizations become `{}`, their exact JSON is saved to
+`keyboard__key_customizations_backup`; the settings screen can restore it.
+Nothing else in the preference store is cleared.
+
+### Symbols crash
+
+The crash was a Stage 03 adapter defect, not a font-scale effect and not a
+per-key JSON override. On the test device:
+
+```text
+effective density = 396 / 160 = 2.475
+2 dp alpha spacing = 4.95 px
+entry reference = (1440 - 2 * 4.95) / 10 = 143.01 px
+PRIMARY_ACTION units = 1.25 + 0.8 + 1 + 5 + 1 + 0.72 + 0.72 + 0.72 = 11.21
+incorrect shared-grid request = 143.01 * 11.21 = 1603.1421 px
+```
+
+The live adapter incorrectly made `PRIMARY_ACTION` consume the ten-unit Symbols
+entry reference. Primary Action now solves its own row reference. Every item is
+preserved and reallocated within the 1440 px frame; nothing is clipped,
+overlapped, or relabeled.
+
+Malformed persisted geometry factors, spacings, and gaps are also sanitized at
+the production boundary using neutral, contained values with a warning for each
+correction. Stored values are not rewritten. Direct calls to the pure solver
+retain their strict `Unsatisfiable` contract.
+
+### Ownership retained
+
+- Stage 04 owns profile-scoped migration and truthful Alpha / Primary Action /
+  Coding Utility display terminology while compatibility storage keys remain.
+- Stage 07 owns stable key-instance identity, complete role-level controls,
+  eligible-key coverage including comma and period, structural reflow,
+  validation feedback, and migration of the recoverable legacy JSON bucket.
+- Width containment at 100% remains approved constrained behavior.
+- Legacy visual width overlap remains visible until Stage 07; the neutral reset
+  removes it from the baseline without pretending it has become structural.
+
+### Reconciliation verification
+
+- Focused geometry, persistence, and customization tests: 114 tests, 0
+  failures, 0 errors, 0 skipped
+- `./gradlew --no-daemon :app:testDebugUnitTest :app:assembleDebug`:
+  `BUILD SUCCESSFUL`; 192 tests, 0 failures, 0 errors, 0 skipped
+- `git diff --check`: clean
