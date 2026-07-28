@@ -10,6 +10,14 @@ This is the compact repository truth record for the migration. It is not the tar
 - Inspection date: 2026-07-26
 - Development checkout state: not inspected
 
+> **Supersession note (Stage 03).** Everything below remains an accurate forensic record of the
+> geometry as it stood at `805d3e58`, and is preserved as evidence. It is *not* a specification.
+> Stage 03 replaced the shipped baseline with canonical normalized geometry, so the intrinsic
+> `TextKey.compute()` width table, the Space height/centering compensation, the Escape/Σ padding
+> trick, the doubled visible gap, and the specialized `2.68`/`1.26`/`1.56` magic widths described
+> here are no longer production authorities. See Decision 16 in `keyboard-geometry-decisions.md` and
+> `omniboard-artifacts/implementation/keyboard-geometry-results/03-structural-gaps-bounds-results.md`.
+
 ## Construction inventory
 
 | Path | Current output | Current semantic loss |

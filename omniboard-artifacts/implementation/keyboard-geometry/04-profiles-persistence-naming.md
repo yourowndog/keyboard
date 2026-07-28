@@ -6,15 +6,23 @@ Read the governing documents. The geometry foundation must already be authoritat
 
 ## Objective
 
-Establish truthful Text/Coding profile identity and scoped persistence while preserving the upgraded user's current Coding experience and language subtype data.
+Establish truthful Text/Coding profile identity and scoped persistence while preserving the upgraded user's language subtype data and device-level settings.
 
 ## Required decisions
 
 - Add canonical profile IDs for `text` and `coding`.
 - Add a globally persisted `activeProfileId`.
-- Existing global keyboard geometry, visibility, and customization settings migrate into Coding.
+- **Both profiles begin from canonical normalized geometry.** Old tuned global geometry is *not*
+  seeded into Coding as its default — see Decision 16 in
+  `omniboard-artifacts/docs/architecture/keyboard-geometry-decisions.md`, which supersedes
+  Decision 8. Stage 03 already normalized the shipped baseline; Stage 04 must not reintroduce
+  historical tuning as a migration source.
+- Legacy geometry preference keys may remain in the store untouched for rollback, but they are never
+  read as a profile baseline.
+- Row visibility, number/developer-row visibility, and per-key customization the user explicitly
+  saved do migrate into Coding. Geometry *defaults* do not.
 - Text receives clean defaults rather than inheriting Coding tuning.
-- Bottom/window offset and other genuinely device-level concerns remain shared.
+- Bottom/window offset, language/subtype selection, and other genuinely device-level concerns remain shared.
 - Geometry, row visibility, number/developer visibility, and layout customization become profile- or layout-scoped.
 - `modRowsVisible=false` remains compact Coding.
 - Subtype IDs and eight component-family mappings remain independent and unchanged.
@@ -37,8 +45,11 @@ Do not blindly rename `qwerty_wide` files or component IDs. First inventory usag
 
 - Fresh install defaults.
 - Upgrade from populated old preferences.
-- Existing Coding settings preserved exactly after upgrade.
-- Active subtype and component mappings preserved.
+- Coding geometry after upgrade equals the Stage 03 normalized baseline, not the pre-migration tuned
+  values; legacy geometry keys still present in the store are not read as a baseline.
+- Explicitly saved per-key customization and row/utility visibility survive the upgrade.
+- Active subtype, language selection, and component mappings preserved.
+- Device-level settings such as bottom offset preserved.
 - Compact Coding preserved.
 - Repeated migration is idempotent.
 - Unknown/corrupt profile ID falls back safely.

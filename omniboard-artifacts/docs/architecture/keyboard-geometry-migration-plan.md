@@ -68,17 +68,28 @@ Create a pure geometry solver and immutable result model.
 
 Exit condition: frame conservation and non-overlap properties hold across row counts and preference matrices.
 
-## Stage 3 — Structural gaps and bounds
+## Stage 3 — Structural gaps, bounds, and canonical normalization
 
-Switch layout to solved structural rectangles.
+Switch layout to solved structural rectangles **and cut the shipped baseline over to canonical
+normalized geometry**. This stage no longer preserves the old Coding appearance; see Decision 16.
 
 - Replace `N-2/N-1` gap mutation with semantic boundaries.
-- Derive visual and touch bounds explicitly.
+- Derive structural, visual, and touch bounds explicitly as named steps.
 - Preserve deliberate bottom-edge hitability with a named edge-touch policy.
 - Keep service bottom offset outside row geometry.
 - Route popup sizing/anchoring through declared visual/solved inputs.
+- Retire the `TextKey.compute()` intrinsic width table as a production authority, along with the
+  `2.68` / `1.26` / `1.56` specialized magic widths.
+- Add flexible item growth to the solver so Space carries a base unit plus growth rather than a
+  hard-coded `5.0`.
+- Normalize the regions: uniform alpha cells on a shared ten-column unit with centered nine-key rows;
+  `Tab 1.5 | , 1.0 | Space 1.0+grow | . 1.0 | Enter 1.5`; nine equal independently filling utility
+  cells. All key-level height factors become `1.0`; role height owns the `75%` utility difference.
+- Add a narrow "restore per-key defaults" control that clears only `keyboard__key_customizations`.
 
-Exit condition: no post-layout structural gap mutation; visual/touch/structural differences are inspectable and tested.
+Exit condition: no post-layout structural gap mutation; one authoritative item-default policy;
+visual/touch/structural differences inspectable and tested; every key action, label, popup, and
+terminal behavior preserved.
 
 ## Stage 4 — Profiles and naming
 
@@ -86,13 +97,16 @@ Add profile identity and scoped persistence:
 
 - `Text` and `Coding` are canonical user-facing profiles.
 - Add global `activeProfileId`.
-- Migrate old global geometry/visibility/customization into Coding.
-- Seed Text defaults independently.
-- Preserve subtype IDs and mappings.
+- Seed **both** Coding and Text from canonical normalized geometry. Old tuned global geometry is not
+  migrated into Coding as its default (Decision 16 supersedes Decision 8).
+- Preserve subtype IDs, mappings, language selection, row/utility visibility, and device-level
+  settings such as bottom offset.
 - Keep compact Coding as a Coding state.
 - Introduce truthful internal IDs with compatibility aliases/migration where persisted identifiers exist.
 
-Exit condition: upgrading preserves the current Coding experience and subtype selection; profile state no longer depends on generic asset naming.
+Exit condition: upgrading preserves subtype selection and device-level settings; Coding geometry is
+the normalized baseline plus whatever the user has explicitly customized; profile state no longer
+depends on generic asset naming.
 
 ## Stage 5 — Mode semantics and frame policy
 

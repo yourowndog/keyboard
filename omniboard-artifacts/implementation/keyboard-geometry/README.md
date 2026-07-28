@@ -6,11 +6,14 @@ These prompts convert the approved architecture and verified repository state in
 
 Each implementation session must receive:
 
-1. `docs/architecture/keyboard-row-geometry.md`
-2. `docs/architecture/keyboard-geometry-decisions.md`
-3. `docs/architecture/keyboard-geometry-current-state.md`
-4. `docs/architecture/keyboard-geometry-migration-plan.md`
+1. `omniboard-artifacts/docs/architecture/keyboard-row-geometry.md`
+2. `omniboard-artifacts/docs/architecture/keyboard-geometry-decisions.md`
+3. `omniboard-artifacts/docs/architecture/keyboard-geometry-current-state.md`
+4. `omniboard-artifacts/docs/architecture/keyboard-geometry-migration-plan.md`
 5. The single stage prompt being executed
+
+These paths are repository-root-relative. Earlier revisions of this file named them as though they
+lived directly under `docs/architecture/`, which does not exist.
 
 If the repository has advanced beyond `805d3e58e947215a9eb88ab9ed92b46366c54ef0`, the agent must reconcile changed symbols and behavior before editing. It must not silently treat old line numbers as current.
 

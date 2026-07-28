@@ -59,7 +59,11 @@ Baseline commit: `805d3e58e947215a9eb88ab9ed92b46366c54ef0`
 
 **Reason:** Constrained parameters remain responsive, inspectable, and overlap-safe.
 
-## Decision 8 — Existing settings migrate to Coding
+## Decision 8 — Existing settings migrate to Coding *(superseded by Decision 16)*
+
+> **Superseded at Stage 03.** This decision made historical tuned geometry the effective seed for
+> Coding. That is now rejected. See [Decision 16](#decision-16--profiles-begin-from-canonical-normalized-geometry).
+> The text below is retained as the record of what was previously accepted.
 
 **Accepted:** Existing geometry, visibility, and customization values seed Coding. Text receives clean defaults. Device/window offsets remain shared.
 
@@ -122,4 +126,34 @@ Baseline commit: `805d3e58e947215a9eb88ab9ed92b46366c54ef0`
 **Rejected:** Pixel-freezing every historical bug or performing an all-at-once redesign.
 
 **Reason:** The goal is safe migration to correct invariants, not preservation of accidents.
+
+## Decision 16 — Profiles begin from canonical normalized geometry
+
+*Supersedes [Decision 8](#decision-8--existing-settings-migrate-to-coding-superseded-by-decision-16). Accepted at Stage 03.*
+
+**Accepted:** OmniBoard's shipped baseline is mathematically normalized. Historical OmniBoard
+geometry is forensic evidence of old controls and accumulated compensations — it is not a canonical
+default, not a visual target, and not a migration seed. Ergonomic specialization is reapplied
+afterwards through explicit customization controls.
+
+**Rejected:**
+
+- Seeding Coding from the old tuned keyboard.
+- Treating the historical `TextKey.compute()` width table as a default policy.
+- Copying upstream FlorisBoard's rendered dimensions. Upstream informs *intent* only — notably Space
+  as a base unit plus flexible growth — never pixels.
+
+**Reason:** The historical layout was the most comfortable result achievable with inadequate
+controls. It mixed genuine ergonomic preference with compensating hacks: shortened utility rows, row
+gaps, Space padding, Space height enlargement, narrow navigation keys, widened edge keys, and
+counter-padding. Because "restore defaults" cleared saved per-key JSON but still fell through to that
+historically customized source table, the old user-tuned result functioned as an effective factory
+baseline while living nowhere in the customization store. A responsive, asymmetric, highly granular
+terminal/coding keyboard needs a sane neutral coordinate system before intentional customization is
+layered onto it.
+
+**Scope note:** Legacy geometry preference keys may temporarily remain in the store untouched, so a
+rollback stays possible. They must not be read as the new profile baseline. Key actions and
+identities are not normalized away — Tab, Enter, Escape, Ctrl, Tmux prefix, navigation, mode
+switching, labels, popups, and terminal dispatch are preserved. Only accidental geometry is replaced.
 

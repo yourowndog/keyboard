@@ -175,7 +175,13 @@ Frame policy determines which semantic layout establishes target height. The com
 Initial persistence rules:
 
 - `activeProfileId` is a global persisted selection.
-- Existing geometry, visibility, and customization values migrate to the Coding profile because those values were tuned against the Coding keyboard.
+- **Both profiles begin from canonical normalized geometry.** Historical OmniBoard geometry is
+  forensic evidence of old controls and accumulated compensations — a record of the most comfortable
+  result reachable with inadequate controls, mixing genuine ergonomic preference with compensating
+  hacks. It is not a canonical default, not a visual target, and not a migration seed. Ergonomic
+  specialization is reapplied afterwards through explicit customization controls.
+- Legacy global geometry preference keys may temporarily remain in the store untouched so rollback
+  stays possible, but they are not read as a profile baseline.
 - Text receives clean profile defaults.
 - Geometry values, row visibility, number/developer-row visibility, and structural customization are profile- or layout-scoped.
 - Device/window concerns such as bottom offset remain shared.
@@ -235,7 +241,15 @@ The frontend edits normalized parameters, then requests a new solved result. It 
 9. All five current `TextKeyboard` construction sites receive an explicit contract.
 10. Geometry/profile changes participate in observable state and recomputation.
 11. Popup sizing and anchoring consume declared solved/visual inputs.
-12. Migration preserves subtype data and existing Coding tuning.
+12. Migration preserves subtype data, language selection, and device-level settings such as bottom
+    offset. It does not preserve historical Coding *geometry* tuning: the shipped baseline is
+    canonical normalized geometry.
+13. Exactly one authoritative item-default width policy. No intrinsic per-key exception table
+    survives as a shadow authority beneath the solver.
+14. A spacing preference of `N` dp renders as an `N` dp gap between adjacent keycaps — the value is
+    not applied independently to both facing sides.
+15. Row-role height owns regional height differences. Individual keys do not compensate for their
+    row, and a role set to `100%` solves to exactly one normalized full row.
 
 ## Explicit non-goals for the foundation migration
 
