@@ -80,7 +80,20 @@ object KeyCustomizationManager {
         }
         return toJson(map)
     }
-    
+
+    /**
+     * The value of the customization preference when no key is customized.
+     *
+     * "Restore per-key defaults" stores exactly this, and nothing else. It clears the per-key
+     * overrides only: row heights, region widths, spacing, boundary gaps, utility-row visibility,
+     * the selected layout, subtype, theme, bottom offset and language are all separate preferences
+     * and none of them is touched. A key with no override falls back to the canonical semantic
+     * baseline as adjusted by its row's role settings, which is what it would have had if it had
+     * never been customized.
+     */
+    const val NO_CUSTOMIZATIONS: String = "{}"
+
+
     /**
      * List of keys that can be customized in the UI.
      */

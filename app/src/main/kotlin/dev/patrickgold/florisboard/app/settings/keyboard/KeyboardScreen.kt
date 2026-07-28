@@ -164,28 +164,10 @@ fun KeyboardScreen() = FlorisScreen {
                 max = 10.0f,
                 stepIncrement = 0.5f,
             )
-            DialogSliderPreference(
-                primaryPref = prefs.keyboard.alphaSpacingVertical,
-                secondaryPref = prefs.keyboard.alphaSpacingHorizontal,
-                title = "Alpha Key Spacing",
-                primaryLabel = stringRes(R.string.screen_orientation__vertical),
-                secondaryLabel = stringRes(R.string.screen_orientation__horizontal),
-                valueLabel = { stringRes(R.string.unit__display_pixel__symbol, "v" to it) },
-                min = 0.0f,
-                max = 10.0f,
-                stepIncrement = 0.5f,
-            )
-            DialogSliderPreference(
-                primaryPref = prefs.keyboard.modSpacingVertical,
-                secondaryPref = prefs.keyboard.modSpacingHorizontal,
-                title = "Mod Key Spacing",
-                primaryLabel = stringRes(R.string.screen_orientation__vertical),
-                secondaryLabel = stringRes(R.string.screen_orientation__horizontal),
-                valueLabel = { stringRes(R.string.unit__display_pixel__symbol, "v" to it) },
-                min = 0.0f,
-                max = 10.0f,
-                stepIncrement = 0.5f,
-            )
+            // The per-region "Alpha Key Spacing" and "Mod Key Spacing" sliders used to sit here.
+            // Key spacing is now one preference for the whole keyboard, applied by
+            // KeyBoundsDerivation as half an inset per side, so the region-specific pairs no longer
+            // controlled anything. The stored values are left in place for Stage 07 to migrate.
             DialogSliderPreference(
                 pref = prefs.keyboard.bottomRowHeightFactor,
                 title = stringRes(R.string.pref__keyboard__bottom_row_height__label),

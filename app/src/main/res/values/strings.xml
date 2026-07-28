@@ -458,6 +458,10 @@
     <string name="pref__keyboard__key_customization__padding_bottom" comment="Slider label">Bottom: {v} dp</string>
     <string name="pref__keyboard__key_customization__padding_left" comment="Slider label">Left: {v} dp</string>
     <string name="pref__keyboard__key_customization__padding_right" comment="Slider label">Right: {v} dp</string>
+    <string name="pref__keyboard__key_customization__restore__title" comment="Preference group title">Defaults</string>
+    <string name="pref__keyboard__key_customization__restore__summary" comment="Preference summary">Removes every per-key size and padding override. No other keyboard setting is changed.</string>
+    <string name="pref__keyboard__key_customization__restore__action" comment="Button label">Restore per-key defaults</string>
+    <string name="pref__keyboard__key_customization__restore__confirm" comment="Dialog message">All per-key size and padding overrides will be removed. Row heights, spacing, layout and every other keyboard setting stay as they are.</string>
     <string name="pref__keyboard__group_keypress__label" comment="Preference group title">Key press</string>
     <string name="pref__keyboard__popup_enabled__label" comment="Preference title">Popup Visibility</string>
     <string name="pref__keyboard__popup_enabled__summary" comment="Preference summary">Show popup when you press a key</string>

@@ -20,11 +20,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -37,6 +39,7 @@ import dev.patrickgold.florisboard.lib.compose.FlorisScreen
 import dev.patrickgold.jetpref.datastore.model.observeAsState
 import dev.patrickgold.jetpref.datastore.ui.ExperimentalJetPrefDatastoreUi
 import dev.patrickgold.jetpref.datastore.ui.PreferenceGroup
+import dev.patrickgold.jetpref.material.ui.JetPrefAlertDialog
 import dev.patrickgold.jetpref.material.ui.JetPrefDropdown
 import kotlinx.coroutines.launch
 import org.florisboard.lib.compose.stringRes
@@ -53,6 +56,7 @@ fun KeyCustomizationScreen() = FlorisScreen {
 
     content {
         val scope = rememberCoroutineScope()
+        var showRestoreConfirmation by remember { mutableStateOf(false) }
         val keyCustomizationsJson by prefs.keyboard.keyCustomizations.observeAsState()
         
         val currentCustomization = remember(keyCustomizationsJson, selectedKey.code) {
@@ -137,6 +141,37 @@ fun KeyCustomizationScreen() = FlorisScreen {
                     valueRange = 0f..20f,
                     steps = 19,
                 )
+            }
+        }
+
+        PreferenceGroup(title = stringRes(R.string.pref__keyboard__key_customization__restore__title)) {
+            Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+                Text(text = stringRes(R.string.pref__keyboard__key_customization__restore__summary))
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(
+                    onClick = { showRestoreConfirmation = true },
+                    enabled = keyCustomizationsJson != KeyCustomizationManager.NO_CUSTOMIZATIONS,
+                ) {
+                    Text(text = stringRes(R.string.pref__keyboard__key_customization__restore__action))
+                }
+            }
+        }
+
+        if (showRestoreConfirmation) {
+            JetPrefAlertDialog(
+                title = stringRes(R.string.pref__keyboard__key_customization__restore__action),
+                confirmLabel = stringRes(R.string.pref__keyboard__key_customization__restore__action),
+                onConfirm = {
+                    // Only this preference is written. Nothing else about the keyboard changes.
+                    scope.launch {
+                        prefs.keyboard.keyCustomizations.set(KeyCustomizationManager.NO_CUSTOMIZATIONS)
+                    }
+                    showRestoreConfirmation = false
+                },
+                dismissLabel = stringRes(R.string.action__cancel),
+                onDismiss = { showRestoreConfirmation = false },
+            ) {
+                Text(text = stringRes(R.string.pref__keyboard__key_customization__restore__confirm))
             }
         }
     }
