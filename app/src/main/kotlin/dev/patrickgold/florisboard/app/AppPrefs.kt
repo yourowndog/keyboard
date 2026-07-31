@@ -597,22 +597,11 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "keyboard__key_spacing_horizontal",
             default = 2.0f,
         )
-        val alphaSpacingVertical = float(
-            key = "keyboard__alpha_spacing_vertical",
-            default = 2.0f,
-        )
-        val alphaSpacingHorizontal = float(
-            key = "keyboard__alpha_spacing_horizontal",
-            default = 2.0f,
-        )
-        val modSpacingVertical = float(
-            key = "keyboard__mod_spacing_vertical",
-            default = 2.0f,
-        )
-        val modSpacingHorizontal = float(
-            key = "keyboard__mod_spacing_horizontal",
-            default = 2.0f,
-        )
+        // The per-region spacing preferences `keyboard__alpha_spacing_{vertical,horizontal}` and
+        // `keyboard__mod_spacing_{vertical,horizontal}` were declared here until Stage 03. Their
+        // sliders were removed when the solver became the single spacing authority, and nothing
+        // read them afterwards. Their persisted entries survive untouched in the datastore; Stage
+        // 07 reads them from there if the customization migration wants them.
         val bottomRowHeightFactor = int(
             key = "keyboard__bottom_row_height_factor",
             default = 75,
