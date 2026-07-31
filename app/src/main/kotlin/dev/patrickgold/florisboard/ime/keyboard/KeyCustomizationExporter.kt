@@ -21,6 +21,8 @@ import android.os.Environment
 import dev.patrickgold.florisboard.app.FlorisPreferenceModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import org.florisboard.lib.kotlin.collectIn
 import java.io.File
@@ -32,14 +34,22 @@ object KeyCustomizationExporter {
     private var exportFile: File? = null
     private var isInitialized = false
     
+    @OptIn(ExperimentalCoroutinesApi::class)
     fun init(context: Context, scope: CoroutineScope, prefs: FlorisPreferenceModel) {
         if (isInitialized) return
         
         setupFile(context)
         
-        prefs.keyboard.keyCustomizations.asFlow().collectIn(scope) { json: String ->
-            export(json)
-        }
+        // Customizations became profile-scoped in Stage 04. The export file holds one profile's
+        // worth of JSON, so it must follow the active profile rather than a fixed one — switching
+        // profiles republishes, and edits to the profile that is not showing are ignored.
+        prefs.keyboard.activeProfileId.asFlow()
+            .flatMapLatest { id ->
+                prefs.keyboard.profile(KeyboardProfile.fromId(id)).keyCustomizations.asFlow()
+            }
+            .collectIn(scope) { json: String ->
+                export(json)
+            }
         
         isInitialized = true
     }

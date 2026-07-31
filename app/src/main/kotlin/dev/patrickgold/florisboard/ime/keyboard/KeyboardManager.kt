@@ -87,6 +87,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.sync.Mutex
@@ -342,21 +343,28 @@ class KeyboardManager(
                     keyboardCache.clear()
                 }
             }
-            prefs.keyboard.numberRow.asFlow().collectLatestIn(scope) {
-                updateActiveEvaluators {
-                    keyboardCache.clear(KeyboardMode.CHARACTERS)
-                }
+            // Row visibility became profile-scoped in Stage 04, so the cache must also be dropped
+            // when the active profile changes and not only when a row inside it is toggled —
+            // otherwise switching profiles would keep serving the previous profile's arrangement.
+            //
+            // Both profiles are observed rather than re-subscribing to whichever is active. The
+            // action is an idempotent cache clear, so a write to the inactive profile costs one
+            // wasted invalidation from the settings screen, which is cheaper than a flatMapLatest
+            // that has to tear down and rebuild subscriptions on every profile switch.
+            val rowVisibilityFlows = KeyboardProfile.entries.flatMap { profile ->
+                val profilePrefs = prefs.keyboard.profile(profile)
+                listOf(
+                    profilePrefs.numberRow.asFlow(),
+                    profilePrefs.devRow.asFlow(),
+                    profilePrefs.modRowsVisible.asFlow(),
+                )
             }
-            prefs.keyboard.devRow.asFlow().collectLatestIn(scope) {
-                updateActiveEvaluators {
-                    keyboardCache.clear(KeyboardMode.CHARACTERS)
+            merge(prefs.keyboard.activeProfileId.asFlow(), *rowVisibilityFlows.toTypedArray())
+                .collectIn(scope) {
+                    updateActiveEvaluators {
+                        keyboardCache.clear(KeyboardMode.CHARACTERS)
+                    }
                 }
-            }
-            prefs.keyboard.modRowsVisible.asFlow().collectLatestIn(scope) {
-                updateActiveEvaluators {
-                    keyboardCache.clear(KeyboardMode.CHARACTERS)
-                }
-            }
             prefs.keyboard.hintedNumberRowEnabled.asFlow().collectLatestIn(scope) {
                 updateActiveEvaluators()
             }
@@ -897,10 +905,11 @@ class KeyboardManager(
      * enabled by the user.
      */
     fun handleSpaceLongPress() {
-        android.util.Log.i("FlorisBoard_Debug", "Space long press detected! Current modRowsVisible: ${prefs.keyboard.modRowsVisible.get()}")
+        val modRowsVisible = prefs.keyboard.activeProfilePrefs().modRowsVisible
+        android.util.Log.i("FlorisBoard_Debug", "Space long press detected! Current modRowsVisible: ${modRowsVisible.get()}")
         scope.launch {
-            prefs.keyboard.modRowsVisible.let { it.set(!it.get()) }
-            android.util.Log.i("FlorisBoard_Debug", "New modRowsVisible: ${prefs.keyboard.modRowsVisible.get()}")
+            modRowsVisible.let { it.set(!it.get()) }
+            android.util.Log.i("FlorisBoard_Debug", "New modRowsVisible: ${modRowsVisible.get()}")
             updateActiveEvaluators {
                 keyboardCache.clear(KeyboardMode.CHARACTERS)
             }
@@ -1201,10 +1210,10 @@ class KeyboardManager(
                 prefs.smartbar.enabled.let { it.set(!it.get()) }
             }
             KeyCode.TOGGLE_NUMBER_ROW -> scope.launch {
-                prefs.keyboard.numberRow.let { it.set(!it.get()) }
+                prefs.keyboard.activeProfilePrefs().numberRow.let { it.set(!it.get()) }
             }
             KeyCode.TOGGLE_DEV_ROW -> scope.launch {
-                prefs.keyboard.devRow.let { it.set(!it.get()) }
+                prefs.keyboard.activeProfilePrefs().devRow.let { it.set(!it.get()) }
             }
             KeyCode.TOGGLE_ACTIONS_OVERFLOW -> {
                 activeState.isActionsOverflowVisible = !activeState.isActionsOverflowVisible

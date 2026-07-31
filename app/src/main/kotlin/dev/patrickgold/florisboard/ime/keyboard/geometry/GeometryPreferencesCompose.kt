@@ -19,6 +19,7 @@ package dev.patrickgold.florisboard.ime.keyboard.geometry
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
+import dev.patrickgold.florisboard.ime.keyboard.KeyboardProfile
 import dev.patrickgold.jetpref.datastore.model.observeAsState
 
 /**
@@ -40,15 +41,22 @@ fun rememberGeometryPreferences(
     convertLength: (Float) -> Double,
 ): GeometryPreferences {
     val prefs by FlorisPreferenceStore
-    val alphaRowHeight by prefs.keyboard.alphaRowHeightFactor.observeAsState()
-    val utilityRowHeight by prefs.keyboard.bottomRowHeightFactor.observeAsState()
-    val alphaKeyWidth by prefs.keyboard.alphaKeyWidth.observeAsState()
-    val utilityKeyWidth by prefs.keyboard.modKeyWidth.observeAsState()
-    val spacingH by prefs.keyboard.keySpacingHorizontal.observeAsState()
-    val spacingV by prefs.keyboard.keySpacingVertical.observeAsState()
-    val gapAbove by prefs.keyboard.modRowUpperGap.observeAsState()
-    val gapWithin by prefs.keyboard.modRowInnerGap.observeAsState()
-    val gapBelow by prefs.keyboard.modRowLowerGap.observeAsState()
+    // Geometry is profile-scoped as of Stage 04. Observing the active profile id here is what makes
+    // a profile switch behave like any other geometry change: `observeAsState` is `asFlow()` fed
+    // into `collectAsState`, which keys on the flow, so pointing these reads at a different
+    // profile's preferences re-subscribes them rather than stranding the previous values.
+    val activeProfileId by prefs.keyboard.activeProfileId.observeAsState()
+    val profile = prefs.keyboard.profile(KeyboardProfile.fromId(activeProfileId))
+
+    val alphaRowHeight by profile.alphaRowHeightFactor.observeAsState()
+    val utilityRowHeight by profile.bottomRowHeightFactor.observeAsState()
+    val alphaKeyWidth by profile.alphaKeyWidth.observeAsState()
+    val utilityKeyWidth by profile.modKeyWidth.observeAsState()
+    val spacingH by profile.keySpacingHorizontal.observeAsState()
+    val spacingV by profile.keySpacingVertical.observeAsState()
+    val gapAbove by profile.modRowUpperGap.observeAsState()
+    val gapWithin by profile.modRowInnerGap.observeAsState()
+    val gapBelow by profile.modRowLowerGap.observeAsState()
 
     return GeometryPreferences(
         rowBaseHeightPx = rowBaseHeight,

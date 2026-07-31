@@ -17,11 +17,13 @@
 package dev.patrickgold.florisboard.app.settings.keyboard
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.LocalNavController
 import dev.patrickgold.florisboard.app.Routes
 import dev.patrickgold.florisboard.app.enumDisplayEntriesOf
 import dev.patrickgold.florisboard.ime.input.CapitalizationBehavior
+import dev.patrickgold.florisboard.ime.keyboard.KeyboardProfile
 import dev.patrickgold.florisboard.ime.keyboard.SpaceBarMode
 import dev.patrickgold.florisboard.ime.landscapeinput.LandscapeInputUiMode
 import dev.patrickgold.florisboard.ime.onehanded.OneHandedMode
@@ -29,6 +31,7 @@ import dev.patrickgold.florisboard.ime.smartbar.IncognitoDisplayMode
 import dev.patrickgold.florisboard.ime.text.key.KeyHintMode
 import dev.patrickgold.florisboard.ime.text.key.UtilityKeyAction
 import dev.patrickgold.florisboard.lib.compose.FlorisScreen
+import dev.patrickgold.jetpref.datastore.model.observeAsState
 import dev.patrickgold.jetpref.datastore.ui.DialogSliderPreference
 import dev.patrickgold.jetpref.datastore.ui.ExperimentalJetPrefDatastoreUi
 import dev.patrickgold.jetpref.datastore.ui.ListPreference
@@ -46,8 +49,16 @@ fun KeyboardScreen() = FlorisScreen {
     val navController = LocalNavController.current
 
     content {
+        // Geometry and row visibility belong to a profile as of Stage 04, so these controls bind to
+        // whichever profile is active rather than to a global preference. Only Coding is selectable
+        // today; when Stage 08 makes Text selectable these same sliders start editing Text without
+        // further change here. Everything below that is still bound to `prefs.keyboard` directly is
+        // global on purpose.
+        val activeProfileId by prefs.keyboard.activeProfileId.observeAsState()
+        val profile = prefs.keyboard.profile(KeyboardProfile.fromId(activeProfileId))
+
         SwitchPreference(
-            prefs.keyboard.numberRow,
+            profile.numberRow,
             title = stringRes(R.string.pref__keyboard__number_row__label),
             summary = stringRes(R.string.pref__keyboard__number_row__summary),
         )
@@ -57,7 +68,7 @@ fun KeyboardScreen() = FlorisScreen {
             title = stringRes(R.string.pref__keyboard__hinted_number_row_mode__label),
             summarySwitchDisabled = stringRes(R.string.state__disabled),
             entries = enumDisplayEntriesOf(KeyHintMode::class),
-            enabledIf = { prefs.keyboard.numberRow.isFalse() }
+            enabledIf = { profile.numberRow.isFalse() }
         )
         ListPreference(
             listPref = prefs.keyboard.hintedSymbolsMode,
@@ -127,8 +138,8 @@ fun KeyboardScreen() = FlorisScreen {
                 entries = enumDisplayEntriesOf(LandscapeInputUiMode::class),
             )
             DialogSliderPreference(
-                primaryPref = prefs.keyboard.heightFactorPortrait,
-                secondaryPref = prefs.keyboard.heightFactorLandscape,
+                primaryPref = profile.heightFactorPortrait,
+                secondaryPref = profile.heightFactorLandscape,
                 title = stringRes(R.string.pref__keyboard__height_factor__label),
                 primaryLabel = stringRes(R.string.screen_orientation__portrait),
                 secondaryLabel = stringRes(R.string.screen_orientation__landscape),
@@ -138,7 +149,7 @@ fun KeyboardScreen() = FlorisScreen {
                 stepIncrement = 5,
             )
             DialogSliderPreference(
-                pref = prefs.keyboard.alphaKeyWidth,
+                pref = profile.alphaKeyWidth,
                 title = "Alpha Key Width",
                 valueLabel = { stringRes(R.string.unit__percent__symbol, "v" to it) },
                 min = 80,
@@ -146,7 +157,7 @@ fun KeyboardScreen() = FlorisScreen {
                 stepIncrement = 5,
             )
             DialogSliderPreference(
-                pref = prefs.keyboard.modKeyWidth,
+                pref = profile.modKeyWidth,
                 title = "Mod Key Width",
                 valueLabel = { stringRes(R.string.unit__percent__symbol, "v" to it) },
                 min = 80,
@@ -154,8 +165,8 @@ fun KeyboardScreen() = FlorisScreen {
                 stepIncrement = 5,
             )
             DialogSliderPreference(
-                primaryPref = prefs.keyboard.keySpacingVertical,
-                secondaryPref = prefs.keyboard.keySpacingHorizontal,
+                primaryPref = profile.keySpacingVertical,
+                secondaryPref = profile.keySpacingHorizontal,
                 title = stringRes(R.string.pref__keyboard__key_spacing__label),
                 primaryLabel = stringRes(R.string.screen_orientation__vertical),
                 secondaryLabel = stringRes(R.string.screen_orientation__horizontal),
@@ -169,7 +180,7 @@ fun KeyboardScreen() = FlorisScreen {
             // KeyBoundsDerivation as half an inset per side, so the region-specific pairs no longer
             // controlled anything. The stored values are left in place for Stage 07 to migrate.
             DialogSliderPreference(
-                pref = prefs.keyboard.bottomRowHeightFactor,
+                pref = profile.bottomRowHeightFactor,
                 title = stringRes(R.string.pref__keyboard__bottom_row_height__label),
                 valueLabel = { stringRes(R.string.unit__percent__symbol, "v" to it) },
                 min = 50,
@@ -177,7 +188,7 @@ fun KeyboardScreen() = FlorisScreen {
                 stepIncrement = 5,
             )
             DialogSliderPreference(
-                pref = prefs.keyboard.alphaRowHeightFactor,
+                pref = profile.alphaRowHeightFactor,
                 title = stringRes(R.string.pref__keyboard__alpha_row_height__label),
                 valueLabel = { stringRes(R.string.unit__percent__symbol, "v" to it) },
                 min = 50,
@@ -185,7 +196,7 @@ fun KeyboardScreen() = FlorisScreen {
                 stepIncrement = 5,
             )
             DialogSliderPreference(
-                prefs.keyboard.modRowUpperGap,
+                profile.modRowUpperGap,
                 title = stringRes(R.string.pref__keyboard__mod_row_upper_gap__label),
                 valueLabel = { stringRes(R.string.unit__display_pixel__symbol, "v" to it) },
                 min = 0,
@@ -193,7 +204,7 @@ fun KeyboardScreen() = FlorisScreen {
                 stepIncrement = 1,
             )
             DialogSliderPreference(
-                prefs.keyboard.modRowInnerGap,
+                profile.modRowInnerGap,
                 title = stringRes(R.string.pref__keyboard__mod_row_inner_gap__label),
                 valueLabel = { stringRes(R.string.unit__display_pixel__symbol, "v" to it) },
                 min = 0,
@@ -201,7 +212,7 @@ fun KeyboardScreen() = FlorisScreen {
                 stepIncrement = 1,
             )
             DialogSliderPreference(
-                prefs.keyboard.modRowLowerGap,
+                profile.modRowLowerGap,
                 title = stringRes(R.string.pref__keyboard__mod_row_lower_gap__label),
                 valueLabel = { stringRes(R.string.unit__display_pixel__symbol, "v" to it) },
                 min = 0,

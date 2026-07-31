@@ -299,7 +299,7 @@ class LayoutManager(context: Context) {
         val mainLayout = mainLayoutResult.onFailure {
             flogWarning { "$keyboardMode - main - $it" }
         }.getOrNull()
-        val modRowsHidden = !prefs.keyboard.modRowsVisible.get()
+        val modRowsHidden = !prefs.keyboard.activeProfilePrefs().modRowsVisible.get()
         val modifierToLoad = if (mainLayout?.meta?.modifier != null) {
             val layoutType = when (mainLayout.type) {
                 LayoutType.SYMBOLS -> {
@@ -420,7 +420,7 @@ class LayoutManager(context: Context) {
         if (keyboardMode == KeyboardMode.CHARACTERS && computedArrangement.isNotEmpty()) {
             val symbolsComputedArrangement = computeKeyboardAsync(KeyboardMode.SYMBOLS, subtype).await().arrangement
             // number row hint always happens on first row
-            if (prefs.keyboard.hintedNumberRowEnabled.get() && !prefs.keyboard.devRow.get() && symbolsComputedArrangement.isNotEmpty()) {
+            if (prefs.keyboard.hintedNumberRowEnabled.get() && !prefs.keyboard.activeProfilePrefs().devRow.get() && symbolsComputedArrangement.isNotEmpty()) {
                 val row = computedArrangement[0]
                 val symbolRow = symbolsComputedArrangement[0]
                 addRowHints(row, symbolRow, KeyType.NUMERIC)
@@ -584,10 +584,10 @@ class LayoutManager(context: Context) {
 
         when (keyboardMode) {
             KeyboardMode.CHARACTERS -> {
-                if (prefs.keyboard.numberRow.get()) {
+                if (prefs.keyboard.activeProfilePrefs().numberRow.get()) {
                     extensions.add(LTN(LayoutType.NUMERIC_ROW, subtype.layoutMap.numericRow))
                 }
-                if (prefs.keyboard.devRow.get()) {
+                if (prefs.keyboard.activeProfilePrefs().devRow.get()) {
                     extensions.add(LTN(LayoutType.NUMERIC_ROW, extCoreLayout("dev_row")))
                 }
                 main = LTN(LayoutType.CHARACTERS, subtype.layoutMap.characters)
@@ -620,7 +620,7 @@ class LayoutManager(context: Context) {
                 main = LTN(LayoutType.PHONE2, subtype.layoutMap.phone2)
             }
             KeyboardMode.SYMBOLS -> {
-                if (prefs.keyboard.numberRow.get()) {
+                if (prefs.keyboard.activeProfilePrefs().numberRow.get()) {
                     extensions.add(LTN(LayoutType.NUMERIC_ROW, subtype.layoutMap.numericRow))
                 }
                 main = LTN(LayoutType.SYMBOLS, subtype.layoutMap.symbols)

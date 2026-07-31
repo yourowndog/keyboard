@@ -154,8 +154,14 @@ fun ProvideKeyboardRowBaseHeight(content: @Composable () -> Unit) {
     val resources = LocalContext.current.resources
     val configuration = LocalConfiguration.current
 
-    val heightFactorPortrait by prefs.keyboard.heightFactorPortrait.observeAsTransformingState { it.toFloat() / 100f }
-    val heightFactorLandscape by prefs.keyboard.heightFactorLandscape.observeAsTransformingState { it.toFloat() / 100f }
+    // Keyboard height is profile-scoped as of Stage 04: a six-row Coding keyboard wants a different
+    // height from prose. One-handed mode below stays global — it describes how the device is being
+    // held, not which keyboard is showing.
+    val activeProfileId by prefs.keyboard.activeProfileId.observeAsState()
+    val profile = prefs.keyboard.profile(KeyboardProfile.fromId(activeProfileId))
+
+    val heightFactorPortrait by profile.heightFactorPortrait.observeAsTransformingState { it.toFloat() / 100f }
+    val heightFactorLandscape by profile.heightFactorLandscape.observeAsTransformingState { it.toFloat() / 100f }
     val oneHandedMode by prefs.keyboard.oneHandedModeEnabled.observeAsState()
     val oneHandedModeScaleFactor by prefs.keyboard.oneHandedModeScaleFactor.observeAsTransformingState { it.toFloat() / 100f }
 

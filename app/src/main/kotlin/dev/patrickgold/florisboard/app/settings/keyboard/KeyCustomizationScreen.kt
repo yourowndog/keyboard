@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.ime.keyboard.KeyCustomization
 import dev.patrickgold.florisboard.ime.keyboard.KeyCustomizationManager
+import dev.patrickgold.florisboard.ime.keyboard.KeyboardProfile
 import dev.patrickgold.florisboard.lib.compose.FlorisScreen
 import dev.patrickgold.jetpref.datastore.model.observeAsState
 import dev.patrickgold.jetpref.datastore.ui.ExperimentalJetPrefDatastoreUi
@@ -57,15 +58,22 @@ fun KeyCustomizationScreen() = FlorisScreen {
     content {
         val scope = rememberCoroutineScope()
         var showRestoreConfirmation by remember { mutableStateOf(false) }
-        val keyCustomizationsJson by prefs.keyboard.keyCustomizations.observeAsState()
-        
+        // Customizations belong to a profile as of Stage 04, so this screen edits whichever profile
+        // is active. Switching profiles re-reads through a different preference object, which is
+        // what keeps a key customized for Coding from following the user into Text.
+        val activeProfileId by prefs.keyboard.activeProfileId.observeAsState()
+        val keyCustomizations = prefs.keyboard
+            .profile(KeyboardProfile.fromId(activeProfileId))
+            .keyCustomizations
+        val keyCustomizationsJson by keyCustomizations.observeAsState()
+
         val currentCustomization = remember(keyCustomizationsJson, selectedKey.code) {
             KeyCustomizationManager.getForKey(keyCustomizationsJson, selectedKey.code) ?: KeyCustomization()
         }
-        
+
         fun updateCustomization(newCustomization: KeyCustomization) {
             val newJson = KeyCustomizationManager.setForKey(keyCustomizationsJson, selectedKey.code, newCustomization)
-            scope.launch { prefs.keyboard.keyCustomizations.set(newJson) }
+            scope.launch { keyCustomizations.set(newJson) }
         }
 
         PreferenceGroup(title = stringRes(R.string.pref__keyboard__key_customization__select_key)) {
@@ -164,7 +172,7 @@ fun KeyCustomizationScreen() = FlorisScreen {
                 onConfirm = {
                     // Only this preference is written. Nothing else about the keyboard changes.
                     scope.launch {
-                        prefs.keyboard.keyCustomizations.set(KeyCustomizationManager.NO_CUSTOMIZATIONS)
+                        keyCustomizations.set(KeyCustomizationManager.NO_CUSTOMIZATIONS)
                     }
                     showRestoreConfirmation = false
                 },

@@ -35,6 +35,7 @@ import dev.patrickgold.florisboard.ime.input.CapitalizationBehavior
 import dev.patrickgold.florisboard.ime.input.HapticVibrationMode
 import dev.patrickgold.florisboard.ime.input.InputFeedbackActivationMode
 import dev.patrickgold.florisboard.ime.keyboard.IncognitoMode
+import dev.patrickgold.florisboard.ime.keyboard.KeyboardProfile
 import dev.patrickgold.florisboard.ime.keyboard.SpaceBarMode
 import dev.patrickgold.florisboard.ime.landscapeinput.LandscapeInputUiMode
 import dev.patrickgold.florisboard.ime.media.emoji.EmojiHairStyle
@@ -76,6 +77,39 @@ import org.florisboard.lib.android.isOrientationPortrait
 import org.florisboard.lib.color.DEFAULT_GREEN
 
 val FlorisPreferenceStore = jetprefDataStoreOf(FlorisPreferenceModel::class)
+
+/**
+ * Old global preference key to new Coding-scoped key, for the Stage 04 profile split.
+ *
+ * Derived from one list of suffixes so the migration targets cannot drift away from the keys
+ * `FlorisPreferenceModel.Keyboard.Profile` actually declares — the two are built the same way. A
+ * mismatch here would not fail to compile; it would silently rename a user's settings onto a key
+ * nothing reads, which is why this is generated rather than typed out twice.
+ */
+internal val STAGE_04_PROFILE_SCOPED_KEYS: Map<String, String> = listOf(
+    // Row visibility
+    "number_row",
+    "dev_row",
+    "mod_rows_visible",
+    // Overall keyboard height. The most arguably device-level entry in this list, but the solver
+    // consumes it and a six-row Coding keyboard genuinely wants a different height from prose.
+    "height_factor_portrait",
+    "height_factor_landscape",
+    // Solver geometry
+    "alpha_key_width",
+    "mod_key_width",
+    "key_spacing_vertical",
+    "key_spacing_horizontal",
+    "bottom_row_height_factor",
+    "alpha_row_height_factor",
+    "mod_row_upper_gap",
+    "mod_row_inner_gap",
+    "mod_row_lower_gap",
+    // Layout customization
+    "key_customizations",
+).associate { suffix ->
+    "keyboard__$suffix" to "keyboard__${KeyboardProfile.CODING.id}__$suffix"
+}
 
 @Preferences
 abstract class FlorisPreferenceModel : PreferenceModel() {
@@ -501,18 +535,105 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
 
     val keyboard = Keyboard()
     inner class Keyboard {
-        val numberRow = boolean(
-            key = "keyboard__number_row",
-            default = false,
+        /**
+         * Which [KeyboardProfile] the user is arranging. Persisted as the profile's id rather than
+         * its enum name, and always read back through [KeyboardProfile.fromId] so an unrecognised
+         * or corrupt value cannot stop the keyboard from coming up.
+         */
+        val activeProfileId = string(
+            key = "keyboard__active_profile_id",
+            default = KeyboardProfile.Default.id,
         )
-        val devRow = boolean(
-            key = "keyboard__dev_row",
-            default = false,
-        )
-        val modRowsVisible = boolean(
-            key = "keyboard__mod_rows_visible",
-            default = true,
-        )
+
+        /**
+         * The geometry, row visibility, and key customization belonging to one profile.
+         *
+         * These were global preferences until Stage 04. Everything that stayed global did so
+         * because it describes the device or the person rather than the keyboard being drawn —
+         * window offsets, one-handed mode, hint behaviour, popup timing. Scoping something later is
+         * additive; un-scoping it needs a second migration, so the split errs narrow.
+         */
+        inner class Profile(profileId: String) {
+            val numberRow = boolean(
+                key = "keyboard__${profileId}__number_row",
+                default = false,
+            )
+            val devRow = boolean(
+                key = "keyboard__${profileId}__dev_row",
+                default = false,
+            )
+            val modRowsVisible = boolean(
+                key = "keyboard__${profileId}__mod_rows_visible",
+                default = true,
+            )
+            val heightFactorPortrait = int(
+                key = "keyboard__${profileId}__height_factor_portrait",
+                default = 80,
+            )
+            val heightFactorLandscape = int(
+                key = "keyboard__${profileId}__height_factor_landscape",
+                default = 100,
+            )
+            val alphaKeyWidth = int(
+                key = "keyboard__${profileId}__alpha_key_width",
+                default = 100,
+            )
+            val modKeyWidth = int(
+                key = "keyboard__${profileId}__mod_key_width",
+                default = 100,
+            )
+            val keySpacingVertical = float(
+                key = "keyboard__${profileId}__key_spacing_vertical",
+                default = 2.0f,
+            )
+            val keySpacingHorizontal = float(
+                key = "keyboard__${profileId}__key_spacing_horizontal",
+                default = 2.0f,
+            )
+            val bottomRowHeightFactor = int(
+                key = "keyboard__${profileId}__bottom_row_height_factor",
+                default = 75,
+            )
+            val alphaRowHeightFactor = int(
+                key = "keyboard__${profileId}__alpha_row_height_factor",
+                default = 100,
+            )
+            val modRowUpperGap = int(
+                key = "keyboard__${profileId}__mod_row_upper_gap",
+                default = 0,
+            )
+            val modRowInnerGap = int(
+                key = "keyboard__${profileId}__mod_row_inner_gap",
+                default = 0,
+            )
+            val modRowLowerGap = int(
+                key = "keyboard__${profileId}__mod_row_lower_gap",
+                default = 0,
+            )
+            val keyCustomizations = string(
+                key = "keyboard__${profileId}__key_customizations",
+                default = "{}",
+            )
+        }
+
+        val textProfile = Profile(KeyboardProfile.TEXT.id)
+        val codingProfile = Profile(KeyboardProfile.CODING.id)
+
+        /** The scoped block belonging to [profile]. Total over [KeyboardProfile]. */
+        fun profile(profile: KeyboardProfile): Profile = when (profile) {
+            KeyboardProfile.TEXT -> textProfile
+            KeyboardProfile.CODING -> codingProfile
+        }
+
+        /**
+         * The profile in effect right now. Never throws and never returns a profile that has no
+         * runtime behind it — see [KeyboardProfile.fromId].
+         */
+        fun activeProfile(): KeyboardProfile = KeyboardProfile.fromId(activeProfileId.get())
+
+        /** The scoped block in effect right now. */
+        fun activeProfilePrefs(): Profile = profile(activeProfile())
+
         val hintedNumberRowEnabled = boolean(
             key = "keyboard__hinted_number_row_enabled",
             default = true,
@@ -573,59 +694,18 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "keyboard__landscape_input_ui_mode",
             default = LandscapeInputUiMode.DYNAMICALLY_SHOW,
         )
-        val heightFactorPortrait = int(
-            key = "keyboard__height_factor_portrait",
-            default = 80,
-        )
-        val heightFactorLandscape = int(
-            key = "keyboard__height_factor_landscape",
-            default = 100,
-        )
-        val alphaKeyWidth = int(
-            key = "keyboard__alpha_key_width",
-            default = 100,
-        )
-        val modKeyWidth = int(
-            key = "keyboard__mod_key_width",
-            default = 100,
-        )
-        val keySpacingVertical = float(
-            key = "keyboard__key_spacing_vertical",
-            default = 2.0f,
-        )
-        val keySpacingHorizontal = float(
-            key = "keyboard__key_spacing_horizontal",
-            default = 2.0f,
-        )
-        // The per-region spacing preferences `keyboard__alpha_spacing_{vertical,horizontal}` and
-        // `keyboard__mod_spacing_{vertical,horizontal}` were declared here until Stage 03. Their
-        // sliders were removed when the solver became the single spacing authority, and nothing
-        // read them afterwards. Their persisted entries survive untouched in the datastore; Stage
-        // 07 reads them from there if the customization migration wants them.
-        val bottomRowHeightFactor = int(
-            key = "keyboard__bottom_row_height_factor",
-            default = 75,
-        )
-        val alphaRowHeightFactor = int(
-            key = "keyboard__alpha_row_height_factor",
-            default = 100,
-        )
-        val modRowUpperGap = int(
-            key = "keyboard__mod_row_upper_gap",
-            default = 0,
-        )
-        val modRowInnerGap = int(
-            key = "keyboard__mod_row_inner_gap",
-            default = 0,
-        )
-        val modRowLowerGap = int(
-            key = "keyboard__mod_row_lower_gap",
-            default = 0,
-        )
-        val keyCustomizations = string(
-            key = "keyboard__key_customizations",
-            default = "{}",
-        )
+        // Geometry, row visibility, and key customization moved into `Profile` in Stage 04; their
+        // former global keys are renamed into Coding scope by `migrate` below. What is left here is
+        // global on purpose — it describes the device or the person, not the keyboard being drawn.
+        //
+        // The four per-region spacing preferences `keyboard__alpha_spacing_{vertical,horizontal}`
+        // and `keyboard__mod_spacing_{vertical,horizontal}` were declared here until Stage 03,
+        // where they were removed as dead. A comment then claimed their persisted entries survived
+        // for Stage 07 to read. That was wrong: `DataStore.loadAndUpdate` seeds its map from
+        // `declaredPreferenceEntries` and drops any key it does not recognise, so those entries are
+        // discarded on the first write after the declarations went away. Stage 07 has no old values
+        // to migrate, which matches the Stage 03 decision that historical geometry is forensic
+        // evidence rather than a migration seed.
         val bottomOffsetPortrait = int(
             key = "keyboard__bottom_offset_portrait",
             default = 0,
@@ -891,6 +971,25 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
 
     override fun migrate(entry: PreferenceMigrationEntry): PreferenceMigrationEntry {
         return when (entry.key) {
+
+            // Stage 04 — move the formerly global geometry, row visibility, and key customization
+            // preferences into Coding scope, so Text can later be tuned without disturbing them.
+            //
+            // An upgrading user keeps their exact current keyboard: every old key is renamed, not
+            // reset, and Coding is the default profile. A fresh install has none of these keys on
+            // disk, so nothing runs and the scoped declarations supply their own defaults. Text
+            // starts from those defaults rather than inheriting Coding's tuning, which is the point
+            // of the split.
+            //
+            // This is idempotent by construction rather than by a version counter: `transform`
+            // renames the entry, so after one pass the old key no longer exists on disk and no rule
+            // below can match again. Adding a version int would create a second, redundant source
+            // of truth for whether the migration has run.
+            //
+            // Keep migration rules until: 0.7 dev cycle
+            in STAGE_04_PROFILE_SCOPED_KEYS -> {
+                entry.transform(key = STAGE_04_PROFILE_SCOPED_KEYS.getValue(entry.key))
+            }
 
             // Migrate media prefs to emoji prefs
             // Keep migration rule until: 0.6 dev cycle

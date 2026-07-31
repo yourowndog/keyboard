@@ -67,6 +67,7 @@ import dev.patrickgold.florisboard.ime.keyboard.ComputingEvaluator
 import dev.patrickgold.florisboard.ime.keyboard.FlorisImeSizing
 import dev.patrickgold.florisboard.ime.keyboard.KeyCustomizationManager
 import dev.patrickgold.florisboard.ime.keyboard.KeyboardMode
+import dev.patrickgold.florisboard.ime.keyboard.KeyboardProfile
 import dev.patrickgold.florisboard.ime.keyboard.SpaceBarMode
 import dev.patrickgold.florisboard.ime.keyboard.geometry.FramePolicy
 import dev.patrickgold.florisboard.ime.keyboard.geometry.GeometryOrientation
@@ -242,7 +243,10 @@ fun TextKeyboardLayout(
     ) {
         val keyboardWidth = constraints.maxWidth.toFloat()
         val keyboardHeight = constraints.maxHeight.toFloat()
-        val keyCustomizationsJson by prefs.keyboard.keyCustomizations.observeAsState()
+        val activeProfileId by prefs.keyboard.activeProfileId.observeAsState()
+        val keyCustomizationsJson by prefs.keyboard
+            .profile(KeyboardProfile.fromId(activeProfileId))
+            .keyCustomizations.observeAsState()
         val rowBaseHeight = FlorisImeSizing.keyboardRowBaseHeight
         val geometryPrefs = rememberGeometryPreferences(
             rowBaseHeight = rowBaseHeight.toPx().toDouble(),
@@ -396,8 +400,10 @@ private fun TextKeyButton(
     debugShowTouchBoundaries: Boolean,
 ) = with(LocalDensity.current) {
     val prefs by FlorisPreferenceStore
-    val numberRowEnabled by prefs.keyboard.numberRow.observeAsState()
-    val devRowEnabled by prefs.keyboard.devRow.observeAsState()
+    val activeProfileId by prefs.keyboard.activeProfileId.observeAsState()
+    val profile = prefs.keyboard.profile(KeyboardProfile.fromId(activeProfileId))
+    val numberRowEnabled by profile.numberRow.observeAsState()
+    val devRowEnabled by profile.devRow.observeAsState()
     val attributes = mapOf(
         FlorisImeUi.Attr.Code to key.computedData.code,
         FlorisImeUi.Attr.Mode to evaluator.keyboard.mode.toString(),
