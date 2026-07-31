@@ -55,7 +55,20 @@ fun KeyboardScreen() = FlorisScreen {
         // further change here. Everything below that is still bound to `prefs.keyboard` directly is
         // global on purpose.
         val activeProfileId by prefs.keyboard.activeProfileId.observeAsState()
-        val profile = prefs.keyboard.profile(KeyboardProfile.fromId(activeProfileId))
+        val activeProfile = KeyboardProfile.fromId(activeProfileId)
+        val profile = prefs.keyboard.profile(activeProfile)
+
+        // The selector seam. Only Coding is selectable until Stage 08 builds the Text runtime, so
+        // this reads rather than chooses — but it names the profile the settings below belong to,
+        // which is the part a user needs in order to understand what they are editing. When Text
+        // becomes selectable this row turns into the picker; nothing else on the screen changes.
+        Preference(
+            title = stringRes(R.string.pref__keyboard__active_profile__label),
+            summary = stringRes(
+                R.string.pref__keyboard__active_profile__summary_single,
+                "v" to stringRes(activeProfile.labelRes),
+            ),
+        )
 
         SwitchPreference(
             profile.numberRow,
@@ -178,7 +191,9 @@ fun KeyboardScreen() = FlorisScreen {
             // The per-region "Alpha Key Spacing" and "Mod Key Spacing" sliders used to sit here.
             // Key spacing is now one preference for the whole keyboard, applied by
             // KeyBoundsDerivation as half an inset per side, so the region-specific pairs no longer
-            // controlled anything. The stored values are left in place for Stage 07 to migrate.
+            // controlled anything. Their stored values are gone rather than waiting for Stage 07:
+            // the datastore drops keys it has no declaration for, so removing the declarations in
+            // Stage 03 discarded them on the next write.
             DialogSliderPreference(
                 pref = profile.bottomRowHeightFactor,
                 title = stringRes(R.string.pref__keyboard__bottom_row_height__label),

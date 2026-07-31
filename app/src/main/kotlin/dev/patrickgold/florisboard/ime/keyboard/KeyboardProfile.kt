@@ -16,6 +16,9 @@
 
 package dev.patrickgold.florisboard.ime.keyboard
 
+import androidx.annotation.StringRes
+import dev.patrickgold.florisboard.R
+
 /**
  * The keyboard a user is currently arranging their input around.
  *
@@ -24,21 +27,22 @@ package dev.patrickgold.florisboard.ime.keyboard
  * device or the person rather than the keyboard being shown.
  *
  * [id] is persisted. It is deliberately not the enum name: the enum is free to be renamed, and the
- * persisted vocabulary is not.
+ * persisted vocabulary is not. [labelRes] is the opposite — it is free to change at any time,
+ * because nothing reads it back.
  */
-enum class KeyboardProfile(val id: String) {
+enum class KeyboardProfile(val id: String, @StringRes val labelRes: Int) {
     /**
      * Prose. Reserved and not yet selectable — the runtime layout arrives in Stage 08, and
      * [isSelectable] stays false until it does so nothing can route to a keyboard that has no
      * assets behind it.
      */
-    TEXT("text"),
+    TEXT("text", R.string.keyboard_profile__text__label),
 
     /**
      * Code, shell, and anything with a symbol row. This is what OmniBoard ships today, and it is
      * where an upgrading user's existing settings land.
      */
-    CODING("coding");
+    CODING("coding", R.string.keyboard_profile__coding__label);
 
     /** Whether a user may currently choose this profile. See [TEXT]. */
     val isSelectable: Boolean
