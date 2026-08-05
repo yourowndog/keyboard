@@ -77,6 +77,16 @@ class SettingsLegibilityTest {
     }
 
     @Test
+    fun `factory default recovery preserves the subtype being edited`() {
+        assertEquals(Subtype.DEFAULT, subtypeEditorFactoryDefault(null))
+        assertEquals(Subtype.DEFAULT, subtypeEditorFactoryDefault(Subtype.DEFAULT.id))
+
+        val restored = subtypeEditorFactoryDefault(42L)
+        assertEquals(42L, restored.id)
+        assertTrue(restored.equalsExcludingId(Subtype.DEFAULT))
+    }
+
+    @Test
     fun `materializing implicit default appends a real id without disturbing others`() {
         val others = listOf(
             Subtype.DEFAULT.copy(

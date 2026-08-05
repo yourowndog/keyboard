@@ -20,6 +20,7 @@ class LayoutAssetDiagnosticTest {
 
     private companion object {
         val LAYOUT_ROOT = File("src/main/assets/ime/keyboard/org.florisboard.layouts/layouts")
+        val EXTENSION_FILE = File(LAYOUT_ROOT.parentFile, "extension.json")
         val JSON = Json { ignoreUnknownKeys = true }
     }
 
@@ -48,6 +49,23 @@ class LayoutAssetDiagnosticTest {
     @Test
     fun `layout asset root is present`() {
         assertTrue(LAYOUT_ROOT.isDirectory, "expected layout assets at ${LAYOUT_ROOT.absolutePath}")
+    }
+
+    @Test
+    fun `qwerty wide full resolves to the shipped coding layout`() {
+        val root = JSON.parseToJsonElement(EXTENSION_FILE.readText()).jsonObject
+        val characters = root["layouts"]!!.jsonObject["characters"]!!.jsonArray
+        val qwertyWideFull = characters
+            .map { it.jsonObject }
+            .single { it["id"]?.jsonPrimitive?.content == "qwerty_wide_full" }
+
+        val arrangementFile = qwertyWideFull["arrangementFile"]!!.jsonPrimitive.content
+        assertEquals("layouts/characters/qwerty_wide.json", arrangementFile)
+        assertTrue(File(LAYOUT_ROOT.parentFile, arrangementFile).isFile)
+        assertEquals(
+            "org.florisboard.layouts:qwerty_wide_mod",
+            qwertyWideFull["modifier"]!!.jsonPrimitive.content,
+        )
     }
 
     // -- Missing Symbols2 default -------------------------------------------------------------

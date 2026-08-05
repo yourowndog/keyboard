@@ -149,6 +149,9 @@
     <string name="settings__localization__subtype_select_placeholder" comment="Subtype dialog select value placeholder (&amp;#8210; is a hyphen character)">&#8210; select &#8210;</string>
     <string name="settings__localization__subtype_summary" comment="Subtype summary">{characters_name} / {symbols_name} + {symbols2_name} / {currency_set_name}</string>
     <string name="settings__localization__subtype_implicit_default_title" comment="Title for the active fallback subtype when no subtype has been configured">{subtype_name} (Default)</string>
+    <string name="settings__localization__subtype_factory_default_title" comment="Title for the permanent factory-default recovery card in the subtype editor">Factory default</string>
+    <string name="settings__localization__subtype_factory_default_summary" comment="Summary for restoring the subtype editor to the values shipped with OmniBoard">Load the English (US) QWERTY Wide settings shipped with OmniBoard. Nothing changes until you save.</string>
+    <string name="settings__localization__subtype_factory_default_action" comment="Button label for loading the shipped subtype values into the editor">Load factory default</string>
     <string name="settings__localization__suggested_subtype_presets" comment="Suggested presets title">Suggested subtype presets</string>
     <string name="settings__localization__suggested_subtype_presets_none_found" comment="Suggested presets none found">No suggested presets available. Use below button to view all subtype presets.</string>
     <string name="settings__localization__subtype_presets" comment="Subtype presets dialog title">Subtype presets</string>

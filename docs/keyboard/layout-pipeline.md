@@ -48,6 +48,17 @@ configuration. It is a presentation entry only: it is not inserted into
 the normal add path, assigns a real subtype id, and preserves the rest of the
 configured list. The implicit entry cannot be deleted.
 
+Every subtype editor also exposes a permanent **Factory default** recovery
+card. Loading it fills the editor with the exact `Subtype.DEFAULT` bindings but
+does not save immediately. When editing a configured subtype, the recovery
+preserves that subtype's id, so the normal Save action repairs the existing
+entry in place instead of appending another subtype.
+
+The persisted `qwerty_wide_full` compatibility id resolves explicitly to the
+shipped `qwerty_wide.json` arrangement and `qwerty_wide_mod` modifier. The
+explicit arrangement path prevents that selectable compatibility entry from
+falling through to a nonexistent `characters/qwerty_wide_full.json` file.
+
 Configured subtypes remain in persisted order. Each row shows the character,
 primary-symbol, secondary-symbol, and currency-set binding. Numeric and phone
 families remain in the editor because adding all eight slots would turn the

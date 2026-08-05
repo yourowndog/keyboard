@@ -2,7 +2,7 @@
   "$": "ime.extension.keyboard",
   "meta": {
     "id": "org.florisboard.layouts",
-    "version": "0.1.7",
+    "version": "0.1.8",
     "title": "Default layouts",
     "description": "Default layouts which are always available.",
     "maintainers": [
@@ -674,7 +674,8 @@
           "Sam/Codex"
         ],
         "direction": "ltr",
-        "modifier": null
+        "modifier": "org.florisboard.layouts:qwerty_wide_mod",
+        "arrangementFile": "layouts/characters/qwerty_wide.json"
       }
     ],
     "charactersMod": [

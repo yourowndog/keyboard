@@ -121,6 +121,10 @@ internal fun subtypeEditorAddsSubtype(id: Long?): Boolean {
     return id == null || id == Subtype.DEFAULT.id
 }
 
+internal fun subtypeEditorFactoryDefault(id: Long?): Subtype {
+    return Subtype.DEFAULT.copy(id = id ?: Subtype.DEFAULT.id)
+}
+
 private class SubtypeEditorState(init: Subtype?) {
     companion object {
         val Saver = Saver<SubtypeEditorState, String>(
@@ -310,6 +314,35 @@ fun SubtypeEditorScreen(id: Long?) = FlorisScreen {
 
     content {
         Column(modifier = Modifier.padding(8.dp)) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp),
+            ) {
+                Column(modifier = Modifier.padding(vertical = 8.dp)) {
+                    Text(
+                        modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp),
+                        text = stringRes(R.string.settings__localization__subtype_factory_default_title),
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold,
+                    )
+                    Text(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        text = stringRes(R.string.settings__localization__subtype_factory_default_summary),
+                    )
+                    Button(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp, vertical = 8.dp)
+                            .align(Alignment.End),
+                        onClick = {
+                            subtypeEditor.applySubtype(subtypeEditorFactoryDefault(id))
+                            showSelectAsError = false
+                        },
+                    ) {
+                        Text(stringRes(R.string.settings__localization__subtype_factory_default_action))
+                    }
+                }
+            }
             if (id == null) {
                 Card(modifier = Modifier
                     .fillMaxWidth()
