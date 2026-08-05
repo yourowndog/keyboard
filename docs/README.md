@@ -33,6 +33,7 @@ current behavior from plans, experiments, and history.
   validation, and repository organization.
 - [Agent reorientation](development/agent-reorientation.md): entering the
   cleaned repository or recovering interrupted work safely.
+- [Upstream Backport & Modernization Radar](development/upstream-backport-radar.md): comprehensive technical plan for backporting non-floating upstream features, bug fixes, state flow optimizations, and Snygg theming capabilities.
 - [Historical refactor docs](file:///home/sam/projects/keyboard/docs/archive/autocorrect-refactor-2026/README.md): Completed autocorrect refactor (July 2026) planning and checkpoints.
 
 ## Truth hierarchy
