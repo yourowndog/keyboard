@@ -79,9 +79,12 @@ android {
         buildConfigField("String", "BUILD_COMMIT_HASH", "\"${getGitCommitHash()}\"")
         buildConfigField("String", "FLADDONS_API_VERSION", "\"v~draft2\"")
         buildConfigField("String", "FLADDONS_STORE_URL", "\"beta.addons.florisboard.org\"")
-        // Fallback to WHISPER_API_KEY if OPENAI_API_KEY is missing
-        buildConfigField("String", "OPENAI_API_KEY", "\"${getLocalOrEnv("OPENAI_API_KEY", getLocalOrEnv("WHISPER_API_KEY"))}\"")
-        buildConfigField("String", "WHISPER_MODEL", "\"${getLocalOrEnv("WHISPER_MODEL", "whisper-1")}\"")
+        buildConfigField(
+            "String",
+            "WHISPER_RELAY_URL",
+            "\"${getLocalOrEnv("WHISPER_RELAY_URL", "https://weakling.tail8d8cc7.ts.net/v1/whisper/transcriptions")}\"",
+        )
+        buildConfigField("String", "WHISPER_RELAY_TOKEN", "\"${getLocalOrEnv("WHISPER_RELAY_TOKEN")}\"")
 
         ksp {
             arg("room.schemaLocation", "$projectDir/schemas")
