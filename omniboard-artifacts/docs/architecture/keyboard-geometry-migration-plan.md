@@ -109,31 +109,31 @@ Exit condition: upgrading preserves subtype selection and device-level settings;
 the normalized baseline plus whatever the user has explicitly customized; profile state no longer
 depends on generic asset naming.
 
-## Stage 4.5 — Settings custodial pass
+## Stage 4.5 — Settings legibility pass
 
 Out of band with the geometry sequence, and deliberately so: the Languages and Layouts menu is
-illegible enough that it obscures the work Stages 3 and 4 already landed. This stage buys legibility
-and nothing else.
+illegible enough that it obscures the work Stages 3 and 4 already landed.
 
-Method is subtraction at the surface only — hide the entry points, leave the plumbing. Nothing here
-deletes a type, a repository, or a constructor parameter.
+Full contract in `keyboard-geometry-stage-4-5-prompt.md`. It is a legibility pass, not a subtraction
+pass — an audit found that almost nothing on the surface is dead code, and that the screen reads as
+empty because of a real defect rather than styling.
 
-- Remove the layout builder entry points: `LayoutBuilderScreen`, its `HomeScreen` and `DevtoolsScreen`
-  navigation, and its four `Routes.kt` declarations. It is the first rudimentary attempt at what
-  Stages 6 and 7 now own.
-- Leave `LayoutPack`, `LayoutPackRepository`, and `LayoutValidation` in place and wired.
-  `KeyboardManager.loadInitialLayout` already returns an empty pack on purpose to bypass the
-  repository at startup, and `KeyboardManager.setLayout` has no caller outside the builder screen —
-  so the path is inert, not load-bearing. Stage 6 decides its fate.
-- Hide the dead Languages and Layouts controls: display language names in system locale, display
-  keyboard labels in subtype language, manage installed language packs.
-- Make the subtype list readable without entering an add/edit flow: locale plus the layouts actually
-  bound. A subtype is an eight-slot `SubtypeLayoutMap` plus composer, currency set, punctuation rule,
-  popup mapping, and NLP providers; today the UI presents that as an unexplained dropdown salad.
+- `SubtypeManager.kt:54,87` falls back to `Subtype.DEFAULT` when nothing is configured, and that
+  fallback is what the keyboard actually runs on. `LocalizationScreen.kt:119` renders a "no subtypes
+  configured" warning instead, because the implicit default is absent from `subtypesFlow`. Surfacing
+  it is the core fix.
+- Layouts opens the subtype list directly; the section is renamed Layouts, since the product ships
+  one language.
+- The layout builder is unrouted from Settings and kept in Devtools. `LayoutBuilderScreen` has no
+  IME-runtime references. `LayoutPack`, `LayoutPackRepository`, and `LayoutValidation` are untouched:
+  runtime-inert but compile-time load-bearing, and Stage 6 decides their fate.
+- The three unused controls are demoted to Devtools, not deleted. All three back working code, one of
+  them the subtype list's own title.
 - No change to subtype semantics, persistence, or `qwerty_wide*` component ids.
 
-Exit condition: the settings tree contains no surface a user can reach that does nothing, and the
-active subtypes can be audited without a backup export. No runtime behavior changes.
+Exit condition: the settings tree contains no surface that reports the absence of something the user
+is currently using, and the active layout binding can be read without opening an editor or exporting
+a backup. No runtime behavior changes.
 
 Deferred out of this stage on purpose:
 
