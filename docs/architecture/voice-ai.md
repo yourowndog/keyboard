@@ -11,9 +11,12 @@ described as one architecture.
 ## Whisper voice transcription
 
 The voice key starts/stops recording through `KeyboardManager`. On completion,
-`WhisperClient` sends the audio file to OpenAI's audio transcription endpoint,
-using the configured model and API key, then commits successful text through the
-editor path. Voice sessions are marked separately for harvesting.
+`WhisperClient` sends the audio file to the authenticated Brokentooth relay on
+weakling. The relay fixes the provider endpoint and model, supplies the OpenAI
+credential from its root-owned secret store, and returns the normal Whisper JSON
+response. The APK contains only its endpoint-scoped relay credential. Successful
+text is committed through the editor path, and voice sessions are marked
+separately for harvesting.
 
 This is active cloud functionality.
 
@@ -46,4 +49,3 @@ so this is not part of live candidate ranking.
 Older documents describe an on-device Gemma `.task` file and MediaPipe GenAI.
 The current application dependency set does not contain that integration and
 the referenced bridge class is absent. Preserve it only as architecture history.
-

@@ -10,12 +10,22 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.asRequestBody
 import org.json.JSONObject
 import java.io.File
+import java.util.concurrent.TimeUnit
 
 object WhisperClient {
-    private val client = OkHttpClient()
+    private val client = OkHttpClient.Builder()
+        .connectTimeout(10, TimeUnit.SECONDS)
+        .writeTimeout(30, TimeUnit.SECONDS)
+        .readTimeout(120, TimeUnit.SECONDS)
+        .callTimeout(150, TimeUnit.SECONDS)
+        .build()
 
     suspend fun transcribe(file: File): Result<String> = withContext(Dispatchers.IO) {
         try {
+            if (BuildConfig.WHISPER_RELAY_URL.isBlank() || BuildConfig.WHISPER_RELAY_TOKEN.isBlank()) {
+                return@withContext Result.failure(Exception("Whisper relay is not configured"))
+            }
+
             val requestBody = MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart(
@@ -23,12 +33,11 @@ object WhisperClient {
                     file.name,
                     file.asRequestBody("audio/mp4".toMediaType())
                 )
-                .addFormDataPart("model", BuildConfig.WHISPER_MODEL)
                 .build()
 
             val request = Request.Builder()
-                .url("https://api.openai.com/v1/audio/transcriptions")
-                .header("Authorization", "Bearer ${BuildConfig.OPENAI_API_KEY}")
+                .url(BuildConfig.WHISPER_RELAY_URL)
+                .header("Authorization", "Bearer ${BuildConfig.WHISPER_RELAY_TOKEN}")
                 .header("Accept", "application/json")
                 .post(requestBody)
                 .build()
@@ -40,7 +49,7 @@ object WhisperClient {
                     Result.success(text)
                 } else {
                     val errorBody = response.body?.string()?.take(200) ?: ""
-                    Result.failure(Exception("API Error: ${response.code} $errorBody"))
+                    Result.failure(Exception("Relay error: ${response.code} $errorBody"))
                 }
             }
         } catch (e: Exception) {
