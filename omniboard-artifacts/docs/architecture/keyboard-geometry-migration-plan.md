@@ -206,11 +206,13 @@ Only after all production consumers use semantic rows and solved geometry:
 - remove old outer/inner formulas and gap mutation;
 - remove or archive the unreachable QWERTY row after fallback tests;
 - prune compatibility aliases once migration coverage permits;
-- prune unused bundled languages and their layout assets, carried forward from Stage 4.5. Gated on an
-  explicit reference audit first: layout component ids are referenced from
-  `org.florisboard.localization/extension.json` and persisted inside user subtypes, so an asset that
-  looks unreferenced can still be named by a saved subtype. Removal is safe only for ids no bundled
-  extension and no persisted subtype can name, and the audit output belongs in the results doc.
+- prune unused bundled layout assets, carried forward from Stage 4.5. The weight is in layouts, not
+  language packs: `assets/ime/keyboard/org.florisboard.layouts/layouts/characters/` holds 77 bundled
+  character layouts, while `assets/ime/nlp/` holds a single file. Gated on an explicit reference
+  audit first: layout component ids are referenced from `org.florisboard.localization/extension.json`
+  and persisted inside user subtypes, so an asset that greps as unreferenced can still be named by a
+  saved subtype. Removal is safe only for ids no bundled extension and no persisted subtype can name,
+  and the audit output belongs in the results doc.
 - retire the layout builder plumbing hidden in Stage 4.5 — `LayoutPack`, `LayoutPackRepository`,
   `LayoutValidation`, and their `FlorisApplication`/`KeyboardManager` wiring — if Stage 6 did not
   adopt it.

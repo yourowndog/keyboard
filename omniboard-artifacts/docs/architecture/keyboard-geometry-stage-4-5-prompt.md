@@ -25,6 +25,38 @@ The result is a settings screen that reports nothing is configured while the use
 thing it is failing to report. "Add subtype" does not reveal the active subtype; it creates a second
 one beside an invisible first. This is the whole of the reported illegibility.
 
+## What a subtype is
+
+Needed because the screen never explains it and the fix depends on it. `Subtype` (`Subtype.kt:47`)
+binds a language to everything that varies by language:
+
+| Field | Decides |
+| --- | --- |
+| `primaryLocale`, `secondaryLocales` | Which language(s) the entry covers |
+| `layoutMap` | Eight layout slots: characters, symbols, symbols2, numeric, numericAdvanced, numericRow, phone, phone2 |
+| `composer` | How keystrokes combine into characters (dead keys, accents) |
+| `currencySet` | Which currency symbols appear |
+| `punctuationRule` | Auto-space behavior around punctuation |
+| `popupMapping` | What long-press popups offer |
+| `nlpProviders` | Which spellcheck and suggestion engines run |
+
+`Subtype.DEFAULT` (`Subtype.kt:73`) pins `layoutMap.characters = extCoreLayout("qwerty_wide")`. This
+is why Stage 4 renamed the QWERTY Wide *labels* but kept the `qwerty_wide*` ids: they are the join
+key between the language list and the layout assets, and they are persisted inside user subtypes.
+
+So "add subtype" is really "bind a language to eight layouts and five behavior modules," presented
+as one dropdown list. The screen is illegible because it is eight-dimensional and renders as one.
+
+## Surface inventory
+
+| File | Lines | Role |
+| --- | --- | --- |
+| `settings/localization/SubtypeEditorScreen.kt` | 576 | The add/edit flow; the only place the eight slots are visible today |
+| `settings/localization/LanguagePackManagerScreen.kt` | 215 | Fronts the language pack extension subsystem |
+| `settings/localization/LocalizationScreen.kt` | 190 | The screen this stage restructures |
+| `settings/localization/SelectLocaleScreen.kt` | 150 | Locale picker, reads `displayLanguageNamesIn` |
+| `app/layoutbuilder/LayoutBuilderScreen.kt` | 195 | Obsolete builder UI; unrouted from Settings here |
+
 ## Required changes
 
 **1. Surface the active subtype.**
@@ -66,11 +98,22 @@ Move to Devtools rather than removing:
 - Display keyboard labels in subtype language (`displayKeyboardLabelsInSubtypeLanguage`)
 - Manage installed language packs
 
-All three back working code. `displayLanguageNamesIn` is read in five places including the subtype
-list's own title. `displayKeyboardLabelsInSubtypeLanguage` is read and observed by
-`FlorisImeService.kt:291,296`. The language pack manager fronts an extension subsystem spanning ten
-files, including `HanShapeBasedLanguageProvider`. Their preferences and behavior must remain
-unchanged and reachable.
+All three back working code. Their preferences and behavior must remain unchanged and reachable.
+
+`displayLanguageNamesIn` has five readers, one of which is the subtype list's own title:
+
+- `LocalizationScreen.kt:102,127,139`
+- `SelectLocaleScreen.kt:67,72`
+- `settings/advanced/OtherScreen.kt:139,141`
+- `devtools/AndroidLocalesScreen.kt:82,94`
+- declared at `AppPrefs.kt:773`
+
+`displayKeyboardLabelsInSubtypeLanguage` is read and observed at `FlorisImeService.kt:291,296`, where
+it syncs key labels to the subtype language; declared at `AppPrefs.kt:777`.
+
+The language pack manager fronts an extension subsystem spanning ten files, including
+`lib/ext/ExtensionManager.kt`, `ime/nlp/LanguagePackExtension.kt`, and
+`ime/nlp/han/HanShapeBasedLanguageProvider.kt` — the Chinese shape-based input path.
 
 Demote these **last**, after the new list is visible, in case the new list makes one of them worth
 keeping in the main flow.
@@ -90,6 +133,16 @@ keeping in the main flow.
 - Editing the implicit default produces a real persisted subtype and does not disturb the others.
 - Demoted preferences retain their values and remain settable from Devtools.
 - The layout builder is unreachable from Settings and reachable from Devtools.
+
+## Suggested order
+
+1. **Change 4** — zero risk, gets the builder out of the main menu immediately.
+2. **Change 1** — the only item that is real work, and the only one that changes what the screen can
+   tell you. Surfacing the implicit default requires deciding how a synthetic entry behaves when
+   tapped; that is a design call, not a refactor.
+3. **Changes 2 and 3** together — one restructure of the same screen.
+4. **Change 5** last, and reversible by construction, in case the new list makes one of the demoted
+   controls worth keeping in the main flow.
 
 ## Exit condition
 
