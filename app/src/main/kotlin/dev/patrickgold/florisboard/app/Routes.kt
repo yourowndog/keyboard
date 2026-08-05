@@ -144,10 +144,6 @@ object Routes {
         object Keyboard
 
         @Serializable
-        @Deeplink("settings/layout-builder")
-        object LayoutBuilder
-
-        @Serializable
         @Deeplink("settings/keyboard/input-feedback")
         object InputFeedback
 
@@ -315,7 +311,6 @@ object Routes {
             }
 
             composableWithDeepLink(Settings.Keyboard::class) { KeyboardScreen() }
-            composableWithDeepLink(Settings.LayoutBuilder::class) { LayoutBuilderScreen() }
             composableWithDeepLink(Settings.InputFeedback::class) { InputFeedbackScreen() }
             composableWithDeepLink(Settings.KeyCustomization::class) { KeyCustomizationScreen() }
 

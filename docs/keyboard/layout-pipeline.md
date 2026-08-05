@@ -31,6 +31,34 @@ app/src/main/assets/ime/keyboard/
     layouts/
 ```
 
+## Layout selection settings
+
+> Last verified: 2026-08-05 against `LocalizationScreen.kt`,
+> `SubtypeEditorScreen.kt`, `SubtypeManager.kt`, `Routes.kt`, and
+> `DevtoolsScreen.kt`.
+
+Settings opens **Layouts** directly onto the subtype list. A subtype binds its
+language to the character, symbol, numeric, phone, popup, currency, composer,
+punctuation, and NLP components used by the keyboard.
+
+When no subtype is persisted, the runtime uses `Subtype.DEFAULT`. The list
+shows that effective subtype as **Default** instead of reporting an empty
+configuration. It is a presentation entry only: it is not inserted into
+`subtypesFlow` or serialized until the user edits and saves it. Saving follows
+the normal add path, assigns a real subtype id, and preserves the rest of the
+configured list. The implicit entry cannot be deleted.
+
+Configured subtypes remain in persisted order. Each row shows the character,
+primary-symbol, secondary-symbol, and currency-set binding. Numeric and phone
+families remain in the editor because adding all eight slots would turn the
+compact list summary into another crowded editor.
+
+The display-language selector, subtype-language key-label switch, and language
+pack manager are still backed by their original preferences and route, but are
+available from Devtools rather than the primary Layouts screen. Layout Builder
+is likewise routed only from Devtools. Its `LayoutPack`, repository, validation,
+and application/runtime constructor wiring remain intact.
+
 ## Row families
 
 - `characters/`: main character rows.

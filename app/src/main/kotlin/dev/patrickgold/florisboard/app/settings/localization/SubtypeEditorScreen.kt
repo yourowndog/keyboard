@@ -108,6 +108,19 @@ private val SelectLayoutMap = SubtypeLayoutMap(
 private val SelectLocale = FlorisLocale.from("00", "00")
 private val SelectListKeys = listOf(SelectComponentName)
 
+internal fun subtypeEditorInitialSubtype(
+    id: Long?,
+    configuredSubtype: (Long) -> Subtype?,
+): Subtype? = when (id) {
+    null -> null
+    Subtype.DEFAULT.id -> Subtype.DEFAULT
+    else -> configuredSubtype(id)
+}
+
+internal fun subtypeEditorAddsSubtype(id: Long?): Boolean {
+    return id == null || id == Subtype.DEFAULT.id
+}
+
 private class SubtypeEditorState(init: Subtype?) {
     companion object {
         val Saver = Saver<SubtypeEditorState, String>(
@@ -204,7 +217,9 @@ fun SubtypeEditorScreen(id: Long?) = FlorisScreen {
     val subtypePresets by keyboardManager.resources.subtypePresets.observeAsNonNullState()
 
     val subtypeEditor = rememberSaveable(saver = SubtypeEditorState.Saver) {
-        val subtype = id?.let { subtypeManager.getSubtypeById(id) }
+        val subtype = subtypeEditorInitialSubtype(id) { subtypeId ->
+            subtypeManager.getSubtypeById(subtypeId)
+        }
         SubtypeEditorState(subtype)
     }
     var primaryLocale by subtypeEditor.primaryLocale
@@ -252,7 +267,7 @@ fun SubtypeEditorScreen(id: Long?) = FlorisScreen {
     }
 
     actions {
-        if (id != null) {
+        if (id != null && id != Subtype.DEFAULT.id) {
             IconButton(onClick = {
                 val subtype = subtypeManager.getSubtypeById(id)
                 if (subtype != null) {
@@ -276,7 +291,7 @@ fun SubtypeEditorScreen(id: Long?) = FlorisScreen {
             }
             ButtonBarButton(text = stringRes(R.string.action__save)) {
                 subtypeEditor.toSubtype().onSuccess { subtype ->
-                    if (id == null) {
+                    if (subtypeEditorAddsSubtype(id)) {
                         if (!subtypeManager.addSubtype(subtype)) {
                             errorDialogStrId = R.string.settings__localization__subtype_error_already_exists
                             return@ButtonBarButton
