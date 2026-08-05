@@ -59,6 +59,11 @@ shipped `qwerty_wide.json` arrangement and `qwerty_wide_mod` modifier. The
 explicit arrangement path prevents that selectable compatibility entry from
 falling through to a nonexistent `characters/qwerty_wide_full.json` file.
 
+The repair was validated on a physical `SM_S938U` on 2026-08-05 with the
+in-place debug upgrade `0.5.0-debug+65dae525`. OmniBoard remained the selected
+IME, and both existing subtype records survived the upgrade with the
+`qwerty_wide_full` binding intact.
+
 Configured subtypes remain in persisted order. Each row shows the character,
 primary-symbol, secondary-symbol, and currency-set binding. Numeric and phone
 families remain in the editor because adding all eight slots would turn the

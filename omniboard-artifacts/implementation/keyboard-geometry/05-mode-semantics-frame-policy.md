@@ -1,5 +1,18 @@
 # Stage 05 Prompt — Mode Semantics and Frame Policy
 
+## Starting state
+
+Stages 0 through 4.5 are complete. The Stage 4.5 repair build
+`0.5.0-debug+65dae525` was installed in place and accepted on the physical
+`SM_S938U` on 2026-08-05; OmniBoard remained selected and both persisted
+subtypes survived. The `qwerty_wide_full` compatibility id now resolves to the
+shipped QWERTY Wide arrangement and coding modifier.
+
+Do not reopen the Settings/Layouts legibility work or Factory default recovery
+without a demonstrated regression. Keep `LayoutPack`, `LayoutPackRepository`,
+and `LayoutValidation` for Stage 6. The missing `symbols2/western_wide` default
+remains open and must keep the focused commit boundary below.
+
 You are implementing Stage 05 of OmniBoard's keyboard-row and geometry migration.
 
 Read the governing documents and confirm profile-scoped persistence and solved geometry are active.
@@ -52,9 +65,22 @@ Validate transitions among all reachable modes in portrait and landscape, with n
 - No key-action redesign.
 - No broad symbol asset cleanup.
 
+## Suggested order
+
+1. Pin the current semantic rows, frame heights, and cache behavior for every
+   reachable mode with characterization tests.
+2. Assign honest `NUMERIC`, `SYMBOL`, and `EXTENSION` roles and make the solver
+   consume them without changing key contents or actions.
+3. Add explicit profile/mode frame grouping through the common solver, then
+   remove last-Characters evaluator borrowing.
+4. Audit symbol hints, bottom-offset/gap arithmetic, and invalidation against
+   the new roles and frame policy.
+5. Handle the missing Symbols2 default in its own focused commit and tests.
+6. Run the full build/unit suite, then validate all reachable transitions in
+   portrait and landscape with representative non-default geometry settings.
+
 ## Commit boundary
 
 Separate semantic/policy migration from the missing-Symbols2 repair.
 
 Finish with the standard report-back.
-

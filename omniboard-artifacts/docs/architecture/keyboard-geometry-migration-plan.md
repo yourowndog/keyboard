@@ -18,19 +18,19 @@ Every stage ends in a buildable, reviewable repository state. No prompt may comb
 
 ## Stage map
 
-| Stage | Outcome | Main risk retired |
-|---:|---|---|
-| 0 | Pinned baseline and characterization harness | Migration without evidence |
-| 1 | Normalized semantic rows on all construction paths | Lost identity and invented defaults |
-| 2 | Shared solver in shadow/comparison mode | Conflicting frame and row arithmetic |
-| 3 | Structural gaps and explicit geometry layers | Positional mutation and bounds divergence |
-| 4 | Profile persistence and truthful Text/Coding naming | Global/untruthful product identity |
-| 4.5 | Settings custodial pass — dead surfaces hidden, bones kept | Illegible menus obscuring the migration's own work |
-| 5 | Honest mode semantics and frame policy | Numeric/symbol alpha masquerading |
-| 6 | Versioned layout-pack contract and restoration | Pack defaults and silent semantic loss |
-| 7 | Responsive structural customization | Visual-only overlap |
-| 8 | Real Text profile and profile selection | Text conflated with compact Coding |
-| 9 | Legacy removal and device acceptance | Dead fields/assets and residual heuristics |
+| Stage | Status | Outcome | Main risk retired |
+|---:|---|---|---|
+| 0 | Complete | Pinned baseline and characterization harness | Migration without evidence |
+| 1 | Complete | Normalized semantic rows on all construction paths | Lost identity and invented defaults |
+| 2 | Complete | Shared solver in shadow/comparison mode | Conflicting frame and row arithmetic |
+| 3 | Complete | Structural gaps and explicit geometry layers | Positional mutation and bounds divergence |
+| 4 | Complete | Profile persistence and truthful Text/Coding naming | Global/untruthful product identity |
+| 4.5 | Complete | Active subtype surfaced; working but unused controls demoted | Illegible menus obscuring the migration's own work |
+| 5 | Next | Honest mode semantics and frame policy | Numeric/symbol alpha masquerading |
+| 6 | Planned | Versioned layout-pack contract and restoration | Pack defaults and silent semantic loss |
+| 7 | Planned | Responsive structural customization | Visual-only overlap |
+| 8 | Planned | Real Text profile and profile selection | Text conflated with compact Coding |
+| 9 | Planned | Legacy removal and device acceptance | Dead fields/assets and residual heuristics |
 
 ## Stage 0 — Baseline and contracts
 
@@ -111,6 +111,11 @@ depends on generic asset naming.
 
 ## Stage 4.5 — Settings legibility pass
 
+**Status: complete.** The settings implementation, compatibility repair, full
+automated suite, in-place device upgrade, persistence checks, and live user
+acceptance are recorded in the
+[Stage 4.5 results](../../implementation/keyboard-geometry-results/04-5-settings-legibility-results.md).
+
 Out of band with the geometry sequence, and deliberately so: the Languages and Layouts menu is
 illegible enough that it obscures the work Stages 3 and 4 already landed.
 
@@ -133,7 +138,9 @@ empty because of a real defect rather than styling.
 
 Exit condition: the settings tree contains no surface that reports the absence of something the user
 is currently using, and the active layout binding can be read without opening an editor or exporting
-a backup. No runtime behavior changes.
+a backup. The settings work did not change runtime subtype semantics. Live testing exposed one
+pre-existing broken selectable layout component; the focused compatibility repair preserved the
+persisted `qwerty_wide_full` id while resolving it to shipped assets.
 
 Deferred out of this stage on purpose:
 
@@ -145,6 +152,11 @@ Deferred out of this stage on purpose:
   extension and persisted inside subtypes. Scheduled into Stage 9 behind an explicit reference audit.
 
 ## Stage 5 — Mode semantics and frame policy
+
+**Status: next.** Use the existing
+[Stage 5 implementation contract](../../implementation/keyboard-geometry/05-mode-semantics-frame-policy.md).
+Stage 4.5 settings work is closed and should only be revisited for a demonstrated
+regression.
 
 Migrate each specialized mode to explicit row roles and solver policy.
 
@@ -243,4 +255,3 @@ Pause a stage if:
 - a stage changes touch behavior without coordinate/device tests;
 - a compatibility projection becomes a new source of truth;
 - an implementation agent proposes a new taxonomy or profile model without contradictory evidence.
-

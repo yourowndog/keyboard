@@ -26,6 +26,12 @@ subtype editor also has an always-available **Factory default** recovery card.
 No subtype persistence format, `SubtypeLayoutMap`, component id, layout-pack
 plumbing, or preference key changed.
 
+The repair build was installed in place on the physical `SM_S938U` and accepted
+in live testing on 2026-08-05. Android still selected OmniBoard as the active
+IME after the upgrade, and the app-private datastore still contained both
+persisted subtype ids from the earlier recovery attempt. The installed build
+was `0.5.0-debug+65dae525` (`versionCode 114`).
+
 ## Decisions taken
 
 **The implicit default is a presentation projection, not persisted state.**
@@ -114,6 +120,25 @@ Commands and exact results:
 - Post-repair `./gradlew --no-daemon assembleDebug testDebugUnitTest` — **BUILD
   SUCCESSFUL in 20s**; 218 actionable tasks: 17 executed, 201 up-to-date.
 
+Physical-device checkpoint for the repair build:
+
+- The single wireless-ADB target was a Samsung `SM_S938U`.
+- `adb install -r app/build/outputs/apk/debug/app-debug.apk` completed with
+  `Success`. No downgrade flag, uninstall, or data clearing was used.
+- Package inspection reported `versionName=0.5.0-debug+65dae525` and
+  `versionCode=114`.
+- Android's selected input method remained
+  `dev.patrickgold.florisboard.debug/dev.patrickgold.florisboard.FlorisImeService`.
+- The JetPref store still contained both distinct subtype ids,
+  `1785945150036` and `1785945199209`, and retained the
+  `org.florisboard.layouts:qwerty_wide_full` binding.
+- Sam live-tested the installed repair and accepted the result as looking good.
+
+The installed APK SHA-256 was
+`aab5cc3186c315c11201f9abb8f741703e783e24a3286c63bea8c750c7487635`.
+Its signing certificate matched the previously installed debug build:
+`70e7f98e16cddef8d50f063e1adebfe1a5ed6c1b24719ee3cd5c2ae2640a4466`.
+
 An initial focused invocation through the root aggregate,
 `./gradlew --no-daemon testDebugUnitTest --tests …SettingsLegibilityTest`,
 failed because the filter was also applied to `:lib:snygg`, where no matching
@@ -128,12 +153,10 @@ without base values, and the Room nullable-list KSP warning.
 
 ## Not done
 
-- The original Stage 4.5 APK was installed and the settings changes were
-  visually validated. The repair APK from `4ceea69b` is hosted privately at
-  `http://100.66.224.88:8045/OmniBoard-stage-4.5-repair-debug.apk` but has not
-  been installed; installation still requires separate authorization. Its
-  Factory default card and corrected keyboard rendering therefore remain
-  live-test items. The APK was not published to GitHub or another public host.
+- The Factory default recovery path was not saved again on the physical device,
+  because doing so would intentionally mutate one of the two preserved
+  subtypes. Its exact binding and id-preservation behavior are covered by the
+  automated tests. The APK was not published to GitHub or another public host.
 - No branch was pushed, merged, or otherwise changed remotely; `dev` was not
   modified.
 - No subtype schema, persisted subtype, `SubtypeLayoutMap`, or `qwerty_wide*`
