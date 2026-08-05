@@ -25,6 +25,7 @@ Every stage ends in a buildable, reviewable repository state. No prompt may comb
 | 2 | Shared solver in shadow/comparison mode | Conflicting frame and row arithmetic |
 | 3 | Structural gaps and explicit geometry layers | Positional mutation and bounds divergence |
 | 4 | Profile persistence and truthful Text/Coding naming | Global/untruthful product identity |
+| 4.5 | Settings custodial pass — dead surfaces hidden, bones kept | Illegible menus obscuring the migration's own work |
 | 5 | Honest mode semantics and frame policy | Numeric/symbol alpha masquerading |
 | 6 | Versioned layout-pack contract and restoration | Pack defaults and silent semantic loss |
 | 7 | Responsive structural customization | Visual-only overlap |
@@ -108,6 +109,41 @@ Exit condition: upgrading preserves subtype selection and device-level settings;
 the normalized baseline plus whatever the user has explicitly customized; profile state no longer
 depends on generic asset naming.
 
+## Stage 4.5 — Settings custodial pass
+
+Out of band with the geometry sequence, and deliberately so: the Languages and Layouts menu is
+illegible enough that it obscures the work Stages 3 and 4 already landed. This stage buys legibility
+and nothing else.
+
+Method is subtraction at the surface only — hide the entry points, leave the plumbing. Nothing here
+deletes a type, a repository, or a constructor parameter.
+
+- Remove the layout builder entry points: `LayoutBuilderScreen`, its `HomeScreen` and `DevtoolsScreen`
+  navigation, and its four `Routes.kt` declarations. It is the first rudimentary attempt at what
+  Stages 6 and 7 now own.
+- Leave `LayoutPack`, `LayoutPackRepository`, and `LayoutValidation` in place and wired.
+  `KeyboardManager.loadInitialLayout` already returns an empty pack on purpose to bypass the
+  repository at startup, and `KeyboardManager.setLayout` has no caller outside the builder screen —
+  so the path is inert, not load-bearing. Stage 6 decides its fate.
+- Hide the dead Languages and Layouts controls: display language names in system locale, display
+  keyboard labels in subtype language, manage installed language packs.
+- Make the subtype list readable without entering an add/edit flow: locale plus the layouts actually
+  bound. A subtype is an eight-slot `SubtypeLayoutMap` plus composer, currency set, punctuation rule,
+  popup mapping, and NLP providers; today the UI presents that as an unexplained dropdown salad.
+- No change to subtype semantics, persistence, or `qwerty_wide*` component ids.
+
+Exit condition: the settings tree contains no surface a user can reach that does nothing, and the
+active subtypes can be audited without a backup export. No runtime behavior changes.
+
+Deferred out of this stage on purpose:
+
+- **Subtype becomes a type menu, unburied.** Depends on the Stage 6 layout contract and belongs with
+  Stage 8's profile selection, since profile and subtype are the two axes a user actually picks.
+  Designing that picker before Stage 6 settles means designing it twice.
+- **Pruning unused bundled languages.** Wanted, but it is exactly the case where innocuous-looking
+  assets turn out to be load-bearing — layout component ids are referenced from the localization
+  extension and persisted inside subtypes. Scheduled into Stage 9 behind an explicit reference audit.
+
 ## Stage 5 — Mode semantics and frame policy
 
 Migrate each specialized mode to explicit row roles and solver policy.
@@ -152,6 +188,9 @@ Build the conventional Text layout on the common architecture.
 - Do not reuse the dead Coding-oriented QWERTY row.
 - Provide settings-based profile selection.
 - Keep subtype/language behavior intact.
+- Unbury the subtype menu and reframe it as a type menu, carried forward from Stage 4.5. Profile and
+  subtype are the two axes a user picks; build that picker once, here, on the settled Stage 6 layout
+  contract.
 - Validate switching, restart persistence, symbols, popups, and orientation.
 - Leave the permanent on-keyboard gesture for a separate product decision.
 
@@ -166,7 +205,15 @@ Only after all production consumers use semantic rows and solved geometry:
 - remove Space-content and last-row inference;
 - remove old outer/inner formulas and gap mutation;
 - remove or archive the unreachable QWERTY row after fallback tests;
-- prune compatibility aliases once migration coverage permits.
+- prune compatibility aliases once migration coverage permits;
+- prune unused bundled languages and their layout assets, carried forward from Stage 4.5. Gated on an
+  explicit reference audit first: layout component ids are referenced from
+  `org.florisboard.localization/extension.json` and persisted inside user subtypes, so an asset that
+  looks unreferenced can still be named by a saved subtype. Removal is safe only for ids no bundled
+  extension and no persisted subtype can name, and the audit output belongs in the results doc.
+- retire the layout builder plumbing hidden in Stage 4.5 — `LayoutPack`, `LayoutPackRepository`,
+  `LayoutValidation`, and their `FlorisApplication`/`KeyboardManager` wiring — if Stage 6 did not
+  adopt it.
 
 Run full automated and physical-device acceptance.
 
