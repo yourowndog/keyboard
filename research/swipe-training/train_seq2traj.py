@@ -71,6 +71,7 @@ from swipe_common import (
     SwipeSample,
     UnsupportedWord,
     calibrate_layout,
+    corner_speed_ratios,
     corner_stats,
     encode_geometry,
     key_sequence,
@@ -199,10 +200,17 @@ def _smooth_time(noise: torch.Tensor, sigma: float) -> torch.Tensor:
 
 class Seq2TrajGenerator(nn.Module):
     def __init__(self, vocab_size: int = NUM_CLASSES, embed_dim: int = 64,
-                 hidden_dim: int = 128, noise_sigma: float = 2.0):
+                 hidden_dim: int = 128, noise_sigma: float = 2.0,
+                 logvar_min: float = -7.0):
         super().__init__()
         self.hidden_dim = hidden_dim
         self.noise_sigma = noise_sigma
+        # Floor on predicted log-variance. Gaussian NLL pays the model for
+        # claiming certainty, and with the floor at -9 it could assert a
+        # standard deviation of 0.011 -- a tenth of a key width. It learns to
+        # do exactly that under teacher forcing, then has no variation left to
+        # spend at synthesis time. -7.0 caps the claim at sigma 0.030.
+        self.logvar_min = logvar_min
         self.dec_dim = hidden_dim * 2
         self.enc_dim = hidden_dim * 2
 
@@ -230,7 +238,7 @@ class Seq2TrajGenerator(nn.Module):
         ctx = self.attn(enc_out, hidden, key_mask)
         hidden = self.decoder_cell(torch.cat([curr_point, ctx], dim=-1), hidden)
         mean = self.mean_head(hidden)
-        logvar = self.logvar_head(hidden).clamp(-9.0, 2.0)
+        logvar = self.logvar_head(hidden).clamp(self.logvar_min, 2.0)
         xy = torch.sigmoid(mean[:, :2])
         dt = MIN_DT + (MAX_DT - MIN_DT) * torch.sigmoid(mean[:, 2:3])
         return torch.cat([xy, dt], dim=-1), logvar, hidden
@@ -295,6 +303,27 @@ class Seq2TrajGenerator(nn.Module):
 # =============================================================================
 # LOSS
 # =============================================================================
+
+
+def _batch_corner_ratios(traj: "torch.Tensor") -> List[float]:
+    """Corner speed ratios for a batch of [B, T, 3] (x, y, dt) trajectories."""
+    arr = traj.detach().float().cpu().numpy()
+    out: List[float] = []
+    for row in arr:
+        xy = row[:, :2]
+        t = np.cumsum(row[:, 2])
+        out.extend(corner_speed_ratios(xy, t))
+    return out
+
+
+def _corner_pct_error(pred: Sequence[float], real: Sequence[float]) -> float:
+    """Percent error of mean corner speed ratio -- the acceptance gate metric."""
+    if not len(pred) or not len(real):
+        return float("nan")
+    p, r = float(np.mean(pred)), float(np.mean(real))
+    if not math.isfinite(p) or not math.isfinite(r) or r == 0:
+        return float("nan")
+    return 100.0 * abs(p - r) / abs(r)
 
 
 def seq2traj_loss(pred, logvar, target, w_nll=1.0, w_vel=6.0, w_acc=2.0):
@@ -367,7 +396,8 @@ def run_train(args):
     train_dl = DataLoader(train_ds, batch_size=args.batch_size, shuffle=True, drop_last=True, **common)
     val_dl = DataLoader(val_ds, batch_size=args.batch_size, shuffle=False, **common)
 
-    model = Seq2TrajGenerator(hidden_dim=args.hidden_dim).to(device)
+    model = Seq2TrajGenerator(hidden_dim=args.hidden_dim,
+                              logvar_min=args.logvar_min).to(device)
     n_params = sum(p.numel() for p in model.parameters())
     print(f"[model] Seq2Traj parameters: {n_params:,}")
 
@@ -393,9 +423,14 @@ def run_train(args):
         print(f"[resume] from {args.resume} at epoch {start_epoch}")
 
     for epoch in range(start_epoch, args.epochs):
-        # Scheduled sampling: start heavily teacher-forced, decay toward free-running
-        # so the model learns to recover from its own drift before synthesis time.
-        tf = max(args.tf_min, args.tf_max * (1.0 - epoch / max(1, args.epochs - 1)))
+        # Scheduled sampling: start heavily teacher-forced, decay toward
+        # free-running so the model learns to recover from its own drift before
+        # synthesis time. Decaying across the *whole* run left it still 74%
+        # assisted at epoch 6, so it never practised recovery and drifted badly
+        # the moment the crutch was removed. Reach tf_min early instead and
+        # spend the remaining epochs training on the task we actually evaluate.
+        ramp = max(1.0, args.tf_decay_frac * max(1, args.epochs - 1))
+        tf = max(args.tf_min, args.tf_max * (1.0 - epoch / ramp))
 
         model.train()
         t0, agg, nb = time.time(), {"loss": 0.0, "nll": 0.0, "vel": 0.0, "acc": 0.0}, 0
@@ -421,8 +456,15 @@ def run_train(args):
                 agg[k] += v
             nb += 1
 
+        # Two validation numbers, because they answer different questions.
+        # `val_tf` keeps the crutch and measures fit; `val_free` removes it and
+        # measures the job -- generating a whole trajectory unaided. Reporting
+        # only the free number next to a teacher-forced train loss compares two
+        # different tasks and hides whether a regression is drift or misfit.
         model.eval()
-        val_loss, vb = 0.0, 0
+        val_free = val_tf = 0.0
+        vb = 0
+        pred_ratios, real_ratios = [], []
         with torch.no_grad():
             for chars, coords, key_mask, trajs in val_dl:
                 chars, coords = chars.to(device), coords.to(device)
@@ -430,17 +472,30 @@ def run_train(args):
                 with torch.amp.autocast("cuda", enabled=use_amp):
                     pred, logvar = model(chars, coords, key_mask, steps=args.traj_len,
                                          teacher_forcing=0.0)
-                    loss, _ = seq2traj_loss(pred, logvar, trajs)
-                val_loss += loss.item()
+                    val_free += seq2traj_loss(pred, logvar, trajs)[0].item()
+                    tf_pred, tf_logvar = model(chars, coords, key_mask, target_traj=trajs,
+                                               steps=args.traj_len, teacher_forcing=1.0)
+                    val_tf += seq2traj_loss(tf_pred, tf_logvar, trajs)[0].item()
                 vb += 1
-        val_loss /= max(1, vb)
+                if len(pred_ratios) < args.corner_eval_batches * chars.size(0):
+                    pred_ratios.extend(_batch_corner_ratios(pred))
+                    real_ratios.extend(_batch_corner_ratios(trajs))
+        val_free /= max(1, vb)
+        val_tf /= max(1, vb)
+
+        # Selection metric. The acceptance gate judges corner kinematics, so
+        # select on corner kinematics -- picking by val NLL selects whichever
+        # epoch happened to be least punished for overconfidence.
+        corner_err = _corner_pct_error(pred_ratios, real_ratios)
+        score = corner_err if math.isfinite(corner_err) else float("inf")
 
         print(
             f"epoch {epoch + 1}/{args.epochs} tf={tf:.2f} "
             f"train={agg['loss'] / max(1, nb):.4f} "
             f"(nll={agg['nll'] / max(1, nb):.4f} vel={agg['vel'] / max(1, nb):.4f} "
-            f"acc={agg['acc'] / max(1, nb):.4f}) val={val_loss:.4f} "
-            f"[{time.time() - t0:.0f}s]"
+            f"acc={agg['acc'] / max(1, nb):.4f}) "
+            f"val_tf={val_tf:.4f} val_free={val_free:.4f} "
+            f"corner_err={corner_err:.1f}% [{time.time() - t0:.0f}s]"
         )
 
         state = {
@@ -448,18 +503,22 @@ def run_train(args):
             "optimizer": opt.state_dict(),
             "scheduler": sched.state_dict(),
             "epoch": epoch,
-            "best_val": min(best_val, val_loss),
+            "best_val": min(best_val, score),
+            "corner_err": corner_err,
+            "val_free": val_free,
+            "val_tf": val_tf,
+            "logvar_min": args.logvar_min,
             "args": _serializable_args(args),
             "traj_len": args.traj_len,
             "hidden_dim": args.hidden_dim,
         }
         torch.save(state, out_dir / "seq2traj_last.pt")
-        if val_loss < best_val:
-            best_val = val_loss
+        if score < best_val:
+            best_val = score
             torch.save(state, ckpt_path)
-            print(f"  -> new best, saved {ckpt_path}")
+            print(f"  -> new best corner_err {corner_err:.1f}%, saved {ckpt_path}")
 
-    print(f"[done] best val loss {best_val:.4f} -> {ckpt_path}")
+    print(f"[done] best corner error {best_val:.1f}% -> {ckpt_path}")
 
 
 # =============================================================================
@@ -469,7 +528,8 @@ def run_train(args):
 
 def load_generator(checkpoint: str, device: torch.device) -> Tuple[Seq2TrajGenerator, dict]:
     state = torch.load(checkpoint, map_location=device)
-    model = Seq2TrajGenerator(hidden_dim=state.get("hidden_dim", 128)).to(device)
+    model = Seq2TrajGenerator(hidden_dim=state.get("hidden_dim", 128),
+                              logvar_min=state.get("logvar_min", -7.0)).to(device)
     model.load_state_dict(state["model"])
     model.eval()
     return model, state
@@ -589,7 +649,15 @@ def build_parser() -> argparse.ArgumentParser:
     t.add_argument("--val-frac", type=float, default=0.05)
     t.add_argument("--max-samples", type=int, default=None)
     t.add_argument("--tf-max", type=float, default=0.9)
-    t.add_argument("--tf-min", type=float, default=0.1)
+    t.add_argument("--tf-min", type=float, default=0.05)
+    t.add_argument("--tf-decay-frac", type=float, default=0.35,
+                   help="fraction of the run over which teacher forcing decays "
+                        "to --tf-min; the rest trains free-running")
+    t.add_argument("--logvar-min", type=float, default=-7.0,
+                   help="floor on predicted log-variance; lower lets the model "
+                        "claim more certainty than it has earned")
+    t.add_argument("--corner-eval-batches", type=int, default=4,
+                   help="val batches used for the corner-kinematics score")
     t.add_argument("--clip", type=float, default=1.0)
     t.add_argument("--workers", type=int, default=4)
     t.add_argument("--resume", default=None)
