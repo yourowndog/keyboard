@@ -49,6 +49,7 @@ from swipe_common import (
     is_supported,
     key_sequence,
     load_futo,
+    resample_trajectory,
 )
 
 Traj = Tuple[np.ndarray, np.ndarray]
@@ -122,6 +123,27 @@ def wasserstein_1d(a: np.ndarray, b: np.ndarray) -> float:
     return float(np.mean(np.abs(np.quantile(a, q) - np.quantile(b, q))))
 
 
+def match_sampling(trajs: List[Traj], n_points: int) -> List[Traj]:
+    """Resample every trajectory to a common point count.
+
+    Corner detection is sensitive to sampling density: the *same* human swipes
+    measure a mean corner ratio of 0.161 at their native ~77 points and 0.342
+    resampled to 48, because sparser sampling averages away momentary stops.
+    Comparing 48-point synthetic output against native-resolution human data
+    therefore reports roughly double the true error. Stage 2 resamples every
+    source to a single length before the classifier sees it, so the gate has to
+    measure on that same footing or it is not describing what we ship.
+    """
+    out: List[Traj] = []
+    for xy, t in trajs:
+        if len(xy) < 2:
+            continue
+        rxy, rt = resample_trajectory(np.asarray(xy, np.float32),
+                                      np.asarray(t, np.float32), n_points)
+        out.append((rxy, rt))
+    return out
+
+
 def summarize(name: str, trajs: List[Traj]) -> dict:
     stats = corner_stats(trajs)
     ratios = []
@@ -149,6 +171,9 @@ def main() -> int:
     ap.add_argument("--tolerance", type=float, default=25.0,
                     help="max allowed %% error on mean corner speed ratio")
     ap.add_argument("--skip-physics", action="store_true")
+    ap.add_argument("--match-points", type=int, default=64,
+                    help="resample all sources to this many points before "
+                         "measuring; must match Stage 2's --traj-len")
     args = ap.parse_args()
 
     random.seed(args.seed)
@@ -176,15 +201,17 @@ def main() -> int:
         for s in by_word[w][: args.variations]:
             real_trajs.append((s.xy, s.t))
 
-    results = [summarize("real", real_trajs)]
+    n_pts = args.match_points
+    print(f"[gate] resampling every source to {n_pts} points "
+          f"(Stage 2's trajectory length) before measuring")
+    results = [summarize("real", match_sampling(real_trajs, n_pts))]
 
     # --- seq2traj -----------------------------------------------------------
     if Path(args.checkpoint).exists():
-        results.append(summarize(
-            "seq2traj",
+        results.append(summarize("seq2traj", match_sampling(
             sample_seq2traj(args.checkpoint, words, args.variations,
                             args.device, args.temperature, args.noise_sigma),
-        ))
+            n_pts)))
     else:
         print(f"[gate] no checkpoint at {args.checkpoint}, skipping seq2traj")
 
@@ -192,7 +219,7 @@ def main() -> int:
     if not args.skip_physics:
         phys = sample_physics(words, args.variations)
         if phys:
-            results.append(summarize("physics", phys))
+            results.append(summarize("physics", match_sampling(phys, n_pts)))
 
     # --- report -------------------------------------------------------------
     ref = results[0]
@@ -239,6 +266,7 @@ def main() -> int:
         code = 1
 
     report["tolerance_pct"] = args.tolerance
+    report["match_points"] = n_pts
     Path(args.report).write_text(json.dumps(report, indent=2))
     print(f"[gate] report -> {args.report}")
     return code
