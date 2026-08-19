@@ -3,6 +3,7 @@ package dev.patrickgold.florisboard.audio
 import android.content.Context
 import android.media.MediaRecorder
 import android.os.Build
+import android.os.Environment
 import java.io.File
 import java.io.IOException
 
@@ -13,9 +14,13 @@ class Recorder(private val context: Context) {
         private set
 
     private fun voiceDir(): File {
-        val dir = File(context.cacheDir, "voice_recordings")
-        if (!dir.exists()) dir.mkdirs()
-        return dir
+        val vaultDir = File(Environment.getExternalStorageDirectory(), "Recordings/Whisper_Vault")
+        if (vaultDir.exists() || vaultDir.mkdirs()) {
+            return vaultDir
+        }
+        val fallbackDir = File(context.cacheDir, "voice_recordings")
+        if (!fallbackDir.exists()) fallbackDir.mkdirs()
+        return fallbackDir
     }
 
     fun start(): File {

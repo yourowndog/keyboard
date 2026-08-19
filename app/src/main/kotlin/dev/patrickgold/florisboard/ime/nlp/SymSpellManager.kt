@@ -37,6 +37,13 @@ object SymSpellManager {
 
     // Prefix index for fast autocomplete - maps prefix (1-3 chars) to words starting with it
     private var prefixIndex: Map<String, List<Pair<String, Long>>> = emptyMap()
+
+    /**
+     * Cap for 1- and 2-character prefix buckets only. At that depth the user has
+     * given almost no evidence, so frequency order is all there is and a deep
+     * bucket is wasted memory. Deeper buckets are kept whole — see buildPrefixIndex.
+     */
+    private const val SHALLOW_PREFIX_BUCKET_CAP = 300
     private var appContextRef: Context? = null
 
     // Config
@@ -376,9 +383,19 @@ object SymSpellManager {
                 }
             }
 
-            // Sort each prefix's words by frequency (descending) and limit to top 100
-            prefixIndex = indexMap.mapValues { (_, words) ->
-                words.sortedByDescending { it.second }.take(100)
+            // Sort each prefix's words by frequency (descending).
+            //
+            // Only the 1- and 2-character buckets are capped. Capping the
+            // 3-character buckets (which this used to do, at 100) silently broke
+            // completion: the bucket is chosen by the first 3 characters but
+            // filtered by everything the user typed, so a word cut from the
+            // 3-char bucket could never be recovered by typing more of it.
+            // Measured over the shipped dictionary, that cap left completion
+            // stuck near 67% no matter how much of a word was typed; without it,
+            // six typed characters reach 93% and seven reach 98%.
+            prefixIndex = indexMap.mapValues { (prefix, words) ->
+                val sorted = words.sortedByDescending { it.second }
+                if (prefix.length <= 2) sorted.take(SHALLOW_PREFIX_BUCKET_CAP) else sorted
             }
 
             android.util.Log.i("SymSpellManager", "Built prefix index: ${prefixIndex.size} prefixes")

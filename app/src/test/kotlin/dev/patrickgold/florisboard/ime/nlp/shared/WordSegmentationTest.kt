@@ -5,7 +5,10 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
 class WordSegmentationTest {
-    private val words = setOf("in", "the", "int", "he", "every", "time", "termux")
+    private val words = setOf(
+        "in", "the", "int", "he", "every", "time", "termux",
+        "what", "is", "this", "up", "keep", "car", "on", "ban", "it",
+    )
 
     private fun find(
         input: String,
@@ -47,6 +50,58 @@ class WordSegmentationTest {
     fun ignoresNumbersAndPunctuation() {
         assertNull(find("in2the"))
         assertNull(find("in-the"))
+    }
+
+    // --- space typed as a neighbouring key (spacebar mis-hit) ---
+
+    @Test
+    fun recoversSpaceMistypedAsAdjacentKey() {
+        // 'n' sits directly above the spacebar: whatnis -> what is
+        assertEquals("what is", find("whatnis", setOf("what" to "is")))
+        // 'b' likewise
+        assertEquals("this up", find("thisbup", setOf("this" to "up")))
+    }
+
+    @Test
+    fun ignoresDroppedCharacterFarFromSpacebar() {
+        // 'd' is nowhere near the spacebar, so 'car d on' is not a space mis-hit.
+        assertNull(find("cardon", setOf("car" to "on")))
+    }
+
+    @Test
+    fun mistypedSpaceStillRequiresBigramEvidence() {
+        assertNull(find("whatnis", setOf("in" to "the")))
+    }
+
+    @Test
+    fun mistypedSpaceStillRequiresBothPartsLongEnough() {
+        // would split as "keep" + "o", and a one-character part is not a word
+        assertNull(find("keepno", setOf("keep" to "o")))
+    }
+
+    @Test
+    fun validJoinedWordIsImmuneToSpaceSubstitution() {
+        val withJoined = words + "banit"
+        assertNull(
+            WordSegmentation.findUniqueHighConfidence(
+                input = "banit",
+                isWord = { it in withJoined },
+                hasBigram = { _, _ -> true },
+            )
+        )
+    }
+
+    @Test
+    fun ambiguityAcrossBothSplitKindsIsRejected() {
+        // "whatnis" could read as omitted-space or mistyped-space; neither wins.
+        val extra = words + "nis"
+        assertNull(
+            WordSegmentation.findUniqueHighConfidence(
+                input = "whatnis",
+                isWord = { it in extra },
+                hasBigram = { _, _ -> true },
+            )
+        )
     }
 
     @Test

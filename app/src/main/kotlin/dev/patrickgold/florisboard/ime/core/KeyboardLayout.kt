@@ -61,21 +61,33 @@ object KeyboardLayout {
     )
 
     /**
+     * Keys that span several columns, as (xMin, xMax, y).
+     *
+     * Distance to a wide key is measured to the nearest point on its extent
+     * rather than to a centre point. The spacebar is the whole reason this
+     * exists: modelling it as a single point would put 'n' — its single most
+     * common mis-hit — further away than 'v', which is backwards. Measured
+     * against its real extent, every bottom-row key sits exactly one row
+     * above it, which is what the harvest data actually shows.
+     */
+    private val WIDE_KEYS: Map<Char, Triple<Float, Float, Float>> = mapOf(
+        ' ' to Triple(2.5f, 7.5f, 3.0f),
+    )
+
+    /** Every key the spatial model knows about, wide keys included. */
+    private val ALL_KEYS: Set<Char> = QWERTY_POSITIONS.keys + WIDE_KEYS.keys
+
+    /**
      * Legacy adjacency map - kept for backward compatibility.
-     * Built from QWERTY_POSITIONS: keys within distance 1.2 are considered adjacent.
+     * Built from the spatial model: keys within distance 1.5 are adjacent.
      */
     val QWERTY_NEIGHBORS: Map<Char, String> by lazy {
         val result = mutableMapOf<Char, String>()
-        for ((key, pos) in QWERTY_POSITIONS) {
+        for (key in ALL_KEYS) {
             val neighbors = StringBuilder()
-            for ((other, otherPos) in QWERTY_POSITIONS) {
+            for (other in ALL_KEYS) {
                 if (other == key) continue
-                val dx = pos.first - otherPos.first
-                val dy = pos.second - otherPos.second
-                val dist = sqrt((dx * dx + dy * dy).toDouble())
-                if (dist < 1.5) {
-                    neighbors.append(other)
-                }
+                if (isAdjacent(key, other)) neighbors.append(other)
             }
             result[key] = neighbors.toString()
         }
@@ -106,10 +118,27 @@ object KeyboardLayout {
         val aLower = a.lowercaseChar()
         val bLower = b.lowercaseChar()
         if (aLower == bLower) return 0.0
-        val posA = QWERTY_POSITIONS[aLower] ?: return 2.0
-        val posB = QWERTY_POSITIONS[bLower] ?: return 2.0
-        val dx = posA.first - posB.first
-        val dy = posA.second - posB.second
-        return sqrt((dx * dx + dy * dy).toDouble()).coerceIn(0.0, 2.0)
+        val posA = QWERTY_POSITIONS[aLower]
+        val posB = QWERTY_POSITIONS[bLower]
+        val raw = when {
+            posA != null && posB != null -> {
+                val dx = posA.first - posB.first
+                val dy = posA.second - posB.second
+                sqrt((dx * dx + dy * dy).toDouble())
+            }
+            posA != null -> spanDistance(posA, WIDE_KEYS[bLower] ?: return 2.0)
+            posB != null -> spanDistance(posB, WIDE_KEYS[aLower] ?: return 2.0)
+            else -> return 2.0
+        }
+        return raw.coerceIn(0.0, 2.0)
+    }
+
+    /** Distance from a point key to the nearest point on a wide key's extent. */
+    private fun spanDistance(point: Pair<Float, Float>, span: Triple<Float, Float, Float>): Double {
+        val (xMin, xMax, y) = span
+        val nearestX = point.first.coerceIn(xMin, xMax)
+        val dx = point.first - nearestX
+        val dy = point.second - y
+        return sqrt((dx * dx + dy * dy).toDouble())
     }
 }

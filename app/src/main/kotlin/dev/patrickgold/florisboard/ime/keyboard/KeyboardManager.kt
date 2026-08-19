@@ -275,6 +275,18 @@ class KeyboardManager(
                 editorInstance.commitText(fixed)
                 voiceManager.addTranscription(fixed)
                 voiceManager.removePending(audioFile.absolutePath)
+
+                // Write paired metadata JSON alongside the audio recording
+                try {
+                    val metaFile = File(audioFile.parentFile, "${audioFile.nameWithoutExtension}.json")
+                    val json = org.json.JSONObject().apply {
+                        put("audio", audioFile.name)
+                        put("transcript", fixed)
+                        put("timestamp", System.currentTimeMillis())
+                    }
+                    metaFile.writeText(json.toString(2))
+                } catch (_: Exception) { }
+
                 dev.patrickgold.florisboard.ime.nlp.HarvestManager.flushSession()
                 dev.patrickgold.florisboard.ime.nlp.HarvestManager.setSessionSource("TYPING")
 
