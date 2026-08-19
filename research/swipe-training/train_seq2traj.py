@@ -82,7 +82,34 @@ from swipe_common import (
 )
 
 TRAJ_LEN = 48
-MIN_DT, MAX_DT = 0.004, 0.080
+
+# Bounds on the inter-sample interval, in seconds.
+#
+# These look generous against *raw* FUTO timing (0.2% of intervals fall below
+# 4ms, 0.6% above 80ms) but we do not train on raw timing -- we train on
+# arc-length resampled trajectories, and resampling transforms the
+# distribution. Arc-length spacing places points evenly in distance, so where
+# the finger moves quickly the points are close together in time, and where it
+# *pauses at a corner* they span a long interval. The long intervals are the
+# braking. Measured on resampled human data: p95 = 95ms, p99 = 202ms.
+#
+# The old 4ms/80ms window therefore clipped 13.4% of targets up to the floor
+# and 6.6% down to the ceiling, amputating exactly the pauses the acceptance
+# gate scores -- and capping the generator at an 80ms pause when humans
+# routinely take longer. Widened to cover p99.9 of the resampled distribution.
+MIN_DT, MAX_DT = 0.001, 0.300
+
+# dt spans more than two orders of magnitude, so it is predicted in log space:
+# a linear sigmoid over [0.001, 0.300] would push the median (~13ms) down to
+# 0.04 of the sigmoid's range, deep in its flat tail, and resolve the common
+# values hardly at all. Log spacing puts that median near 0.45 instead.
+LOG_MIN_DT, LOG_MAX_DT = math.log(MIN_DT), math.log(MAX_DT)
+LOG_DT_SPAN = LOG_MAX_DT - LOG_MIN_DT
+
+
+def _norm_log_dt(dt: "torch.Tensor") -> "torch.Tensor":
+    """Map dt in seconds to roughly [0, 1] in log space, matching x/y range."""
+    return (torch.log(dt.clamp_min(1e-6)) - LOG_MIN_DT) / LOG_DT_SPAN
 
 
 def set_seed(seed: int) -> None:
@@ -240,7 +267,7 @@ class Seq2TrajGenerator(nn.Module):
         mean = self.mean_head(hidden)
         logvar = self.logvar_head(hidden).clamp(self.logvar_min, 2.0)
         xy = torch.sigmoid(mean[:, :2])
-        dt = MIN_DT + (MAX_DT - MIN_DT) * torch.sigmoid(mean[:, 2:3])
+        dt = torch.exp(LOG_MIN_DT + LOG_DT_SPAN * torch.sigmoid(mean[:, 2:3]))
         return torch.cat([xy, dt], dim=-1), logvar, hidden
 
     def forward(
@@ -284,12 +311,18 @@ class Seq2TrajGenerator(nn.Module):
             logvars.append(logvar)
 
             if sample:
+                # The loss scores dt in normalized log space, so logvar is
+                # expressed there too. Position noise is additive, but timing
+                # noise has to be applied multiplicatively in log space or a
+                # learned sigma means something different at synthesis than it
+                # did in training -- and additive noise near the floor would
+                # drive dt negative into the clamp.
                 std = torch.exp(0.5 * logvar) * temperature
-                nxt = pred + noise[:, step] * std
-                nxt = torch.cat([
-                    nxt[:, :2].clamp(0.0, 1.0),
-                    nxt[:, 2:3].clamp(MIN_DT, MAX_DT),
-                ], dim=-1)
+                xy_next = (pred[:, :2] + noise[:, step, :2] * std[:, :2]).clamp(0.0, 1.0)
+                log_dt = torch.log(pred[:, 2:3].clamp_min(1e-6))
+                log_dt = log_dt + noise[:, step, 2:3] * std[:, 2:3] * LOG_DT_SPAN
+                dt_next = torch.exp(log_dt).clamp(MIN_DT, MAX_DT)
+                nxt = torch.cat([xy_next, dt_next], dim=-1)
                 means[-1] = nxt
                 curr = nxt
             elif target_traj is not None and random.random() < teacher_forcing:
@@ -333,9 +366,13 @@ def seq2traj_loss(pred, logvar, target, w_nll=1.0, w_vel=6.0, w_acc=2.0):
     finger is matters less than matching how it accelerates and brakes, and the
     derivative signal is what the position-only objective washes out.
     """
-    # Scale dt into the same rough range as x/y so one channel cannot dominate.
-    scale = torch.tensor([1.0, 1.0, 1.0 / MAX_DT], device=pred.device)
-    p, tgt = pred * scale, target * scale
+    # Put dt on the same footing as x/y before comparing. Linear scaling by
+    # 1/MAX_DT would make the loss care about absolute millisecond error, which
+    # is dominated by the long pauses; in log space a 5ms error on a 10ms
+    # interval and a 50ms error on a 100ms one count the same, which is what
+    # "matched velocity profile" actually means.
+    p = torch.cat([pred[..., :2], _norm_log_dt(pred[..., 2:3])], dim=-1)
+    tgt = torch.cat([target[..., :2], _norm_log_dt(target[..., 2:3])], dim=-1)
 
     inv_var = torch.exp(-logvar)
     nll = 0.5 * (inv_var * (p - tgt) ** 2 + logvar)
@@ -656,8 +693,9 @@ def build_parser() -> argparse.ArgumentParser:
     t.add_argument("--logvar-min", type=float, default=-7.0,
                    help="floor on predicted log-variance; lower lets the model "
                         "claim more certainty than it has earned")
-    t.add_argument("--corner-eval-batches", type=int, default=4,
-                   help="val batches used for the corner-kinematics score")
+    t.add_argument("--corner-eval-batches", type=int, default=16,
+                   help="val batches used for the corner-kinematics score; too "
+                        "few and epoch-to-epoch noise picks the checkpoint")
     t.add_argument("--clip", type=float, default=1.0)
     t.add_argument("--workers", type=int, default=4)
     t.add_argument("--resume", default=None)
