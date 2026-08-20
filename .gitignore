@@ -73,7 +73,10 @@ mission_log.txt
 token_counter.py
 user_dict.txt
 
-# Swipe training data (large files)
+# Swipe datasets (large raw parquet files & derived splits)
+data/swipe/raw/
+data/swipe/derived/
+*.parquet
 keyboardtools/swipe-trainer/*.parquet
 keyboardtools/swipe-trainer/synthetic_swipes_full.jsonl
 keyboardtools/swipe-trainer/synthetic_swipes_final.jsonl

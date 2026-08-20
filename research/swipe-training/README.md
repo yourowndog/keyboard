@@ -1,35 +1,53 @@
-# Swipe Training Research
+# Swipe Synthesis & Training Research
 
-> Status: Shelved research  
-> Reclassified: 2026-07-11
+> **Status:** Active (Phase 2 Clean Foundation)  
+> **Updated:** August 2026  
+> **Canonical Audit:** [`docs/swipe-synthesis-project-state-audit.md`](file:///home/sam/projects/keyboard/docs/swipe-synthesis-project-state-audit.md)  
+> **Architecture Spec:** [`docs/swipe-data-and-pipeline-architecture.md`](file:///home/sam/projects/keyboard/docs/swipe-data-and-pipeline-architecture.md)
 
-This directory preserves experiments for extracting FUTO swipe samples,
-generating synthetic traces, preparing training data, and producing precomputed
-gesture assets.
+This directory houses the second-generation swipe-synthesis research, reusable profiling utilities, target vocabulary corpora, and downstream recognizer modeling for OmniBoard.
 
-It is distinct from OmniBoard's active glide-typing runtime. The live runtime
-continues to detect glide paths and classify candidates without requiring this
-research workflow.
+---
 
-## Known state
+## 1. Directory Structure & Active Components
 
-- Several scripts require `pyarrow`, NumPy, external FUTO data, or a separate
-  trainer checkout.
-- Some paths are machine-specific to `/home/sam/projects/keyboard`.
-- `setup_training.py` expects external `florisboard`, `futo`, and trainer trees.
-- JSON and binary generators target different asset filenames.
-- `PrecomputedGestureCache` currently looks for `ime/swipe/futo_swipes.bin` and
-  tolerates it being absent.
-- The former packaged `precomputed_gestures.json` had no runtime reader. It is
-  preserved under `artifacts/` so it no longer adds roughly 31 MB to the APK.
+```
+research/swipe-training/
+├── acquire_futo_data.py                         # [ACTIVE] Lossless acquisition & verification of canonical FUTO dataset
+├── target_swipe_vocabulary_supplement.txt       # [ACTIVE] 6,842 clean target words from Sam's 9-month harvest missing from FUTO
+├── harvested_missing_words.tsv                  # [ACTIVE] 13,258 harvest unigram frequency and category breakdown
+├── futo_words_unique.txt                        # [ACTIVE] 91,104 unique FUTO reference unigrams
+├── missing_words_top1000.txt                    # [ACTIVE] Top 1,000 dictionary gap unigrams
+├── sams_custom_words.txt                        # [ACTIVE] Curated custom vocabulary seed
+├── analyze_futo_deeply.py                       # [ACTIVE] Parquet trajectory kinematic profiler
+├── investigate_futo_coords.py                   # [ACTIVE] Coordinate system inspector
+├── analyze_vocab_gaps.py                        # [ACTIVE] Vocabulary gap analyzer
+├── explore_data.py                              # [ACTIVE] Parquet chunk inspector
+├── count_words.py                               # [ACTIVE] Parquet word frequency counter
+├── train_neuroswipe_v1.py                       # [ACTIVE] PyTorch Transformer recognizer model definition
+└── legacy/                                      # [QUARANTINE] Isolated first-generation experiments and artifacts
+    ├── generators/                              # Heuristic and deterministic MSE generators
+    ├── evaluators/                              # Flawed 7-word evaluation scripts
+    ├── external_glue/                           # Abandoned third-party repo glue
+    ├── artifacts/                               # Surviving polygonal/heuristic outputs
+    └── README.md                                # Detailed quarantine audit and explanations
+```
 
-## Revival checklist
+---
 
-1. Identify the intended runtime classifier and exact asset format.
-2. Document external dataset licensing and provenance.
-3. Replace machine-specific paths with CLI arguments or repository-relative
-   paths.
-4. Establish a reproducible environment and dependency file.
-5. Create a tiny fixture and end-to-end asset-load test.
-6. Compare model size, startup memory, latency, and accuracy on device.
-7. Only then add a generated swipe asset back to the Android package.
+## 2. Dataset Management & Boundaries
+
+- **Raw Datasets (`data/swipe/raw/futo/`)**:
+  - Immutable parquet shards from Hugging Face `futo-org/swipe.futo.org` (~1.22M swipes).
+  - Preserved losslessly with full $\{x, y, t\}$ trajectories, screen aspect ratios, sessions, and metadata.
+  - Reacquired and verified via `uv run --with pyarrow --with requests python3 research/swipe-training/acquire_futo_data.py`.
+- **Derived Datasets (`data/swipe/derived/`)**:
+  - Future normalized, aspect-ratio filtered, or tokenized representations belong here.
+- **Git Tracking**:
+  - Large parquet datasets and derived caches are ignored in `.gitignore`.
+
+---
+
+## 3. Legacy Quarantine Summary
+
+All first-generation heuristic simulators (`generate_synthetic_swipes.py`), deterministic MSE neural models (`train_seq2traj.py`), straight-line geometric generators (`precompute_gestures*.py`), flawed 7-word evaluators (`validate_against_futo.py`), and external repo glue have been quarantined into `legacy/`. See [`legacy/README.md`](file:///home/sam/projects/keyboard/research/swipe-training/legacy/README.md) for forensic rationale.

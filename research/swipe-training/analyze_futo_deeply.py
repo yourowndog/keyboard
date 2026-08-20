@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
 """
 Deep analysis of FUTO swipe characteristics.
-Understand exactly how FUTO data is structured so we can match it precisely.
+Profiles kinematics, velocity profiles, time intervals, and point counts.
 """
 
+import sys
+from pathlib import Path
+from typing import List, Dict
 import pyarrow.parquet as pq
 import numpy as np
-import json
-from typing import List, Dict
 
-# =============================================================================
-# FUTO DATA ANALYSIS
-# =============================================================================
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+DEFAULT_PARQUET = REPO_ROOT / "data" / "swipe" / "raw" / "futo" / "swipe-1" / "train" / "0.parquet"
+
 
 def analyze_futo_sample(sample: dict) -> dict:
     """Deeply analyze a single FUTO swipe sample."""
@@ -20,7 +21,7 @@ def analyze_futo_sample(sample: dict) -> dict:
     t = np.array(sample['t'])
     
     # Basic stats
-    duration_ms = t[-1] - t[0]
+    duration_ms = t[-1] - t[0] if len(t) > 1 else 0
     num_points = len(x)
     
     # Point-to-point distances
@@ -35,13 +36,11 @@ def analyze_futo_sample(sample: dict) -> dict:
     
     # Velocity in normalized units per millisecond
     velocities_per_ms = distances / dt_nonzero
-    
-    # Also calculate velocity in normalized units per second
     velocities_per_sec = velocities_per_ms * 1000
     
     # X and Y ranges
-    x_range = x.max() - x.min()
-    y_range = y.max() - y.min()
+    x_range = x.max() - x.min() if len(x) > 0 else 0
+    y_range = y.max() - y.min() if len(y) > 0 else 0
     
     return {
         'duration_ms': duration_ms,
@@ -49,68 +48,57 @@ def analyze_futo_sample(sample: dict) -> dict:
         'total_distance': total_distance,
         'x_range': x_range,
         'y_range': y_range,
-        'avg_velocity_per_ms': np.mean(velocities_per_ms),
-        'max_velocity_per_ms': np.max(velocities_per_ms),
-        'min_velocity_per_ms': np.min(velocities_per_ms),
-        'avg_velocity_per_sec': np.mean(velocities_per_sec),
-        'max_velocity_per_sec': np.max(velocities_per_sec),
-        'avg_dt_ms': np.mean(dt),
-        'min_dt_ms': np.min(dt),
-        'max_dt_ms': np.max(dt),
-        'avg_point_distance': np.mean(distances),
-        'x_coords_sample': x[:5].tolist(),
-        'y_coords_sample': y[:5].tolist(),
-        't_coords_sample': t[:5].tolist(),
+        'avg_velocity_per_sec': float(np.mean(velocities_per_sec)) if len(velocities_per_sec) > 0 else 0.0,
+        'max_velocity_per_sec': float(np.max(velocities_per_sec)) if len(velocities_per_sec) > 0 else 0.0,
+        'avg_dt_ms': float(np.mean(dt)) if len(dt) > 0 else 0.0,
+        'min_dt_ms': float(np.min(dt)) if len(dt) > 0 else 0.0,
+        'max_dt_ms': float(np.max(dt)) if len(dt) > 0 else 0.0,
+        'avg_point_distance': float(np.mean(distances)) if len(distances) > 0 else 0.0,
     }
 
+
 def extract_and_analyze_futo(parquet_path: str, words: List[str], max_samples: int = 3):
-    """Extract and deeply analyze FUTO samples for specific words."""
-    
-    print("=" * 70)
-    print("FUTO DATA DEEP ANALYSIS")
-    print("=" * 70)
-    
+    """Extract real FUTO samples for specific words and analyze them."""
+    print(f"Reading from {parquet_path}...")
     parquet_file = pq.ParquetFile(parquet_path)
-    word_samples = {w.lower(): [] for w in words}
-    words_lower = [w.lower() for w in words]
     
-    # Extract samples
+    found_samples: Dict[str, List[dict]] = {w.lower(): [] for w in words}
+    words_to_find = set(found_samples.keys())
+    
     for i in range(parquet_file.metadata.num_row_groups):
         table = parquet_file.read_row_group(i)
         df = table.to_pandas()
         
         for _, row in df.iterrows():
-            word = row['word'].lower()
-            if word in words_lower and len(word_samples[word]) < max_samples:
-                points = row['data']
-                canvas_w = row['canvas_width']
-                canvas_h = row['canvas_height']
-                
-                # Normalize coordinates to 0-1
-                x = [p['x'] / canvas_w for p in points]
-                y = [p['y'] / canvas_h for p in points]
-                t = [p['t'] for p in points]
-                
-                word_samples[word].append({
-                    'x': x, 'y': y, 't': t,
-                    'canvas_width': canvas_w,
-                    'canvas_height': canvas_h
-                })
+            word = str(row['word']).lower()
+            if word in words_to_find and len(found_samples[word]) < max_samples:
+                pts = row['data']
+                if pts is not None and len(pts) > 0:
+                    found_samples[word].append({
+                        'x': [p['x'] for p in pts],
+                        'y': [p['y'] for p in pts],
+                        't': [p['t'] for p in pts],
+                        'canvas_w': row.get('canvas_width'),
+                        'canvas_h': row.get('canvas_height'),
+                        'orientation': row.get('orientation'),
+                    })
         
-        if all(len(word_samples[w]) >= max_samples for w in words_lower):
+        # Check if we have enough
+        if all(len(samples) >= max_samples for samples in found_samples.values()):
             break
     
-    # Analyze each word
-    for word in words:
-        word_lower = word.lower()
-        samples = word_samples.get(word_lower, [])
-        
+    # Print results
+    print("\n" + "=" * 70)
+    print("FUTO REAL HUMAN DATA ANALYSIS")
+    print("=" * 70)
+    
+    for word, samples in found_samples.items():
         if not samples:
-            print(f"\n'{word}': No samples found")
+            print(f"\n'{word}': Not found in sample")
             continue
-        
+            
         print(f"\n{'='*70}")
-        print(f"Word: '{word}' ({len(samples)} samples)")
+        print(f"Word: '{word}' (real FUTO, {len(samples)} samples)")
         print(f"{'='*70}")
         
         all_stats = []
@@ -118,88 +106,30 @@ def extract_and_analyze_futo(parquet_path: str, words: List[str], max_samples: i
             stats = analyze_futo_sample(sample)
             all_stats.append(stats)
             
-            if i == 0:  # Print detailed info for first sample
+            if i == 0:
                 print(f"\nSample 1 (detailed):")
-                print(f"  Canvas: {sample['canvas_width']} x {sample['canvas_height']}")
                 print(f"  Duration: {stats['duration_ms']:.0f}ms")
                 print(f"  Points: {stats['num_points']}")
-                print(f"  Total distance (normalized): {stats['total_distance']:.4f}")
-                print(f"  X range: {stats['x_range']:.4f}")
-                print(f"  Y range: {stats['y_range']:.4f}")
-                print(f"\n  Velocity (normalized units/sec):")
-                print(f"    Avg: {stats['avg_velocity_per_sec']:.4f}")
-                print(f"    Max: {stats['max_velocity_per_sec']:.4f}")
-                print(f"\n  Time intervals (ms):")
-                print(f"    Avg dt: {stats['avg_dt_ms']:.1f}ms")
-                print(f"    Min dt: {stats['min_dt_ms']:.0f}ms")
-                print(f"    Max dt: {stats['max_dt_ms']:.0f}ms")
-                print(f"\n  First 5 coordinates:")
-                print(f"    X: {stats['x_coords_sample']}")
-                print(f"    Y: {stats['y_coords_sample']}")
-                print(f"    T: {stats['t_coords_sample']}")
+                print(f"  Total distance: {stats['total_distance']:.4f}")
+                print(f"  X range: {stats['x_range']:.4f}, Y range: {stats['y_range']:.4f}")
+                print(f"  Canvas: {sample['canvas_w']} x {sample['canvas_h']} ({sample['orientation']})")
+                print(f"  Velocity: avg={stats['avg_velocity_per_sec']:.4f}, max={stats['max_velocity_per_sec']:.4f} units/s")
+                print(f"  Time intervals: avg dt={stats['avg_dt_ms']:.1f}ms, min={stats['min_dt_ms']:.0f}ms, max={stats['max_dt_ms']:.0f}ms")
         
-        # Aggregate stats across samples
         print(f"\n  Aggregated across {len(samples)} samples:")
         print(f"    Avg duration: {np.mean([s['duration_ms'] for s in all_stats]):.0f}ms")
         print(f"    Avg velocity: {np.mean([s['avg_velocity_per_sec'] for s in all_stats]):.4f} units/sec")
         print(f"    Avg point count: {np.mean([s['num_points'] for s in all_stats]):.0f}")
         print(f"    Avg dt between points: {np.mean([s['avg_dt_ms'] for s in all_stats]):.1f}ms")
 
+
 def main():
-    parquet_path = 'futo_swipes.parquet'
+    parquet_path = sys.argv[1] if len(sys.argv) > 1 else (
+        "futo_swipes.parquet" if Path("futo_swipes.parquet").exists() else str(DEFAULT_PARQUET)
+    )
     test_words = ['the', 'ham', 'about', 'you', 'and']
-    
     extract_and_analyze_futo(parquet_path, test_words)
-    
-    # Now let's analyze our synthetic data the same way
-    print("\n\n")
-    print("=" * 70)
-    print("SYNTHETIC DATA ANALYSIS (for comparison)")
-    print("=" * 70)
-    
-    from generate_synthetic_swipes import generate_synthetic_swipes
-    
-    for word in test_words:
-        samples = generate_synthetic_swipes(word, num_variations=3)
-        
-        if not samples:
-            print(f"\n'{word}': Could not generate")
-            continue
-        
-        print(f"\n{'='*70}")
-        print(f"Word: '{word}' (synthetic, {len(samples)} samples)")
-        print(f"{'='*70}")
-        
-        all_stats = []
-        for i, sample in enumerate(samples):
-            synth_sample = {
-                'x': sample['curve']['x'],
-                'y': sample['curve']['y'],
-                't': sample['curve']['t'],
-            }
-            stats = analyze_futo_sample(synth_sample)
-            all_stats.append(stats)
-            
-            if i == 0:
-                print(f"\nSample 1 (detailed):")
-                print(f"  Duration: {stats['duration_ms']:.0f}ms")
-                print(f"  Points: {stats['num_points']}")
-                print(f"  Total distance (normalized): {stats['total_distance']:.4f}")
-                print(f"  X range: {stats['x_range']:.4f}")  
-                print(f"  Y range: {stats['y_range']:.4f}")
-                print(f"\n  Velocity (normalized units/sec):")
-                print(f"    Avg: {stats['avg_velocity_per_sec']:.4f}")
-                print(f"    Max: {stats['max_velocity_per_sec']:.4f}")
-                print(f"\n  Time intervals (ms):")
-                print(f"    Avg dt: {stats['avg_dt_ms']:.1f}ms")
-                print(f"    Min dt: {stats['min_dt_ms']:.0f}ms")
-                print(f"    Max dt: {stats['max_dt_ms']:.0f}ms")
-        
-        print(f"\n  Aggregated across {len(samples)} samples:")
-        print(f"    Avg duration: {np.mean([s['duration_ms'] for s in all_stats]):.0f}ms")
-        print(f"    Avg velocity: {np.mean([s['avg_velocity_per_sec'] for s in all_stats]):.4f} units/sec")
-        print(f"    Avg point count: {np.mean([s['num_points'] for s in all_stats]):.0f}")
-        print(f"    Avg dt between points: {np.mean([s['avg_dt_ms'] for s in all_stats]):.1f}ms")
+
 
 if __name__ == "__main__":
     main()
