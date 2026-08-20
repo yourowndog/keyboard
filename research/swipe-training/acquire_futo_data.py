@@ -7,7 +7,11 @@ License: MIT
 
 This script reacquires all canonical splits of the public FUTO swipe dataset
 into the raw, immutable data store (`data/swipe/raw/futo/`) and verifies
-schema fidelity, row counts, and lossless preservation of all original fields.
+schema fidelity, row counts, and cryptographic SHA-256 checksums against
+the tracked lock manifest (`research/swipe-training/futo_dataset_lock.json`).
+
+Reacquisition fails loudly if any shard's SHA-256 or row count deviates from
+the locked upstream baseline.
 """
 
 import argparse
@@ -23,58 +27,7 @@ import pyarrow.parquet as pq
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 DEFAULT_RAW_DIR = REPO_ROOT / "data" / "swipe" / "raw" / "futo"
-
-HF_BASE_API = "https://huggingface.co/api/datasets/futo-org/swipe.futo.org/parquet"
-
-EXPECTED_SHARDS = {
-    "swipe-1": {
-        "train": [
-            "https://huggingface.co/api/datasets/futo-org/swipe.futo.org/parquet/swipe-1/train/0.parquet",
-            "https://huggingface.co/api/datasets/futo-org/swipe.futo.org/parquet/swipe-1/train/1.parquet",
-            "https://huggingface.co/api/datasets/futo-org/swipe.futo.org/parquet/swipe-1/train/2.parquet",
-            "https://huggingface.co/api/datasets/futo-org/swipe.futo.org/parquet/swipe-1/train/3.parquet",
-        ],
-        "validation": [
-            "https://huggingface.co/api/datasets/futo-org/swipe.futo.org/parquet/swipe-1/validation/0.parquet",
-        ],
-        "test": [
-            "https://huggingface.co/api/datasets/futo-org/swipe.futo.org/parquet/swipe-1/test/0.parquet",
-        ],
-    },
-    "swipe-2": {
-        "train": [
-            "https://huggingface.co/api/datasets/futo-org/swipe.futo.org/parquet/swipe-2/train/0.parquet",
-        ]
-    },
-    "swipe-3": {
-        "train": [
-            "https://huggingface.co/api/datasets/futo-org/swipe.futo.org/parquet/swipe-3/train/0.parquet",
-        ]
-    },
-    "swipe-4": {
-        "train": [
-            "https://huggingface.co/api/datasets/futo-org/swipe.futo.org/parquet/swipe-4/train/0.parquet",
-        ]
-    },
-    "swipe-5": {
-        "train": [
-            "https://huggingface.co/api/datasets/futo-org/swipe.futo.org/parquet/swipe-5/train/0.parquet",
-        ]
-    },
-}
-
-EXPECTED_ROW_COUNTS = {
-    ("swipe-1", "train", "0.parquet"): 237744,
-    ("swipe-1", "train", "1.parquet"): 248234,
-    ("swipe-1", "train", "2.parquet"): 244910,
-    ("swipe-1", "train", "3.parquet"): 208662,
-    ("swipe-1", "validation", "0.parquet"): 54269,
-    ("swipe-1", "test", "0.parquet"): 49970,
-    ("swipe-2", "train", "0.parquet"): 28095,
-    ("swipe-3", "train", "0.parquet"): 38228,
-    ("swipe-4", "train", "0.parquet"): 50300,
-    ("swipe-5", "train", "0.parquet"): 59247,
-}
+DEFAULT_LOCK_FILE = REPO_ROOT / "research" / "swipe-training" / "futo_dataset_lock.json"
 
 
 def compute_sha256(filepath: Path) -> str:
@@ -109,38 +62,54 @@ def download_file(url: str, dest_path: Path) -> bool:
     return True
 
 
-def verify_shard(filepath: Path, run_name: str, split_name: str) -> Dict[str, Any]:
+def verify_shard(filepath: Path, shard_lock: Dict[str, Any]) -> Dict[str, Any]:
+    run_name = shard_lock["run"]
+    split_name = shard_lock["split"]
+    expected_rows = shard_lock["expected_rows"]
+    expected_sha256 = shard_lock["expected_sha256"]
+    expected_cols = shard_lock.get("expected_columns", [])
+
+    if not filepath.exists():
+        raise FileNotFoundError(f"Shard file not found: {filepath}")
+
+    # 1. Cryptographic SHA-256 Checksum Verification
+    actual_sha256 = compute_sha256(filepath)
+    if actual_sha256 != expected_sha256:
+        raise ValueError(
+            f"\n[FATAL] SHA-256 checksum mismatch for shard: {filepath.relative_to(REPO_ROOT)}\n"
+            f"  Expected (locked): {expected_sha256}\n"
+            f"  Actual (computed): {actual_sha256}\n"
+            f"  The downloaded shard does NOT match the canonical tracked dataset lock!\n"
+            f"  Possible corruption or upstream Hugging Face revision change."
+        )
+
+    # 2. Parquet Metadata & Row Count Verification
     parquet_file = pq.ParquetFile(str(filepath))
     num_rows = parquet_file.metadata.num_rows
     num_row_groups = parquet_file.metadata.num_row_groups
     schema = parquet_file.schema_arrow
     column_names = schema.names
     
-    expected_key = (run_name, split_name, filepath.name)
-    if expected_key in EXPECTED_ROW_COUNTS:
-        expected = EXPECTED_ROW_COUNTS[expected_key]
-        assert num_rows == expected, f"Row count mismatch for {filepath}: got {num_rows}, expected {expected}"
+    if num_rows != expected_rows:
+        raise ValueError(
+            f"\n[FATAL] Row count mismatch for shard: {filepath.relative_to(REPO_ROOT)}\n"
+            f"  Expected (locked): {expected_rows:,}\n"
+            f"  Actual (metadata): {num_rows:,}"
+        )
 
-    # Read one sample row group to verify fields
+    # 3. Schema & Column Check
+    for col in expected_cols:
+        if col not in column_names:
+            raise ValueError(f"Missing expected column '{col}' in {filepath.relative_to(REPO_ROOT)}")
+
+    # 4. Trajectory Data Integrity Check (Sample 1st row)
     table = parquet_file.read_row_group(0)
     first_row = table.slice(0, 1).to_pylist()[0]
     
-    # Required core fields
-    core_fields = ["id", "session", "timestamp", "word", "canvas_width", "canvas_height", "orientation", "data", "sentence", "word_idx", "distance"]
-    for field in core_fields:
-        assert field in column_names, f"Missing required column '{field}' in {filepath}"
-        assert field in first_row, f"Column '{field}' not found in first row of {filepath}"
+    for col in expected_cols:
+        if col not in first_row:
+            raise ValueError(f"Column '{col}' absent in row 0 of {filepath.relative_to(REPO_ROOT)}")
 
-    # Check swipe-1 validity flag
-    if run_name == "swipe-1":
-        assert "potentially_invalid_sentence" in column_names, f"Missing potentially_invalid_sentence in {filepath}"
-
-    # Check swipe-5 metadata fields
-    if run_name == "swipe-5":
-        for f in ["language", "layout", "dual_finger"]:
-            assert f in column_names, f"Missing '{f}' column in swipe-5: {filepath}"
-
-    # Verify data trajectory structure
     raw_data = first_row["data"]
     if isinstance(raw_data, str):
         parsed_data = json.loads(raw_data)
@@ -159,7 +128,6 @@ def verify_shard(filepath: Path, run_name: str, split_name: str) -> Dict[str, An
         raise ValueError(f"Unknown data structure in {filepath}: {type(raw_data)}")
     
     file_size = filepath.stat().st_size
-    file_sha256 = compute_sha256(filepath)
     
     return {
         "file": str(filepath.relative_to(REPO_ROOT)),
@@ -169,7 +137,7 @@ def verify_shard(filepath: Path, run_name: str, split_name: str) -> Dict[str, An
         "rows": num_rows,
         "row_groups": num_row_groups,
         "size_bytes": file_size,
-        "sha256": file_sha256,
+        "sha256": actual_sha256,
         "columns": column_names,
         "sample_word": first_row.get("word"),
         "sample_points_desc": sample_points_desc,
@@ -182,60 +150,81 @@ def verify_shard(filepath: Path, run_name: str, split_name: str) -> Dict[str, An
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Acquire and verify canonical FUTO swipe dataset")
+    parser = argparse.ArgumentParser(description="Acquire and verify canonical FUTO swipe dataset against lock manifest")
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_RAW_DIR, help="Destination directory for raw parquet shards")
-    parser.add_argument("--skip-existing", action="store_true", default=True, help="Skip downloading files that already exist")
+    parser.add_argument("--lock-file", type=Path, default=DEFAULT_LOCK_FILE, help="Path to tracked futo_dataset_lock.json")
+    parser.add_argument("--verify-only", action="store_true", help="Verify existing files without attempting downloads")
     parser.add_argument("--force", action="store_true", help="Force re-download of existing files")
     args = parser.parse_args()
+
+    if not args.lock_file.exists():
+        print(f"[ERROR] Lock manifest not found at: {args.lock_file}", file=sys.stderr)
+        sys.exit(1)
+
+    with open(args.lock_file, "r") as f:
+        lock_data = json.load(f)
 
     out_dir = args.output_dir
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    print(f"=== FUTO Swipe Dataset Acquisition ===")
-    print(f"Destination: {out_dir}")
-    
+    print(f"=== FUTO Swipe Dataset Acquisition & Verification ===")
+    print(f"Lock Manifest:   {args.lock_file.relative_to(REPO_ROOT)}")
+    print(f"HF Commit SHA:   {lock_data.get('huggingface_commit_sha', 'unknown')}")
+    print(f"Target Directory: {out_dir}")
+    print(f"Total Shards:    {len(lock_data['shards'])}")
+    print()
+
     manifest_entries = []
     total_swipes = 0
     total_bytes = 0
 
-    for run_name, splits in EXPECTED_SHARDS.items():
-        for split_name, urls in splits.items():
-            for url in urls:
-                filename = url.split("/")[-1]
-                dest_file = out_dir / run_name / split_name / filename
-                
-                if dest_file.exists() and not args.force:
-                    print(f"Already exists: {dest_file.relative_to(REPO_ROOT)}")
-                else:
-                    download_file(url, dest_file)
-                
-                print(f"Verifying {dest_file.relative_to(REPO_ROOT)}...")
-                entry = verify_shard(dest_file, run_name, split_name)
-                manifest_entries.append(entry)
-                total_swipes += entry["rows"]
-                total_bytes += entry["size_bytes"]
-                print(f"  OK: {entry['rows']:,} rows, {entry['size_bytes'] / (1024*1024):.2f} MB, columns: {len(entry['columns'])}")
+    for shard in lock_data["shards"]:
+        run_name = shard["run"]
+        split_name = shard["split"]
+        filename = shard["filename"]
+        url = shard["url"]
+        
+        dest_file = out_dir / run_name / split_name / filename
 
-    manifest = {
-        "dataset_name": "futo-org/swipe.futo.org",
-        "source_url": "https://huggingface.co/datasets/futo-org/swipe.futo.org",
-        "license": "MIT",
+        if not dest_file.exists() and args.verify_only:
+            raise FileNotFoundError(f"Missing required shard during verify-only: {dest_file.relative_to(REPO_ROOT)}")
+
+        if dest_file.exists() and not args.force:
+            print(f"Already on disk: {dest_file.relative_to(REPO_ROOT)}")
+        else:
+            download_file(url, dest_file)
+        
+        print(f"Verifying {dest_file.relative_to(REPO_ROOT)} against lock manifest...")
+        entry = verify_shard(dest_file, shard)
+        manifest_entries.append(entry)
+        total_swipes += entry["rows"]
+        total_bytes += entry["size_bytes"]
+        print(f"  ✓ LOCKED & VERIFIED: {entry['rows']:,} rows, {entry['size_bytes'] / (1024*1024):.2f} MB, SHA: {entry['sha256'][:12]}...")
+
+    # Write local manifest for fast local inspection
+    local_manifest = {
+        "dataset_name": lock_data.get("dataset_id", "futo-org/swipe.futo.org"),
+        "source_url": lock_data.get("source_url"),
+        "license": lock_data.get("license"),
+        "huggingface_commit_sha": lock_data.get("huggingface_commit_sha"),
         "total_swipes": total_swipes,
         "total_bytes": total_bytes,
         "total_megabytes": round(total_bytes / (1024 * 1024), 2),
-        "verified_runs": list(EXPECTED_SHARDS.keys()),
+        "verified_runs": lock_data.get("verified_runs", []),
         "shards": manifest_entries,
     }
 
     manifest_path = out_dir / "manifest.json"
     with open(manifest_path, "w") as f:
-        json.dump(manifest, f, indent=2)
+        json.dump(local_manifest, f, indent=2)
 
     print("\n=== Verification Summary ===")
-    print(f"Total Swipes Verified: {total_swipes:,}")
-    print(f"Total Disk Footprint: {total_bytes / (1024 * 1024):.2f} MB")
-    print(f"Manifest written to: {manifest_path.relative_to(REPO_ROOT)}")
-    print("All canonical fields, raw (x, y, t) trajectories, screen dimensions, and metadata verified LOSSLESS.")
+    print(f"All {len(lock_data['shards'])} shards match tracked lock manifest exactly.")
+    print(f"Total Swipes:       {total_swipes:,}")
+    print(f"Total Disk Size:    {total_bytes / (1024 * 1024):.2f} MB")
+    print(f"Upstream HF Commit: {lock_data.get('huggingface_commit_sha')}")
+    print(f"Local Manifest:     {manifest_path.relative_to(REPO_ROOT)}")
+    print("Dataset verification: 100% BIT-FOR-BIT CRYPTOGRAPHICALLY VERIFIED.")
 
 
 if __name__ == "__main__":

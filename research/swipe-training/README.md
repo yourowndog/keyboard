@@ -13,7 +13,10 @@ This directory houses the second-generation swipe-synthesis research, reusable p
 
 ```
 research/swipe-training/
+├── futo_dataset_lock.json                   # [ACTIVE] Tracked cryptographic SHA-256 and revision lock manifest
 ├── acquire_futo_data.py                         # [ACTIVE] Lossless acquisition & verification of canonical FUTO dataset
+├── profile_corpus_kinematics.py                 # [ACTIVE] Comprehensive vectorized empirical kinematics profiler
+├── corpus_kinematics_profile.json               # [ACTIVE] Quantified statistical distribution profile across 100k human swipes
 ├── target_swipe_vocabulary_supplement.txt       # [ACTIVE] 6,842 clean target words from Sam's 9-month harvest missing from FUTO
 ├── harvested_missing_words.tsv                  # [ACTIVE] 13,258 harvest unigram frequency and category breakdown
 ├── futo_words_unique.txt                        # [ACTIVE] 91,104 unique FUTO reference unigrams

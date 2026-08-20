@@ -32,7 +32,10 @@ keyboard/
 │
 ├── research/swipe-training/
 │   ├── README.md                     # Active research guide
+│   ├── futo_dataset_lock.json        # Tracked cryptographic SHA-256 and revision lock manifest
 │   ├── acquire_futo_data.py          # Lossless FUTO reacquisition & verification tool
+│   ├── profile_corpus_kinematics.py  # Comprehensive vectorized empirical kinematics profiler
+│   ├── corpus_kinematics_profile.json # Quantified statistical distribution profile across 100k human swipes
 │   ├── target_swipe_vocabulary_supplement.txt  # 6,842 clean target words from Sam's harvest
 │   ├── harvested_missing_words.tsv   # 13,258 categorized harvest frequency unigrams
 │   ├── futo_words_unique.txt         # 91,104 unique FUTO reference unigrams
