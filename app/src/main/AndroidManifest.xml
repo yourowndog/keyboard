@@ -11,6 +11,10 @@
     <!-- Permission needed to record audio for voice input -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
+    <!-- Needed to disable AGC/noise suppression on the capture session so the corpus keeps the
+         speaker's real dynamics instead of the platform's normalised version -->
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+
     <!-- Permission needed to connect to the internet for voice input -->
     <uses-permission android:name="android.permission.INTERNET" />
 
