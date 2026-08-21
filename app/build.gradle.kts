@@ -232,6 +232,8 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.runtime)
     implementation("com.microsoft.onnxruntime:onnxruntime-android:1.26.0")
+    // FUTO Swipe pretrained encoder (honorable_sturgeon) runs on ExecuTorch
+    implementation("org.pytorch:executorch-android:1.4.0")
 
     implementation(libs.cache4k)
     implementation(libs.kotlin.reflect)
