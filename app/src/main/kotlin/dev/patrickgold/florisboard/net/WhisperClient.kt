@@ -20,6 +20,14 @@ object WhisperClient {
         .callTimeout(150, TimeUnit.SECONDS)
         .build()
 
+    // Recordings queued before the switch to lossless capture are still .mp4, and the retry queue will
+    // replay them, so both formats have to be sent with the right content type.
+    private fun mimeTypeFor(file: File): String = when (file.extension.lowercase()) {
+        "wav" -> "audio/wav"
+        "flac" -> "audio/flac"
+        else -> "audio/mp4"
+    }
+
     suspend fun transcribe(file: File): Result<String> = withContext(Dispatchers.IO) {
         try {
             if (BuildConfig.WHISPER_RELAY_URL.isBlank() || BuildConfig.WHISPER_RELAY_TOKEN.isBlank()) {
@@ -31,7 +39,7 @@ object WhisperClient {
                 .addFormDataPart(
                     "file",
                     file.name,
-                    file.asRequestBody("audio/mp4".toMediaType())
+                    file.asRequestBody(mimeTypeFor(file).toMediaType())
                 )
                 .build()
 
