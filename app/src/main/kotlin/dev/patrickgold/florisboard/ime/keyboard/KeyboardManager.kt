@@ -22,6 +22,7 @@ import dev.patrickgold.florisboard.app.layoutbuilder.LayoutPack
 import dev.patrickgold.florisboard.app.layoutbuilder.LayoutPackRepository
 import dev.patrickgold.florisboard.app.layoutbuilder.LayoutValidation
 import dev.patrickgold.florisboard.audio.Recorder
+import dev.patrickgold.florisboard.audio.WavTools
 import dev.patrickgold.florisboard.net.WhisperClient
 import org.florisboard.lib.android.showShortToast
 import org.florisboard.lib.android.showLongToast
@@ -137,6 +138,9 @@ class KeyboardManager(
     private var isRecording = false
     private var recorder: Recorder? = null
     private var lastAudioFile: File? = null
+    private val archiveQueue by lazy {
+        dev.patrickgold.florisboard.ime.voice.ArchiveQueue(appContext)
+    }
     private val _whisperAmplitude = MutableStateFlow(0f)
     val whisperAmplitude = _whisperAmplitude.asStateFlow()
     private var amplitudePollingJob: Job? = null
@@ -186,9 +190,31 @@ class KeyboardManager(
         }
         amplitudePollingJob?.cancel()
         amplitudePollingJob = scope.launch(Dispatchers.Default) {
+            var warnedNearLimit = false
             while (isActive && activeState.isRecording) {
                 val amp = recorder?.maxAmplitude() ?: 0
                 _whisperAmplitude.value = (amp.toFloat() / 32768f).coerceIn(0f, 1f)
+
+                // The transcription API caps uploads at 25 MiB. Rather than let a long capture
+                // fail after the fact — which would cost the transcript entirely — warn, then
+                // stop and transcribe what we have. The audio is safe either way; the transcript
+                // is the part that would be lost.
+                val captured = recorder?.capturedMs() ?: 0L
+                if (!warnedNearLimit && captured >= WavTools.MAX_CAPTURE_MS - 90_000L) {
+                    warnedNearLimit = true
+                    scope.launch {
+                        appContext.showLongToast("Voice: about 90 seconds left before the transcription limit")
+                    }
+                }
+                if (captured >= WavTools.MAX_CAPTURE_MS) {
+                    scope.launch {
+                        appContext.showLongToast(
+                            "Voice: reached the ${WavTools.MAX_CAPTURE_MS / 60_000} minute limit — transcribing now"
+                        )
+                        stopVoiceCapture(appContext)
+                    }
+                    break
+                }
                 delay(50)
             }
             _whisperAmplitude.value = 0f
@@ -242,7 +268,18 @@ class KeyboardManager(
         amplitudePollingJob?.cancel()
         try {
             if (activeState.isRecording) {
-                recorder?.stop()
+                val cancelled = recorder?.stop()
+                val capture = recorder?.lastCapture
+                // A cancelled take is still the user's voice, and it is already on disk. Give it a
+                // sidecar and hand it to the archive queue: without this it would be stranded on
+                // the phone forever, transcript-less and invisible to the uploader.
+                if (cancelled != null) {
+                    val sidecar = writeSidecar(cancelled, "", "", org.json.JSONObject(), capture)
+                    if (sidecar != null) {
+                        archiveQueue.enqueue(cancelled, sidecar)
+                        scope.launch(Dispatchers.IO) { runCatching { archiveQueue.drain() } }
+                    }
+                }
             }
         } catch (e: Exception) { }
         activeState.batchEdit {
@@ -253,39 +290,101 @@ class KeyboardManager(
         }
     }
 
+    /**
+     * Corrects known mis-hearings before the text reaches the editor.
+     *
+     * Applied to the committed text only. The engine's own output is preserved separately in
+     * the sidecar, because a corpus label that has been silently edited is not a record of what
+     * was said, and there is no way to reconstruct the original once it is overwritten.
+     */
+    private fun applyDictionaryFixups(text: String): String =
+        text.replace(Regex("\\bKiri(s|'s)?\\b", RegexOption.IGNORE_CASE)) { m ->
+            val suffix = m.groupValues[1]
+            val match = m.value
+            val base = when {
+                match.startsWith("KIRI") -> "KIRY"
+                match.startsWith("Kiri") -> "Kiry"
+                else -> "kiry"
+            }
+            base + suffix
+        }
+
+    /**
+     * Writes the metadata file that travels with the audio.
+     *
+     * Everything here is either unrecoverable after the fact (which microphone path the device
+     * granted, whether AGC actually turned off, the engine's word timings and confidence) or
+     * expensive to regenerate (a second paid transcription). Returns null if the write failed.
+     */
+    private fun writeSidecar(
+        audioFile: File,
+        rawText: String,
+        displayText: String,
+        engineResponse: org.json.JSONObject,
+        capture: Recorder.CaptureMetadata?,
+    ): File? {
+        val metaFile = File(audioFile.parentFile, "${audioFile.nameWithoutExtension}.json")
+        return try {
+            val capturedEpochMs = audioFile.nameWithoutExtension
+                .substringAfter("whisper_", "")
+                .toLongOrNull()
+            val json = org.json.JSONObject().apply {
+                put("schema", 2)
+                put("audio", audioFile.name)
+                put("bytes", audioFile.length())
+                put("captured_epoch_ms", capturedEpochMs ?: org.json.JSONObject.NULL)
+                // The archive shards by the day the words were spoken, which is the device's
+                // idea of the date, not the server's.
+                put(
+                    "captured_utc_offset_minutes",
+                    java.util.TimeZone.getDefault().getOffset(System.currentTimeMillis()) / 60_000,
+                )
+                put("transcript_raw", rawText)
+                put("transcript_display", displayText)
+                put("transcribed", rawText.isNotEmpty())
+                put("capture", capture?.toJson() ?: org.json.JSONObject.NULL)
+                put("engine", org.json.JSONObject().apply {
+                    put("provider", "openai")
+                    put("model", "whisper-1")
+                    put("via", "brokentooth-relay")
+                    put("response", engineResponse)
+                })
+                put("written_at", System.currentTimeMillis())
+            }
+            metaFile.writeText(json.toString(2))
+            metaFile
+        } catch (e: Exception) {
+            // Previously swallowed. A lost sidecar means audio with no transcript attached and
+            // no signal that anything went wrong, which is the one failure a corpus cannot
+            // absorb — so it is now visible.
+            scope.launch {
+                appContext.showLongToast("Voice: metadata write failed (${e.message?.take(60)})")
+            }
+            null
+        }
+    }
+
     private fun performTranscription(audioFile: File) {
         activeState.isTranscribing = true
         val voiceManager = appContext.voiceManager().value
+        val capture = recorder?.lastCapture
         scope.launch {
             val result = WhisperClient.transcribe(audioFile)
             result.onSuccess { transcription ->
-                // Fix "Kiri" -> "Kiry" misspellings from Whisper
-                val fixed = transcription.replace(Regex("\\bKiri(s|'s)?\\b", RegexOption.IGNORE_CASE)) { m ->
-                    val suffix = m.groupValues[1]
-                    val match = m.value
-                    val base = when {
-                        match.startsWith("KIRI") -> "KIRY"
-                        match.startsWith("Kiri") -> "Kiry"
-                        else -> "kiry"
-                    }
-                    base + suffix
-                }
+                val rawText = transcription.text
+                val fixed = applyDictionaryFixups(rawText)
+
                 // Tag this as voice input for harvest analysis
                 dev.patrickgold.florisboard.ime.nlp.HarvestManager.setSessionSource("VOICE")
                 editorInstance.commitText(fixed)
                 voiceManager.addTranscription(fixed)
                 voiceManager.removePending(audioFile.absolutePath)
 
-                // Write paired metadata JSON alongside the audio recording
-                try {
-                    val metaFile = File(audioFile.parentFile, "${audioFile.nameWithoutExtension}.json")
-                    val json = org.json.JSONObject().apply {
-                        put("audio", audioFile.name)
-                        put("transcript", fixed)
-                        put("timestamp", System.currentTimeMillis())
-                    }
-                    metaFile.writeText(json.toString(2))
-                } catch (_: Exception) { }
+                val sidecar = writeSidecar(audioFile, rawText, fixed, transcription.raw, capture)
+                if (sidecar != null) {
+                    archiveQueue.enqueue(audioFile, sidecar)
+                    scope.launch(Dispatchers.IO) { runCatching { archiveQueue.drain() } }
+                }
 
                 dev.patrickgold.florisboard.ime.nlp.HarvestManager.flushSession()
                 dev.patrickgold.florisboard.ime.nlp.HarvestManager.setSessionSource("TYPING")

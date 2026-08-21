@@ -86,6 +86,15 @@ android {
         )
         buildConfigField("String", "WHISPER_RELAY_TOKEN", "\"${getLocalOrEnv("WHISPER_RELAY_TOKEN")}\"")
 
+        // Corpus archive on Titan. Talks straight to the machine over Tailscale rather than
+        // through the relay: the relay's job is holding a paid API key, and there is no key here.
+        buildConfigField(
+            "String",
+            "ARCHIVE_URL",
+            "\"${getLocalOrEnv("ARCHIVE_URL", "http://100.104.232.94:8790/v1/archive")}\"",
+        )
+        buildConfigField("String", "ARCHIVE_TOKEN", "\"${getLocalOrEnv("ARCHIVE_TOKEN")}\"")
+
         ksp {
             arg("room.schemaLocation", "$projectDir/schemas")
             arg("room.incremental", "true")

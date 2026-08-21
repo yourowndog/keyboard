@@ -1,7 +1,7 @@
 # Voice Corpus & Transcription Plan
 
 **Branch:** `feature/voice-corpus-v2` (from `swipe-synthesis-v2`, which is 36 commits ahead of `dev`)
-**Status:** Step 1 landed. Steps 2–6 open.
+**Status:** Steps 1–3 landed. Steps 4–6 open.
 
 ## What this is
 
@@ -56,7 +56,7 @@ disable the effects. `WhisperClient` now picks its MIME type from the file exten
 
 ---
 
-## Step 2 — Stop discarding metadata
+## Step 2 — Stop discarding metadata ✅
 
 Two separate losses today:
 
@@ -94,7 +94,7 @@ Plus the full engine response, and the capture metadata from Step 1.
 
 ---
 
-## Step 3 — Get it to Titan
+## Step 3 — Get it to Titan ✅
 
 No Syncthing. Reuse the retry queue that already exists in `VoiceManager.kt` — it already tracks
 pending recordings and replays failures. Add a second job type: archive upload to a small
@@ -136,6 +136,58 @@ loudness-normalised is deliberately deferred: raw capture preserves the dynamics
 set can be generated any time. The reverse is impossible.
 
 ---
+
+
+### What shipped
+
+**Relay widened, narrowly.** `brokentooth-relay` rebuilt every request from scratch with a
+hardcoded model and `filename="audio.m4a"`, discarding anything the client asked for — so
+requesting metadata from the app was a no-op. It now forwards `response_format` and
+`timestamp_granularities[]` through an **allowlist** (known keys, known values) rather than a
+blanket passthrough, and derives the upload extension from the real filename. Verified against
+a live recording: 35 word timestamps, 4 segments, and the quality fields.
+
+**Sidecar schema 2.** `transcript_raw` (never edited) is now separate from `transcript_display`
+(what got committed, after the `Kiri`→`Kiry` fixup), alongside the full engine response and the
+capture metadata from Step 1. The sidecar write used to fail into `catch (_: Exception) {}`;
+that silence is gone.
+
+**Upload size ceiling.** The API caps uploads at 25 MiB, which at 48 kHz lossless is only
+~4.5 minutes — a regression the move to lossless introduced. The upload copy is now decimated
+3:1 to 16 kHz, giving ~13.6 minutes. This costs nothing: Whisper resamples to 16 kHz internally
+before building its mel spectrogram, so it is the same audio the model would have seen. The
+decimation averages each group of three samples rather than dropping two, because naive
+decimation would alias everything above 8 kHz down into the speech band. **The archive copy
+stays 48 kHz lossless.** At the limit the recorder stops itself and transcribes rather than
+failing, with a warning 90 seconds out.
+
+**Cancelled takes.** `cancelVoiceInput()` stopped the recorder without transcribing, leaving
+audio on disk with no sidecar and no queue entry — invisible to the uploader and permanent.
+Six such files were found and recovered. Cancelled takes are now archived with an empty
+transcript and `transcribed: false`.
+
+### The receiver
+
+`voice-archive.service` on Titan (`100.104.232.94:8790`), stdlib Python, system service so it
+survives reboot — `Linger=no` would have killed a user service. Bound to the Tailscale
+interface, shared-token authenticated.
+
+Deletion on the phone requires **both** conditions:
+
+1. Titan returned a SHA-256 matching the local file — not merely HTTP 200.
+2. The capture is older than a 24-hour grace period.
+
+An unreachable Titan therefore costs disk space, never audio. Re-uploads are idempotent: same
+content at the same path returns `duplicate: true` instead of filing a second copy.
+
+**Sharding uses the device's timezone, not Titan's.** The phone is `America/Chicago` and Titan
+runs Eastern; sharding by the server clock filed anything spoken after 23:00 Central under the
+following day. The device sends its UTC offset and the receiver honours it.
+
+**`raw/` stores the exact bytes received, not FLAC.** Converting on ingest would break the
+checksum the phone verifies before deleting its copy. 561 GB free is ~1,600 hours of 48 kHz
+audio; FLAC compaction can happen later as a `derived/` job that verifies losslessness first.
+
 
 ## Step 4 — Provider selector in the smartbar
 
@@ -199,8 +251,9 @@ fundamentally does.
 **Full fine-tuning at home is real but bounded.** A 5.8B full fine-tune needs ~70 GB (weights +
 gradients + Adam optimiser state + activations). That's a wall, not a slow lane — it OOMs rather
 than taking longer. DeepSpeed ZeRO-3 CPU offload genuinely works if Titan has the system RAM,
-at heavy PCIe cost. A 1B model full fine-tunes on 24 GB with no tricks, which is the honest way
-to run that experiment.
+at heavy PCIe cost. **Titan has 46 GB of system RAM, which settles this: a 5.8B full fine-tune
+is out even with offload, since the optimiser state alone wants ~70 GB.** A 1B model full
+fine-tunes on the 3090 with no tricks, which is the honest way to run that experiment.
 
 **Don't chase model size to fix a data problem.** A published voice-clone comparison found
 Orpheus underperforming a much smaller model, then traced it to audio chunking and normalisation
@@ -226,8 +279,8 @@ that can never be upgraded, and every transcription before Step 2 loses metadata
 to regenerate.
 
 1. ✅ Lossless capture
-2. Full metadata request + storage, split raw/display transcripts
-3. Archive upload to Titan + ingest to `~/datasets/sam-voice/`
+2. ✅ Full metadata request + storage, split raw/display transcripts
+3. ✅ Archive upload to Titan + ingest to `~/datasets/sam-voice/`
 4. Provider selector in smartbar
 5. CrisperWhisper on Titan → OpenAI bill goes away
 6. Chatterbox clone as soon as any audio exists — cheapest way to see the ceiling

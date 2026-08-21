@@ -314,6 +314,16 @@ class Recorder(private val context: Context) {
         }
     }
 
+    /**
+     * Milliseconds of audio actually committed to disk so far, which is not the same as wall
+     * time since [start]: paused stretches are read from the hardware but never written, so
+     * measuring elapsed time instead would cut a long paused session short.
+     */
+    fun capturedMs(): Long {
+        val bytesPerSecond = SAMPLE_RATE * CHANNEL_COUNT * BITS_PER_SAMPLE / 8
+        return pcmBytesWritten * 1000L / bytesPerSecond
+    }
+
     /** Peak magnitude of the most recent buffer, scaled 0..32767 to match the previous contract. */
     fun maxAmplitude(): Int {
         if (isPaused) return 0
