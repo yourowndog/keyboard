@@ -67,10 +67,18 @@ def verify_shard(filepath: Path, shard_lock: Dict[str, Any]) -> Dict[str, Any]:
     split_name = shard_lock["split"]
     expected_rows = shard_lock["expected_rows"]
     expected_sha256 = shard_lock["expected_sha256"]
+    expected_size = shard_lock["expected_size_bytes"]
     expected_cols = shard_lock.get("expected_columns", [])
 
     if not filepath.exists():
         raise FileNotFoundError(f"Shard file not found: {filepath}")
+
+    actual_size = filepath.stat().st_size
+    if actual_size != expected_size:
+        raise ValueError(
+            f"[FATAL] Byte-size mismatch for {filepath}: "
+            f"expected {expected_size}, got {actual_size}"
+        )
 
     # 1. Cryptographic SHA-256 Checksum Verification
     actual_sha256 = compute_sha256(filepath)
@@ -117,12 +125,15 @@ def verify_shard(filepath: Path, shard_lock: Dict[str, Any]) -> Dict[str, Any]:
         parsed_data = raw_data
 
     if isinstance(parsed_data, list):
-        assert len(parsed_data) > 0, f"Trajectory data list is empty in {filepath}"
+        if not parsed_data:
+            raise ValueError(f"Trajectory data list is empty in {filepath}")
         pt = parsed_data[0]
-        assert "x" in pt and "y" in pt and "t" in pt, f"Missing x/y/t keys in trajectory point: {pt}"
+        if not all(key in pt for key in ("x", "y", "t")):
+            raise ValueError(f"Missing x/y/t keys in trajectory point: {pt}")
         sample_points_desc = f"{len(parsed_data)} points"
     elif isinstance(parsed_data, dict):
-        assert "L" in parsed_data or "R" in parsed_data, f"Dual finger dictionary format invalid: {parsed_data.keys()}"
+        if "L" not in parsed_data and "R" not in parsed_data:
+            raise ValueError(f"Dual finger dictionary format invalid: {parsed_data.keys()}")
         sample_points_desc = f"dual_finger (keys: {list(parsed_data.keys())})"
     else:
         raise ValueError(f"Unknown data structure in {filepath}: {type(raw_data)}")
@@ -170,6 +181,8 @@ def main():
     print(f"=== FUTO Swipe Dataset Acquisition & Verification ===")
     print(f"Lock Manifest:   {args.lock_file.relative_to(REPO_ROOT)}")
     print(f"HF Commit SHA:   {lock_data.get('huggingface_commit_sha', 'unknown')}")
+    print("Parquet source:  Hugging Face refs/convert API (not source-revision addressable)")
+    print("Guarantee:       downloaded bytes must match the lock; upstream drift fails loudly")
     print(f"Target Directory: {out_dir}")
     print(f"Total Shards:    {len(lock_data['shards'])}")
     print()

@@ -114,7 +114,7 @@ Every record across all shards preserves the full, un-decimated data structure:
 
 ## 4. Reacquisition & Verification Tooling
 
-The dataset can be completely reacquired and verified at any time using:
+Locally preserved shards can be completely verified at any time using:
 
 ```bash
 uv run --with pyarrow --with requests python3 research/swipe-training/acquire_futo_data.py
@@ -124,6 +124,16 @@ Arguments:
 - `--output-dir <path>`: Custom destination (defaults to `data/swipe/raw/futo/`).
 - `--force`: Force re-download even if shards exist on disk.
 - Automatically generates and updates `data/swipe/raw/futo/manifest.json`.
+
+The lock pins the upstream source-repository commit and the exact size, row
+count, columns, and SHA-256 digest of each generated parquet shard. Hugging
+Face's parquet API currently redirects to `refs/convert/parquet` and does not
+honor a source-revision query parameter; the pinned source commit itself does
+not contain those generated parquet objects. Consequently, the acquisition
+script will fail loudly if current upstream bytes drift, but future historical
+reacquisition is not guaranteed unless the locked bytes remain locally or in a
+separate content-addressed archive. The source revision must not be described
+as making the parquet URLs immutable.
 
 ---
 

@@ -5,7 +5,7 @@ OmniBoard Canonical FUTO Swipe Corpus Characterization & Kinematic Analysis Pass
 This script performs the canonical full-corpus characterization over all 1.22M FUTO swipe records:
 1. Complete accounting of per-run and per-split volume and explicit exclusion reasons.
 2. Robust touch event temporal analysis handling duplicate / nonpositive timestamps.
-3. Aspect-correct geometric kinematics (velocity, acceleration, jerk, and true physical curvature).
+3. Aspect-correct geometric velocity and local turning-angle characterization.
 4. Operationalized sharp-turn inflection velocity ratios (v_sharp / v_gentle).
 5. Rigorous matched repeated-word within-session vs between-session motor style analysis (ANOVA / ICC,
    pairwise speed/duration residuals, and resampled spatial trajectory shape distances).
@@ -18,6 +18,7 @@ Usage:
 """
 
 import argparse
+import hashlib
 import json
 import math
 import os
@@ -33,6 +34,39 @@ import pyarrow.parquet as pq
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 DEFAULT_RAW_DIR = REPO_ROOT / "data" / "swipe" / "raw" / "futo"
 OUTPUT_REPORT_PATH = REPO_ROOT / "research" / "swipe-training" / "corpus_kinematics_profile.json"
+PROFILE_SEED = 20260820
+EVENT_RESERVOIR_SIZE = 1_000_000
+INSTANCES_PER_WORD_SESSION = 10
+PAIRS_PER_WORD = 250
+
+
+class DeterministicReservoir:
+    """Algorithm R reservoir with an isolated, reproducible RNG stream."""
+
+    def __init__(self, capacity: int, seed: int):
+        self.capacity = capacity
+        self.rng = np.random.default_rng(seed)
+        self.values: List[float] = []
+        self.seen = 0
+
+    def extend(self, values) -> None:
+        for value in values:
+            self.seen += 1
+            if len(self.values) < self.capacity:
+                self.values.append(float(value))
+            else:
+                index = int(self.rng.integers(0, self.seen))
+                if index < self.capacity:
+                    self.values[index] = float(value)
+
+
+def stable_priority(*parts: Any) -> int:
+    payload = "\x1f".join(map(str, (PROFILE_SEED,) + parts)).encode()
+    return int.from_bytes(hashlib.blake2b(payload, digest_size=8).digest(), "big")
+
+
+def balanced_take(candidates: List[Tuple[int, Any]], limit: int) -> List[Any]:
+    return [value for _, value in sorted(candidates, key=lambda item: item[0])[:limit]]
 
 
 def compute_quantiles(arr: np.ndarray, q_list=(0, 1, 5, 10, 25, 50, 75, 90, 95, 99, 100)) -> Dict[str, float]:
@@ -87,10 +121,9 @@ def compute_icc(groups: List[List[float]]) -> Tuple[Optional[float], Optional[fl
     msw = ssw / max(N - k, 1)
     
     var_w = float(msw)
-    var_b = float(max((msb - msw) / k_0, 0.0))
-    
-    total_var = var_b + var_w
-    icc = float(var_b / total_var) if total_var > 0 else 0.0
+    var_b = float((msb - msw) / k_0)
+    denominator = msb + (k_0 - 1.0) * msw
+    icc = float((msb - msw) / denominator) if denominator > 0 else None
     return icc, var_b, var_w
 
 
@@ -250,14 +283,19 @@ def analyze_single_trajectory(
                 if v_gentle > 0:
                     sharp_turn_v_ratios.append(v_sharp / v_gentle)
 
-    # Path Tortuosity (Arc distance / Start-to-End straight line)
+    # Path tortuosity is only stable when endpoint displacement is material.
     net_dx_px = clean_xs_px[-1] - clean_xs_px[0]
     net_dy_px = clean_ys_px[-1] - clean_ys_px[0]
     net_dist_px = math.sqrt(net_dx_px**2 + net_dy_px**2)
-    tortuosity = total_dist_px / max(net_dist_px, 1.0)
+    endpoint_displacement_norm = math.sqrt(
+        (clean_xs_norm[-1] - clean_xs_norm[0])**2
+        + (clean_ys_norm[-1] - clean_ys_norm[0])**2
+    )
+    tortuosity = total_dist_px / net_dist_px if endpoint_displacement_norm >= 0.05 else None
 
     # Resampled 32-point spatial representation for repeated-word shape matching
     resampled_32 = resample_trajectory(clean_xs_px, clean_ys_px, num_points=32)
+    resampled_32_norm = resample_trajectory(clean_xs_norm, clean_ys_norm, num_points=32)
 
     word_len = len(word) if word else 1
 
@@ -283,6 +321,7 @@ def analyze_single_trajectory(
         "turn_angles_deg": turn_angles_deg,
         "sharp_turn_v_ratios": sharp_turn_v_ratios,
         "tortuosity": tortuosity,
+        "endpoint_displacement_norm": endpoint_displacement_norm,
         "x_min": float(np.min(clean_xs_norm)),
         "x_max": float(np.max(clean_xs_norm)),
         "y_min": float(np.min(clean_ys_norm)),
@@ -291,6 +330,7 @@ def analyze_single_trajectory(
         "canvas_h": h_px,
         "aspect_ratio": aspect,
         "resampled_32": resampled_32,
+        "resampled_32_norm": resampled_32_norm,
     }
     return metrics, None
 
@@ -322,9 +362,9 @@ def profile_corpus(
     total_excluded = 0
     exclusion_reasons = defaultdict(int)
 
-    # Metric accumulators (with bounded reservoir sampling for quantiles)
-    MAX_RESERVOIR = 1000000
-    all_raw_dts = []
+    # Event streams use true deterministic reservoirs. Per-swipe arrays remain exact.
+    raw_dt_reservoir = DeterministicReservoir(EVENT_RESERVOIR_SIZE, PROFILE_SEED + 1)
+    turn_angle_reservoir = DeterministicReservoir(EVENT_RESERVOIR_SIZE, PROFILE_SEED + 2)
     all_durations = []
     all_duration_per_char = []
     all_raw_pts_counts = []
@@ -337,12 +377,11 @@ def profile_corpus(
     all_max_v_norm = []
     all_mean_v_px = []
     all_max_v_px = []
-    all_mean_accel_px = []
-    all_max_accel_px = []
     
-    all_turn_angles = []
     all_sharp_turn_v_ratios = []
     all_tortuosity = []
+    tortuosity_undefined_count = 0
+    all_endpoint_displacement_norm = []
     
     all_canvas_w = []
     all_canvas_h = []
@@ -387,7 +426,10 @@ def profile_corpus(
         shard_reasons = defaultdict(int)
 
         for rg_idx in range(num_rg):
-            cols_to_read = ["word", "canvas_width", "canvas_height", "session", "data"]
+            cols_to_read = [
+                "word", "canvas_width", "canvas_height", "session", "data",
+                "orientation", "layout", "language",
+            ]
             schema_names = pf.schema_arrow.names
             cols = [c for c in cols_to_read if c in schema_names]
             
@@ -430,6 +472,16 @@ def profile_corpus(
                 ch = row.get("canvas_height")
                 sess = row.get("session", "unknown")
 
+                # Preserve raw event timing evidence even when the trajectory is
+                # subsequently excluded from physical kinematics.
+                if isinstance(pts, list) and len(pts) >= 2 and all("t" in p for p in pts):
+                    record_raw_dts = np.diff(np.array([p["t"] for p in pts], dtype=np.float64))
+                    total_touch_intervals += len(record_raw_dts)
+                    total_zero_dt_events += int(np.sum(record_raw_dts == 0))
+                    total_neg_dt_events += int(np.sum(record_raw_dts < 0))
+                    total_pos_dt_events += int(np.sum(record_raw_dts > 0))
+                    raw_dt_reservoir.extend(record_raw_dts)
+
                 metrics, reason = analyze_single_trajectory(pts, cw, ch, word)
                 if reason:
                     shard_excluded += 1
@@ -440,16 +492,6 @@ def profile_corpus(
 
                 shard_valid += 1
                 total_valid += 1
-
-                # Timestamp event intervals
-                total_touch_intervals += len(metrics["raw_dts"])
-                total_zero_dt_events += metrics["zero_dt_count"]
-                total_neg_dt_events += metrics["neg_dt_count"]
-                total_pos_dt_events += metrics["pos_dt_count"]
-
-                # Reservoir collection for quantiles
-                if len(all_raw_dts) < MAX_RESERVOIR:
-                    all_raw_dts.extend(metrics["raw_dts"])
 
                 all_durations.append(metrics["duration_ms"])
                 all_duration_per_char.append(metrics["duration_per_char_ms"])
@@ -463,13 +505,14 @@ def profile_corpus(
                 all_max_v_norm.append(metrics["max_v_norm"])
                 all_mean_v_px.append(metrics["mean_v_px"])
                 all_max_v_px.append(metrics["max_v_px"])
-                all_mean_accel_px.append(metrics["mean_accel_px"])
-                all_max_accel_px.append(metrics["max_accel_px"])
 
-                if len(all_turn_angles) < MAX_RESERVOIR:
-                    all_turn_angles.extend(metrics["turn_angles_deg"])
+                turn_angle_reservoir.extend(metrics["turn_angles_deg"])
                 all_sharp_turn_v_ratios.extend(metrics["sharp_turn_v_ratios"])
-                all_tortuosity.append(metrics["tortuosity"])
+                all_endpoint_displacement_norm.append(metrics["endpoint_displacement_norm"])
+                if metrics["tortuosity"] is None:
+                    tortuosity_undefined_count += 1
+                else:
+                    all_tortuosity.append(metrics["tortuosity"])
 
                 all_canvas_w.append(metrics["canvas_w"])
                 all_canvas_h.append(metrics["canvas_h"])
@@ -493,12 +536,25 @@ def profile_corpus(
 
                 # Repeated word indexing for matched within vs between session analysis
                 # Keep index for words that have reasonable frequency (len >= 2)
-                if 2 <= len(word) <= 12 and len(repeated_word_index[word][sess]) < 10:
-                    repeated_word_index[word][sess].append({
+                if 2 <= len(word) <= 12:
+                    instance = {
                         "duration_ms": metrics["duration_ms"],
                         "mean_v_px": metrics["mean_v_px"],
+                        "mean_v_norm": metrics["mean_v_norm"],
                         "resampled_32": metrics["resampled_32"],
-                    })
+                        "resampled_32_norm": metrics["resampled_32_norm"],
+                        "geometry": (
+                            metrics["canvas_w"], metrics["canvas_h"],
+                            str(row.get("orientation", "unknown")),
+                            str(row.get("layout", "unknown")),
+                            str(row.get("language", "unknown")), run_name,
+                        ),
+                        "priority": stable_priority(word, sess, run_name, split_name, total_scanned),
+                    }
+                    bucket = repeated_word_index[word][sess]
+                    bucket.append(instance)
+                    bucket.sort(key=lambda item: item["priority"])
+                    del bucket[INSTANCES_PER_WORD_SESSION:]
 
                 if sample_size and not all_shards and total_valid >= sample_size:
                     break
@@ -531,95 +587,105 @@ def profile_corpus(
     # ---------------------------------------------------------
     print("\nComputing matched repeated-word within-session vs between-session motor style statistics...")
     
-    # Filter words that appear in multiple sessions with >= 2 instances in at least one session
+    # Words are equal-weight strata. Within each word, sessions and pairs are
+    # selected by stable hash priority rather than insertion order.
     matched_words_evaluated = 0
     icc_velocity_list = []
+    icc_velocity_norm_list = []
     icc_duration_list = []
+    pair_metrics = defaultdict(list)
 
-    within_speed_diffs = []
-    between_speed_diffs = []
-
-    within_dur_diffs = []
-    between_dur_diffs = []
-
-    within_shape_dists = []
-    between_shape_dists = []
-
-    # Sort words by number of total instances in index
-    sorted_words = sorted(
-        repeated_word_index.keys(),
-        key=lambda w: sum(len(instances) for instances in repeated_word_index[w].values()),
-        reverse=True,
-    )
-
-    for word in sorted_words:
+    for word in sorted(repeated_word_index):
         session_dict = repeated_word_index[word]
-        # Check sessions with >= 2 swipes of this word
-        multi_swipe_sessions = [sess for sess, insts in session_dict.items() if len(insts) >= 2]
+        multi_swipe_sessions = sorted(sess for sess, insts in session_dict.items() if len(insts) >= 2)
         if len(multi_swipe_sessions) < 3 or len(session_dict) < 5:
             continue
-
         matched_words_evaluated += 1
-
-        # 1. ICC for Mean Velocity
         v_groups = [[item["mean_v_px"] for item in insts] for insts in session_dict.values()]
-        icc_v, vb_v, vw_v = compute_icc(v_groups)
+        icc_v, _, _ = compute_icc(v_groups)
         if icc_v is not None:
             icc_velocity_list.append(icc_v)
-
-        # 2. ICC for Total Duration
+        vn_groups = [[item["mean_v_norm"] for item in insts] for insts in session_dict.values()]
+        icc_vn, _, _ = compute_icc(vn_groups)
+        if icc_vn is not None:
+            icc_velocity_norm_list.append(icc_vn)
         dur_groups = [[item["duration_ms"] for item in insts] for insts in session_dict.values()]
-        icc_d, vb_d, vw_d = compute_icc(dur_groups)
+        icc_d, _, _ = compute_icc(dur_groups)
         if icc_d is not None:
             icc_duration_list.append(icc_d)
 
-        # 3. Pairwise differences within session vs between session
-        # Sample pairs within same session
+        within_candidates = []
         for sess in multi_swipe_sessions:
             insts = session_dict[sess]
             for i in range(len(insts)):
                 for j in range(i + 1, len(insts)):
-                    if len(within_speed_diffs) < 200000:
-                        within_speed_diffs.append(abs(insts[i]["mean_v_px"] - insts[j]["mean_v_px"]))
-                        within_dur_diffs.append(abs(insts[i]["duration_ms"] - insts[j]["duration_ms"]))
-                        # Shape distance (mean Euclidean distance between resampled 32 points)
-                        p1 = insts[i]["resampled_32"]
-                        p2 = insts[j]["resampled_32"]
-                        dist = float(np.mean(np.sqrt(np.sum((p1 - p2)**2, axis=1))))
-                        within_shape_dists.append(dist)
+                    a, b = insts[i], insts[j]
+                    values = (
+                        abs(a["mean_v_px"] - b["mean_v_px"]),
+                        abs(a["mean_v_norm"] - b["mean_v_norm"]),
+                        abs(a["duration_ms"] - b["duration_ms"]),
+                        float(np.mean(np.linalg.norm(a["resampled_32"] - b["resampled_32"], axis=1))),
+                        float(np.mean(np.linalg.norm(a["resampled_32_norm"] - b["resampled_32_norm"], axis=1))),
+                        a["geometry"] == b["geometry"],
+                    )
+                    within_candidates.append((stable_priority(word, "within", sess, i, j), values))
 
-        # Sample pairs between different sessions
-        all_sess_keys = list(session_dict.keys())
-        if len(all_sess_keys) >= 2 and len(between_speed_diffs) < 200000:
-            for s1_idx in range(min(len(all_sess_keys), 20)):
-                for s2_idx in range(s1_idx + 1, min(len(all_sess_keys), 20)):
-                    s1 = all_sess_keys[s1_idx]
-                    s2 = all_sess_keys[s2_idx]
-                    for inst1 in session_dict[s1]:
-                        for inst2 in session_dict[s2]:
-                            if len(between_speed_diffs) < 200000:
-                                between_speed_diffs.append(abs(inst1["mean_v_px"] - inst2["mean_v_px"]))
-                                between_dur_diffs.append(abs(inst1["duration_ms"] - inst2["duration_ms"]))
-                                p1 = inst1["resampled_32"]
-                                p2 = inst2["resampled_32"]
-                                dist = float(np.mean(np.sqrt(np.sum((p1 - p2)**2, axis=1))))
-                                between_shape_dists.append(dist)
+        selected_sessions = sorted(
+            session_dict,
+            key=lambda sess: stable_priority(word, "session", sess),
+        )[:40]
+        between_candidates = []
+        for s1_idx, s1 in enumerate(selected_sessions):
+            for s2 in selected_sessions[s1_idx + 1:]:
+                for i, inst1 in enumerate(session_dict[s1]):
+                    for j, inst2 in enumerate(session_dict[s2]):
+                        values = (
+                            abs(inst1["mean_v_px"] - inst2["mean_v_px"]),
+                            abs(inst1["mean_v_norm"] - inst2["mean_v_norm"]),
+                            abs(inst1["duration_ms"] - inst2["duration_ms"]),
+                            float(np.mean(np.linalg.norm(inst1["resampled_32"] - inst2["resampled_32"], axis=1))),
+                            float(np.mean(np.linalg.norm(inst1["resampled_32_norm"] - inst2["resampled_32_norm"], axis=1))),
+                            inst1["geometry"] == inst2["geometry"],
+                        )
+                        between_candidates.append((stable_priority(word, "between", s1, s2, i, j), values))
+
+        for label, candidates in (("within", within_candidates), ("between", between_candidates)):
+            for speed_px, speed_norm, duration, shape_px, shape_norm, geometry_match in balanced_take(candidates, PAIRS_PER_WORD):
+                pair_metrics[f"{label}_speed_px"].append(speed_px)
+                pair_metrics[f"{label}_speed_norm"].append(speed_norm)
+                pair_metrics[f"{label}_duration"].append(duration)
+                pair_metrics[f"{label}_shape_px"].append(shape_px)
+                pair_metrics[f"{label}_shape_norm"].append(shape_norm)
+                if geometry_match:
+                    pair_metrics[f"{label}_speed_px_geometry_matched"].append(speed_px)
+                    pair_metrics[f"{label}_shape_px_geometry_matched"].append(shape_px)
 
     # ---------------------------------------------------------
     # Empirical Distribution Aggregation
     # ---------------------------------------------------------
     print("Computing empirical distributions and quantiles...")
 
-    raw_dts_np = np.array(all_raw_dts, dtype=np.float64)
+    raw_dts_np = np.array(raw_dt_reservoir.values, dtype=np.float64)
     pos_dts = raw_dts_np[raw_dts_np > 0]
-    touch_event_rates = 1000.0 / np.maximum(pos_dts, 1.0)
+    observed_dispatch_rates = 1000.0 / pos_dts
+
+    # A conservative, distribution-derived analysis flag: three IQRs outside
+    # the quartiles in log-duration space. Raw observations remain reported.
+    duration_np = np.array(all_durations, dtype=np.float64)
+    log_duration = np.log(duration_np)
+    log_q1, log_q3 = np.percentile(log_duration, [25, 75])
+    log_iqr = log_q3 - log_q1
+    duration_lower = float(np.exp(log_q1 - 3.0 * log_iqr))
+    duration_upper = float(np.exp(log_q3 + 3.0 * log_iqr))
+    duration_analysis_mask = (duration_np >= duration_lower) & (duration_np <= duration_upper)
 
     # Linear regression: Duration vs Word Length
     word_lens = []
     durations = []
     for w_len, durs in by_word_len_duration.items():
-        word_lens.extend([w_len] * len(durs))
-        durations.extend(durs)
+        valid_durs = [d for d in durs if duration_lower <= d <= duration_upper]
+        word_lens.extend([w_len] * len(valid_durs))
+        durations.extend(valid_durs)
     
     if len(word_lens) > 0:
         poly = np.polyfit(word_lens, durations, 1)
@@ -654,14 +720,17 @@ def profile_corpus(
     # Compile Final Canonical Report
     report = {
         "characterization_metadata": {
-            "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+            "report_schema_version": 2,
             "dataset_name": "futo-org/swipe.futo.org",
             "total_scanned_rows": total_scanned,
             "total_valid_single_finger_trajectories": total_valid,
             "total_excluded_rows": total_excluded,
             "exclusion_rate_pct": round((total_excluded / max(total_scanned, 1)) * 100, 2),
-            "elapsed_seconds": round(elapsed, 2),
             "shards_profiled": len(shards_to_process),
+            "profile_seed": PROFILE_SEED,
+            "event_reservoir_capacity": EVENT_RESERVOIR_SIZE,
+            "event_reservoir_method": "Algorithm R with independent seeded NumPy RNG streams",
+            "pair_sampling": f"equal cap of {PAIRS_PER_WORD} stable-hash-priority pairs per target word",
             "terminology_note": "FUTO records are grouped by anonymous session UUIDs representing collection contexts.",
         },
         "per_run_and_split_accounting": run_split_accounting,
@@ -674,14 +743,23 @@ def profile_corpus(
             "positive_dt_count": total_pos_dt_events,
             "positive_dt_pct": round((total_pos_dt_events / max(total_touch_intervals, 1)) * 100, 3),
             "raw_dt_intervals_ms": compute_quantiles(raw_dts_np),
-            "touch_event_rate_hz": compute_quantiles(touch_event_rates),
-            "duration_ms": compute_quantiles(np.array(all_durations)),
+            "observed_event_dispatch_rate_hz": compute_quantiles(observed_dispatch_rates),
+            "duration_ms_raw": compute_quantiles(duration_np),
+            "duration_ms_analysis_valid": compute_quantiles(duration_np[duration_analysis_mask]),
+            "duration_quality_flag": {
+                "method": "outside 3 IQRs from Q1/Q3 in log-duration space",
+                "lower_bound_ms": duration_lower,
+                "upper_bound_ms": duration_upper,
+                "flagged_count": int(np.sum(~duration_analysis_mask)),
+                "retained_count": int(np.sum(duration_analysis_mask)),
+            },
             "duration_per_char_ms": compute_quantiles(np.array(all_duration_per_char)),
             "regression_duration_vs_length": {
                 "slope_ms_per_char": round(slope_ms_per_char, 2),
                 "intercept_ms": round(intercept_ms, 2),
                 "r_squared": round(r_squared, 4),
-                "formula": f"Duration(N) = {slope_ms_per_char:.1f} * N + {intercept_ms:.1f} ms",
+                "formula": f"Descriptive duration fit: {slope_ms_per_char:.1f} * character_count + {intercept_ms:.1f} ms",
+                "analysis_subset": "duration_quality_flag retained rows; character count is descriptive, not physical path geometry",
             },
         },
         "point_density_and_path_geometry": {
@@ -691,17 +769,23 @@ def profile_corpus(
             "total_distance_normalized": compute_quantiles(np.array(all_dist_norm)),
             "total_distance_pixels": compute_quantiles(np.array(all_dist_px)),
             "path_tortuosity_ratio": compute_quantiles(np.array(all_tortuosity)),
+            "tortuosity_definition": "path length / endpoint distance, reported only when normalized endpoint displacement >= 0.05",
+            "tortuosity_undefined_close_endpoints": tortuosity_undefined_count,
+            "endpoint_displacement_normalized": compute_quantiles(np.array(all_endpoint_displacement_norm)),
         },
         "aspect_correct_kinematics": {
             "mean_velocity_pixels_per_s": compute_quantiles(np.array(all_mean_v_px)),
             "max_velocity_pixels_per_s": compute_quantiles(np.array(all_max_v_px)),
             "mean_velocity_normalized_per_s": compute_quantiles(np.array(all_mean_v_norm)),
             "max_velocity_normalized_per_s": compute_quantiles(np.array(all_max_v_norm)),
-            "mean_accel_pixels_per_s2": compute_quantiles(np.array(all_mean_accel_px)),
-            "max_accel_pixels_per_s2": compute_quantiles(np.array(all_max_accel_px)),
+            "derivative_caveat": (
+                "Acceleration and jerk are intentionally not aggregated: numerical derivatives on "
+                "irregular native event intervals are unstable without a declared derived-data "
+                "resampling/filtering policy. No 1 ms interval substitution is used."
+            ),
         },
         "aspect_correct_curvature_and_inflections": {
-            "turning_angle_deg": compute_quantiles(np.array(all_turn_angles)),
+            "turning_angle_deg": compute_quantiles(np.array(turn_angle_reservoir.values)),
             "sharp_turn_velocity_ratio": {
                 "definition": "Ratio of mean velocity during sharp direction changes (> 45 deg) to gentle transit (< 20 deg) within the same trajectory: v_sharp / v_gentle.",
                 "quantiles": compute_quantiles(np.array(all_sharp_turn_v_ratios)) if all_sharp_turn_v_ratios else {},
@@ -719,26 +803,42 @@ def profile_corpus(
         "matched_repeated_word_session_analysis": {
             "matched_words_evaluated": matched_words_evaluated,
             "intraclass_correlation_coefficients": {
+                "method": "ICC(1,1), one-way random effects, absolute agreement; unbalanced-group effective size k0",
+                "interpretation": "descriptive session clustering for repeated observations of the same word; not human identity evidence",
                 "icc_velocity_distribution": compute_quantiles(np.array(icc_velocity_list)) if icc_velocity_list else {},
+                "icc_normalized_velocity_distribution": compute_quantiles(np.array(icc_velocity_norm_list)) if icc_velocity_norm_list else {},
                 "icc_duration_distribution": compute_quantiles(np.array(icc_duration_list)) if icc_duration_list else {},
             },
             "pairwise_speed_difference_px_per_s": {
-                "within_session_same_word": compute_quantiles(np.array(within_speed_diffs)) if within_speed_diffs else {},
-                "between_session_same_word": compute_quantiles(np.array(between_speed_diffs)) if between_speed_diffs else {},
+                "within_session_same_word": compute_quantiles(np.array(pair_metrics["within_speed_px"])),
+                "between_session_same_word": compute_quantiles(np.array(pair_metrics["between_speed_px"])),
+                "within_session_same_word_geometry_matched": compute_quantiles(np.array(pair_metrics["within_speed_px_geometry_matched"])),
+                "between_session_same_word_geometry_matched": compute_quantiles(np.array(pair_metrics["between_speed_px_geometry_matched"])),
+            },
+            "pairwise_speed_difference_normalized_per_s": {
+                "within_session_same_word": compute_quantiles(np.array(pair_metrics["within_speed_norm"])),
+                "between_session_same_word": compute_quantiles(np.array(pair_metrics["between_speed_norm"])),
             },
             "pairwise_duration_difference_ms": {
-                "within_session_same_word": compute_quantiles(np.array(within_dur_diffs)) if within_dur_diffs else {},
-                "between_session_same_word": compute_quantiles(np.array(between_dur_diffs)) if between_dur_diffs else {},
+                "within_session_same_word": compute_quantiles(np.array(pair_metrics["within_duration"])),
+                "between_session_same_word": compute_quantiles(np.array(pair_metrics["between_duration"])),
             },
             "pairwise_resampled_shape_distance_px": {
-                "within_session_same_word": compute_quantiles(np.array(within_shape_dists)) if within_shape_dists else {},
-                "between_session_same_word": compute_quantiles(np.array(between_shape_dists)) if between_shape_dists else {},
+                "within_session_same_word": compute_quantiles(np.array(pair_metrics["within_shape_px"])),
+                "between_session_same_word": compute_quantiles(np.array(pair_metrics["between_shape_px"])),
+                "within_session_same_word_geometry_matched": compute_quantiles(np.array(pair_metrics["within_shape_px_geometry_matched"])),
+                "between_session_same_word_geometry_matched": compute_quantiles(np.array(pair_metrics["between_shape_px_geometry_matched"])),
+            },
+            "pairwise_resampled_shape_distance_normalized": {
+                "within_session_same_word": compute_quantiles(np.array(pair_metrics["within_shape_norm"])),
+                "between_session_same_word": compute_quantiles(np.array(pair_metrics["between_shape_norm"])),
             },
             "verdict": (
-                "Session-level motor signature is verified statistically real after controlling for target words: "
-                "within-session same-word pairs exhibit significantly tighter speed consistency, lower duration variance, "
-                "and closer spatial trajectory agreement than between-session pairs."
-            )
+                "Repeated observations cluster by anonymous session after matching target words. "
+                "Normalized-coordinate and exact-geometry comparisons reduce, but cannot eliminate, "
+                "environment and collection-context confounding. This does not establish human identity "
+                "or require session conditioning in a generator."
+            ),
         },
         "session_level_macro_variation": {
             "unique_anonymous_sessions": len(session_swipe_counts),
@@ -768,7 +868,6 @@ def print_console_summary(r: Dict[str, Any]):
     
     meta = r["characterization_metadata"]
     print(f"Scanned: {meta['total_scanned_rows']:,} rows | Valid Single-Finger Trajectories: {meta['total_valid_single_finger_trajectories']:,} | Excluded: {meta['total_excluded_rows']:,} ({meta['exclusion_rate_pct']}%)")
-    print(f"Execution Time: {meta['elapsed_seconds']}s")
     
     print("\n--- 1. EXCLUSION ACCOUNTING ACROSS RUNS & SPLITS ---")
     print(f" {'Run / Split':<30} | {'Total Rows':<11} | {'Valid Swipes':<13} | {'Excluded':<10} | {'Top Reason'}")
@@ -781,16 +880,16 @@ def print_console_summary(r: Dict[str, Any]):
     print("\n--- 2. TOUCH EVENT TEMPORAL DYNAMICS & TIMESTAMPS ---")
     print(f"Total Touch Intervals:   {temp['touch_intervals_count']:,} (Positive: {temp['positive_dt_pct']}%, Duplicate Zero-dt: {temp['zero_dt_pct']}%, Negative: {temp['negative_dt_count']})")
     dt = temp["raw_dt_intervals_ms"]
-    hz = temp["touch_event_rate_hz"]
+    hz = temp["observed_event_dispatch_rate_hz"]
     print(f"Raw Touch Event Δt:      median = {dt['p50']:.1f}ms | mean = {dt['mean']:.1f}ms (std = {dt['std']:.1f}ms) | p5={dt['p05']:.1f}ms, p95={dt['p95']:.1f}ms")
-    print(f"Touch Event Rate:        median = {hz['p50']:.1f} events/s | p25 = {hz['p25']:.1f} | p75 = {hz['p75']:.1f} events/s")
+    print(f"Observed Dispatch Rate:  median = {hz['p50']:.1f} events/s | p25 = {hz['p25']:.1f} | p75 = {hz['p75']:.1f} events/s")
     
-    dur = temp["duration_ms"]
+    dur = temp["duration_ms_analysis_valid"]
     dpc = temp["duration_per_char_ms"]
     reg = temp["regression_duration_vs_length"]
     print(f"Gesture Duration:        median = {dur['p50']:.0f}ms | mean = {dur['mean']:.0f}ms | p5={dur['p05']:.0f}ms, p95={dur['p95']:.0f}ms")
     print(f"Duration per Character:  median = {dpc['p50']:.0f}ms/char | mean = {dpc['mean']:.0f}ms/char")
-    print(f"Motor Scaling Law:       {reg['formula']} (R² = {reg['r_squared']:.3f})")
+    print(f"Descriptive Length Fit:  {reg['formula']} (R² = {reg['r_squared']:.3f})")
 
     pts = r["point_density_and_path_geometry"]
     print("\n--- 3. POINT DENSITY & PATH TORTUOSITY ---")
@@ -813,7 +912,7 @@ def print_console_summary(r: Dict[str, Any]):
     stvr = curv["sharp_turn_velocity_ratio"]["quantiles"]
     print(f"True Turning Angles:     median = {angles['p50']:.1f}° | p75 = {angles['p75']:.1f}° | p95 = {angles['p95']:.1f}°")
     if stvr:
-        print(f"Sharp-Turn Speed Ratio:  median = {stvr['p50']:.2f} | mean = {stvr['mean']:.2f} (v_sharp / v_gentle: typists slow to ~{stvr['p50']*100:.0f}% speed at sharp corners)")
+        print(f"High-Curvature Speed Ratio: median = {stvr['p50']:.2f} | mean = {stvr['mean']:.2f} (v_high-curvature / v_low-curvature)")
 
     disp = r["display_geometry_and_bounds"]
     print("\n--- 5. DISPLAY GEOMETRY & ACTIVE COORDINATES ---")
