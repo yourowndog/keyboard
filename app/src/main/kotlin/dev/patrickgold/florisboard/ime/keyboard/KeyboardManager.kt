@@ -215,7 +215,9 @@ class KeyboardManager(
                     }
                     break
                 }
-                delay(50)
+                // The recorder emits 20 ms meter frames. Poll at display cadence so Compose can
+                // smooth the deliberately expressive visual without affecting capture or disk IO.
+                delay(16)
             }
             _whisperAmplitude.value = 0f
         }
@@ -239,21 +241,25 @@ class KeyboardManager(
     }
 
     private fun stopVoiceCapture(context: Context) {
-        val audioFile = try {
-            recorder?.stop()
-        } catch (e: Exception) {
-            null
-        }
+        if (!activeState.isRecording) return
         amplitudePollingJob?.cancel()
         activeState.batchEdit {
             it.isRecording = false
             it.isPaused = false
+            // Make the visual handoff immediate; lossless file finalisation runs independently.
+            it.isTranscribing = true
         }
-        if (audioFile != null) {
-            lastAudioFile = audioFile
-            performTranscription(audioFile)
-        } else {
-            activeState.imeUiMode = ImeUiMode.TEXT
+        scope.launch(Dispatchers.IO) {
+            val audioFile = runCatching { recorder?.stop() }.getOrNull()
+            if (audioFile != null) {
+                lastAudioFile = audioFile
+                performTranscription(audioFile)
+            } else {
+                activeState.batchEdit {
+                    it.isTranscribing = false
+                    it.imeUiMode = ImeUiMode.TEXT
+                }
+            }
         }
     }
 

@@ -20,6 +20,11 @@ separately for harvesting.
 
 This is active cloud functionality.
 
+The Smartbar treats capture and presentation as separate concerns: lossless PCM
+capture remains independent from the display-rate voice meter. During recording,
+the UI renders three theme-coloured signal traces; on submission they resolve to
+the centre line before the existing processing scan takes over.
+
 ## ONNX autocorrect scorer
 
 The packaged `autocorrect_v1.int8.onnx` model runs in-process through ONNX

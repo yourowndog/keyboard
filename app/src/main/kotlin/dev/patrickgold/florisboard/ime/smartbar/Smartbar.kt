@@ -23,6 +23,7 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.animation.core.InfiniteRepeatableSpec
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloatAsState
@@ -137,12 +138,21 @@ fun VoiceVisualizer(
     val themeQuery = rememberSnyggThemeQuery(FlorisImeUi.SmartbarCandidateWord.elementName)
     val themeColor = themeQuery.foreground().let { if (it.isUnspecified) Color.White else it }
 
-    // Smooth the amplitude for organic feel
+    // Fast attack and a slightly gentler release keep the display conversational rather than a
+    // literal oscilloscope. This is a live signal display, not a recording dependency.
     val smoothAmplitude by animateFloatAsState(
-        targetValue = amplitude,
-        animationSpec = tween(80),
+        targetValue = (amplitude * 1.35f).coerceIn(0f, 1f),
+        animationSpec = tween(45),
         label = "smoothAmplitude",
     )
+
+    // A short, explicit LCARS handoff: the listening traces resolve to their centre line as the
+    // processing scan acquires that line. There is no generic fade or separate transition screen.
+    val modeTransition = updateTransition(targetState = isTranscribing, label = "voiceMode")
+    val processingProgress by modeTransition.animateFloat(
+        transitionSpec = { tween(180, easing = FastOutSlowInEasing) },
+        label = "processingProgress",
+    ) { processing -> if (processing) 1f else 0f }
 
     val infiniteTransition = rememberInfiniteTransition(label = "visualizer")
     // Phase drift so standing wave gently moves even at constant amplitude
@@ -191,7 +201,7 @@ fun VoiceVisualizer(
         val canvasHeight = size.height
         val centerY = canvasHeight / 2f
 
-        if (isTranscribing) {
+        if (processingProgress > 0f) {
             // === PROCESSING: Mesmerizing Layered Scanning Wave ===
             val maxBarHeight = canvasHeight * 0.7f
             val minBarHeight = canvasHeight * 0.15f
@@ -218,7 +228,7 @@ fun VoiceVisualizer(
                 
                 val combinedPulse = (pulse + ghostPulse + Math.abs(secondaryWave)).coerceIn(0f, 1f)
                 val height = minBarHeight + (maxBarHeight - minBarHeight) * combinedPulse
-                val alpha = 0.1f + 0.8f * combinedPulse
+                val alpha = (0.1f + 0.8f * combinedPulse) * processingProgress
 
                 val y = (canvasHeight - height) / 2f
                 drawRoundRect(
@@ -228,11 +238,12 @@ fun VoiceVisualizer(
                     cornerRadius = CornerRadius(barWidth / 2f, barWidth / 2f)
                 )
             }
-        } else {
-            // === RECORDING: Standing wave (jagged heartbeat monitor) ===
+        }
+
+        if (processingProgress < 1f) {
+            // === LISTENING: three related signal lanes, not a literal oscilloscope ===
             val maxDeflection = canvasHeight * 0.45f
-            val pointCount = 200
-            val path = Path()
+            val pointCount = 96
 
             // Triangle wave helper: produces range [-1, 1] for input x
             val triangle = { x: Float ->
@@ -240,40 +251,45 @@ fun VoiceVisualizer(
                 if (t < 0.5f) 4f * t - 1f else 3f - 4f * t
             }
 
-            // Calculate starting point
-            val startY = centerY - smoothAmplitude * maxDeflection * (
-                0.7f * triangle(0.0f + phase) +
-                0.3f * triangle(0.0f + phase * 1.3f) +
-                0.15f * triangle(0.0f + phase * 0.7f)
-            )
-            path.moveTo(0f, startY)
-
-            for (i in 1..pointCount) {
-                val fraction = i.toFloat() / pointCount
-                val x = fraction * canvasWidth
-                // Layered triangle waves at higher frequencies for jaggedy look
-                val wave = (
-                    0.7f * triangle(fraction * 5.0f + phase) +
-                    0.3f * triangle(fraction * 11.0f + phase * 1.3f) +
-                    0.15f * triangle(fraction * 23.0f + phase * 0.7f)
+            repeat(3) { lane ->
+                val laneStrength = when (lane) {
+                    0 -> 1f
+                    1 -> 0.72f
+                    else -> 0.48f
+                }
+                val laneAlpha = when (lane) {
+                    0 -> 0.92f
+                    1 -> 0.42f
+                    else -> 0.20f
+                } * (1f - processingProgress)
+                val lanePhase = phase * (1f + lane * 0.11f) + lane * 0.73f
+                val path = Path()
+                for (i in 0..pointCount) {
+                    val fraction = i.toFloat() / pointCount
+                    val x = fraction * canvasWidth
+                    val wave = (
+                        0.7f * triangle(fraction * (5f + lane) + lanePhase) +
+                        0.3f * triangle(fraction * (11f + lane * 1.7f) + lanePhase * 1.3f) +
+                        0.15f * triangle(fraction * (23f + lane * 2.1f) + lanePhase * 0.7f)
+                    )
+                    val y = centerY - smoothAmplitude * laneStrength * maxDeflection *
+                        (1f - processingProgress) * wave
+                    if (i == 0) path.moveTo(x, y) else path.lineTo(x, y)
+                }
+                drawPath(
+                    path = path,
+                    color = themeColor.copy(alpha = laneAlpha),
+                    style = Stroke(
+                        width = if (lane == 0) 3.5f else 2.25f,
+                        cap = StrokeCap.Round,
+                        join = StrokeJoin.Round,
+                    ),
                 )
-                val y = centerY - smoothAmplitude * maxDeflection * wave
-                path.lineTo(x, y)
             }
-
-            drawPath(
-                path = path,
-                color = themeColor.copy(alpha = 0.9f),
-                style = Stroke(
-                    width = 4.0f,
-                    cap = StrokeCap.Round,
-                    join = StrokeJoin.Round,
-                ),
-            )
 
             // Subtle baseline
             drawRect(
-                color = themeColor.copy(alpha = 0.15f),
+                color = themeColor.copy(alpha = 0.15f * (1f - processingProgress)),
                 topLeft = Offset(0f, centerY - 1f),
                 size = Size(canvasWidth, 2f),
             )
@@ -300,10 +316,10 @@ fun WhisperBar(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(2.dp)
     ) {
-        if (state.isRecording) {
+        if (state.isRecording || state.isTranscribing) {
             // === RECORDING STATE ===
             // Left: Pause/Resume + Cancel
-            SnyggIconButton(
+            if (state.isRecording) SnyggIconButton(
                 elementName = FlorisImeUi.SmartbarSharedActionsToggle.elementName,
                 onClick = {
                     if (state.isPaused) {
@@ -319,7 +335,7 @@ fun WhisperBar(
                 )
             }
 
-            SnyggIconButton(
+            if (state.isRecording) SnyggIconButton(
                 elementName = FlorisImeUi.SmartbarSharedActionsToggle.elementName,
                 onClick = { keyboardManager.cancelVoiceInput() },
                 modifier = Modifier.sizeIn(maxHeight = FlorisImeSizing.smartbarHeight).aspectRatio(1f)
@@ -331,28 +347,18 @@ fun WhisperBar(
             Box(modifier = Modifier.weight(1f).fillMaxHeight()) {
                 VoiceVisualizer(
                     amplitude = amplitude,
-                    isTranscribing = false,
+                    isTranscribing = state.isTranscribing,
                     modifier = Modifier.fillMaxSize()
                 )
             }
 
             // Right: Submit
-            SnyggIconButton(
+            if (state.isRecording) SnyggIconButton(
                 elementName = FlorisImeUi.SmartbarSharedActionsToggle.elementName,
                 onClick = { keyboardManager.submitVoiceCapture() },
                 modifier = Modifier.sizeIn(maxHeight = FlorisImeSizing.smartbarHeight).aspectRatio(1f)
             ) {
                 SnyggIcon(imageVector = Icons.Default.Send)
-            }
-        } else if (state.isTranscribing) {
-            // === TRANSCRIBING STATE ===
-            // Full-width sine wave animation
-            Box(modifier = Modifier.weight(1f).fillMaxHeight()) {
-                VoiceVisualizer(
-                    amplitude = 0f,
-                    isTranscribing = true,
-                    modifier = Modifier.fillMaxSize()
-                )
             }
         } else {
             // === IDLE/ERROR STATE (voice mode but not recording) ===
