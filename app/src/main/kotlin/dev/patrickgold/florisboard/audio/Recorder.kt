@@ -69,6 +69,9 @@ class Recorder(private val context: Context) {
         const val CHANNEL_COUNT = 1
         const val WAV_HEADER_BYTES = 44
         const val CLIP_THRESHOLD = 32_700
+        // Meter cadence is independent from the much larger AudioRecord safety buffer. Reading a
+        // small frame keeps visual feedback current while BufferedOutputStream still batches disk IO.
+        const val METER_FRAME_SAMPLES = SAMPLE_RATE / 50
     }
 
     private var audioRecord: AudioRecord? = null
@@ -200,15 +203,17 @@ class Recorder(private val context: Context) {
         startedAtMs = System.currentTimeMillis()
         record.startRecording()
 
-        readerThread = Thread({ readLoop(record, stream, bufferBytes) }, "OmniBoardRecorder").apply {
-            priority = Thread.MAX_PRIORITY
+        readerThread = Thread({ readLoop(record, stream) }, "OmniBoardRecorder").apply {
+            // AudioRecord's oversized internal buffer protects capture from scheduling jitter. The
+            // reader must not preempt the IME/Compose render work merely to write buffered file data.
+            priority = Thread.NORM_PRIORITY
             start()
         }
         return file
     }
 
-    private fun readLoop(record: AudioRecord, stream: BufferedOutputStream, bufferBytes: Int) {
-        val samples = ShortArray(bufferBytes / 2)
+    private fun readLoop(record: AudioRecord, stream: BufferedOutputStream) {
+        val samples = ShortArray(METER_FRAME_SAMPLES)
         val bytes = ByteBuffer.allocate(samples.size * 2).order(ByteOrder.LITTLE_ENDIAN)
         try {
             while (isRecording) {
@@ -256,11 +261,15 @@ class Recorder(private val context: Context) {
         isRecording = false
         isPaused = false
 
-        runCatching { readerThread?.join(2_000) }
+        audioRecord?.let { record ->
+            // stop() unblocks a blocking read. Joining first can stall finalization while the
+            // reader waits for more audio, which previously froze the recording-to-scan handoff.
+            runCatching { if (record.recordingState == AudioRecord.RECORDSTATE_RECORDING) record.stop() }
+        }
+        runCatching { readerThread?.join(500) }
         readerThread = null
 
         audioRecord?.let { record ->
-            runCatching { if (record.recordingState == AudioRecord.RECORDSTATE_RECORDING) record.stop() }
             runCatching { record.release() }
         }
         audioRecord = null

@@ -20,6 +20,15 @@ separately for harvesting.
 
 This is active cloud functionality.
 
+Lossless capture and Smartbar feedback have separate buffering requirements.
+`Recorder` retains an oversized `AudioRecord` buffer for dropout resistance and
+a buffered WAV output stream for efficient disk writes, but drains PCM in 20 ms
+frames so the non-critical peak meter stays current. The reader uses normal
+thread priority. Submission and cancellation update the UI immediately, then
+stop capture and finalize the WAV away from the IME/UI thread. The established
+recording waveform and processing scan remain unchanged; device validation is
+required before any later visual enhancement.
+
 ## ONNX autocorrect scorer
 
 The packaged `autocorrect_v1.int8.onnx` model runs in-process through ONNX

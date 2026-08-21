@@ -189,7 +189,9 @@ class KeyboardManager(
             while (isActive && activeState.isRecording) {
                 val amp = recorder?.maxAmplitude() ?: 0
                 _whisperAmplitude.value = (amp.toFloat() / 32768f).coerceIn(0f, 1f)
-                delay(50)
+                // Audio capture publishes 20 ms meter frames. Poll at display cadence so a fresh
+                // frame reaches Compose promptly without coupling rendering to capture or disk IO.
+                delay(16)
             }
             _whisperAmplitude.value = 0f
         }
@@ -213,21 +215,25 @@ class KeyboardManager(
     }
 
     private fun stopVoiceCapture(context: Context) {
-        val audioFile = try {
-            recorder?.stop()
-        } catch (e: Exception) {
-            null
-        }
+        if (!activeState.isRecording) return
         amplitudePollingJob?.cancel()
         activeState.batchEdit {
             it.isRecording = false
             it.isPaused = false
+            // Show the existing processing scan immediately; WAV finalization must not block it.
+            it.isTranscribing = true
         }
-        if (audioFile != null) {
-            lastAudioFile = audioFile
-            performTranscription(audioFile)
-        } else {
-            activeState.imeUiMode = ImeUiMode.TEXT
+        scope.launch(Dispatchers.IO) {
+            val audioFile = runCatching { recorder?.stop() }.getOrNull()
+            if (audioFile != null) {
+                lastAudioFile = audioFile
+                performTranscription(audioFile)
+            } else {
+                activeState.batchEdit {
+                    it.isTranscribing = false
+                    it.imeUiMode = ImeUiMode.TEXT
+                }
+            }
         }
     }
 
@@ -240,16 +246,20 @@ class KeyboardManager(
 
     fun cancelVoiceInput() {
         amplitudePollingJob?.cancel()
-        try {
-            if (activeState.isRecording) {
-                recorder?.stop()
-            }
-        } catch (e: Exception) { }
+        // Detach the cancelled recorder before background finalization so an immediate new capture
+        // cannot race with stop() over the same AudioRecord and output-file state.
+        val recorderToStop = if (activeState.isRecording) recorder else null
+        if (recorderToStop != null) recorder = null
         activeState.batchEdit {
             it.isRecording = false
             it.isTranscribing = false
             it.isPaused = false
             it.imeUiMode = ImeUiMode.TEXT
+        }
+        if (recorderToStop != null) {
+            scope.launch(Dispatchers.IO) {
+                runCatching { recorderToStop.stop() }
+            }
         }
     }
 
