@@ -500,7 +500,11 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
      * @return True on success, false if an error occurred or the input connection is invalid.
      */
     fun commitGesture(text: String): Boolean {
-        if (text.isEmpty() || activeInfo.isRawInputEditor) return false
+        if (text.isEmpty()) return false
+        // A raw editor (a terminal, inputType=NULL) exposes no composing region and no readable
+        // text around the cursor, so the phantom-space bookkeeping below has nothing to work from.
+        // Commit the word plainly rather than dropping it on the floor.
+        if (activeInfo.isRawInputEditor) return super.commitText(text)
         val isPhantomSpaceActive = phantomSpace.determine(text, forceActive = true)
         phantomSpace.setActive(showComposingRegion = true)
         return if (isPhantomSpaceActive) {

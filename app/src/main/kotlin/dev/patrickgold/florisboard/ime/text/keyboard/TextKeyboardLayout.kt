@@ -139,7 +139,11 @@ fun TextKeyboardLayout(
 
     val keyboard = evaluator.keyboard as TextKeyboard
     val glideEnabledInternal by prefs.glide.enabled.observeAsState()
-    val glideEnabled = glideEnabledInternal && evaluator.editorInfo.isRichInputEditor &&
+    // Raw input editors are deliberately included. A terminal -- Termux above all -- reports
+    // inputType=NULL, which isRichInputEditor reads as "not a real text field", and gliding was
+    // switched off there entirely. Terminals do accept committed text; the check only ever bought
+    // us a dead zone where swiping did nothing. Password fields stay excluded.
+    val glideEnabled = glideEnabledInternal &&
         evaluator.state.keyVariation != KeyVariation.PASSWORD
     val glideShowTrail by prefs.glide.showTrail.observeAsState()
     val glideTrailColorPref by prefs.glide.trailColor.observeAsState()
@@ -522,7 +526,9 @@ private class TextKeyboardLayoutController(
     lateinit var keyboard: TextKeyboard
     var size = Size.Zero
 
-    val isGlideEnabled: Boolean get() = prefs.glide.enabled.get() && editorInstance.activeInfo.isRichInputEditor &&
+    // Must stay in step with `glideEnabled` above: this one gates touch dispatch, that one gates
+    // layout registration and the trail. If they disagree, gliding half-works.
+    val isGlideEnabled: Boolean get() = prefs.glide.enabled.get() &&
         keyboardManager.activeState.keyVariation != KeyVariation.PASSWORD
 
     fun onTouchEventInternal(event: MotionEvent) {
