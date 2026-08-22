@@ -1,0 +1,155 @@
+diff --git a/android/build.gradle.kts b/android/build.gradle.kts
+index 47d0186..a62524e 100644
+--- a/android/build.gradle.kts
++++ b/android/build.gradle.kts
+@@ -6,13 +6,20 @@ plugins {
+ android {
+     namespace = "org.futo.ml.inference"
+     compileSdk = 34
++    // Must match the NDK the prebuilt ExecuTorch static libs were compiled with.
++    ndkVersion = "27.3.13750724"
+ 
+     defaultConfig {
+         minSdk = 24
+         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+ 
+         ndk {
+-            abiFilters += listOf("arm64-v8a", "armeabi-v7a", "x86_64", "x86")
++            // arm64 only. ExecuTorch is built per-ABI and cmake/executorch.cmake treats a
++            // missing libexecutorch.a as "build without ExecuTorch" -- a stub with no neural
++            // net at all, rather than an error. Listing an ABI whose ExecuTorch has not been
++            // built therefore ships a silently broken .so. Add an ABI back only alongside its
++            // `make android-<abi>` build.
++            abiFilters += listOf("arm64-v8a")
+         }
+ 
+         externalNativeBuild {
+diff --git a/android/src/main/kotlin/org/futo/ml/inference/VocabTrie.kt b/android/src/main/kotlin/org/futo/ml/inference/VocabTrie.kt
+new file mode 100644
+index 0000000..5a1ddfe
+--- /dev/null
++++ b/android/src/main/kotlin/org/futo/ml/inference/VocabTrie.kt
+@@ -0,0 +1,50 @@
++package org.futo.ml.inference
++
++import java.io.Closeable
++
++/**
++ * A vocabulary the swipe engine can search.
++ *
++ * [SwipeDecoder.setMode] accepts vocabularies as raw native `ITrie` pointers, because FUTO's own
++ * keyboard supplies them from its AOSP dictionary code. This class wraps the trie implementation
++ * the library already ships, so a caller holding nothing but the AAR can load a word list from a
++ * file instead of having to implement `ITrie` natively.
++ *
++ * The file is an AOSP-style `.combined` word list: one entry per line, `word=<surface>,f=<freq>`.
++ * Leading whitespace is allowed and any line without a `word=` prefix is silently skipped, so
++ * ordinary header lines are harmless. Higher `f` means more common.
++ *
++ * [itriePtr] is a *borrowed* pointer into this object. Keep the trie open for as long as the
++ * decoder is using it, and [close] it only after the decoder has been closed or switched off it.
++ */
++class VocabTrie(vocabPath: String) : Closeable {
++    private var handle: Long = nativeLoad(vocabPath)
++
++    init {
++        check(handle != 0L) { "VocabTrie: failed to load vocabulary from $vocabPath" }
++    }
++
++    /** Native `ITrie*` to pass to [SwipeDecoder.setMode]. Must not outlive this object. */
++    val itriePtr: Long
++        get() {
++            check(handle != 0L) { "VocabTrie has been closed" }
++            return nativeItrie(handle)
++        }
++
++    override fun close() {
++        if (handle != 0L) {
++            nativeDestroy(handle)
++            handle = 0L
++        }
++    }
++
++    private companion object {
++        init {
++            System.loadLibrary("swipe_jni")
++        }
++
++        @JvmStatic external fun nativeLoad(vocabPath: String): Long
++        @JvmStatic external fun nativeItrie(handle: Long): Long
++        @JvmStatic external fun nativeDestroy(handle: Long)
++    }
++}
+diff --git a/jni/swipe_jni.cpp b/jni/swipe_jni.cpp
+index f2c968d..52e32a3 100644
+--- a/jni/swipe_jni.cpp
++++ b/jni/swipe_jni.cpp
+@@ -3,6 +3,7 @@
+  */
+ 
+ #include "swipe_decoder/engine.hpp"
++#include "swipe_decoder/trie.hpp"
+ #include "swipe_decoder/unicode_case.hpp"
+ 
+ #include <jni.h>
+@@ -13,6 +14,7 @@
+ #include <cstdint>
+ #include <cstdio>
+ #include <string>
++#include <utility>
+ #include <vector>
+ 
+ #include <sched.h>
+@@ -483,4 +485,52 @@ Java_org_futo_ml_inference_SwipeDecoder_nativePinCores(
+     return result;
+ }
+ 
++// --- Vocabulary tries -------------------------------------------------------
++//
++// SwipeEngine takes vocabularies as ITrie* pointers (Mode::dictionaries), which FUTO's own
++// keyboard fills in from its AOSP dictionary code. The library already ships a working trie
++// of its own (swipe_decoder::Trie, built by load_trie_simple), but no JNI entry point
++// constructs one -- so a caller holding only the AAR has no way to hand the engine a
++// vocabulary, and recognition returns nothing. These three functions expose the trie that is
++// already here; they add no decoding logic.
++//
++// Ownership: nativeLoad returns an owning Trie* handle. nativeItrie derives the borrowed
++// ITrie* that setMode() consumes, valid only while that handle is alive. Trie::itrie()
++// re-binds its userdata pointer on every call, so deriving it after the move below is safe.
++
++JNIEXPORT jlong JNICALL
++Java_org_futo_ml_inference_VocabTrie_nativeLoad(
++    JNIEnv* env, jclass /* clazz */, jstring vocabPath
++) {
++    const std::string path = jstr_or_empty(env, vocabPath);
++    if (path.empty()) {
++        LOGE("VocabTrie.nativeLoad: empty vocab path");
++        return 0;
++    }
++    auto loaded = load_trie_simple(path);
++    if (!loaded) {
++        LOGE("VocabTrie.nativeLoad: could not read vocab at %s", path.c_str());
++        return 0;
++    }
++    auto* trie = new Trie(std::move(*loaded));
++    LOGI("VocabTrie.nativeLoad: %zu words from %s", trie->size(), path.c_str());
++    return static_cast<jlong>(reinterpret_cast<uintptr_t>(trie));
++}
++
++JNIEXPORT jlong JNICALL
++Java_org_futo_ml_inference_VocabTrie_nativeItrie(
++    JNIEnv* /* env */, jclass /* clazz */, jlong handle
++) {
++    auto* trie = reinterpret_cast<Trie*>(static_cast<uintptr_t>(handle));
++    if (!trie) return 0;
++    return static_cast<jlong>(reinterpret_cast<uintptr_t>(trie->itrie()));
++}
++
++JNIEXPORT void JNICALL
++Java_org_futo_ml_inference_VocabTrie_nativeDestroy(
++    JNIEnv* /* env */, jclass /* clazz */, jlong handle
++) {
++    delete reinterpret_cast<Trie*>(static_cast<uintptr_t>(handle));
++}
++
+ }  // extern "C"
