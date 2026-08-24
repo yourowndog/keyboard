@@ -8,17 +8,23 @@
 OmniBoard currently has three distinct AI-related mechanisms. They must not be
 described as one architecture.
 
-## Whisper voice transcription
+## Voice transcription
 
-The voice key starts/stops recording through `KeyboardManager`. On completion,
-`WhisperClient` sends the audio file to the authenticated Brokentooth relay on
-weakling. The relay fixes the provider endpoint and model, supplies the OpenAI
-credential from its root-owned secret store, and returns the normal Whisper JSON
-response. The APK contains only its endpoint-scoped relay credential. Successful
-text is committed through the editor path, and voice sessions are marked
-separately for harvesting.
+The voice key starts/stops recording through `KeyboardManager`. In the voice
+smartbar, the cloud icon opens a persisted provider selector: **OpenAI Cloud**
+or **Titan Local**. `WhisperClient` sends that constrained selection, the WAV,
+and the `verbose_json` word/segment request to the authenticated Brokentooth
+relay on weakling; the APK contains only its endpoint-scoped relay credential.
 
-This is active cloud functionality.
+OpenAI Cloud remains the fallback and receives the allowlisted request fields.
+Titan Local is forwarded over Tailscale to the private CrisperWhisper adapter
+on Titan. The adapter runs `transcribe_dual()` and returns OpenAI-compatible
+`verbose_json`: clean intended text and its `words`/`segments`, plus
+`verbatim_text` and `verbatim_words` extensions. The keyboard commits the clean
+text and writes both transcripts and the full response to the Schema 2 sidecar,
+so filler words and their timestamps survive in the corpus.
+
+Pending retries retain the provider selected for the original failed take.
 
 ## ONNX autocorrect scorer
 

@@ -53,12 +53,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Send
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material.icons.filled.UnfoldLess
 import androidx.compose.material.icons.filled.UnfoldMore
 import androidx.compose.runtime.Composable
@@ -67,6 +70,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -94,8 +98,10 @@ import dev.patrickgold.florisboard.ime.smartbar.quickaction.QuickActionButton
 import dev.patrickgold.florisboard.ime.smartbar.quickaction.QuickActionsRow
 import dev.patrickgold.florisboard.ime.smartbar.quickaction.ToggleOverflowPanelAction
 import dev.patrickgold.florisboard.ime.theme.FlorisImeUi
+import dev.patrickgold.florisboard.ime.voice.VoiceManager
 import dev.patrickgold.florisboard.keyboardManager
 import dev.patrickgold.florisboard.nlpManager
+import dev.patrickgold.florisboard.voiceManager
 import dev.patrickgold.jetpref.datastore.model.observeAsState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -288,7 +294,9 @@ fun WhisperBar(
 ) {
     val context = LocalContext.current
     val keyboardManager by context.keyboardManager()
+    val voiceManager by context.voiceManager()
     val state by keyboardManager.activeState.collectAsState()
+    val transcriptionProvider by voiceManager.transcriptionProvider.collectAsState()
     val amplitudeState = keyboardManager.whisperAmplitude.collectAsState()
     val amplitude = amplitudeState.value
 
@@ -364,8 +372,36 @@ fun WhisperBar(
                 SnyggIcon(imageVector = Icons.Default.History)
             }
 
+            // The provider is picked before recording and stored by VoiceManager, so both a
+            // normal take and an offline retry use an explicit routing choice. The cloud icon
+            // is intentionally paired with the provider label in the menu for accessibility.
+            var providerMenuExpanded by remember { mutableStateOf(false) }
+            Box {
+                SnyggIconButton(
+                    elementName = FlorisImeUi.SmartbarSharedActionsToggle.elementName,
+                    onClick = { providerMenuExpanded = true },
+                    modifier = Modifier.sizeIn(maxHeight = FlorisImeSizing.smartbarHeight).aspectRatio(1f),
+                ) {
+                    SnyggIcon(imageVector = Icons.Default.Cloud)
+                }
+                DropdownMenu(
+                    expanded = providerMenuExpanded,
+                    onDismissRequest = { providerMenuExpanded = false },
+                ) {
+                    VoiceManager.TranscriptionProvider.entries.forEach { provider ->
+                        DropdownMenuItem(
+                            text = { Text(provider.label) },
+                            onClick = {
+                                voiceManager.setTranscriptionProvider(provider)
+                                providerMenuExpanded = false
+                            },
+                        )
+                    }
+                }
+            }
+
             SnyggText(
-                text = "Voice Input",
+                text = transcriptionProvider.label,
                 modifier = Modifier.weight(1f)
             )
 

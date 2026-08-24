@@ -17,9 +17,22 @@ class VoiceManager(context: Context) {
     private val _pendingFiles = MutableStateFlow<List<PendingRecording>>(emptyList())
     val pendingFiles = _pendingFiles.asStateFlow()
 
+    enum class TranscriptionProvider(val wireName: String, val label: String) {
+        OPENAI_CLOUD("openai", "OpenAI Cloud"),
+        TITAN_LOCAL("titan", "Titan Local"),
+    }
+
+    private val _transcriptionProvider = MutableStateFlow(
+        prefs.getString("transcription_provider", TranscriptionProvider.OPENAI_CLOUD.wireName)
+            ?.let { wireName -> TranscriptionProvider.entries.firstOrNull { it.wireName == wireName } }
+            ?: TranscriptionProvider.OPENAI_CLOUD,
+    )
+    val transcriptionProvider = _transcriptionProvider.asStateFlow()
+
     data class PendingRecording(
         val filePath: String,
         val timestamp: Long,
+        val provider: TranscriptionProvider,
     )
 
     init {
@@ -76,9 +89,10 @@ class VoiceManager(context: Context) {
 
     // --- Pending Recordings Queue ---
 
-    fun addPending(file: File) {
+    fun addPending(file: File, provider: TranscriptionProvider) {
         val current = _pendingFiles.value.toMutableList()
-        current.add(PendingRecording(file.absolutePath, System.currentTimeMillis()))
+        current.removeAll { it.filePath == file.absolutePath }
+        current.add(PendingRecording(file.absolutePath, System.currentTimeMillis(), provider))
         _pendingFiles.value = current
         savePending()
     }
@@ -92,6 +106,11 @@ class VoiceManager(context: Context) {
 
     fun getPendingFiles(): List<PendingRecording> = _pendingFiles.value
 
+    fun setTranscriptionProvider(provider: TranscriptionProvider) {
+        _transcriptionProvider.value = provider
+        prefs.edit().putString("transcription_provider", provider.wireName).apply()
+    }
+
     private fun loadPending() {
         val json = prefs.getString("pending_recordings", null) ?: return
         try {
@@ -101,9 +120,12 @@ class VoiceManager(context: Context) {
                 val obj = arr.getJSONObject(i)
                 val path = obj.getString("path")
                 val ts = obj.getLong("timestamp")
+                val provider = obj.optString("provider", TranscriptionProvider.OPENAI_CLOUD.wireName)
+                    .let { wireName -> TranscriptionProvider.entries.firstOrNull { it.wireName == wireName } }
+                    ?: TranscriptionProvider.OPENAI_CLOUD
                 // Only keep entries whose files still exist
                 if (File(path).exists()) {
-                    list.add(PendingRecording(path, ts))
+                    list.add(PendingRecording(path, ts, provider))
                 }
             }
             _pendingFiles.value = list
@@ -118,6 +140,7 @@ class VoiceManager(context: Context) {
             val obj = JSONObject()
             obj.put("path", it.filePath)
             obj.put("timestamp", it.timestamp)
+            obj.put("provider", it.provider.wireName)
             arr.put(obj)
         }
         prefs.edit().putString("pending_recordings", arr.toString()).apply()

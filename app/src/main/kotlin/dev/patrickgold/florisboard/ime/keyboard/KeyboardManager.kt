@@ -274,7 +274,9 @@ class KeyboardManager(
                 // sidecar and hand it to the archive queue: without this it would be stranded on
                 // the phone forever, transcript-less and invisible to the uploader.
                 if (cancelled != null) {
-                    val sidecar = writeSidecar(cancelled, "", "", org.json.JSONObject(), capture)
+                    val sidecar = writeSidecar(
+                        cancelled, "", "", null, "none", "none", org.json.JSONObject(), capture,
+                    )
                     if (sidecar != null) {
                         archiveQueue.enqueue(cancelled, sidecar)
                         scope.launch(Dispatchers.IO) { runCatching { archiveQueue.drain() } }
@@ -320,6 +322,9 @@ class KeyboardManager(
         audioFile: File,
         rawText: String,
         displayText: String,
+        verbatimText: String?,
+        provider: String,
+        model: String,
         engineResponse: org.json.JSONObject,
         capture: Recorder.CaptureMetadata?,
     ): File? {
@@ -341,11 +346,12 @@ class KeyboardManager(
                 )
                 put("transcript_raw", rawText)
                 put("transcript_display", displayText)
+                put("transcript_verbatim", verbatimText ?: org.json.JSONObject.NULL)
                 put("transcribed", rawText.isNotEmpty())
                 put("capture", capture?.toJson() ?: org.json.JSONObject.NULL)
                 put("engine", org.json.JSONObject().apply {
-                    put("provider", "openai")
-                    put("model", "whisper-1")
+                    put("provider", provider)
+                    put("model", model)
                     put("via", "brokentooth-relay")
                     put("response", engineResponse)
                 })
@@ -364,12 +370,16 @@ class KeyboardManager(
         }
     }
 
-    private fun performTranscription(audioFile: File) {
+    private fun performTranscription(
+        audioFile: File,
+        provider: dev.patrickgold.florisboard.ime.voice.VoiceManager.TranscriptionProvider =
+            appContext.voiceManager().value.transcriptionProvider.value,
+    ) {
         activeState.isTranscribing = true
         val voiceManager = appContext.voiceManager().value
         val capture = recorder?.lastCapture
         scope.launch {
-            val result = WhisperClient.transcribe(audioFile)
+            val result = WhisperClient.transcribe(audioFile, provider)
             result.onSuccess { transcription ->
                 val rawText = transcription.text
                 val fixed = applyDictionaryFixups(rawText)
@@ -380,7 +390,10 @@ class KeyboardManager(
                 voiceManager.addTranscription(fixed)
                 voiceManager.removePending(audioFile.absolutePath)
 
-                val sidecar = writeSidecar(audioFile, rawText, fixed, transcription.raw, capture)
+                val sidecar = writeSidecar(
+                    audioFile, rawText, fixed, transcription.verbatimText,
+                    transcription.provider, transcription.model, transcription.raw, capture,
+                )
                 if (sidecar != null) {
                     archiveQueue.enqueue(audioFile, sidecar)
                     scope.launch(Dispatchers.IO) { runCatching { archiveQueue.drain() } }
@@ -396,7 +409,7 @@ class KeyboardManager(
             }.onFailure {
                 activeState.isTranscribing = false
                 // Queue for later retry
-                voiceManager.addPending(audioFile)
+                voiceManager.addPending(audioFile, provider)
                 // Keep in VOICE mode so user can retry
                 scope.launch {
                     appContext.showShortToast("Transcription failed — saved for retry")
@@ -414,7 +427,7 @@ class KeyboardManager(
         val file = File(first.filePath)
         if (file.exists()) {
             lastAudioFile = file
-            performTranscription(file)
+            performTranscription(file, first.provider)
         } else {
             voiceManager.removePending(first.filePath)
         }

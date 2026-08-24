@@ -2,6 +2,7 @@ package dev.patrickgold.florisboard.net
 
 import dev.patrickgold.florisboard.BuildConfig
 import dev.patrickgold.florisboard.audio.WavTools
+import dev.patrickgold.florisboard.ime.voice.VoiceManager.TranscriptionProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
@@ -29,7 +30,13 @@ object WhisperClient {
      * detectors, and they are only obtainable at transcription time — regenerating them later
      * means paying for the audio a second time.
      */
-    data class Transcription(val text: String, val raw: JSONObject)
+    data class Transcription(
+        val text: String,
+        val verbatimText: String?,
+        val provider: String,
+        val model: String,
+        val raw: JSONObject,
+    )
 
     // Recordings queued before the switch to lossless capture are still .mp4, and the retry queue
     // will replay them, so both formats have to be sent with the right content type.
@@ -62,7 +69,7 @@ object WhisperClient {
         }
     }
 
-    suspend fun transcribe(file: File): Result<Transcription> = withContext(Dispatchers.IO) {
+    suspend fun transcribe(file: File, provider: TranscriptionProvider): Result<Transcription> = withContext(Dispatchers.IO) {
         var temp: File? = null
         try {
             if (BuildConfig.WHISPER_RELAY_URL.isBlank() || BuildConfig.WHISPER_RELAY_TOKEN.isBlank()) {
@@ -86,6 +93,7 @@ object WhisperClient {
                 .addFormDataPart("response_format", "verbose_json")
                 .addFormDataPart("timestamp_granularities[]", "word")
                 .addFormDataPart("timestamp_granularities[]", "segment")
+                .addFormDataPart("transcription_provider", provider.wireName)
                 .build()
 
             val request = Request.Builder()
@@ -105,9 +113,19 @@ object WhisperClient {
                     JSONObject(body)
                 } catch (_: Exception) {
                     // Older relay builds answered with bare text; still usable as a transcript.
-                    return@withContext Result.success(Transcription(body, JSONObject().put("text", body)))
+                    return@withContext Result.success(
+                        Transcription(body, null, provider.wireName, "unknown", JSONObject().put("text", body)),
+                    )
                 }
-                Result.success(Transcription(json.optString("text"), json))
+                Result.success(
+                    Transcription(
+                        text = json.optString("text"),
+                        verbatimText = json.optString("verbatim_text").takeIf { it.isNotBlank() },
+                        provider = json.optString("provider", provider.wireName),
+                        model = json.optString("model", "unknown"),
+                        raw = json,
+                    ),
+                )
             }
         } catch (e: Exception) {
             Result.failure(e)
