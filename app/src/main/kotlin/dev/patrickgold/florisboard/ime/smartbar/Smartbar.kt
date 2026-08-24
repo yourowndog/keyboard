@@ -506,6 +506,7 @@ private fun SmartbarMainRow(modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val keyboardManager by context.keyboardManager()
     val nlpManager by context.nlpManager()
+    val voiceManager by context.voiceManager()
     val scope = rememberCoroutineScope()
 
     val state by keyboardManager.activeState.collectAsState()
@@ -679,6 +680,31 @@ private fun SmartbarMainRow(modifier: Modifier = Modifier) {
         }
     }
 
+    @Composable
+    fun ProviderSelector() {
+        var expanded by remember { mutableStateOf(false) }
+        Box {
+            SnyggIconButton(
+                elementName = FlorisImeUi.SmartbarSharedActionsToggle.elementName,
+                onClick = { expanded = true },
+                modifier = Modifier.sizeIn(maxHeight = FlorisImeSizing.smartbarHeight).aspectRatio(1f),
+            ) {
+                SnyggIcon(imageVector = Icons.Default.Cloud)
+            }
+            DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                VoiceManager.TranscriptionProvider.entries.forEach { provider ->
+                    DropdownMenuItem(
+                        text = { Text(provider.label) },
+                        onClick = {
+                            voiceManager.setTranscriptionProvider(provider)
+                            expanded = false
+                        },
+                    )
+                }
+            }
+        }
+    }
+
     SideEffect {
         if (!shouldAnimate) {
             scope.launch {
@@ -718,9 +744,15 @@ private fun SmartbarMainRow(modifier: Modifier = Modifier) {
                 if (!flipToggles) {
                     if (uiMode != ImeUiMode.VOICE) SharedActionsToggle()
                     CenterContent()
-                    if (uiMode != ImeUiMode.VOICE) StickyAction()
+                    if (uiMode != ImeUiMode.VOICE) {
+                        StickyAction()
+                        ProviderSelector()
+                    }
                 } else {
-                    if (uiMode != ImeUiMode.VOICE) StickyAction()
+                    if (uiMode != ImeUiMode.VOICE) {
+                        ProviderSelector()
+                        StickyAction()
+                    }
                     CenterContent()
                     if (uiMode != ImeUiMode.VOICE) SharedActionsToggle()
                 }
@@ -730,9 +762,15 @@ private fun SmartbarMainRow(modifier: Modifier = Modifier) {
                 if (!flipToggles) {
                     if (uiMode != ImeUiMode.VOICE) ExtendedActionsToggle()
                     CenterContent()
-                    if (uiMode != ImeUiMode.VOICE) StickyAction()
+                    if (uiMode != ImeUiMode.VOICE) {
+                        StickyAction()
+                        ProviderSelector()
+                    }
                 } else {
-                    if (uiMode != ImeUiMode.VOICE) StickyAction()
+                    if (uiMode != ImeUiMode.VOICE) {
+                        ProviderSelector()
+                        StickyAction()
+                    }
                     CenterContent()
                     if (uiMode != ImeUiMode.VOICE) ExtendedActionsToggle()
                 }
