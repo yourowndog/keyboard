@@ -33,6 +33,7 @@ FlorisApplication
 
 FlorisImeService
   -> owns the Android InputMethodService lifecycle
+  -> delegates IME visibility to Android; Back hides the window and a focused editor may request it again
   -> initializes keyboard, editor, NLP, themes, harvesting, and voice support
 
 FlorisImeUi / Compose layouts
@@ -90,4 +91,3 @@ NlpManager
 Begin with this map, then read the guide for the subsystem being changed. Do
 not load root journals, conversation transcripts, generated harvest reports,
 or shelved training material merely to orient to the current code.
-
