@@ -79,13 +79,19 @@ object WhisperClient {
 
             val (upload, isTemp) = prepareUpload(file)
             if (isTemp) temporaryFiles.add(upload)
-            val uploads = if (upload.length() > WavTools.MAX_UPLOAD_BYTES) {
-                if (upload.extension.lowercase() != "wav") {
+            val isWavUpload = upload.extension.equals("wav", ignoreCase = true)
+            val maxChunkBytes = if (provider == TranscriptionProvider.TITAN_LOCAL && isWavUpload) {
+                WavTools.TITAN_SAFE_CHUNK_BYTES
+            } else {
+                WavTools.SAFE_UPLOAD_BYTES
+            }
+            val uploads = if (upload.length() > maxChunkBytes) {
+                if (!isWavUpload) {
                     return@withContext Result.failure(
                         Exception("Recording too long to transcribe (${upload.length() / (1024 * 1024)} MiB)"),
                     )
                 }
-                WavTools.splitForUpload(upload).also { chunks ->
+                WavTools.splitForUpload(upload, maxChunkBytes).also { chunks ->
                     temporaryFiles.addAll(chunks.map { it.file })
                 }
             } else {

@@ -30,9 +30,11 @@ copied or explicitly inserted from Voice Inbox.
 
 Each WAV receives a `VoiceTake` row in the local Room `voice_takes.db` as soon
 as capture starts. The row progresses through Recording, Saved, Transcribing,
-Ready, or Failed independently of the Compose view. Pending retries retain the
-provider selected for the original failed take and run sequentially so recovery
-cannot fan out into many simultaneous Titan requests.
+Ready, or Failed independently of the Compose view. Automatic pending recovery
+retains the provider selected for the original failed take and runs sequentially
+so recovery cannot fan out into many simultaneous Titan requests. A manual
+Voice Inbox Retry instead uses the provider currently selected in the voice UI,
+which makes an explicit switch from a creditless or unavailable provider useful.
 
 Voice capture is owned by the application-scoped `KeyboardManager`, not by a
 Compose view. A non-finishing input-view restart can therefore reattach to the
@@ -49,11 +51,21 @@ untranscribed WAVs in `Recordings/Whisper_Vault` are queued for Titan. A WAV
 whose recorder placeholder header is still all zeroes can be repaired from its
 intact PCM length; recovery rewrites only the first 44 bytes and refuses unknown
 nonzero headers. A legacy take which remains larger than the relay limit after
-16 kHz downsampling is divided at quiet PCM windows; chunk timestamps are
-shifted back to the original timeline and the full responses remain in the
-sidecar. Successful takes enter the existing Titan archive queue. Phone
-audio is retained until Titan returns the matching checksum and the existing
-24-hour grace period expires; Voice Inbox does not manually delete recordings.
+16 kHz downsampling is divided at quiet PCM windows. Titan Local uses the same
+path for all audio longer than 20 seconds, keeping each request below
+CrisperWhisper's fragile 30-second longform path. Chunk timestamps are shifted
+back to the original timeline and the full responses remain in the sidecar.
+
+The Titan adapter treats a CUDA illegal-memory-access as process-fatal. It
+flushes a `503`, exits nonzero, and lets the system service's
+`Restart=on-failure` policy create a clean CUDA context; otherwise the process
+would remain alive while every later request failed. Its tracked source is
+`/opt/brokentooth-relay/crisperwhisper_service.py` on weakling and its deployed
+copy is the same path on Titan.
+
+Successful takes enter the existing Titan archive queue. Phone audio is
+retained until Titan returns the matching checksum and the existing 24-hour
+grace period expires; Voice Inbox does not manually delete recordings.
 
 ## ONNX autocorrect scorer
 

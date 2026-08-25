@@ -502,9 +502,9 @@ class KeyboardManager(
     fun retryVoiceTake(take: VoiceTake) {
         val audioFile = take.audioPath?.let(::File) ?: return
         if (!audioFile.exists()) return
-        val provider = VoiceManager.TranscriptionProvider.entries
-            .firstOrNull { it.wireName == take.provider }
-            ?: VoiceManager.TranscriptionProvider.TITAN_LOCAL
+        // A manual retry is an explicit user action and follows the provider currently shown in
+        // the voice UI. Automatic pending recovery remains pinned to the take's saved provider.
+        val provider = appContext.voiceManager().value.transcriptionProvider.value
         performTranscription(audioFile, provider, deliverToEditor = false)
     }
 
