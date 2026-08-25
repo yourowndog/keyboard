@@ -67,6 +67,8 @@ import dev.patrickgold.florisboard.ime.text.key.KeyType
 import dev.patrickgold.florisboard.ime.text.key.UtilityKeyAction
 import dev.patrickgold.florisboard.ime.text.keyboard.TextKeyData
 import dev.patrickgold.florisboard.ime.text.keyboard.TextKeyboardCache
+import dev.patrickgold.florisboard.ime.voice.VoiceManager
+import dev.patrickgold.florisboard.ime.voice.VoiceTake
 import dev.patrickgold.florisboard.lib.devtools.LogTopic
 import dev.patrickgold.florisboard.lib.devtools.flogError
 import dev.patrickgold.florisboard.lib.devtools.flogWarning
@@ -135,15 +137,32 @@ class KeyboardManager(
 
 
 
-    private var isRecording = false
     private var recorder: Recorder? = null
+    private val voiceCaptureLock = Any()
     private var lastAudioFile: File? = null
+    private var activeCaptureProvider = VoiceManager.TranscriptionProvider.OPENAI_CLOUD
     private val archiveQueue by lazy {
         dev.patrickgold.florisboard.ime.voice.ArchiveQueue(appContext)
     }
     private val _whisperAmplitude = MutableStateFlow(0f)
     val whisperAmplitude = _whisperAmplitude.asStateFlow()
     private var amplitudePollingJob: Job? = null
+    private val transcriptionMutex = Mutex()
+    @Volatile private var foregroundTranscriptionFile: String? = null
+    private var pendingDrainJob: Job? = null
+
+    private data class VoiceTranscriptionOutcome(
+        val cleanedText: String,
+        val verbatimText: String?,
+    )
+
+    init {
+        pendingDrainJob = scope.launch(Dispatchers.IO) {
+            val voiceManager = appContext.voiceManager().value
+            voiceManager.initializeDurableStateAndRecover()
+            drainPendingSequentially()
+        }
+    }
 
     private fun loadInitialLayout(): LayoutPack {
         // Return a blank layout pack to force the KeyboardManager to use the
@@ -179,14 +198,34 @@ class KeyboardManager(
     }
 
     private fun startVoiceCapture(context: Context) {
-        if (recorder == null) {
-            recorder = Recorder(context)
-        }
-        recorder?.start()
-        activeState.batchEdit {
-            it.isRecording = true
-            it.isTranscribing = false
-            it.isPaused = false
+        synchronized(voiceCaptureLock) {
+            // Lifecycle teardown used to reset imeUiMode without clearing this flag. A second
+            // mic press then replaced Recorder's live file/thread handles and orphaned the take.
+            if (activeState.isRecording) {
+                activeState.imeUiMode = ImeUiMode.VOICE
+                return
+            }
+            val captureRecorder = recorder ?: Recorder(context).also { recorder = it }
+            val startedFile = runCatching { captureRecorder.start() }.getOrElse {
+                activeState.batchEdit {
+                    it.isRecording = false
+                    it.isPaused = false
+                    it.imeUiMode = ImeUiMode.TEXT
+                }
+                scope.launch {
+                    appContext.showLongToast("Voice recording could not start; no active take was replaced")
+                }
+                return
+            }
+            val voiceManager = appContext.voiceManager().value
+            activeCaptureProvider = voiceManager.transcriptionProvider.value
+            runCatching { voiceManager.recordCaptureStarted(startedFile, activeCaptureProvider) }
+            activeState.batchEdit {
+                it.isRecording = true
+                it.isTranscribing = false
+                it.isPaused = false
+                it.imeUiMode = ImeUiMode.VOICE
+            }
         }
         amplitudePollingJob?.cancel()
         amplitudePollingJob = scope.launch(Dispatchers.Default) {
@@ -238,20 +277,42 @@ class KeyboardManager(
         stopVoiceCapture(appContext)
     }
 
-    private fun stopVoiceCapture(context: Context) {
-        val audioFile = try {
-            recorder?.stop()
-        } catch (e: Exception) {
-            null
+    fun hasActiveVoiceSession(): Boolean =
+        activeState.isRecording || activeState.isTranscribing
+
+    /** Finalizes a take before its input connection/window/service disappears. */
+    fun finalizeVoiceCaptureForLifecycle() {
+        if (!activeState.isRecording) return
+        stopVoiceCapture(appContext, deliverToEditor = false)
+    }
+
+    /** A completed foreground request may keep running, but it no longer owns an editor. */
+    fun detachVoiceTranscriptionForLifecycle() {
+        foregroundTranscriptionFile = null
+        activeState.isTranscribing = false
+    }
+
+    private fun stopVoiceCapture(context: Context, deliverToEditor: Boolean = true) {
+        val stopped = synchronized(voiceCaptureLock) {
+            if (!activeState.isRecording) return
+            val stoppedFile = try {
+                recorder?.stop()?.let { file -> Triple(file, recorder?.lastCapture, activeCaptureProvider) }
+            } catch (e: Exception) {
+                null
+            }
+            amplitudePollingJob?.cancel()
+            activeState.batchEdit {
+                it.isRecording = false
+                it.isPaused = false
+            }
+            stoppedFile
         }
-        amplitudePollingJob?.cancel()
-        activeState.batchEdit {
-            it.isRecording = false
-            it.isPaused = false
-        }
-        if (audioFile != null) {
+        if (stopped != null) {
+            val (audioFile, capture, provider) = stopped
             lastAudioFile = audioFile
-            performTranscription(audioFile)
+            val voiceManager = appContext.voiceManager().value
+            runCatching { voiceManager.recordCaptureSaved(audioFile, capture) }
+            performTranscription(audioFile, provider, capture, deliverToEditor)
         } else {
             activeState.imeUiMode = ImeUiMode.TEXT
         }
@@ -260,30 +321,16 @@ class KeyboardManager(
     fun retryTranscription() {
         val file = lastAudioFile
         if (file != null && !activeState.isRecording && !activeState.isTranscribing) {
-            performTranscription(file)
+            performTranscription(file, deliverToEditor = true)
         }
     }
 
     fun cancelVoiceInput() {
         amplitudePollingJob?.cancel()
-        try {
-            if (activeState.isRecording) {
-                val cancelled = recorder?.stop()
-                val capture = recorder?.lastCapture
-                // A cancelled take is still the user's voice, and it is already on disk. Give it a
-                // sidecar and hand it to the archive queue: without this it would be stranded on
-                // the phone forever, transcript-less and invisible to the uploader.
-                if (cancelled != null) {
-                    val sidecar = writeSidecar(
-                        cancelled, "", "", null, "none", "none", org.json.JSONObject(), capture,
-                    )
-                    if (sidecar != null) {
-                        archiveQueue.enqueue(cancelled, sidecar)
-                        scope.launch(Dispatchers.IO) { runCatching { archiveQueue.drain() } }
-                    }
-                }
-            }
-        } catch (e: Exception) { }
+        foregroundTranscriptionFile = null
+        if (activeState.isRecording) {
+            stopVoiceCapture(appContext, deliverToEditor = false)
+        }
         activeState.batchEdit {
             it.isRecording = false
             it.isTranscribing = false
@@ -372,64 +419,114 @@ class KeyboardManager(
 
     private fun performTranscription(
         audioFile: File,
-        provider: dev.patrickgold.florisboard.ime.voice.VoiceManager.TranscriptionProvider =
+        provider: VoiceManager.TranscriptionProvider =
             appContext.voiceManager().value.transcriptionProvider.value,
+        capture: Recorder.CaptureMetadata? = null,
+        deliverToEditor: Boolean,
     ) {
-        activeState.isTranscribing = true
         val voiceManager = appContext.voiceManager().value
-        val capture = recorder?.lastCapture
+        // Register the file durably before the network request. If the IME/service/process goes
+        // away during transcription, retryAllPending() can still recover this already-finalized WAV.
+        voiceManager.addPending(audioFile, provider)
+        if (deliverToEditor) {
+            foregroundTranscriptionFile = audioFile.absolutePath
+            activeState.isTranscribing = true
+        }
         scope.launch {
-            val result = WhisperClient.transcribe(audioFile, provider)
-            result.onSuccess { transcription ->
-                val rawText = transcription.text
-                val fixed = applyDictionaryFixups(rawText)
-
-                // Tag this as voice input for harvest analysis
-                dev.patrickgold.florisboard.ime.nlp.HarvestManager.setSessionSource("VOICE")
-                editorInstance.commitText(fixed)
-                voiceManager.addTranscription(fixed)
-                voiceManager.removePending(audioFile.absolutePath)
-
-                val sidecar = writeSidecar(
-                    audioFile, rawText, fixed, transcription.verbatimText,
-                    transcription.provider, transcription.model, transcription.raw, capture,
+            val outcome = transcribeTake(audioFile, provider, capture)
+            val stillOwnsEditor = deliverToEditor &&
+                foregroundTranscriptionFile == audioFile.absolutePath &&
+                activeState.isTranscribing
+            if (outcome != null && stillOwnsEditor) {
+                val text = voiceManager.outputMode.value.select(
+                    outcome.cleanedText,
+                    outcome.verbatimText,
                 )
-                if (sidecar != null) {
-                    archiveQueue.enqueue(audioFile, sidecar)
-                    scope.launch(Dispatchers.IO) { runCatching { archiveQueue.drain() } }
+                if (text.isNotBlank()) {
+                    dev.patrickgold.florisboard.ime.nlp.HarvestManager.setSessionSource("VOICE")
+                    editorInstance.commitText(text)
+                    dev.patrickgold.florisboard.ime.nlp.HarvestManager.flushSession()
+                    dev.patrickgold.florisboard.ime.nlp.HarvestManager.setSessionSource("TYPING")
                 }
-
-                dev.patrickgold.florisboard.ime.nlp.HarvestManager.flushSession()
-                dev.patrickgold.florisboard.ime.nlp.HarvestManager.setSessionSource("TYPING")
-
+                foregroundTranscriptionFile = null
                 activeState.batchEdit {
                     it.isTranscribing = false
                     it.imeUiMode = ImeUiMode.TEXT
                 }
-            }.onFailure {
+            } else if (outcome == null && stillOwnsEditor) {
+                foregroundTranscriptionFile = null
                 activeState.isTranscribing = false
-                // Queue for later retry
-                voiceManager.addPending(audioFile, provider)
-                // Keep in VOICE mode so user can retry
-                scope.launch {
-                    appContext.showShortToast("Transcription failed — saved for retry")
-                }
+                appContext.showShortToast("Transcription failed — saved in Voice Inbox")
             }
         }
     }
 
-    fun retryAllPending() {
+    private suspend fun transcribeTake(
+        audioFile: File,
+        provider: VoiceManager.TranscriptionProvider,
+        capture: Recorder.CaptureMetadata?,
+    ): VoiceTranscriptionOutcome? = transcriptionMutex.withLock {
         val voiceManager = appContext.voiceManager().value
-        val pending = voiceManager.getPendingFiles()
-        if (pending.isEmpty() || activeState.isTranscribing) return
-        // Retry the first pending item
-        val first = pending.first()
-        val file = File(first.filePath)
-        if (file.exists()) {
-            lastAudioFile = file
-            performTranscription(file, first.provider)
-        } else {
-            voiceManager.removePending(first.filePath)
+        voiceManager.markTranscribing(audioFile, provider)
+        val transcription = WhisperClient.transcribe(audioFile, provider).getOrElse { error ->
+            voiceManager.markFailed(audioFile, provider, error.message ?: error.javaClass.simpleName)
+            return@withLock null
+        }
+        val rawText = transcription.text
+        val cleanedText = applyDictionaryFixups(rawText)
+        voiceManager.markReady(
+            file = audioFile,
+            provider = transcription.provider,
+            cleaned = cleanedText,
+            verbatim = transcription.verbatimText,
+            raw = rawText,
+            durationMs = capture?.durationMs,
+        )
+        val sidecar = writeSidecar(
+            audioFile, rawText, cleanedText, transcription.verbatimText,
+            transcription.provider, transcription.model, transcription.raw, capture,
+        )
+        if (sidecar == null) {
+            voiceManager.markFailed(audioFile, provider, "Metadata file could not be written")
+            return@withLock null
+        }
+        if (runCatching { archiveQueue.enqueue(audioFile, sidecar) }.isFailure) {
+            voiceManager.markFailed(audioFile, provider, "Titan archive queue rejected the recording")
+            return@withLock null
+        }
+        voiceManager.removePending(audioFile.absolutePath)
+        runCatching { archiveQueue.drain() }
+        VoiceTranscriptionOutcome(cleanedText, transcription.verbatimText)
+    }
+
+    fun retryVoiceTake(take: VoiceTake) {
+        val audioFile = take.audioPath?.let(::File) ?: return
+        if (!audioFile.exists()) return
+        val provider = VoiceManager.TranscriptionProvider.entries
+            .firstOrNull { it.wireName == take.provider }
+            ?: VoiceManager.TranscriptionProvider.TITAN_LOCAL
+        performTranscription(audioFile, provider, deliverToEditor = false)
+    }
+
+    private suspend fun drainPendingSequentially() {
+        val voiceManager = appContext.voiceManager().value
+        while (true) {
+            val pending = voiceManager.getPendingFiles().firstOrNull() ?: return
+            val audioFile = File(pending.filePath)
+            if (!audioFile.exists()) {
+                voiceManager.markFailed(audioFile, pending.provider, "Audio file is no longer available")
+                voiceManager.removePending(pending.filePath)
+                continue
+            }
+            if (transcribeTake(audioFile, pending.provider, capture = null) == null) return
+        }
+    }
+
+    fun retryAllPending() {
+        if (pendingDrainJob?.isActive == true) return
+        pendingDrainJob = scope.launch(Dispatchers.IO) {
+            appContext.voiceManager().value.initializeDurableStateAndRecover()
+            drainPendingSequentially()
         }
     }
 

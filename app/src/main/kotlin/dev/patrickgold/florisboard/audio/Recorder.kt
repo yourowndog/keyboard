@@ -166,7 +166,11 @@ class Recorder(private val context: Context) {
     }
 
     @Suppress("MissingPermission")
+    @Synchronized
     fun start(): File {
+        if (isRecording) {
+            throw IOException("Refusing to replace an active recording")
+        }
         isPaused = false
         peakAmplitude = 0
         clippedSamples = 0L
@@ -249,6 +253,7 @@ class Recorder(private val context: Context) {
         if (isRecording) isPaused = false
     }
 
+    @Synchronized
     fun stop(): File {
         val file = outputFile ?: throw IOException("Output file not set")
         val durationMs = if (startedAtMs == 0L) 0L else System.currentTimeMillis() - startedAtMs
@@ -256,11 +261,15 @@ class Recorder(private val context: Context) {
         isRecording = false
         isPaused = false
 
+        audioRecord?.let { record ->
+            runCatching { if (record.recordingState == AudioRecord.RECORDSTATE_RECORDING) record.stop() }
+        }
+        // Stopping AudioRecord first unblocks a native read so the writer can flush/close before
+        // the WAV header is patched. This is especially important during abrupt IME teardown.
         runCatching { readerThread?.join(2_000) }
         readerThread = null
 
         audioRecord?.let { record ->
-            runCatching { if (record.recordingState == AudioRecord.RECORDSTATE_RECORDING) record.stop() }
             runCatching { record.release() }
         }
         audioRecord = null

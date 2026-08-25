@@ -47,8 +47,18 @@ tune several systems at once during this pass.
 
 - Glide several common and custom words and confirm the active runtime asset is
   used without a crash or pathological result.
-- Run one voice transcription and one explicit Gemma action; confirm failures
-  are surfaced cleanly if their external services are unavailable.
+- Start a voice take, dictate long enough to recognize it, and rotate the device.
+  If Android only recreates the input view, confirm the recording UI reattaches
+  and the take continues without creating a second file.
+- Repeat with a real interruption such as locking the phone, hiding the IME, or
+  moving focus away. Confirm capture stops, the take appears in Voice Inbox,
+  and its result is not inserted into a different editor when the keyboard
+  returns.
+- Long-press the voice key to open Voice Inbox. Confirm a ready take can switch
+  between Cleaned and Verbatim and that Copy and Insert use the displayed text;
+  confirm a failed take exposes Retry.
+- Run one explicit Gemma action; confirm failures are surfaced cleanly if its
+  external service is unavailable.
 
 ## Harvest integrity
 

@@ -10,6 +10,7 @@ import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.asRequestBody
+import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
 import java.util.concurrent.TimeUnit
@@ -70,53 +71,75 @@ object WhisperClient {
     }
 
     suspend fun transcribe(file: File, provider: TranscriptionProvider): Result<Transcription> = withContext(Dispatchers.IO) {
-        var temp: File? = null
+        val temporaryFiles = mutableListOf<File>()
         try {
             if (BuildConfig.WHISPER_RELAY_URL.isBlank() || BuildConfig.WHISPER_RELAY_TOKEN.isBlank()) {
                 return@withContext Result.failure(Exception("Whisper relay is not configured"))
             }
 
             val (upload, isTemp) = prepareUpload(file)
-            if (isTemp) temp = upload
-
-            if (upload.length() > WavTools.MAX_UPLOAD_BYTES) {
-                return@withContext Result.failure(
-                    Exception("Recording too long to transcribe (${upload.length() / (1024 * 1024)} MiB, limit 25 MiB)")
-                )
+            if (isTemp) temporaryFiles.add(upload)
+            val uploads = if (upload.length() > WavTools.MAX_UPLOAD_BYTES) {
+                if (upload.extension.lowercase() != "wav") {
+                    return@withContext Result.failure(
+                        Exception("Recording too long to transcribe (${upload.length() / (1024 * 1024)} MiB)"),
+                    )
+                }
+                WavTools.splitForUpload(upload).also { chunks ->
+                    temporaryFiles.addAll(chunks.map { it.file })
+                }
+            } else {
+                listOf(WavTools.UploadChunk(upload, 0L))
             }
 
-            val requestBody = MultipartBody.Builder()
-                .setType(MultipartBody.FORM)
-                .addFormDataPart("file", upload.name, upload.asRequestBody(mimeTypeFor(upload).toMediaType()))
-                // verbose_json is the only format that carries timestamps and quality fields,
-                // and timestamp_granularities requires it.
-                .addFormDataPart("response_format", "verbose_json")
-                .addFormDataPart("timestamp_granularities[]", "word")
-                .addFormDataPart("timestamp_granularities[]", "segment")
-                .addFormDataPart("transcription_provider", provider.wireName)
-                .build()
+            val parts = mutableListOf<Pair<WavTools.UploadChunk, Transcription>>()
+            uploads.forEach { chunk ->
+                val result = requestTranscription(chunk.file, provider)
+                if (result.isFailure) {
+                    return@withContext Result.failure(result.exceptionOrNull() ?: Exception("Transcription failed"))
+                }
+                parts.add(chunk to result.getOrThrow())
+            }
+            Result.success(combineTranscriptions(parts))
+        } catch (e: Exception) {
+            Result.failure(e)
+        } finally {
+            temporaryFiles.distinct().forEach { runCatching { it.delete() } }
+        }
+    }
 
-            val request = Request.Builder()
-                .url(BuildConfig.WHISPER_RELAY_URL)
-                .header("Authorization", "Bearer ${BuildConfig.WHISPER_RELAY_TOKEN}")
-                .header("Accept", "application/json")
-                .post(requestBody)
-                .build()
+    private fun requestTranscription(file: File, provider: TranscriptionProvider): Result<Transcription> {
+        if (file.length() > WavTools.MAX_UPLOAD_BYTES) {
+            return Result.failure(Exception("Upload chunk exceeds the 25 MiB limit"))
+        }
+        val requestBody = MultipartBody.Builder()
+            .setType(MultipartBody.FORM)
+            .addFormDataPart("file", file.name, file.asRequestBody(mimeTypeFor(file).toMediaType()))
+            // verbose_json is the only format that carries timestamps and quality fields,
+            // and timestamp_granularities requires it.
+            .addFormDataPart("response_format", "verbose_json")
+            .addFormDataPart("timestamp_granularities[]", "word")
+            .addFormDataPart("timestamp_granularities[]", "segment")
+            .addFormDataPart("transcription_provider", provider.wireName)
+            .build()
+        val request = Request.Builder()
+            .url(BuildConfig.WHISPER_RELAY_URL)
+            .header("Authorization", "Bearer ${BuildConfig.WHISPER_RELAY_TOKEN}")
+            .header("Accept", "application/json")
+            .post(requestBody)
+            .build()
 
+        return try {
             client.newCall(request).execute().use { response ->
                 if (!response.isSuccessful) {
                     val errorBody = response.body?.string()?.take(200) ?: ""
-                    return@withContext Result.failure(Exception("Relay error: ${response.code} $errorBody"))
+                    return Result.failure(Exception("Relay error: ${response.code} $errorBody"))
                 }
                 val body = response.body?.string().orEmpty()
-                val json = try {
-                    JSONObject(body)
-                } catch (_: Exception) {
-                    // Older relay builds answered with bare text; still usable as a transcript.
-                    return@withContext Result.success(
+                val json = runCatching { JSONObject(body) }.getOrNull()
+                    ?: return Result.success(
                         Transcription(body, null, provider.wireName, "unknown", JSONObject().put("text", body)),
                     )
-                }
                 Result.success(
                     Transcription(
                         text = json.optString("text"),
@@ -129,8 +152,64 @@ object WhisperClient {
             }
         } catch (e: Exception) {
             Result.failure(e)
-        } finally {
-            temp?.let { runCatching { it.delete() } }
+        }
+    }
+
+    private fun combineTranscriptions(
+        parts: List<Pair<WavTools.UploadChunk, Transcription>>,
+    ): Transcription {
+        require(parts.isNotEmpty())
+        if (parts.size == 1) return parts.first().second
+
+        fun joinText(values: List<String>): String = values
+            .map { it.trim() }
+            .filter { it.isNotEmpty() }
+            .joinToString(" ")
+
+        val cleaned = joinText(parts.map { it.second.text })
+        val verbatim = parts.mapNotNull { it.second.verbatimText }.let { values ->
+            // A silent chunk legitimately has no verbatim text. Preserve the spoken chunks;
+            // only cloud responses with no verbatim extension at all should remain null.
+            if (values.isNotEmpty()) joinText(values) else null
+        }
+        val first = parts.first().second
+        val raw = JSONObject().apply {
+            put("text", cleaned)
+            put("verbatim_text", verbatim ?: JSONObject.NULL)
+            put("provider", first.provider)
+            put("model", first.model)
+            put("chunked", true)
+            put("chunks", JSONArray().apply {
+                parts.forEachIndexed { index, (chunk, transcription) ->
+                    put(JSONObject().apply {
+                        put("index", index)
+                        put("offset_ms", chunk.offsetMs)
+                        put("response", transcription.raw)
+                    })
+                }
+            })
+            listOf("words", "verbatim_words", "segments").forEach { key ->
+                val merged = mergeTimedArrays(parts, key)
+                if (merged.length() > 0) put(key, merged)
+            }
+        }
+        return Transcription(cleaned, verbatim, first.provider, first.model, raw)
+    }
+
+    private fun mergeTimedArrays(
+        parts: List<Pair<WavTools.UploadChunk, Transcription>>,
+        key: String,
+    ): JSONArray = JSONArray().apply {
+        parts.forEach { (chunk, transcription) ->
+            val offsetSeconds = chunk.offsetMs / 1_000.0
+            val values = transcription.raw.optJSONArray(key) ?: return@forEach
+            for (index in 0 until values.length()) {
+                val source = values.optJSONObject(index) ?: continue
+                val shifted = JSONObject(source.toString())
+                if (shifted.has("start")) shifted.put("start", shifted.optDouble("start") + offsetSeconds)
+                if (shifted.has("end")) shifted.put("end", shifted.optDouble("end") + offsetSeconds)
+                put(shifted)
+            }
         }
     }
 }

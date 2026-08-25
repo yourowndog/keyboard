@@ -1,6 +1,7 @@
 package dev.patrickgold.florisboard.audio
 
 import java.io.File
+import java.io.FileOutputStream
 import java.io.RandomAccessFile
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -18,12 +19,17 @@ object WavTools {
 
     const val API_SAMPLE_RATE = 16_000
     const val MAX_UPLOAD_BYTES = 25 * 1024 * 1024
+    private const val UPLOAD_SAFETY_BYTES = 128 * 1024
+    const val SAFE_UPLOAD_BYTES = MAX_UPLOAD_BYTES - UPLOAD_SAFETY_BYTES
 
     /** Longest capture that still fits the upload cap once downsampled, in milliseconds. */
     val MAX_CAPTURE_MS: Long =
-        ((MAX_UPLOAD_BYTES - 44).toLong() * 1000L) / (API_SAMPLE_RATE * 2L)
+        ((SAFE_UPLOAD_BYTES - 44).toLong() * 1000L) / (API_SAMPLE_RATE * 2L)
 
     private const val HEADER_BYTES = 44
+    private const val API_BYTES_PER_SECOND = API_SAMPLE_RATE * 2
+
+    data class UploadChunk(val file: File, val offsetMs: Long)
 
     /**
      * Writes a 16 kHz mono copy of [source] to [target].
@@ -85,6 +91,114 @@ object WavTools {
             }
         }
         return target.length() > HEADER_BYTES
+    }
+
+    /**
+     * Splits a prepared 16 kHz upload at the quietest 100 ms window near each size boundary.
+     * The source archive is never touched. Chunk offsets let the caller restore absolute word
+     * and segment timestamps when it combines the transcription responses.
+     */
+    fun splitForUpload(source: File, maxBytes: Int = SAFE_UPLOAD_BYTES): List<UploadChunk> {
+        require(maxBytes in (HEADER_BYTES + API_BYTES_PER_SECOND)..MAX_UPLOAD_BYTES)
+        RandomAccessFile(source, "r").use { input ->
+            val header = ByteArray(HEADER_BYTES)
+            input.readFully(header)
+            val hb = ByteBuffer.wrap(header).order(ByteOrder.LITTLE_ENDIAN)
+            require(header.copyOfRange(0, 4).contentEquals("RIFF".toByteArray(Charsets.US_ASCII)))
+            require(header.copyOfRange(8, 12).contentEquals("WAVE".toByteArray(Charsets.US_ASCII)))
+            require(hb.getShort(22).toInt() == 1)
+            require(hb.getInt(24) == API_SAMPLE_RATE)
+            require(hb.getShort(34).toInt() == 16)
+
+            val payloadBytes = input.length() - HEADER_BYTES
+            if (input.length() <= maxBytes) return listOf(UploadChunk(source, 0L))
+            val maxPayload = ((maxBytes - HEADER_BYTES) / 2L) * 2L
+            val chunks = mutableListOf<UploadChunk>()
+            var start = 0L
+            try {
+                while (start < payloadBytes) {
+                    val remaining = payloadBytes - start
+                    val end = if (remaining <= maxPayload) {
+                        payloadBytes
+                    } else {
+                        // Avoid producing a nearly full first chunk plus a few-second tail when a
+                        // recording only barely exceeds the limit. Two balanced model inputs are
+                        // both more accurate and more likely to have a real pause near the join.
+                        val target = if (remaining < maxPayload * 2L) {
+                            start + remaining / 2L
+                        } else {
+                            start + maxPayload
+                        }
+                        findQuietBoundary(input, start, target, payloadBytes)
+                    }
+                    require(end > start) { "Could not find a valid WAV chunk boundary" }
+                    val target = File(
+                        source.parentFile,
+                        "${source.nameWithoutExtension}.part${chunks.size.toString().padStart(3, '0')}.wav",
+                    )
+                    copyPcmRange(input, target, start, end)
+                    chunks.add(UploadChunk(target, start * 1_000L / API_BYTES_PER_SECOND))
+                    start = end
+                }
+                return chunks
+            } catch (e: Exception) {
+                chunks.forEach { runCatching { it.file.delete() } }
+                throw e
+            }
+        }
+    }
+
+    private fun findQuietBoundary(
+        input: RandomAccessFile,
+        chunkStart: Long,
+        target: Long,
+        payloadEnd: Long,
+    ): Long {
+        val searchRadius = 5L * API_BYTES_PER_SECOND
+        val windowBytes = API_BYTES_PER_SECOND / 10
+        val lower = (target - searchRadius).coerceAtLeast(chunkStart + windowBytes).let { it - it % 2L }
+        // Search only before the hard size boundary. A quieter point after [target] would create
+        // a chunk which the relay rejects, defeating the purpose of splitting.
+        val upper = (target - windowBytes / 2L)
+            .coerceAtMost(payloadEnd - windowBytes)
+            .let { it - it % 2L }
+        if (upper <= lower) return target - target % 2L
+
+        val window = ByteArray(windowBytes)
+        var bestBoundary = target - target % 2L
+        var bestEnergy = Long.MAX_VALUE
+        var position = lower
+        while (position <= upper) {
+            input.seek(HEADER_BYTES + position)
+            input.readFully(window)
+            val samples = ByteBuffer.wrap(window).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer()
+            var energy = 0L
+            while (samples.hasRemaining()) energy += kotlin.math.abs(samples.get().toInt())
+            if (energy < bestEnergy) {
+                bestEnergy = energy
+                bestBoundary = position + windowBytes / 2L
+            }
+            position += windowBytes
+        }
+        return bestBoundary - bestBoundary % 2L
+    }
+
+    private fun copyPcmRange(input: RandomAccessFile, target: File, start: Long, end: Long) {
+        val pcmBytes = end - start
+        FileOutputStream(target).buffered().use { output ->
+            output.write(ByteArray(HEADER_BYTES))
+            input.seek(HEADER_BYTES + start)
+            val buffer = ByteArray(64 * 1024)
+            var remaining = pcmBytes
+            while (remaining > 0L) {
+                val read = input.read(buffer, 0, minOf(buffer.size.toLong(), remaining).toInt())
+                if (read <= 0) error("Unexpected end of WAV while creating upload chunk")
+                output.write(buffer, 0, read)
+                remaining -= read
+            }
+            output.flush()
+        }
+        patchHeader(target, pcmBytes)
     }
 
     private fun patchHeader(file: File, pcmBytes: Long) {

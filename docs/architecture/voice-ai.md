@@ -1,9 +1,11 @@
 # Voice and AI Integrations
 
 > Status: Canonical  
-> Last verified: 2026-07-11  
-> Verified against: `KeyboardManager.kt`, `WhisperClient.kt`, `GemmaClient.kt`,
-> `SmolLMClient.kt`, application initialization, assets, and dependencies
+> Last verified: 2026-08-25
+> Verified against: `FlorisImeService.kt`, `KeyboardManager.kt`, `VoiceManager.kt`,
+> `VoiceTranscriptionInputLayout.kt`, `Recorder.kt`, `VoiceDatabase.kt`,
+> `VoiceWavRecovery.kt`, `WhisperClient.kt`, `GemmaClient.kt`, `SmolLMClient.kt`,
+> application initialization, assets, and dependencies
 
 OmniBoard currently has three distinct AI-related mechanisms. They must not be
 described as one architecture.
@@ -20,11 +22,38 @@ OpenAI Cloud remains the fallback and receives the allowlisted request fields.
 Titan Local is forwarded over Tailscale to the private CrisperWhisper adapter
 on Titan. The adapter runs `transcribe_dual()` and returns OpenAI-compatible
 `verbose_json`: clean intended text and its `words`/`segments`, plus
-`verbatim_text` and `verbatim_words` extensions. The keyboard commits the clean
-text and writes both transcripts and the full response to the Schema 2 sidecar,
-so filler words and their timestamps survive in the corpus.
+`verbatim_text` and `verbatim_words` extensions. The keyboard stores both
+transcripts and writes the full response to the Schema 2 sidecar, so filler
+words and their timestamps survive in the corpus. The persisted Cleaned versus
+Verbatim preference controls foreground auto-insertion. Either version can be
+copied or explicitly inserted from Voice Inbox.
 
-Pending retries retain the provider selected for the original failed take.
+Each WAV receives a `VoiceTake` row in the local Room `voice_takes.db` as soon
+as capture starts. The row progresses through Recording, Saved, Transcribing,
+Ready, or Failed independently of the Compose view. Pending retries retain the
+provider selected for the original failed take and run sequentially so recovery
+cannot fan out into many simultaneous Titan requests.
+
+Voice capture is owned by the application-scoped `KeyboardManager`, not by a
+Compose view. A non-finishing input-view restart can therefore reattach to the
+same recording/transcription state after rotation. If the input session,
+window, or IME service actually goes away, the lifecycle callback synchronously
+finalizes the WAV before teardown and registers it in the durable pending
+transcription queue before any network request. That background result is saved
+to Voice Inbox and never inserted into a later, unrelated editor. The recorder
+also refuses a second `start()` while live, so a UI-state mismatch cannot
+replace the active file or writer-thread handles.
+
+On startup, existing Schema 2 sidecars are imported into Voice Inbox and
+untranscribed WAVs in `Recordings/Whisper_Vault` are queued for Titan. A WAV
+whose recorder placeholder header is still all zeroes can be repaired from its
+intact PCM length; recovery rewrites only the first 44 bytes and refuses unknown
+nonzero headers. A legacy take which remains larger than the relay limit after
+16 kHz downsampling is divided at quiet PCM windows; chunk timestamps are
+shifted back to the original timeline and the full responses remain in the
+sidecar. Successful takes enter the existing Titan archive queue. Phone
+audio is retained until Titan returns the matching checksum and the existing
+24-hour grace period expires; Voice Inbox does not manually delete recordings.
 
 ## ONNX autocorrect scorer
 

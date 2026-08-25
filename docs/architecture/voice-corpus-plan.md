@@ -1,7 +1,10 @@
 # Voice Corpus & Transcription Plan
 
-**Branch:** `feature/voice-corpus-v2` (from `swipe-synthesis-v2`, which is 36 commits ahead of `dev`)
-**Status:** Steps 1–3 landed. Steps 4–6 open.
+**Status:** Steps 1–5 landed. Step 6 remains exploratory.
+
+Current runtime behavior and lifecycle guarantees are canonical in
+[Voice and AI Integrations](voice-ai.md). This document preserves the design
+rationale and the remaining personal-model work.
 
 ## What this is
 
@@ -189,16 +192,18 @@ checksum the phone verifies before deleting its copy. 561 GB free is ~1,600 hour
 audio; FLAC compaction can happen later as a `derived/` job that verifies losslessness first.
 
 
-## Step 4 — Provider selector in the smartbar
+## Step 4 — Provider selector in the smartbar ✅
 
-Icon + dropdown for transcription provider. Wired with OpenAI as the only entry initially, so
-adding local engines later is a config change rather than a code change.
+The voice smartbar exposes a persisted provider selector for OpenAI Cloud and Titan Local.
+Each take stores the provider it was created with, so retries do not silently switch engines.
 
 ---
 
-## Step 5 — Local transcription (kills the OpenAI bill)
+## Step 5 — Local transcription (kills the OpenAI bill) ✅
 
-**CrisperWhisper 2.0** on Titan. ~3 GB VRAM.
+**CrisperWhisper 2.0** runs on Titan behind the authenticated relay. ~3 GB VRAM.
+It returns clean and verbatim transcripts from one pass; OmniBoard stores both
+and does not double-transcribe the take on the phone.
 
 Why this one rather than a bigger model: it solves the two-transcript problem natively.
 `transcribe_dual()` returns clean *and* verbatim from a single pass, and `verbatimize(audio,
@@ -281,6 +286,6 @@ to regenerate.
 1. ✅ Lossless capture
 2. ✅ Full metadata request + storage, split raw/display transcripts
 3. ✅ Archive upload to Titan + ingest to `~/datasets/sam-voice/`
-4. Provider selector in smartbar
-5. CrisperWhisper on Titan → OpenAI bill goes away
+4. ✅ Provider selector in smartbar
+5. ✅ CrisperWhisper on Titan → OpenAI bill goes away
 6. Chatterbox clone as soon as any audio exists — cheapest way to see the ceiling

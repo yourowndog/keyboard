@@ -347,6 +347,13 @@ class FlorisImeService : LifecycleInputMethodService() {
     }
 
     override fun onDestroy() {
+        if (dev.patrickgold.florisboard.ime.voice.VoiceCaptureLifecyclePolicy
+                .finalizeOnServiceDestroyed(activeState.isRecording)
+        ) {
+            keyboardManager.finalizeVoiceCaptureForLifecycle()
+        } else if (activeState.isTranscribing) {
+            keyboardManager.detachVoiceTranscriptionForLifecycle()
+        }
         dev.patrickgold.florisboard.ime.nlp.HarvestManager.flushSession()
         super.onDestroy()
         unregisterReceiver(wallpaperChangeReceiver)
@@ -371,7 +378,11 @@ class FlorisImeService : LifecycleInputMethodService() {
         if (info == null) return
         val editorInfo = FlorisEditorInfo.wrap(info)
         activeState.batchEdit {
-            if (activeState.imeUiMode != ImeUiMode.CLIPBOARD || prefs.clipboard.historyHideOnNextTextField.get()) {
+            val preserveVoiceUi = dev.patrickgold.florisboard.ime.voice.VoiceCaptureLifecyclePolicy
+                .preserveVoiceUi(activeState.isRecording, activeState.isTranscribing)
+            if (!preserveVoiceUi &&
+                (activeState.imeUiMode != ImeUiMode.CLIPBOARD || prefs.clipboard.historyHideOnNextTextField.get())
+            ) {
                 activeState.imeUiMode = ImeUiMode.TEXT
             }
             activeState.isSelectionMode = editorInfo.initialSelection.isSelectionMode
@@ -408,6 +419,13 @@ class FlorisImeService : LifecycleInputMethodService() {
 
     override fun onFinishInputView(finishingInput: Boolean) {
         flogInfo { "finishing=$finishingInput" }
+        if (dev.patrickgold.florisboard.ime.voice.VoiceCaptureLifecyclePolicy
+                .finalizeOnFinishInputView(finishingInput, activeState.isRecording)
+        ) {
+            keyboardManager.finalizeVoiceCaptureForLifecycle()
+        } else if (finishingInput && activeState.isTranscribing) {
+            keyboardManager.detachVoiceTranscriptionForLifecycle()
+        }
         super.onFinishInputView(finishingInput)
         editorInstance.handleFinishInputView()
     }
@@ -433,6 +451,13 @@ class FlorisImeService : LifecycleInputMethodService() {
     }
 
     override fun onWindowHidden() {
+        if (isWindowShown && dev.patrickgold.florisboard.ime.voice.VoiceCaptureLifecyclePolicy
+                .finalizeOnWindowHidden(activeState.isRecording)
+        ) {
+            keyboardManager.finalizeVoiceCaptureForLifecycle()
+        } else if (isWindowShown && activeState.isTranscribing) {
+            keyboardManager.detachVoiceTranscriptionForLifecycle()
+        }
         super.onWindowHidden()
         if (!isWindowShown) {
             flogWarning(LogTopic.IMS_EVENTS) { "Ignoring (is already hidden)" }
@@ -442,7 +467,9 @@ class FlorisImeService : LifecycleInputMethodService() {
         }
         isWindowShown = false
         activeState.batchEdit {
-            activeState.imeUiMode = ImeUiMode.TEXT
+            if (!keyboardManager.hasActiveVoiceSession()) {
+                activeState.imeUiMode = ImeUiMode.TEXT
+            }
             activeState.isActionsOverflowVisible = false
             activeState.isActionsEditorVisible = false
         }
