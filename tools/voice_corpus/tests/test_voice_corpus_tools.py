@@ -16,7 +16,7 @@ TOOLS = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(TOOLS))
 
 from backfill_verbatim import MAX_CHUNK_SECONDS, split_uploads, source_is_complete  # noqa: E402
-from segment_verbatim import build, probe_source_audio  # noqa: E402
+from segment_verbatim import Word, build, plan_training_segments, probe_source_audio  # noqa: E402
 
 
 def write_wav(path: Path, seconds: float, sample_rate: int) -> None:
@@ -65,6 +65,45 @@ class BackfillToolsTest(unittest.TestCase):
 
 
 class SegmentOverlayTest(unittest.TestCase):
+    def test_training_plan_omits_only_excessive_unlabelled_spans(self) -> None:
+        words = [
+            Word("hello", 0.5, 1.0),
+            Word("there", 1.2, 1.8),
+            Word("again", 64.0, 64.7),
+            Word("friend", 65.0, 65.8),
+        ]
+        segments, omitted = plan_training_segments(
+            words,
+            70.0,
+            minimum=3.0,
+            target=24.0,
+            maximum=30.0,
+            edge_padding=2.0,
+            max_unlabeled_gap=10.0,
+        )
+        self.assertEqual(
+            [(segment.word_start, segment.word_end) for segment in segments],
+            [(0, 2), (2, 4)],
+        )
+        self.assertTrue(omitted)
+        self.assertLessEqual(max(segment.duration for segment in segments), 30.0)
+
+    def test_training_plan_trims_runaway_trailing_silence(self) -> None:
+        words = [Word("seriously", 0.1, 0.8), Word("listen", 1.0, 2.6)]
+        segments, omitted = plan_training_segments(
+            words,
+            819.52,
+            minimum=3.0,
+            target=24.0,
+            maximum=30.0,
+            edge_padding=2.0,
+            max_unlabeled_gap=10.0,
+        )
+        self.assertEqual(len(segments), 1)
+        self.assertEqual((segments[0].word_start, segments[0].word_end), (0, 2))
+        self.assertLessEqual(segments[0].duration, 30.0)
+        self.assertAlmostEqual(omitted[0][0], 4.6)
+
     def test_placeholder_header_is_inspected_without_mutating_raw(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             path = Path(temporary) / "placeholder.wav"
@@ -124,6 +163,8 @@ class SegmentOverlayTest(unittest.TestCase):
                     min_seconds=3.0,
                     target_seconds=24.0,
                     max_seconds=30.0,
+                    edge_padding_seconds=2.0,
+                    max_unlabeled_gap_seconds=10.0,
                     apply=False,
                     details=False,
                 )

@@ -167,6 +167,13 @@ trusted verbatim transcript stays in an `awaiting-verbatim` report instead of be
 Every recipe is versioned so corrected transcripts or improved segmentation create a new derived
 tree rather than overwriting an old one.
 
+The builder preserves a source end to end whenever that fits model-safe clips. If a take contains
+an otherwise unsegmentable span with no timed words—for example, a recorder left open for many
+minutes, a long interruption, or corrupted audio the verbatim engine rejected—the derived recipe
+keeps every timed word plus two seconds of surrounding pause and reports the omitted parent spans
+in `reports/omitted-unlabeled.jsonl`. It never compresses that time, invents a label, or alters the
+raw take. Ordinary pauses, fillers, breaths, false starts, repetitions, and vocal events remain.
+
 The `a8f31c` suffix is a content hash — it catches duplicates when a retry double-uploads.
 
 **Normalisation is a `derived/` decision, not a capture decision.** Whether the corpus ends up

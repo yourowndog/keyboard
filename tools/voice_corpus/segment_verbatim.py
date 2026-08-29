@@ -78,6 +78,18 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-seconds", type=float, default=30.0)
     parser.add_argument("--min-seconds", type=float, default=3.0)
     parser.add_argument(
+        "--edge-padding-seconds",
+        type=float,
+        default=2.0,
+        help="Pause retained around labelled speech when excessive unlabeled spans are omitted.",
+    )
+    parser.add_argument(
+        "--max-unlabeled-gap-seconds",
+        type=float,
+        default=10.0,
+        help="Fallback threshold for gaps that prevent model-safe segmentation.",
+    )
+    parser.add_argument(
         "--apply",
         action="store_true",
         help="Encode audio and atomically publish the recipe. Default is plan-only.",
@@ -101,6 +113,10 @@ def validate_args(args: argparse.Namespace) -> None:
         raise ValueError("min-seconds must be positive")
     if not args.min_seconds < args.target_seconds < args.max_seconds:
         raise ValueError("require min-seconds < target-seconds < max-seconds")
+    if args.edge_padding_seconds < 0:
+        raise ValueError("edge-padding-seconds must not be negative")
+    if args.max_unlabeled_gap_seconds <= 0:
+        raise ValueError("max-unlabeled-gap-seconds must be positive")
 
 
 def read_json(path: Path) -> dict[str, Any]:
@@ -335,6 +351,96 @@ def plan_segments(
     return segments
 
 
+def plan_training_segments(
+    words: list[Word],
+    duration: float,
+    *,
+    minimum: float,
+    target: float,
+    maximum: float,
+    edge_padding: float,
+    max_unlabeled_gap: float,
+) -> tuple[list[Segment], list[tuple[float, float]]]:
+    """Plan clips while omitting only otherwise-unsegmentable unlabeled spans."""
+    try:
+        return (
+            plan_segments(
+                words,
+                duration,
+                minimum=minimum,
+                target=target,
+                maximum=maximum,
+            ),
+            [],
+        )
+    except ValueError as exc:
+        if str(exc) not in {"no_safe_boundary_below_maximum", "invalid_tail_duration"}:
+            raise
+
+    groups: list[tuple[int, int]] = []
+    group_start = 0
+    for index in range(1, len(words)):
+        if words[index].start - words[index - 1].end > max_unlabeled_gap:
+            groups.append((group_start, index))
+            group_start = index
+    groups.append((group_start, len(words)))
+
+    regions: list[tuple[float, float, int, int]] = []
+    for word_start, word_end in groups:
+        start = max(0.0, words[word_start].start - edge_padding)
+        end = min(duration, words[word_end - 1].end + edge_padding)
+        if end - start < minimum:
+            missing = minimum - (end - start)
+            take_left = min(start, missing / 2.0)
+            start -= take_left
+            end = min(duration, end + missing - take_left)
+            if end - start < minimum:
+                start = max(0.0, end - minimum)
+        if end - start < minimum:
+            raise ValueError("labelled_region_shorter_than_minimum")
+        regions.append((start, end, word_start, word_end))
+
+    output: list[Segment] = []
+    for region_start, region_end, word_start, word_end in regions:
+        shifted_words = [
+            Word(word.text, word.start - region_start, word.end - region_start)
+            for word in words[word_start:word_end]
+        ]
+        region_segments = plan_segments(
+            shifted_words,
+            region_end - region_start,
+            minimum=minimum,
+            target=target,
+            maximum=maximum,
+        )
+        for segment in region_segments:
+            output.append(
+                Segment(
+                    len(output),
+                    segment.start + region_start,
+                    segment.end + region_start,
+                    segment.word_start + word_start,
+                    segment.word_end + word_start,
+                )
+            )
+
+    if not output or output[0].word_start != 0 or output[-1].word_end != len(words):
+        raise AssertionError("fallback plan does not cover every labelled word")
+    for left, right in zip(output, output[1:]):
+        if left.word_end != right.word_start:
+            raise AssertionError("fallback plan has a word gap or overlap")
+
+    omitted: list[tuple[float, float]] = []
+    cursor = 0.0
+    for segment in output:
+        if segment.start > cursor + 1e-6:
+            omitted.append((cursor, segment.start))
+        cursor = segment.end
+    if cursor < duration - 1e-6:
+        omitted.append((cursor, duration))
+    return output, omitted
+
+
 def render_words(words: list[Word]) -> str:
     rendered = ""
     for word in words:
@@ -447,12 +553,14 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
             words = parse_words(label_data, info["duration"])
             if lexical_tokens(verbatim) != lexical_tokens(render_words(words)):
                 raise ValueError("verbatim_text_word_timing_mismatch")
-            segments = plan_segments(
+            segments, omitted_spans = plan_training_segments(
                 words,
                 info["duration"],
                 minimum=args.min_seconds,
                 target=args.target_seconds,
                 maximum=args.max_seconds,
+                edge_padding=args.edge_padding_seconds,
+                max_unlabeled_gap=args.max_unlabeled_gap_seconds,
             )
             source_sha = sha256_file(source)
             expected_sha = row.get("sha256")
@@ -474,6 +582,7 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
                     ).hexdigest(),
                     "words": words,
                     "segments": segments,
+                    "omitted_spans": omitted_spans,
                 }
             )
         except (OSError, ValueError, subprocess.CalledProcessError, json.JSONDecodeError) as exc:
@@ -501,9 +610,15 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
             "min_seconds": args.min_seconds,
             "target_seconds": args.target_seconds,
             "max_seconds": args.max_seconds,
+            "edge_padding_seconds": args.edge_padding_seconds,
+            "max_unlabeled_gap_seconds": args.max_unlabeled_gap_seconds,
             "output_sample_rate": 48000,
             "label_policy": "verbatim-only",
-            "boundary_policy": "between-timed-verbatim-words; preserve-complete-audio",
+            "boundary_policy": (
+                "between-timed-verbatim-words; preserve complete audio when model-safe; "
+                "otherwise retain every timed word plus edge padding and omit only excessive "
+                "unlabeled spans"
+            ),
             "annotation_recipe": args.annotation_recipe,
         },
         "source_manifest": str(source_manifest.relative_to(root)),
@@ -521,6 +636,12 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
         "rejected_sources": len(rejected),
         "rejected_reasons": dict(sorted(Counter(row["reason"] for row in rejected).items())),
         "unmanifested_audio": len(unmanifested),
+        "sources_with_omitted_unlabeled_spans": sum(
+            bool(plan["omitted_spans"]) for plan in plans
+        ),
+        "omitted_unlabeled_seconds": round(
+            sum(end - start for plan in plans for start, end in plan["omitted_spans"]), 6
+        ),
         "applied": bool(args.apply),
     }
     if args.details:
@@ -543,7 +664,24 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
             directory.mkdir(parents=True, exist_ok=True)
 
         segment_manifest: list[dict[str, Any]] = []
+        omitted_unlabeled: list[dict[str, Any]] = []
         for plan in plans:
+            if plan["omitted_spans"]:
+                omitted_unlabeled.append(
+                    {
+                        "id": plan["id"],
+                        "raw_audio": str(plan["source"].relative_to(root)),
+                        "spans": [
+                            {
+                                "start_seconds": round(start, 6),
+                                "end_seconds": round(end, 6),
+                                "duration_seconds": round(end - start, 6),
+                                "reason": "excessive_unlabeled_span",
+                            }
+                            for start, end in plan["omitted_spans"]
+                        ],
+                    }
+                )
             words: list[Word] = plan["words"]
             encoding_source = plan["source"]
             if plan["source_placeholder_header"]:
@@ -628,6 +766,7 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
         write_jsonl(report_dir / "awaiting-verbatim.jsonl", awaiting)
         write_jsonl(report_dir / "rejected.jsonl", rejected)
         write_jsonl(report_dir / "unmanifested-audio.jsonl", unmanifested)
+        write_jsonl(report_dir / "omitted-unlabeled.jsonl", omitted_unlabeled)
         shutil.rmtree(work_dir)
         summary["generated_segments"] = len(segment_manifest)
         summary["generated_audio_hours"] = round(
