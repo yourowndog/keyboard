@@ -221,7 +221,6 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
             {
                 **row,
                 "source": source,
-                "sidecar": sidecar,
                 "trim_start": start,
                 "trim_end": end,
                 "trainer_duration": trainer_duration,
