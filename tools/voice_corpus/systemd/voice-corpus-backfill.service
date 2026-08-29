@@ -1,0 +1,17 @@
+[Unit]
+Description=Backfill immutable Sam voice-corpus verbatim annotations
+After=network-online.target titan-crisperwhisper.service
+Wants=network-online.target titan-crisperwhisper.service
+
+[Service]
+Type=oneshot
+User=sam
+Group=sam
+WorkingDirectory=/home/sam/projects/keyboard
+ExecStart=/usr/bin/python /home/sam/projects/keyboard/tools/voice_corpus/backfill_verbatim.py --root /home/sam/datasets/sam-voice --recipe crisper2-large-v1 --apply
+LoadCredential=relay-token:/etc/brokentooth/secrets/relay.omniboard.prod.v1
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/sam/datasets/sam-voice

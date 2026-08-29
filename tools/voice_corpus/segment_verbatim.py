@@ -66,6 +66,13 @@ def parse_args() -> argparse.Namespace:
         default="segments-v1",
         help="New directory name under derived/. Existing recipes are refused.",
     )
+    parser.add_argument(
+        "--annotation-recipe",
+        help=(
+            "Optional immutable verbatim overlay under annotations/<name>/. "
+            "An annotation for a source takes precedence over its raw sidecar."
+        ),
+    )
     parser.add_argument("--target-seconds", type=float, default=24.0)
     parser.add_argument("--max-seconds", type=float, default=30.0)
     parser.add_argument("--min-seconds", type=float, default=3.0)
@@ -80,6 +87,10 @@ def parse_args() -> argparse.Namespace:
 def validate_args(args: argparse.Namespace) -> None:
     if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", args.recipe):
         raise ValueError("recipe must be a simple directory name")
+    if args.annotation_recipe and not re.fullmatch(
+        r"[A-Za-z0-9][A-Za-z0-9._-]*", args.annotation_recipe
+    ):
+        raise ValueError("annotation-recipe must be a simple directory name")
     if args.min_seconds <= 0:
         raise ValueError("min-seconds must be positive")
     if not args.min_seconds < args.target_seconds < args.max_seconds:
@@ -329,17 +340,23 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
     source_manifest = root / "manifests" / "utterances.jsonl"
     derived_root = root / "derived"
     output_root = derived_root / args.recipe
+    annotation_root = (
+        root / "annotations" / args.annotation_recipe if args.annotation_recipe else None
+    )
 
     if not raw_root.is_dir() or not source_manifest.is_file():
         raise ValueError("corpus root is missing raw/ or manifests/utterances.jsonl")
     if output_root.exists():
         raise FileExistsError(f"recipe already exists; choose a new version: {output_root}")
+    if annotation_root is not None and not annotation_root.is_dir():
+        raise ValueError(f"annotation recipe does not exist: {annotation_root}")
 
     rows = read_jsonl(source_manifest)
     plans: list[dict[str, Any]] = []
     awaiting: list[dict[str, Any]] = []
     rejected: list[dict[str, Any]] = []
     manifest_sources: set[str] = set()
+    annotations_used = 0
 
     for row in rows:
         source_id = str(row.get("id") or "unknown")
@@ -352,12 +369,28 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
             sidecar = resolve_source(root, raw_root, sidecar_relative)
             if not source.is_file() or not sidecar.is_file():
                 raise ValueError("source_or_sidecar_missing")
-            sidecar_data = read_json(sidecar)
-            verbatim = sidecar_data.get("transcript_verbatim")
+            label_path = sidecar
+            label_data = read_json(sidecar)
+            annotation_path = (
+                annotation_root / f"{source_id}.json" if annotation_root is not None else None
+            )
+            if annotation_path is not None and annotation_path.is_file():
+                annotation = read_json(annotation_path)
+                if annotation.get("schema") != "sam-voice-verbatim-annotation/1":
+                    raise ValueError("invalid_verbatim_annotation_schema")
+                if annotation.get("id") != source_id:
+                    raise ValueError("verbatim_annotation_id_mismatch")
+                parent = annotation.get("parent")
+                if not isinstance(parent, dict) or parent.get("sha256") != row.get("sha256"):
+                    raise ValueError("verbatim_annotation_parent_mismatch")
+                label_path = annotation_path
+                label_data = annotation
+                annotations_used += 1
+            verbatim = label_data.get("transcript_verbatim")
             if not isinstance(verbatim, str) or not verbatim.strip():
                 raise ValueError("missing_verbatim_text")
             info = ffprobe(source)
-            words = parse_words(sidecar_data, info["duration"])
+            words = parse_words(label_data, info["duration"])
             if lexical_tokens(verbatim) != lexical_tokens(render_words(words)):
                 raise ValueError("verbatim_text_word_timing_mismatch")
             segments = plan_segments(
@@ -377,6 +410,7 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
                     "row": row,
                     "source": source,
                     "sidecar": sidecar,
+                    "label_source": label_path,
                     "source_sha256": source_sha,
                     "source_duration": info["duration"],
                     "source_transcript_verbatim": verbatim.strip(),
@@ -415,9 +449,11 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
             "output_sample_rate": 48000,
             "label_policy": "verbatim-only",
             "boundary_policy": "between-timed-verbatim-words; preserve-complete-audio",
+            "annotation_recipe": args.annotation_recipe,
         },
         "source_manifest": str(source_manifest.relative_to(root)),
         "source_rows": len(rows),
+        "annotations_used": annotations_used,
         "eligible_sources": len(plans),
         "planned_segments": sum(len(plan["segments"]) for plan in plans),
         "eligible_source_hours": round(
@@ -482,6 +518,7 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
                         "id": plan["id"],
                         "raw_audio": str(plan["source"].relative_to(root)),
                         "raw_sidecar": str(plan["sidecar"].relative_to(root)),
+                        "label_source": str(plan["label_source"].relative_to(root)),
                         "sha256": plan["source_sha256"],
                         "duration_seconds": round(plan["source_duration"], 6),
                         "transcript_verbatim_sha256": plan[
