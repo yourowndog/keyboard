@@ -4,6 +4,7 @@ import dev.patrickgold.florisboard.BuildConfig
 import dev.patrickgold.florisboard.audio.WavTools
 import dev.patrickgold.florisboard.ime.voice.VoiceManager.TranscriptionProvider
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -16,6 +17,9 @@ import java.io.File
 import java.util.concurrent.TimeUnit
 
 object WhisperClient {
+    private const val MAX_RATE_LIMIT_RETRIES = 4
+    private const val MAX_RETRY_AFTER_SECONDS = 300L
+
     private val client = OkHttpClient.Builder()
         .connectTimeout(10, TimeUnit.SECONDS)
         .writeTimeout(60, TimeUnit.SECONDS)
@@ -80,11 +84,7 @@ object WhisperClient {
             val (upload, isTemp) = prepareUpload(file)
             if (isTemp) temporaryFiles.add(upload)
             val isWavUpload = upload.extension.equals("wav", ignoreCase = true)
-            val maxChunkBytes = if (provider == TranscriptionProvider.TITAN_LOCAL && isWavUpload) {
-                WavTools.TITAN_SAFE_CHUNK_BYTES
-            } else {
-                WavTools.SAFE_UPLOAD_BYTES
-            }
+            val maxChunkBytes = WavTools.SAFE_UPLOAD_BYTES
             val uploads = if (upload.length() > maxChunkBytes) {
                 if (!isWavUpload) {
                     return@withContext Result.failure(
@@ -114,7 +114,17 @@ object WhisperClient {
         }
     }
 
-    private fun requestTranscription(file: File, provider: TranscriptionProvider): Result<Transcription> {
+    internal fun retryDelayMillis(retryAfter: String?, retryIndex: Int): Long {
+        val fallbackSeconds = 1L shl retryIndex.coerceIn(0, 8)
+        val seconds = retryAfter
+            ?.trim()
+            ?.toLongOrNull()
+            ?.takeIf { it >= 0L }
+            ?: fallbackSeconds
+        return seconds.coerceAtMost(MAX_RETRY_AFTER_SECONDS) * 1_000L
+    }
+
+    private suspend fun requestTranscription(file: File, provider: TranscriptionProvider): Result<Transcription> {
         if (file.length() > WavTools.MAX_UPLOAD_BYTES) {
             return Result.failure(Exception("Upload chunk exceeds the 25 MiB limit"))
         }
@@ -135,30 +145,43 @@ object WhisperClient {
             .post(requestBody)
             .build()
 
-        return try {
-            client.newCall(request).execute().use { response ->
-                if (!response.isSuccessful) {
-                    val errorBody = response.body?.string()?.take(200) ?: ""
-                    return Result.failure(Exception("Relay error: ${response.code} $errorBody"))
+        for (retryIndex in 0..MAX_RATE_LIMIT_RETRIES) {
+            var retryDelay: Long? = null
+            val outcome = try {
+                client.newCall(request).execute().use { response ->
+                    if (!response.isSuccessful) {
+                        val errorBody = response.body?.string()?.take(200) ?: ""
+                        if (response.code == 429 && retryIndex < MAX_RATE_LIMIT_RETRIES) {
+                            retryDelay = retryDelayMillis(response.header("Retry-After"), retryIndex)
+                            null
+                        } else {
+                            Result.failure(Exception("Relay error: ${response.code} $errorBody"))
+                        }
+                    } else {
+                        val body = response.body?.string().orEmpty()
+                        val json = runCatching { JSONObject(body) }.getOrNull()
+                            ?: return Result.success(
+                                Transcription(body, null, provider.wireName, "unknown", JSONObject().put("text", body)),
+                            )
+                        Result.success(
+                            Transcription(
+                                text = json.optString("text"),
+                                verbatimText = json.optString("verbatim_text").takeIf { it.isNotBlank() },
+                                provider = json.optString("provider", provider.wireName),
+                                model = json.optString("model", "unknown"),
+                                raw = json,
+                            ),
+                        )
+                    }
                 }
-                val body = response.body?.string().orEmpty()
-                val json = runCatching { JSONObject(body) }.getOrNull()
-                    ?: return Result.success(
-                        Transcription(body, null, provider.wireName, "unknown", JSONObject().put("text", body)),
-                    )
-                Result.success(
-                    Transcription(
-                        text = json.optString("text"),
-                        verbatimText = json.optString("verbatim_text").takeIf { it.isNotBlank() },
-                        provider = json.optString("provider", provider.wireName),
-                        model = json.optString("model", "unknown"),
-                        raw = json,
-                    ),
-                )
+            } catch (e: Exception) {
+                return Result.failure(e)
             }
-        } catch (e: Exception) {
-            Result.failure(e)
+            if (outcome != null) return outcome
+            // The response is closed by use{} before this suspension begins.
+            delay(checkNotNull(retryDelay))
         }
+        return Result.failure(Exception("Relay rate limit retry budget exhausted"))
     }
 
     private fun combineTranscriptions(

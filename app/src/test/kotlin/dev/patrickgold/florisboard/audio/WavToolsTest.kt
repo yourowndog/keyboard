@@ -11,6 +11,24 @@ import kotlin.test.assertTrue
 
 class WavToolsTest {
     @Test
+    fun fiveMinutePreparedWavRemainsOneUpload() {
+        val dir = createTempDirectory("wav-tools-five-minute").toFile()
+        try {
+            val source = File(dir, "five-minutes.16k.wav")
+            write16kWav(source, ByteArray(WavTools.API_SAMPLE_RATE * 2 * 5 * 60))
+
+            val chunks = WavTools.splitForUpload(source)
+
+            assertEquals(1, chunks.size)
+            assertEquals(source, chunks.single().file)
+            assertEquals(0L, chunks.single().offsetMs)
+            assertTrue(source.length() <= WavTools.SAFE_UPLOAD_BYTES)
+        } finally {
+            dir.deleteRecursively()
+        }
+    }
+
+    @Test
     fun oversizedUploadIsSplitWithoutDroppingOrReorderingPcm() {
         val dir = createTempDirectory("wav-tools-split").toFile()
         try {

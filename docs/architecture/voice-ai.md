@@ -50,11 +50,20 @@ On startup, existing Schema 2 sidecars are imported into Voice Inbox and
 untranscribed WAVs in `Recordings/Whisper_Vault` are queued for Titan. A WAV
 whose recorder placeholder header is still all zeroes can be repaired from its
 intact PCM length; recovery rewrites only the first 44 bytes and refuses unknown
-nonzero headers. A legacy take which remains larger than the relay limit after
-16 kHz downsampling is divided at quiet PCM windows. Titan Local uses the same
-path for all audio longer than 20 seconds, keeping each request below
-CrisperWhisper's fragile 30-second longform path. Chunk timestamps are shifted
-back to the original timeline and the full responses remain in the sidecar.
+nonzero headers. The phone downscales a WAV to mono PCM16/16 kHz and sends it as
+one request whenever it fits the relay's safe 25 MiB envelope (about 13.6
+minutes). Only a still-larger prepared WAV is divided into phone-side
+macrochunks at quiet PCM windows.
+
+For Titan Local, the private adapter normalizes each received recording and
+splits it server-side at quiet boundaries into at-most-20-second inference
+chunks with a small acoustic-context overlap. It transcribes those chunks
+sequentially under one model lock, removes overlap-only words, restores absolute
+timestamps, and returns one merged response. Weakling maintains independent
+Titan and paid-cloud rate budgets and includes `Retry-After` on a 429;
+`WhisperClient` honors that delay with bounded retries. If phone-side
+macrochunking was necessary, its timestamps are also shifted back to the source
+timeline and every underlying response remains in the Schema 2 sidecar.
 
 The Titan adapter treats a CUDA illegal-memory-access as process-fatal. It
 flushes a `503`, exits nonzero, and lets the system service's

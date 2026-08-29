@@ -28,11 +28,6 @@ object WavTools {
 
     private const val HEADER_BYTES = 44
     private const val API_BYTES_PER_SECOND = API_SAMPLE_RATE * 2
-    /**
-     * Keep Titan requests below CrisperWhisper's 30-second longform path. That path can raise a
-     * fatal CUDA illegal-memory-access for particular audio even when neighboring long takes work.
-     */
-    const val TITAN_SAFE_CHUNK_BYTES = HEADER_BYTES + API_BYTES_PER_SECOND * 20
 
     data class UploadChunk(val file: File, val offsetMs: Long)
 
