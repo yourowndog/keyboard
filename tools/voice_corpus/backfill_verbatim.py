@@ -25,6 +25,7 @@ import urllib.request
 import uuid
 import wave
 from array import array
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -34,9 +35,19 @@ from segment_verbatim import lexical_tokens, read_json, read_jsonl, render_words
 
 SAMPLE_RATE = 16_000
 MAX_CHUNK_SECONDS = 20
+CORE_CHUNK_SECONDS = 19
+OVERLAP_SECONDS = 0.5
 SEARCH_SECONDS = 5
 WINDOW_SAMPLES = SAMPLE_RATE // 10
 SIMPLE_NAME = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]*")
+
+
+@dataclass(frozen=True)
+class UploadChunk:
+    path: Path
+    offset: float
+    core_start: float
+    core_end: float
 
 
 def parse_args() -> argparse.Namespace:
@@ -168,7 +179,7 @@ def quiet_boundary(samples: array[int], start: int, target: int) -> int:
     return best
 
 
-def split_uploads(prepared: Path, work: Path) -> list[tuple[Path, float]]:
+def split_uploads(prepared: Path, work: Path) -> list[UploadChunk]:
     with wave.open(str(prepared), "rb") as source:
         if source.getnchannels() != 1 or source.getsampwidth() != 2 or source.getframerate() != SAMPLE_RATE:
             raise ValueError("prepared upload is not mono 16-bit 16 kHz PCM")
@@ -178,7 +189,7 @@ def split_uploads(prepared: Path, work: Path) -> list[tuple[Path, float]]:
     if sys.byteorder != "little":
         samples.byteswap()
 
-    maximum = MAX_CHUNK_SECONDS * SAMPLE_RATE
+    maximum = CORE_CHUNK_SECONDS * SAMPLE_RATE
     boundaries = [0]
     start = 0
     while len(samples) - start > maximum:
@@ -191,10 +202,13 @@ def split_uploads(prepared: Path, work: Path) -> list[tuple[Path, float]]:
         start = boundary
     boundaries.append(len(samples))
 
-    uploads: list[tuple[Path, float]] = []
+    uploads: list[UploadChunk] = []
+    overlap = round(OVERLAP_SECONDS * SAMPLE_RATE)
     for index, (left, right) in enumerate(zip(boundaries, boundaries[1:])):
         path = work / f"chunk-{index:04d}.wav"
-        chunk = samples[left:right]
+        actual_left = max(0, left - overlap)
+        actual_right = min(len(samples), right + overlap)
+        chunk = samples[actual_left:actual_right]
         if sys.byteorder != "little":
             chunk.byteswap()
         with wave.open(str(path), "wb") as output:
@@ -202,7 +216,16 @@ def split_uploads(prepared: Path, work: Path) -> list[tuple[Path, float]]:
             output.setsampwidth(2)
             output.setframerate(SAMPLE_RATE)
             output.writeframes(chunk.tobytes())
-        uploads.append((path, left / SAMPLE_RATE))
+        if len(chunk) > MAX_CHUNK_SECONDS * SAMPLE_RATE:
+            raise ValueError("overlapped ASR transport chunk exceeds hard limit")
+        uploads.append(
+            UploadChunk(
+                path=path,
+                offset=actual_left / SAMPLE_RATE,
+                core_start=left / SAMPLE_RATE,
+                core_end=right / SAMPLE_RATE,
+            )
+        )
     return uploads
 
 
@@ -240,16 +263,14 @@ def join_text(values: list[str]) -> str:
     return " ".join(value.strip() for value in values if value.strip())
 
 
-def merge_responses(parts: list[tuple[float, dict[str, Any]]]) -> dict[str, Any]:
+def merge_responses(parts: list[tuple[UploadChunk, dict[str, Any]]]) -> dict[str, Any]:
     if not parts:
         raise ValueError("no Crisper responses")
-    intended_text = join_text([str(response.get("text") or "") for _, response in parts])
-    verbatim_text = join_text([str(response.get("verbatim_text") or "") for _, response in parts])
     words: list[dict[str, Any]] = []
     verbatim_words: list[dict[str, Any]] = []
     segments: list[dict[str, Any]] = []
 
-    def shifted(values: Any, offset: float) -> list[dict[str, Any]]:
+    def shifted_words(values: Any, chunk: UploadChunk, final: bool) -> list[dict[str, Any]]:
         output: list[dict[str, Any]] = []
         if not isinstance(values, list):
             return output
@@ -259,24 +280,35 @@ def merge_responses(parts: list[tuple[float, dict[str, Any]]]) -> dict[str, Any]
             item = dict(value)
             for key in ("start", "end"):
                 if isinstance(item.get(key), (int, float)):
-                    item[key] = round(float(item[key]) + offset, 3)
+                    item[key] = round(float(item[key]) + chunk.offset, 3)
+            start = item.get("start")
+            end = item.get("end")
+            if not isinstance(start, (int, float)) or not isinstance(end, (int, float)):
+                continue
+            midpoint = (float(start) + float(end)) / 2.0
+            if midpoint < chunk.core_start or midpoint > chunk.core_end:
+                continue
+            if not final and midpoint == chunk.core_end:
+                continue
             output.append(item)
         return output
 
-    for offset, response in parts:
-        words.extend(shifted(response.get("words"), offset))
-        verbatim_words.extend(shifted(response.get("verbatim_words"), offset))
-        segments.extend(shifted(response.get("segments"), offset))
-    if not verbatim_text or not verbatim_words:
+    for index, (chunk, response) in enumerate(parts):
+        final = index == len(parts) - 1
+        words.extend(shifted_words(response.get("words"), chunk, final))
+        verbatim_words.extend(shifted_words(response.get("verbatim_words"), chunk, final))
+        segments.extend(response.get("segments") if isinstance(response.get("segments"), list) else [])
+    if not verbatim_words:
         raise ValueError("Crisper returned no verbatim transcript or word timing")
-    rendered = " ".join(str(word.get("word") or "").strip() for word in verbatim_words)
-    if lexical_tokens(verbatim_text) != lexical_tokens(rendered):
-        raise ValueError("Crisper verbatim text and word timing disagree")
+    verbatim_text = " ".join(
+        str(word.get("word") or "").strip() for word in verbatim_words
+    ).strip()
+    intended_text = " ".join(str(word.get("word") or "").strip() for word in words).strip()
     first = parts[0][1]
     return {
         "task": "transcribe",
         "language": first.get("language"),
-        "duration": round(max(offset + float(response.get("duration") or 0) for offset, response in parts), 3),
+        "duration": round(parts[-1][0].core_end, 3),
         "text": intended_text,
         "words": words,
         "segments": segments,
@@ -286,8 +318,14 @@ def merge_responses(parts: list[tuple[float, dict[str, Any]]]) -> dict[str, Any]
         "verbatim_words": verbatim_words,
         "chunked": len(parts) > 1,
         "chunks": [
-            {"index": index, "offset_seconds": offset, "response": response}
-            for index, (offset, response) in enumerate(parts)
+            {
+                "index": index,
+                "offset_seconds": chunk.offset,
+                "core_start_seconds": chunk.core_start,
+                "core_end_seconds": chunk.core_end,
+                "response": response,
+            }
+            for index, (chunk, response) in enumerate(parts)
         ],
     }
 
@@ -377,7 +415,7 @@ def main() -> int:
                 work = Path(temporary)
                 prepared = prepare_16k(source, work)
                 uploads = split_uploads(prepared, work)
-                parts = [(offset, transcribe(args.endpoint, token, audio)) for audio, offset in uploads]
+                parts = [(chunk, transcribe(args.endpoint, token, chunk.path)) for chunk in uploads]
                 try:
                     response = merge_responses(parts)
                 except Exception:
@@ -389,8 +427,13 @@ def main() -> int:
                             "id": source_id,
                             "parent_sha256": source_sha,
                             "chunks": [
-                                {"offset_seconds": offset, "response": response}
-                                for offset, response in parts
+                                {
+                                    "offset_seconds": chunk.offset,
+                                    "core_start_seconds": chunk.core_start,
+                                    "core_end_seconds": chunk.core_end,
+                                    "response": response,
+                                }
+                                for chunk, response in parts
                             ],
                         },
                     )
@@ -415,8 +458,10 @@ def main() -> int:
                     "transport": {
                         "sample_rate": SAMPLE_RATE,
                         "max_chunk_seconds": MAX_CHUNK_SECONDS,
+                        "core_chunk_seconds": CORE_CHUNK_SECONDS,
+                        "overlap_seconds": OVERLAP_SECONDS,
                         "chunks": len(parts),
-                        "boundary_policy": "quietest-100ms-before-20s-hard-limit",
+                        "boundary_policy": "quietest-100ms-core-with-overlap-below-20s-hard-limit",
                     },
                 }
                 write_atomic_json(annotation_root / f"{source_id}.json", value)

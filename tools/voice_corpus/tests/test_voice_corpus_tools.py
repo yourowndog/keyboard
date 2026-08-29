@@ -40,10 +40,10 @@ class BackfillToolsTest(unittest.TestCase):
             uploads = split_uploads(prepared, root)
             self.assertGreater(len(uploads), 2)
             total = 0
-            for path, _ in uploads:
-                with wave.open(str(path), "rb") as stream:
+            for chunk in uploads:
+                with wave.open(str(chunk.path), "rb") as stream:
                     self.assertLessEqual(stream.getnframes(), MAX_CHUNK_SECONDS * 16_000)
-                    total += stream.getnframes()
+                total += round((chunk.core_end - chunk.core_start) * 16_000)
             with wave.open(str(prepared), "rb") as stream:
                 self.assertEqual(total, stream.getnframes())
 
