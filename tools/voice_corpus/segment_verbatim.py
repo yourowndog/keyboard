@@ -23,6 +23,7 @@ import re
 import shutil
 import subprocess
 import tempfile
+from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable
@@ -189,7 +190,10 @@ def parse_words(sidecar: dict[str, Any], duration: float) -> list[Word]:
             raise ValueError("invalid_verbatim_word_time")
         start_f = float(start)
         end_f = float(end)
-        if start_f < 0 or end_f <= start_f or start_f < previous_start:
+        # CrisperWhisper can assign a point timestamp to very short fillers or
+        # punctuation-adjacent words. Preserve those tokens; only negative
+        # duration or backwards ordering is invalid.
+        if start_f < 0 or end_f < start_f or start_f < previous_start:
             raise ValueError("non_monotonic_verbatim_words")
         if end_f > duration + 0.25:
             raise ValueError("verbatim_word_exceeds_audio")
@@ -420,7 +424,11 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
             sum(plan["source_duration"] for plan in plans) / 3600.0, 6
         ),
         "awaiting_verbatim_sources": len(awaiting),
+        "awaiting_verbatim_reasons": dict(
+            sorted(Counter(row["reason"] for row in awaiting).items())
+        ),
         "rejected_sources": len(rejected),
+        "rejected_reasons": dict(sorted(Counter(row["reason"] for row in rejected).items())),
         "unmanifested_audio": len(unmanifested),
         "applied": bool(args.apply),
     }
