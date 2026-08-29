@@ -5,219 +5,733 @@ train_seq2traj.py
 Stage 1: Text-to-Trajectory Generator (Seq2Traj)
 ------------------------------------------------
 Trains a generative sequence-to-trajectory model on real human swipe data
-(FUTO dataset), learning human motor control, curvature-based corner deceleration,
-and spatial variance.
+(FUTO), learning human motor control: curvature-based corner deceleration,
+spatial variance, and velocity profiles.
 
-Once trained, it generates high-fidelity synthetic swipe recordings for our 
-6,842 harvested custom vocabulary words (missing from FUTO).
+Once trained it synthesizes swipe recordings for harvested vocabulary that FUTO
+does not cover (contractions, developer/AI terms, slang).
+
+Design notes
+------------
+* Trajectories are arc-length resampled to a fixed point count. Shape lives in
+  the (x,y) channels; the entire velocity profile lives in the dt channel. This
+  removes the need for an EOS head and makes the length distribution a learned
+  property of dt rather than a separate classification problem.
+
+* The decoder attends over encoder states rather than consuming a mean-pooled
+  context vector. Mean pooling discards *which* key the finger is approaching,
+  which is precisely the information needed to brake into a corner.
+
+* The output head is heteroscedastic: it predicts a mean and a log-variance per
+  channel, trained with Gaussian NLL. Sampling from the predicted distribution
+  at synthesis time gives variation that the model learned from humans (wide
+  mid-stroke, tight at corners) instead of uniform jitter bolted on afterwards.
+
+* Loss includes explicit velocity and acceleration terms. Position-only MSE is
+  what produces over-smoothed splines that carry speed through corners — the
+  documented +1531% corner-velocity failure mode. Supervising the derivatives
+  makes corner braking a first-class training signal.
+
+Usage
+-----
+  # train
+  python train_seq2traj.py train --parquet futo_swipes.parquet --epochs 30
+
+  # check the coordinate frame before committing GPU hours
+  python train_seq2traj.py calibrate --parquet futo_swipes.parquet
+
+  # synthesize the supplement
+  python train_seq2traj.py synthesize \
+      --checkpoint models/seq2traj_best.pt \
+      --vocab target_swipe_vocabulary_supplement.txt \
+      --out synthetic_supplement.jsonl --variations 10
 """
 
-import os
-import sys
-import json
-import random
+from __future__ import annotations
+
 import argparse
+import json
+import math
+import os
+import random
+import time
 from pathlib import Path
-from typing import List, Tuple, Dict
+from typing import List, Optional, Sequence, Tuple
 
 import numpy as np
-import pyarrow.parquet as pq
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import DataLoader, Dataset
 
-# =============================================================================
-# KEYBOARD GEOMETRY & TOKENIZER
-# =============================================================================
+from swipe_common import (
+    CHARS,
+    NUM_CLASSES,
+    PAD_ID,
+    SwipeSample,
+    UnsupportedWord,
+    calibrate_layout,
+    corner_speed_ratios,
+    corner_stats,
+    encode_geometry,
+    key_sequence,
+    load_futo,
+    load_vocabulary,
+    resample_trajectory,
+    write_synthetic_jsonl,
+)
 
-QWERTY_LAYOUT = {
-    'q': (0.05, 0.167), 'w': (0.15, 0.167), 'e': (0.25, 0.167), 'r': (0.35, 0.167),
-    't': (0.45, 0.167), 'y': (0.55, 0.167), 'u': (0.65, 0.167), 'i': (0.75, 0.167),
-    'o': (0.85, 0.167), 'p': (0.95, 0.167),
-    'a': (0.075, 0.50), 's': (0.175, 0.50), 'd': (0.275, 0.50), 'f': (0.375, 0.50),
-    'g': (0.475, 0.50), 'h': (0.575, 0.50), 'j': (0.675, 0.50), 'k': (0.775, 0.50),
-    'l': (0.875, 0.50),
-    'z': (0.15, 0.833), 'x': (0.25, 0.833), 'c': (0.35, 0.833), 'v': (0.45, 0.833),
-    'b': (0.55, 0.833), 'n': (0.65, 0.833), 'm': (0.75, 0.833),
-    "'": (0.875, 0.50) # approximate contraction point
-}
+TRAJ_LEN = 48
 
-CHARS = ["<pad>", "<sos>", "<eos>", "'"] + [chr(ord('a') + i) for i in range(26)]
-CHAR2ID = {c: i for i, c in enumerate(CHARS)}
-ID2CHAR = {i: c for i, c in enumerate(CHARS)}
+# Bounds on the inter-sample interval, in seconds.
+#
+# These look generous against *raw* FUTO timing (0.2% of intervals fall below
+# 4ms, 0.6% above 80ms) but we do not train on raw timing -- we train on
+# arc-length resampled trajectories, and resampling transforms the
+# distribution. Arc-length spacing places points evenly in distance, so where
+# the finger moves quickly the points are close together in time, and where it
+# *pauses at a corner* they span a long interval. The long intervals are the
+# braking. Measured on resampled human data: p95 = 95ms, p99 = 202ms.
+#
+# The old 4ms/80ms window therefore clipped 13.4% of targets up to the floor
+# and 6.6% down to the ceiling, amputating exactly the pauses the acceptance
+# gate scores -- and capping the generator at an 80ms pause when humans
+# routinely take longer. Widened to cover p99.9 of the resampled distribution.
+MIN_DT, MAX_DT = 0.001, 0.300
 
-def tokenize_word(word: str) -> Tuple[torch.Tensor, torch.Tensor]:
-    word = word.lower().strip()
-    ids = [CHAR2ID.get(c, CHAR2ID["<pad>"]) for c in word if c in CHAR2ID]
-    coords = [QWERTY_LAYOUT.get(c, (0.5, 0.5)) for c in word if c in CHAR2ID]
-    if not ids:
-        ids = [CHAR2ID["a"]]
-        coords = [QWERTY_LAYOUT["a"]]
-    return torch.tensor(ids, dtype=torch.long), torch.tensor(coords, dtype=torch.float32)
+# dt spans more than two orders of magnitude, so it is predicted in log space:
+# a linear sigmoid over [0.001, 0.300] would push the median (~13ms) down to
+# 0.04 of the sigmoid's range, deep in its flat tail, and resolve the common
+# values hardly at all. Log spacing puts that median near 0.45 instead.
+LOG_MIN_DT, LOG_MAX_DT = math.log(MIN_DT), math.log(MAX_DT)
+LOG_DT_SPAN = LOG_MAX_DT - LOG_MIN_DT
+
+
+def _norm_log_dt(dt: "torch.Tensor") -> "torch.Tensor":
+    """Map dt in seconds to roughly [0, 1] in log space, matching x/y range."""
+    return (torch.log(dt.clamp_min(1e-6)) - LOG_MIN_DT) / LOG_DT_SPAN
+
+
+def set_seed(seed: int) -> None:
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+
 
 # =============================================================================
 # DATASET
 # =============================================================================
 
-class FutoSwipeDataset(Dataset):
-    def __init__(self, parquet_path: str, max_samples: int = None):
-        self.samples = []
-        table = pq.read_table(parquet_path, columns=['word', 'data'])
-        words = table['word'].to_pylist()
-        datas = table['data'].to_pylist()
-        
-        for w, d in zip(words, datas):
-            if not w or len(d) < 4:
+
+class Seq2TrajDataset(Dataset):
+    """FUTO samples encoded as (key path, fixed-length trajectory)."""
+
+    def __init__(self, samples: Sequence[SwipeSample], traj_len: int = TRAJ_LEN):
+        self.traj_len = traj_len
+        self.items: List[Tuple[np.ndarray, np.ndarray, np.ndarray]] = []
+        dropped = 0
+        for s in samples:
+            try:
+                char_ids, key_coords = encode_geometry(s.word)
+            except UnsupportedWord:
+                dropped += 1
                 continue
-            w_clean = w.lower().strip()
-            if not all(c in CHAR2ID for c in w_clean):
+            if len(s.xy) < 4:
+                dropped += 1
                 continue
-            x = [p['x'] for p in d]
-            y = [p['y'] for p in d]
-            t = [p['t'] for p in d]
-            self.samples.append((w_clean, x, y, t))
-            if max_samples and len(self.samples) >= max_samples:
-                break
-                
-    def __len__(self):
-        return len(self.samples)
-        
-    def __getitem__(self, idx):
-        word, x, y, t = self.samples[idx]
-        char_ids, key_coords = tokenize_word(word)
-        
-        # Resample trajectory to fixed or padded points (normalized dt in seconds)
-        t_sec = [(ts - t[0]) / 1000.0 for ts in t]
-        traj_points = []
-        for i in range(len(x)):
-            dt = t_sec[i] - (t_sec[i-1] if i > 0 else 0.0)
-            traj_points.append([x[i], y[i], dt])
-            
-        traj_tensor = torch.tensor(traj_points, dtype=torch.float32)
-        return char_ids, key_coords, traj_tensor
+            xy, t = resample_trajectory(s.xy, s.t, traj_len)
+            dt = np.diff(t, prepend=t[0])
+            dt[0] = dt[1] if traj_len > 1 else 0.016
+            dt = np.clip(dt, MIN_DT, MAX_DT).astype(np.float32)
+            traj = np.concatenate([xy, dt[:, None]], axis=1).astype(np.float32)
+            self.items.append((char_ids, key_coords, traj))
+        if dropped:
+            print(f"[dataset] dropped {dropped} unusable samples, kept {len(self.items)}")
+
+    def __len__(self) -> int:
+        return len(self.items)
+
+    def __getitem__(self, idx: int):
+        char_ids, key_coords, traj = self.items[idx]
+        return (
+            torch.from_numpy(char_ids),
+            torch.from_numpy(key_coords),
+            torch.from_numpy(traj),
+        )
+
 
 def pad_collate_fn(batch):
-    char_ids_list, key_coords_list, traj_list = zip(*batch)
-    
-    char_lens = [len(c) for c in char_ids_list]
-    traj_lens = [len(t) for t in traj_list]
-    
-    max_char_len = max(char_lens)
-    max_traj_len = max(traj_lens)
-    
-    batch_size = len(batch)
-    padded_chars = torch.zeros(batch_size, max_char_len, dtype=torch.long)
-    padded_coords = torch.zeros(batch_size, max_char_len, 2, dtype=torch.float32)
-    padded_trajs = torch.zeros(batch_size, max_traj_len, 3, dtype=torch.float32)
-    traj_mask = torch.zeros(batch_size, max_traj_len, dtype=torch.bool)
-    
-    for i in range(batch_size):
-        c_len = char_lens[i]
-        t_len = traj_lens[i]
-        padded_chars[i, :c_len] = char_ids_list[i]
-        padded_coords[i, :c_len] = key_coords_list[i]
-        padded_trajs[i, :t_len] = traj_list[i]
-        traj_mask[i, :t_len] = True
-        
-    return padded_chars, padded_coords, padded_trajs, traj_mask
+    """Pad key sequences; trajectories are already a fixed length."""
+    char_list, coord_list, traj_list = zip(*batch)
+    lens = [len(c) for c in char_list]
+    max_len = max(lens)
+    bs = len(batch)
+
+    chars = torch.full((bs, max_len), PAD_ID, dtype=torch.long)
+    coords = torch.zeros(bs, max_len, 2, dtype=torch.float32)
+    key_mask = torch.zeros(bs, max_len, dtype=torch.bool)
+
+    for i, n in enumerate(lens):
+        chars[i, :n] = char_list[i]
+        coords[i, :n] = coord_list[i]
+        key_mask[i, :n] = True
+
+    trajs = torch.stack(traj_list, dim=0)
+    return chars, coords, key_mask, trajs
+
 
 # =============================================================================
-# MODEL ARCHITECTURE: Seq2Traj
+# MODEL
 # =============================================================================
+
+
+class Attention(nn.Module):
+    """Additive attention from decoder state over encoder key states."""
+
+    def __init__(self, enc_dim: int, dec_dim: int, attn_dim: int = 64):
+        super().__init__()
+        self.enc_proj = nn.Linear(enc_dim, attn_dim, bias=False)
+        self.dec_proj = nn.Linear(dec_dim, attn_dim, bias=False)
+        self.score = nn.Linear(attn_dim, 1, bias=False)
+
+    def forward(self, enc_out, dec_hidden, key_mask):
+        # enc_out [B,L,E], dec_hidden [B,D], key_mask [B,L]
+        e = self.enc_proj(enc_out) + self.dec_proj(dec_hidden).unsqueeze(1)
+        scores = self.score(torch.tanh(e)).squeeze(-1)            # [B,L]
+        scores = scores.masked_fill(~key_mask, torch.finfo(scores.dtype).min)
+        weights = torch.softmax(scores, dim=-1)
+        return torch.bmm(weights.unsqueeze(1), enc_out).squeeze(1)  # [B,E]
+
+
+def _smooth_time(noise: torch.Tensor, sigma: float) -> torch.Tensor:
+    """Low-pass a [B,T,C] noise tensor along time, renormalized to unit variance.
+
+    Renormalizing by ||k||_2 matters: smoothing alone shrinks the per-step
+    standard deviation, which would silently scale down the variance the model
+    learned from human data.
+    """
+    if sigma <= 0:
+        return noise
+    radius = max(1, int(round(3 * sigma)))
+    taps = torch.arange(-radius, radius + 1, device=noise.device, dtype=noise.dtype)
+    kernel = torch.exp(-0.5 * (taps / sigma) ** 2)
+    kernel = kernel / torch.linalg.vector_norm(kernel)
+
+    b, t, c = noise.shape
+    x = noise.permute(0, 2, 1).reshape(b * c, 1, t)
+    x = F.pad(x, (radius, radius), mode="replicate")
+    x = F.conv1d(x, kernel.view(1, 1, -1))
+    return x.reshape(b, c, t).permute(0, 2, 1)
+
 
 class Seq2TrajGenerator(nn.Module):
-    def __init__(self, vocab_size=len(CHARS), embed_dim=64, hidden_dim=128):
+    def __init__(self, vocab_size: int = NUM_CLASSES, embed_dim: int = 64,
+                 hidden_dim: int = 128, noise_sigma: float = 2.0,
+                 logvar_min: float = -7.0):
         super().__init__()
-        self.char_embed = nn.Embedding(vocab_size, embed_dim)
+        self.hidden_dim = hidden_dim
+        self.noise_sigma = noise_sigma
+        # Floor on predicted log-variance. Gaussian NLL pays the model for
+        # claiming certainty, and with the floor at -9 it could assert a
+        # standard deviation of 0.011 -- a tenth of a key width. It learns to
+        # do exactly that under teacher forcing, then has no variation left to
+        # spend at synthesis time. -7.0 caps the claim at sigma 0.030.
+        self.logvar_min = logvar_min
+        self.dec_dim = hidden_dim * 2
+        self.enc_dim = hidden_dim * 2
+
+        self.char_embed = nn.Embedding(vocab_size, embed_dim, padding_idx=PAD_ID)
         self.key_proj = nn.Linear(2, embed_dim)
-        
-        # Bi-directional encoder for word sequence
         self.encoder = nn.GRU(embed_dim * 2, hidden_dim, batch_first=True, bidirectional=True)
-        
-        # Trajectory decoder
-        self.decoder_cell = nn.GRUCell(3 + hidden_dim * 2, hidden_dim * 2)
-        self.coord_head = nn.Linear(hidden_dim * 2, 2) # (x, y)
-        self.dt_head = nn.Linear(hidden_dim * 2, 1)    # dt
-        self.eos_head = nn.Linear(hidden_dim * 2, 1)   # eos prob
 
-    def encode(self, char_ids, key_coords):
-        c_emb = self.char_embed(char_ids)
-        k_emb = self.key_proj(key_coords)
-        enc_in = torch.cat([c_emb, k_emb], dim=-1)
-        enc_out, hidden = self.encoder(enc_in)
-        return enc_out
+        self.attn = Attention(self.enc_dim, self.dec_dim)
+        self.decoder_cell = nn.GRUCell(3 + self.enc_dim, self.dec_dim)
+        self.init_proj = nn.Linear(self.enc_dim, self.dec_dim)
 
-    def forward(self, char_ids, key_coords, target_traj=None, max_steps=60, noise_scale=0.02):
-        enc_out = self.encode(char_ids, key_coords)
-        context = enc_out.mean(dim=1) # Context summary
-        
-        batch_size = char_ids.size(0)
-        device = char_ids.device
-        
-        hidden = context
-        curr_point = torch.zeros(batch_size, 3, device=device)
-        
-        # Initialize at first key coordinate
-        curr_point[:, :2] = key_coords[:, 0, :] + torch.randn_like(key_coords[:, 0, :]) * noise_scale
-        curr_point[:, 2] = 0.016
-        
-        outputs = []
-        for t in range(max_steps):
-            dec_in = torch.cat([curr_point, context], dim=-1)
-            hidden = self.decoder_cell(dec_in, hidden)
-            
-            xy = torch.sigmoid(self.coord_head(hidden)) # constrain to 0-1 bounds
-            dt = F.softplus(self.dt_head(hidden)) * 0.05 + 0.005 # 5ms - 50ms interval
-            eos = torch.sigmoid(self.eos_head(hidden))
-            
-            step_out = torch.cat([xy, dt, eos], dim=-1)
-            outputs.append(step_out)
-            
-            if target_traj is not None and t < target_traj.size(1) and random.random() < 0.5:
-                curr_point = target_traj[:, t, :]
+        # Heteroscedastic heads: mean and log-variance for (x, y, dt).
+        self.mean_head = nn.Linear(self.dec_dim, 3)
+        self.logvar_head = nn.Linear(self.dec_dim, 3)
+
+    def encode(self, char_ids, key_coords, key_mask):
+        c = self.char_embed(char_ids)
+        k = self.key_proj(key_coords)
+        enc_out, _ = self.encoder(torch.cat([c, k], dim=-1))
+        enc_out = enc_out * key_mask.unsqueeze(-1)
+        summary = enc_out.sum(1) / key_mask.sum(1, keepdim=True).clamp(min=1)
+        return enc_out, summary
+
+    def _decode_step(self, curr_point, hidden, enc_out, key_mask):
+        ctx = self.attn(enc_out, hidden, key_mask)
+        hidden = self.decoder_cell(torch.cat([curr_point, ctx], dim=-1), hidden)
+        mean = self.mean_head(hidden)
+        logvar = self.logvar_head(hidden).clamp(self.logvar_min, 2.0)
+        xy = torch.sigmoid(mean[:, :2])
+        dt = torch.exp(LOG_MIN_DT + LOG_DT_SPAN * torch.sigmoid(mean[:, 2:3]))
+        return torch.cat([xy, dt], dim=-1), logvar, hidden
+
+    def forward(
+        self,
+        char_ids,
+        key_coords,
+        key_mask,
+        target_traj: Optional[torch.Tensor] = None,
+        steps: int = TRAJ_LEN,
+        teacher_forcing: float = 0.0,
+        sample: bool = False,
+        temperature: float = 1.0,
+    ):
+        enc_out, summary = self.encode(char_ids, key_coords, key_mask)
+        hidden = torch.tanh(self.init_proj(summary))
+
+        b = char_ids.size(0)
+        curr = torch.zeros(b, 3, device=char_ids.device)
+        curr[:, :2] = key_coords[:, 0, :]
+        curr[:, 2] = 0.016
+
+        # Temporally correlated synthesis noise.
+        #
+        # Drawing independent noise per step is white noise, and white noise on
+        # position manufactures high-frequency direction reversals that the
+        # corner metric reads as real corners — synthetic trajectories end up
+        # with several times the human corner count. Human spatial variation is
+        # low-frequency: the whole stroke drifts, it does not vibrate. So the
+        # noise sequence is smoothed along time and renormalized to unit
+        # per-step variance, preserving the magnitude the model learned while
+        # removing the jitter.
+        noise = None
+        if sample:
+            raw = torch.randn(b, steps, 3, device=char_ids.device)
+            noise = _smooth_time(raw, self.noise_sigma)
+
+        means, logvars = [], []
+        for step in range(steps):
+            pred, logvar, hidden = self._decode_step(curr, hidden, enc_out, key_mask)
+            means.append(pred)
+            logvars.append(logvar)
+
+            if sample:
+                # The loss scores dt in normalized log space, so logvar is
+                # expressed there too. Position noise is additive, but timing
+                # noise has to be applied multiplicatively in log space or a
+                # learned sigma means something different at synthesis than it
+                # did in training -- and additive noise near the floor would
+                # drive dt negative into the clamp.
+                std = torch.exp(0.5 * logvar) * temperature
+                xy_next = (pred[:, :2] + noise[:, step, :2] * std[:, :2]).clamp(0.0, 1.0)
+                log_dt = torch.log(pred[:, 2:3].clamp_min(1e-6))
+                log_dt = log_dt + noise[:, step, 2:3] * std[:, 2:3] * LOG_DT_SPAN
+                dt_next = torch.exp(log_dt).clamp(MIN_DT, MAX_DT)
+                nxt = torch.cat([xy_next, dt_next], dim=-1)
+                means[-1] = nxt
+                curr = nxt
+            elif target_traj is not None and random.random() < teacher_forcing:
+                curr = target_traj[:, step, :]
             else:
-                curr_point = torch.cat([xy, dt], dim=-1)
-                
-        return torch.stack(outputs, dim=1)
+                curr = pred
+
+        return torch.stack(means, dim=1), torch.stack(logvars, dim=1)
+
 
 # =============================================================================
-# SYNTHESIS FUNCTION
+# LOSS
 # =============================================================================
+
+
+def _batch_corner_ratios(traj: "torch.Tensor") -> List[float]:
+    """Corner speed ratios for a batch of [B, T, 3] (x, y, dt) trajectories."""
+    arr = traj.detach().float().cpu().numpy()
+    out: List[float] = []
+    for row in arr:
+        xy = row[:, :2]
+        t = np.cumsum(row[:, 2])
+        out.extend(corner_speed_ratios(xy, t))
+    return out
+
+
+def _corner_pct_error(pred: Sequence[float], real: Sequence[float]) -> float:
+    """Percent error of mean corner speed ratio -- the acceptance gate metric."""
+    if not len(pred) or not len(real):
+        return float("nan")
+    p, r = float(np.mean(pred)), float(np.mean(real))
+    if not math.isfinite(p) or not math.isfinite(r) or r == 0:
+        return float("nan")
+    return 100.0 * abs(p - r) / abs(r)
+
+
+def seq2traj_loss(pred, logvar, target, w_nll=1.0, w_vel=6.0, w_acc=2.0):
+    """Gaussian NLL on absolute position/dt plus derivative supervision.
+
+    The velocity term carries the largest weight on purpose: matching where the
+    finger is matters less than matching how it accelerates and brakes, and the
+    derivative signal is what the position-only objective washes out.
+    """
+    # Put dt on the same footing as x/y before comparing. Linear scaling by
+    # 1/MAX_DT would make the loss care about absolute millisecond error, which
+    # is dominated by the long pauses; in log space a 5ms error on a 10ms
+    # interval and a 50ms error on a 100ms one count the same, which is what
+    # "matched velocity profile" actually means.
+    p = torch.cat([pred[..., :2], _norm_log_dt(pred[..., 2:3])], dim=-1)
+    tgt = torch.cat([target[..., :2], _norm_log_dt(target[..., 2:3])], dim=-1)
+
+    inv_var = torch.exp(-logvar)
+    nll = 0.5 * (inv_var * (p - tgt) ** 2 + logvar)
+    nll = nll.mean()
+
+    pv, tv = p[:, 1:, :2] - p[:, :-1, :2], tgt[:, 1:, :2] - tgt[:, :-1, :2]
+    vel = F.smooth_l1_loss(pv, tv, beta=0.01)
+
+    pa, ta = pv[:, 1:] - pv[:, :-1], tv[:, 1:] - tv[:, :-1]
+    acc = F.smooth_l1_loss(pa, ta, beta=0.01)
+
+    total = w_nll * nll + w_vel * vel + w_acc * acc
+    return total, {"nll": nll.item(), "vel": vel.item(), "acc": acc.item()}
+
+
+
+def _serializable_args(args) -> dict:
+    """Checkpoint-safe view of argparse args.
+
+    `vars(args)` carries the subcommand's `func` callable, which torch>=2.6
+    refuses to unpickle under the default `weights_only=True`.
+    """
+    return {k: v for k, v in vars(args).items()
+            if isinstance(v, (int, float, str, bool, list, tuple, type(None)))}
+
+# =============================================================================
+# TRAIN
+# =============================================================================
+
+
+def run_train(args):
+    set_seed(args.seed)
+    device = torch.device(args.device)
+    out_dir = Path(args.out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    samples = load_futo(args.parquet, max_samples=args.max_samples)
+    if not samples:
+        raise SystemExit("no usable FUTO samples loaded")
+
+    cal = calibrate_layout(samples)
+    print(f"[calibrate] {json.dumps(cal, indent=2)}")
+    if cal.get("ok") and not cal.get("identity_like"):
+        print("[calibrate] WARNING: FUTO frame does not match QWERTY_LAYOUT. "
+              "Fix the layout table before trusting this run.")
+        if not args.force:
+            raise SystemExit("refusing to train on a mismatched coordinate frame (--force to override)")
+
+    ds = Seq2TrajDataset(samples, traj_len=args.traj_len)
+    n_val = max(1, int(len(ds) * args.val_frac))
+    n_train = len(ds) - n_val
+    train_ds, val_ds = torch.utils.data.random_split(
+        ds, [n_train, n_val], generator=torch.Generator().manual_seed(args.seed)
+    )
+    print(f"[data] train={n_train} val={n_val}")
+
+    common = dict(collate_fn=pad_collate_fn, num_workers=args.workers, pin_memory=True)
+    train_dl = DataLoader(train_ds, batch_size=args.batch_size, shuffle=True, drop_last=True, **common)
+    val_dl = DataLoader(val_ds, batch_size=args.batch_size, shuffle=False, **common)
+
+    model = Seq2TrajGenerator(hidden_dim=args.hidden_dim,
+                              logvar_min=args.logvar_min).to(device)
+    n_params = sum(p.numel() for p in model.parameters())
+    print(f"[model] Seq2Traj parameters: {n_params:,}")
+
+    opt = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=1e-4)
+    sched = torch.optim.lr_scheduler.OneCycleLR(
+        opt, max_lr=args.lr, total_steps=args.epochs * max(1, len(train_dl)), pct_start=0.15
+    )
+    use_amp = device.type == "cuda" and not args.no_amp
+    scaler = torch.amp.GradScaler("cuda", enabled=use_amp)
+
+    best_val = float("inf")
+    start_epoch = 0
+    ckpt_path = out_dir / "seq2traj_best.pt"
+
+    if args.resume and Path(args.resume).exists():
+        state = torch.load(args.resume, map_location=device)
+        model.load_state_dict(state["model"])
+        opt.load_state_dict(state["optimizer"])
+        if "scheduler" in state:
+            sched.load_state_dict(state["scheduler"])
+        start_epoch = state.get("epoch", 0) + 1
+        best_val = state.get("best_val", best_val)
+        print(f"[resume] from {args.resume} at epoch {start_epoch}")
+
+    for epoch in range(start_epoch, args.epochs):
+        # Scheduled sampling: start heavily teacher-forced, decay toward
+        # free-running so the model learns to recover from its own drift before
+        # synthesis time. Decaying across the *whole* run left it still 74%
+        # assisted at epoch 6, so it never practised recovery and drifted badly
+        # the moment the crutch was removed. Reach tf_min early instead and
+        # spend the remaining epochs training on the task we actually evaluate.
+        ramp = max(1.0, args.tf_decay_frac * max(1, args.epochs - 1))
+        tf = max(args.tf_min, args.tf_max * (1.0 - epoch / ramp))
+
+        model.train()
+        t0, agg, nb = time.time(), {"loss": 0.0, "nll": 0.0, "vel": 0.0, "acc": 0.0}, 0
+        for chars, coords, key_mask, trajs in train_dl:
+            chars, coords = chars.to(device), coords.to(device)
+            key_mask, trajs = key_mask.to(device), trajs.to(device)
+
+            opt.zero_grad(set_to_none=True)
+            with torch.amp.autocast("cuda", enabled=use_amp):
+                pred, logvar = model(chars, coords, key_mask, target_traj=trajs,
+                                     steps=args.traj_len, teacher_forcing=tf)
+                loss, parts = seq2traj_loss(pred, logvar, trajs)
+
+            scaler.scale(loss).backward()
+            scaler.unscale_(opt)
+            torch.nn.utils.clip_grad_norm_(model.parameters(), args.clip)
+            scaler.step(opt)
+            scaler.update()
+            sched.step()
+
+            agg["loss"] += loss.item()
+            for k, v in parts.items():
+                agg[k] += v
+            nb += 1
+
+        # Two validation numbers, because they answer different questions.
+        # `val_tf` keeps the crutch and measures fit; `val_free` removes it and
+        # measures the job -- generating a whole trajectory unaided. Reporting
+        # only the free number next to a teacher-forced train loss compares two
+        # different tasks and hides whether a regression is drift or misfit.
+        model.eval()
+        val_free = val_tf = 0.0
+        vb = 0
+        pred_ratios, real_ratios = [], []
+        with torch.no_grad():
+            for chars, coords, key_mask, trajs in val_dl:
+                chars, coords = chars.to(device), coords.to(device)
+                key_mask, trajs = key_mask.to(device), trajs.to(device)
+                with torch.amp.autocast("cuda", enabled=use_amp):
+                    pred, logvar = model(chars, coords, key_mask, steps=args.traj_len,
+                                         teacher_forcing=0.0)
+                    val_free += seq2traj_loss(pred, logvar, trajs)[0].item()
+                    tf_pred, tf_logvar = model(chars, coords, key_mask, target_traj=trajs,
+                                               steps=args.traj_len, teacher_forcing=1.0)
+                    val_tf += seq2traj_loss(tf_pred, tf_logvar, trajs)[0].item()
+                vb += 1
+                if len(pred_ratios) < args.corner_eval_batches * chars.size(0):
+                    pred_ratios.extend(_batch_corner_ratios(pred))
+                    real_ratios.extend(_batch_corner_ratios(trajs))
+        val_free /= max(1, vb)
+        val_tf /= max(1, vb)
+
+        # Selection metric. The acceptance gate judges corner kinematics, so
+        # select on corner kinematics -- picking by val NLL selects whichever
+        # epoch happened to be least punished for overconfidence.
+        corner_err = _corner_pct_error(pred_ratios, real_ratios)
+        score = corner_err if math.isfinite(corner_err) else float("inf")
+
+        print(
+            f"epoch {epoch + 1}/{args.epochs} tf={tf:.2f} "
+            f"train={agg['loss'] / max(1, nb):.4f} "
+            f"(nll={agg['nll'] / max(1, nb):.4f} vel={agg['vel'] / max(1, nb):.4f} "
+            f"acc={agg['acc'] / max(1, nb):.4f}) "
+            f"val_tf={val_tf:.4f} val_free={val_free:.4f} "
+            f"corner_err={corner_err:.1f}% [{time.time() - t0:.0f}s]"
+        )
+
+        state = {
+            "model": model.state_dict(),
+            "optimizer": opt.state_dict(),
+            "scheduler": sched.state_dict(),
+            "epoch": epoch,
+            "best_val": min(best_val, score),
+            "corner_err": corner_err,
+            "val_free": val_free,
+            "val_tf": val_tf,
+            "logvar_min": args.logvar_min,
+            "args": _serializable_args(args),
+            "traj_len": args.traj_len,
+            "hidden_dim": args.hidden_dim,
+        }
+        torch.save(state, out_dir / "seq2traj_last.pt")
+        if score < best_val:
+            best_val = score
+            torch.save(state, ckpt_path)
+            print(f"  -> new best corner_err {corner_err:.1f}%, saved {ckpt_path}")
+
+    print(f"[done] best corner error {best_val:.1f}% -> {ckpt_path}")
+
+
+# =============================================================================
+# SYNTHESIS
+# =============================================================================
+
+
+def load_generator(checkpoint: str, device: torch.device) -> Tuple[Seq2TrajGenerator, dict]:
+    state = torch.load(checkpoint, map_location=device)
+    model = Seq2TrajGenerator(hidden_dim=state.get("hidden_dim", 128),
+                              logvar_min=state.get("logvar_min", -7.0)).to(device)
+    model.load_state_dict(state["model"])
+    model.eval()
+    return model, state
+
 
 @torch.no_grad()
-def synthesize_word_swipes(model: Seq2TrajGenerator, word: str, num_variations: int = 10, device='cuda') -> List[dict]:
-    model.eval()
-    char_ids, key_coords = tokenize_word(word)
-    char_ids = char_ids.unsqueeze(0).to(device)
-    key_coords = key_coords.unsqueeze(0).to(device)
-    
-    samples = []
-    for i in range(num_variations):
-        noise = 0.015 + 0.01 * random.random()
-        pred = model(char_ids, key_coords, max_steps=50, noise_scale=noise)[0]
-        
-        x_out, y_out, t_out = [], [], []
-        curr_t = 0.0
-        for step in pred:
-            x, y, dt, eos = step[0].item(), step[1].item(), step[2].item(), step[3].item()
-            curr_t += dt
-            x_out.append(x)
-            y_out.append(y)
-            t_out.append(int(curr_t * 1000))
-            if eos > 0.85 and len(x_out) >= len(word) * 3:
-                break
-                
-        samples.append({
-            "word": word,
-            "curve": {
-                "x": x_out,
-                "y": y_out,
-                "t": t_out,
-                "grid_name": "qwerty_en"
-            }
-        })
-    return samples
+def synthesize_words(
+    model: Seq2TrajGenerator,
+    words: Sequence[str],
+    device: torch.device,
+    variations: int = 10,
+    traj_len: int = TRAJ_LEN,
+    temperature: float = 1.0,
+    batch_size: int = 256,
+) -> List[SwipeSample]:
+    """Generate `variations` swipe trajectories per word."""
+    out: List[SwipeSample] = []
+    usable = []
+    for w in words:
+        try:
+            usable.append((w, *encode_geometry(w)))
+        except UnsupportedWord:
+            continue
+
+    for start in range(0, len(usable), batch_size):
+        chunk = usable[start:start + batch_size]
+        max_len = max(len(c[1]) for c in chunk)
+        b = len(chunk)
+
+        chars = torch.full((b, max_len), PAD_ID, dtype=torch.long)
+        coords = torch.zeros(b, max_len, 2, dtype=torch.float32)
+        mask = torch.zeros(b, max_len, dtype=torch.bool)
+        for i, (_, ids, kc) in enumerate(chunk):
+            n = len(ids)
+            chars[i, :n] = torch.from_numpy(ids)
+            coords[i, :n] = torch.from_numpy(kc)
+            mask[i, :n] = True
+
+        chars, coords, mask = chars.to(device), coords.to(device), mask.to(device)
+
+        for _ in range(variations):
+            pred, _ = model(chars, coords, mask, steps=traj_len,
+                            sample=True, temperature=temperature)
+            arr = pred.float().cpu().numpy()
+            for i, (word, _, _) in enumerate(chunk):
+                xy = arr[i, :, :2].astype(np.float32)
+                t = np.cumsum(arr[i, :, 2]).astype(np.float32)
+                t = t - t[0]
+                out.append(SwipeSample(word=word, xy=xy, t=t, synthetic=True))
+
+        done = min(start + batch_size, len(usable))
+        print(f"[synth] {done}/{len(usable)} words -> {len(out)} trajectories", end="\r")
+
+    print()
+    return out
+
+
+def run_synthesize(args):
+    set_seed(args.seed)
+    device = torch.device(args.device)
+    model, state = load_generator(args.checkpoint, device)
+    model.noise_sigma = args.noise_sigma
+    traj_len = state.get("traj_len", TRAJ_LEN)
+
+    words = load_vocabulary(*args.vocab, filter_junk=not args.no_filter)
+    print(f"[vocab] {len(words)} target words after filtering")
+
+    # Overlap words: vocabulary that FUTO already covers, synthesized anyway so
+    # real and synthetic distributions share labels. Without this the classifier
+    # can learn "generator artifact => rare word" instead of learning geometry.
+    if args.overlap_words and args.overlap_source:
+        pool = load_vocabulary(args.overlap_source, filter_junk=True)
+        extra = [w for w in pool if w not in set(words)]
+        random.shuffle(extra)
+        overlap = extra[:args.overlap_words]
+        print(f"[vocab] + {len(overlap)} overlap words shared with FUTO")
+        words = words + overlap
+
+    samples = synthesize_words(
+        model, words, device,
+        variations=args.variations, traj_len=traj_len,
+        temperature=args.temperature, batch_size=args.batch_size,
+    )
+
+    n = write_synthetic_jsonl(samples, args.out)
+    print(f"[synth] wrote {n} trajectories -> {args.out}")
+
+    stats = corner_stats([(s.xy, s.t) for s in samples[:5000]])
+    print(f"[synth] corner kinematics: {json.dumps(stats.as_dict(), indent=2)}")
+
+
+def run_calibrate(args):
+    samples = load_futo(args.parquet, max_samples=args.max_samples or 20000)
+    print(json.dumps(calibrate_layout(samples), indent=2))
+    stats = corner_stats([(s.xy, s.t) for s in samples[:5000]])
+    print("[real] corner kinematics:")
+    print(json.dumps(stats.as_dict(), indent=2))
+
+
+# =============================================================================
+# CLI
+# =============================================================================
+
+
+def build_parser() -> argparse.ArgumentParser:
+    p = argparse.ArgumentParser(description="Seq2Traj generator: train / synthesize / calibrate")
+    sub = p.add_subparsers(dest="command", required=True)
+
+    t = sub.add_parser("train")
+    t.add_argument("--parquet", default="futo_swipes.parquet")
+    t.add_argument("--out-dir", default="models")
+    t.add_argument("--epochs", type=int, default=30)
+    t.add_argument("--batch-size", type=int, default=256)
+    t.add_argument("--lr", type=float, default=2e-3)
+    t.add_argument("--hidden-dim", type=int, default=128)
+    t.add_argument("--traj-len", type=int, default=TRAJ_LEN)
+    t.add_argument("--val-frac", type=float, default=0.05)
+    t.add_argument("--max-samples", type=int, default=None)
+    t.add_argument("--tf-max", type=float, default=0.9)
+    t.add_argument("--tf-min", type=float, default=0.05)
+    t.add_argument("--tf-decay-frac", type=float, default=0.35,
+                   help="fraction of the run over which teacher forcing decays "
+                        "to --tf-min; the rest trains free-running")
+    t.add_argument("--logvar-min", type=float, default=-7.0,
+                   help="floor on predicted log-variance; lower lets the model "
+                        "claim more certainty than it has earned")
+    t.add_argument("--corner-eval-batches", type=int, default=16,
+                   help="val batches used for the corner-kinematics score; too "
+                        "few and epoch-to-epoch noise picks the checkpoint")
+    t.add_argument("--clip", type=float, default=1.0)
+    t.add_argument("--workers", type=int, default=4)
+    t.add_argument("--resume", default=None)
+    t.add_argument("--no-amp", action="store_true")
+    t.add_argument("--force", action="store_true", help="train despite a layout/frame mismatch")
+    t.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
+    t.add_argument("--seed", type=int, default=1337)
+    t.set_defaults(func=run_train)
+
+    s = sub.add_parser("synthesize")
+    s.add_argument("--checkpoint", default="models/seq2traj_best.pt")
+    s.add_argument("--vocab", nargs="+",
+                   default=["target_swipe_vocabulary_supplement.txt",
+                            "sams_custom_words.txt"])
+    s.add_argument("--out", default="synthetic_supplement.jsonl")
+    s.add_argument("--variations", type=int, default=10)
+    s.add_argument("--temperature", type=float, default=0.7,
+                   help="scales the learned per-step std; 0 gives the deterministic mean path")
+    s.add_argument("--noise-sigma", type=float, default=2.0,
+                   help="time-smoothing of synthesis noise, in steps; 0 = white noise")
+    s.add_argument("--batch-size", type=int, default=256)
+    s.add_argument("--no-filter", action="store_true", help="skip vocabulary hygiene filter")
+    s.add_argument("--overlap-source", default="futo_words_unique.txt")
+    s.add_argument("--overlap-words", type=int, default=2000)
+    s.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
+    s.add_argument("--seed", type=int, default=1337)
+    s.set_defaults(func=run_synthesize)
+
+    c = sub.add_parser("calibrate")
+    c.add_argument("--parquet", default="futo_swipes.parquet")
+    c.add_argument("--max-samples", type=int, default=20000)
+    c.set_defaults(func=run_calibrate)
+
+    return p
+
 
 if __name__ == "__main__":
-    print("Seq2Traj Generator ready.")
+    args = build_parser().parse_args()
+    args.func(args)

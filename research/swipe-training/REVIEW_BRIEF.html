@@ -1,0 +1,557 @@
+<title>The Braking Problem</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<style>
+  :root {
+    --ground:      #F4F6F7;
+    --surface:     #FFFFFF;
+    --ink:         #14171C;
+    --muted:       #5B636E;
+    --faint:       #8A929C;
+    --rule:        #DCE1E5;
+    --accent:      #BE3A28;
+    --accent-soft: #F6E4E0;
+    --good:        #2C6E52;
+    --good-soft:   #E0EDE7;
+    --warn:        #9A6512;
+    --warn-soft:   #F4EADA;
+    --shadow:      0 1px 2px rgba(20, 23, 28, .05), 0 8px 24px -16px rgba(20, 23, 28, .18);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:      #0F1216;
+      --surface:     #161A20;
+      --ink:         #E7EAED;
+      --muted:       #9AA3AD;
+      --faint:       #6C757F;
+      --rule:        #262C34;
+      --accent:      #E86A54;
+      --accent-soft: #2E1C18;
+      --good:        #6FBF97;
+      --good-soft:   #16261F;
+      --warn:        #D3A155;
+      --warn-soft:   #261E12;
+      --shadow:      0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px -16px rgba(0, 0, 0, .7);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:      #0F1216;
+    --surface:     #161A20;
+    --ink:         #E7EAED;
+    --muted:       #9AA3AD;
+    --faint:       #6C757F;
+    --rule:        #262C34;
+    --accent:      #E86A54;
+    --accent-soft: #2E1C18;
+    --good:        #6FBF97;
+    --good-soft:   #16261F;
+    --warn:        #D3A155;
+    --warn-soft:   #261E12;
+    --shadow:      0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px -16px rgba(0, 0, 0, .7);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: "Newsreader", Georgia, "Times New Roman", serif;
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    margin: 0;
+    padding: clamp(1.5rem, 4vw, 4rem) clamp(1rem, 5vw, 2rem) 6rem;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 46rem;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+  }
+
+  h1, h2, h3, .label, .stat-value, th {
+    font-family: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  }
+
+  h1 {
+    font-size: clamp(2.1rem, 6vw, 3.1rem);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.022em;
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  h2 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    letter-spacing: -0.012em;
+    line-height: 1.2;
+    text-wrap: balance;
+    margin: 0;
+    padding-bottom: .6rem;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  h3 {
+    font-size: 1.02rem;
+    font-weight: 600;
+    letter-spacing: -0.004em;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  p { margin: 0; }
+  strong { font-weight: 500; color: var(--ink); }
+
+  .label {
+    font-size: .69rem;
+    font-weight: 600;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    color: var(--faint);
+  }
+
+  code, .mono, td.num, th.num {
+    font-family: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+
+  code {
+    font-size: .84em;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: .08em .34em;
+  }
+
+  section { display: flex; flex-direction: column; gap: 1.15rem; }
+
+  /* ---------- masthead ---------- */
+  header { display: flex; flex-direction: column; gap: 1.15rem; }
+
+  .kicker {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: .5rem 1rem;
+    padding-bottom: 1.15rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .dek {
+    font-size: 1.19rem;
+    line-height: 1.5;
+    color: var(--muted);
+    max-width: 34rem;
+  }
+
+  .ask {
+    background: var(--accent-soft);
+    border-left: 3px solid var(--accent);
+    padding: 1rem 1.15rem;
+    font-size: 1rem;
+    line-height: 1.55;
+  }
+
+  /* ---------- status strip ---------- */
+  .strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .stat {
+    background: var(--surface);
+    padding: .85rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: .22rem;
+  }
+
+  .stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
+  }
+
+  .stat-note { font-size: .82rem; color: var(--muted); line-height: 1.35; }
+  .v-good { color: var(--good); }
+  .v-bad  { color: var(--accent); }
+
+  /* ---------- tables ---------- */
+  .scroll { overflow-x: auto; }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 30rem;
+    font-size: .92rem;
+  }
+
+  caption {
+    text-align: left;
+    font-size: .82rem;
+    color: var(--muted);
+    padding-bottom: .5rem;
+    line-height: 1.45;
+  }
+
+  th {
+    font-size: .7rem;
+    font-weight: 600;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: var(--faint);
+    text-align: left;
+    padding: 0 .7rem .45rem 0;
+    border-bottom: 1px solid var(--rule);
+    white-space: nowrap;
+  }
+
+  td {
+    padding: .5rem .7rem .5rem 0;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: baseline;
+  }
+
+  th.num, td.num { text-align: right; padding-right: 0; }
+  tbody tr:last-child td { border-bottom: none; }
+  .row-ref td { color: var(--muted); }
+  .row-hero td { font-weight: 500; }
+
+  .pill {
+    display: inline-block;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: .72rem;
+    font-weight: 500;
+    padding: .12rem .45rem;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+  .pill-pass { background: var(--good-soft); color: var(--good); }
+  .pill-fail { background: var(--accent-soft); color: var(--accent); }
+  .pill-open { background: var(--warn-soft); color: var(--warn); }
+
+  /* ---------- stage cards ---------- */
+  .stages { display: flex; flex-direction: column; gap: 1rem; }
+
+  .stage {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 1.1rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: .55rem;
+    box-shadow: var(--shadow);
+  }
+
+  .stage-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: .4rem 1rem;
+  }
+
+  .spec {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: .8rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* ---------- numbered defect chain ---------- */
+  .chain { display: flex; flex-direction: column; gap: 0; }
+
+  .defect {
+    display: grid;
+    grid-template-columns: 2.6rem 1fr;
+    gap: 0 1rem;
+    padding: 1.15rem 0;
+    border-top: 1px solid var(--rule);
+  }
+  .defect:last-child { border-bottom: 1px solid var(--rule); }
+
+  .defect-n {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: .82rem;
+    font-weight: 600;
+    color: var(--accent);
+    padding-top: .18rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .defect-body { display: flex; flex-direction: column; gap: .5rem; min-width: 0; }
+  .defect-body p { font-size: .97rem; }
+
+  .verdict {
+    font-size: .88rem;
+    color: var(--muted);
+    border-left: 2px solid var(--rule);
+    padding-left: .8rem;
+  }
+
+  /* ---------- questions ---------- */
+  .questions { display: flex; flex-direction: column; gap: 1.4rem; }
+  .q { display: flex; flex-direction: column; gap: .45rem; }
+  .q p { font-size: .97rem; color: var(--muted); }
+  .q h3 { color: var(--ink); }
+
+  footer {
+    border-top: 1px solid var(--rule);
+    padding-top: 1.15rem;
+    font-size: .85rem;
+    color: var(--faint);
+    line-height: 1.6;
+  }
+
+  @media (max-width: 34rem) {
+    .defect { grid-template-columns: 1fr; gap: .4rem; }
+    .defect-n { padding-top: 0; }
+  }
+</style>
+
+<div class="page">
+
+  <header>
+    <div class="kicker">
+      <span class="label">Swipe synthesis &middot; Stage 1 review</span>
+      <span class="label">OmniBoard / FlorisBoard &middot; Android</span>
+    </div>
+    <h1>The Braking Problem</h1>
+    <p class="dek">We are generating synthetic swipe-typing trajectories to train a word recogniser. The generator now passes its acceptance gate, but a validation metric has diverged in every full-scale run and we would like a second opinion on whether that matters.</p>
+    <div class="ask">
+      <strong>What we want from you.</strong> Sections 5 and 6 are the live questions &mdash; a training pathology we have a hypothesis about but have not proven, and five design decisions we would make differently if someone with fresh eyes said so. Everything before that is context.
+    </div>
+  </header>
+
+  <section>
+    <span class="label">01 &middot; The problem</span>
+    <h2>Why generate swipes at all</h2>
+    <p>Swipe typing turns a continuous finger path into a word. Training a recogniser needs paired examples &mdash; path plus intended word &mdash; and we have a good source of real ones: the <strong>FUTO</strong> open-source dataset, roughly 230,000 human recordings.</p>
+    <p>It does not cover our vocabulary. The words users of this keyboard actually type &mdash; technical terms, tool names, project-specific jargon &mdash; barely appear. We have about 5,100 target words with little or no real coverage, so we need to synthesise trajectories for them.</p>
+    <p>The previous generator built paths from Bézier splines and a spring model. It produced curves that looked plausible to the eye and were trivially separable from human data by the recogniser, which learned &ldquo;synthetic&rdquo; as a feature instead of learning the words. The tell is kinematic, and it is the axis this whole project is organised around.</p>
+  </section>
+
+  <section>
+    <span class="label">02 &middot; The metric</span>
+    <h2>Humans brake into corners</h2>
+    <p>A finger changing direction must decelerate &mdash; you cannot carry speed through a hairpin. We measure the <strong>corner speed ratio</strong>: instantaneous speed at a direction-change vertex, divided by the trajectory's mean speed. Below 1.0 means braking.</p>
+
+    <div class="scroll">
+      <table>
+        <caption>All sources resampled to 64 points before measuring. 150 held-out words, 6 variations each.</caption>
+        <thead>
+          <tr>
+            <th>Source</th>
+            <th class="num">Mean</th>
+            <th class="num">Median</th>
+            <th class="num">p90</th>
+            <th class="num">Error</th>
+            <th class="num">W&#8321;</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="row-ref">
+            <td>Human (FUTO)</td>
+            <td class="num">0.294</td><td class="num">0.263</td><td class="num">0.460</td>
+            <td class="num">&mdash;</td><td class="num">&mdash;</td>
+          </tr>
+          <tr class="row-hero">
+            <td>Seq2Traj <span class="pill pill-pass">pass</span></td>
+            <td class="num">0.358</td><td class="num">0.321</td><td class="num">0.603</td>
+            <td class="num">21.8%</td><td class="num">0.159</td>
+          </tr>
+          <tr>
+            <td>Spline + spring <span class="pill pill-fail">fail</span></td>
+            <td class="num">0.685</td><td class="num">0.479</td><td class="num">1.403</td>
+            <td class="num">133.2%</td><td class="num">0.478</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>The old generator sits at 0.685 &mdash; and its p90 of 1.403 means its worst tenth of corners are traversed <em>faster</em> than the path average, which no hand does. Gate tolerance is &plusmn;25% on the mean. The Seq2Traj row above is a four-epoch model trained on a 20k-sample slice; a full 380k / 30-epoch run is in progress.</p>
+  </section>
+
+  <section>
+    <span class="label">03 &middot; Architecture</span>
+    <h2>Two models, and what comes after</h2>
+    <div class="stages">
+
+      <div class="stage">
+        <div class="stage-head">
+          <h3>Stage 1 &mdash; Seq2Traj (generator)</h3>
+          <span class="label">697,478 params</span>
+        </div>
+        <p class="spec">GRU encoder&ndash;decoder, additive attention &middot; embed 64, hidden 128, bidirectional encoder &middot; in: character ids + key-centre coordinates &middot; out: 48 &times; (x, y, dt)</p>
+        <p>Heteroscedastic &mdash; separate mean and log-variance heads trained under Gaussian NLL, so the model learns how much variation each point should carry rather than emitting one rigid path. Loss adds velocity and acceleration terms (weights 6.0 and 2.0 against NLL at 1.0) because a position-only objective over-smooths exactly the corners we care about. Scheduled sampling decays teacher forcing from 0.9 to 0.05 over the first 35% of the run.</p>
+      </div>
+
+      <div class="stage">
+        <div class="stage-head">
+          <h3>Stage 2 &mdash; NeuroSwipe (recogniser)</h3>
+          <span class="label">1,334,046 params</span>
+        </div>
+        <p class="spec">Transformer encoder&ndash;decoder &middot; d_model 128, 4 heads, 4+4 layers, ff 256, dropout 0.1 &middot; in: 64 &times; 7 features (x, y, dx, dy, speed, turn, dt) &middot; out: 24 chars &times; 30 classes</p>
+        <p>Trains on real and synthetic mixed via a weighted sampler. Real and synthetic accuracy are reported separately and checkpoints are selected on <strong>real</strong> word accuracy only, so a model that gets good at our own synthetic distribution cannot win. Exports to ONNX as split encoder and decoder graphs with static shapes, ~5.3 MB fp32, for on-device inference.</p>
+      </div>
+
+      <div class="stage">
+        <div class="stage-head">
+          <h3>Downstream &mdash; what this unlocks</h3>
+          <span class="label">not yet built</span>
+        </div>
+        <p>Once Stage 1 clears the gate we can mint arbitrary labelled trajectories for any vocabulary. The intended next models are a personalised recogniser fine-tuned on an individual's own swipe corpus, and a layout-transfer variant &mdash; the generator is conditioned on key coordinates, so retargeting to a different keyboard geometry should be a matter of feeding new coordinates rather than recollecting data. We would rather hear now if that conditioning is too weak to carry real layout transfer.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <span class="label">04 &middot; History</span>
+    <h2>Four defects, each hiding the next</h2>
+    <p>Worth reading because the same class of error recurred: we repeatedly measured the model on a task slightly different from the one it was doing. Three of the four were harness bugs, not model problems.</p>
+
+    <div class="chain">
+
+      <div class="defect">
+        <div class="defect-n">01</div>
+        <div class="defect-body">
+          <h3>Coordinates divided by a canvas that was already normalised</h3>
+          <p>FUTO stores <code>x</code>/<code>y</code> pre-normalised to the keyboard; <code>canvas_width</code>/<code>canvas_height</code> are dp metadata. Every loader in the repo divided by them, shrinking coordinates about 400&times;. Pre-existing, inherited, and it silently corrupted the human baseline everything else was measured against.</p>
+          <p class="verdict">Fixed by detecting the convention per row. Layout calibration went from a 0.0025 x-scale to 0.989.</p>
+        </div>
+      </div>
+
+      <div class="defect">
+        <div class="defect-n">02</div>
+        <div class="defect-body">
+          <h3>The model learned to claim certainty it had not earned</h3>
+          <p>Gaussian NLL pays for confidence. With the log-variance floor at &minus;9.0 the model could assert &sigma; = 0.011 &mdash; a tenth of a key width &mdash; and under heavy teacher forcing it could back that up. Free-running validation loss climbed past 60 while training loss fell to &minus;3.1. An overconfident generator also has no variation left to spend at synthesis, which is the failure mode we are trying to escape.</p>
+          <p class="verdict">Floor raised to &minus;7.0 (&sigma; = 0.030); teacher forcing decayed over the first 35% of the run rather than all of it.</p>
+        </div>
+      </div>
+
+      <div class="defect">
+        <div class="defect-n">03</div>
+        <div class="defect-body">
+          <h3>The gate compared trajectories sampled at different densities</h3>
+          <p>Corner detection is sensitive to sampling density. The <em>same</em> human swipes measure a mean corner ratio of <strong>0.161</strong> at their native ~77 points and <strong>0.342</strong> resampled to 48 &mdash; sparser sampling averages away the momentary stops the metric exists to detect. The gate scored 48-point generated output against native-resolution human data, so roughly half of every error we reported was an artifact.</p>
+          <p class="verdict">All sources now resampled to 64 points, matching what Stage 2 feeds the recogniser. This is why earlier figures of 249% and 771% &mdash; and an inherited &ldquo;+1531% corner velocity&rdquo; claim &mdash; should be disregarded.</p>
+        </div>
+      </div>
+
+      <div class="defect">
+        <div class="defect-n">04</div>
+        <div class="defect-body">
+          <h3>The timing channel clipped away the pauses</h3>
+          <p>Inter-sample interval was clamped to 4&ndash;80 ms. Against <em>raw</em> FUTO timing that is generous (0.2% below, 0.6% above). But training runs on arc-length resampled paths, and arc-length spacing places points evenly in distance &mdash; so a pause at a corner becomes one long interval. On resampled human data p95 is 95 ms and p99 is 202 ms. The window clipped <strong>13.4%</strong> of targets up to the floor and <strong>6.6%</strong> down to the ceiling, destroying precisely the pauses the gate scores, and capping the generator at an 80 ms pause. Two-thirds of predicted intervals came out pinned to a rail.</p>
+          <p class="verdict">Widened to 1&ndash;300 ms and moved to log space, since dt spans two orders of magnitude and a linear sigmoid put the median at 0.04 of its range. This single change took the gate from 165.8% to 21.8%.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <span class="label">05 &middot; Open pathology</span>
+    <h2>What the model keeps doing</h2>
+
+    <div class="strip">
+      <div class="stat">
+        <span class="label">Corner error</span>
+        <span class="stat-value v-good">20.7%</span>
+        <span class="stat-note">improving each epoch, under the 25% bar</span>
+      </div>
+      <div class="stat">
+        <span class="label">Val, teacher-forced</span>
+        <span class="stat-value">&minus;2.55</span>
+        <span class="stat-note">improving, healthy</span>
+      </div>
+      <div class="stat">
+        <span class="label">Val, free-running</span>
+        <span class="stat-value v-bad">+8.62</span>
+        <span class="stat-note">diverging, epoch 3 of 30</span>
+      </div>
+    </div>
+
+    <p>In every full-scale run, free-running validation loss climbs while both the teacher-forced loss and the corner metric improve. The trace from the current run:</p>
+
+    <div class="scroll">
+      <table>
+        <caption>380,000 training trajectories, RTX 3090, ~136 s per epoch. Teacher forcing decays 0.9 &rarr; 0.05.</caption>
+        <thead>
+          <tr>
+            <th>Epoch</th><th class="num">tf</th><th class="num">Train</th>
+            <th class="num">Val (forced)</th><th class="num">Val (free)</th><th class="num">Corner err</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="mono">1</td><td class="num">0.90</td><td class="num">&minus;1.646</td><td class="num">&minus;1.949</td><td class="num">&minus;1.007</td><td class="num">58.9%</td></tr>
+          <tr><td class="mono">2</td><td class="num">0.81</td><td class="num">&minus;2.089</td><td class="num">&minus;2.550</td><td class="num">&minus;0.650</td><td class="num">23.6%</td></tr>
+          <tr><td class="mono">3</td><td class="num">0.72</td><td class="num">&minus;2.458</td><td class="num">&minus;2.553</td><td class="num">+8.621</td><td class="num">20.7%</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>Notably this does <em>not</em> reproduce on a 20k-sample slice, where free-running validation stayed at &minus;2.02 and tracked the teacher-forced number closely for the whole run. It only appears at full scale.</p>
+
+    <h3>Our hypothesis, unproven</h3>
+    <p>Free-running NLL against one specific held-out recording may simply be the wrong quantity for a stochastic generator. Given a word there are many valid swipes. Running free, the model produces <em>a</em> plausible trajectory; scoring it pointwise against <em>one particular</em> human recording punishes legitimate diversity, and punishes it more as the model becomes more confident about its own coherent alternative. That would make the divergence expected behaviour rather than a fault &mdash; and would explain why the distributional metric improves at the same time.</p>
+    <p>We are not confident in that. The competing reading is straightforward exposure-bias drift that the corner metric is too coarse to see, in which case the trajectories are quietly degrading and we would be feeding damaged data into Stage 2.</p>
+    <p><strong>The specific question:</strong> is there a diagnostic that cleanly separates those two? We considered scoring free-running output against the <em>nearest</em> of several human recordings of the same word rather than a fixed one, but have not implemented it.</p>
+  </section>
+
+  <section>
+    <span class="label">06 &middot; Decisions we would revisit</span>
+    <h2>Where we would take advice</h2>
+    <div class="questions">
+
+      <div class="q">
+        <h3>Is arc-length resampling the right representation? <span class="pill pill-open">most load-bearing</span></h3>
+        <p>Resampling to fixed point count moves the entire velocity profile into the <code>dt</code> channel &mdash; positions carry shape, timing carries everything kinematic. It made defect 04 possible and means a single channel bears all the signal the acceptance metric reads. Uniform time sampling with a length mask is the obvious alternative. We picked arc-length for fixed-shape export convenience, which is a weak reason.</p>
+      </div>
+
+      <div class="q">
+        <h3>Is one scalar enough to accept on?</h3>
+        <p>The gate passes on mean corner ratio within &plusmn;25%. We also compute a 1-D Wasserstein distance over the ratio distribution but do not gate on it. A single scalar summary is gameable &mdash; we have already seen a case where the mean was acceptable while the p90 was 2.5&times; human.</p>
+      </div>
+
+      <div class="q">
+        <h3>Is an autoregressive GRU the right family in 2026?</h3>
+        <p>Seq2Traj is a small attention seq2seq trained with scheduled sampling &mdash; a 2016-shaped design. Trajectory synthesis at 48 points is small enough that a conditional flow-matching or diffusion model would train in comparable time, sidestep exposure bias entirely, and give principled control over sample diversity. The cost is a heavier sampling path on a mobile-adjacent pipeline. We would like a view on whether that trade is worth making now rather than after Stage 2.</p>
+      </div>
+
+      <div class="q">
+        <h3>How do we stop Stage 2 learning &ldquo;synthetic&rdquo; as a feature?</h3>
+        <p>Currently: separate accuracy reporting for real and synthetic, checkpoint selection on real only, and a set of overlap words present in both corpora. That is monitoring, not prevention. A domain-adversarial head or an explicit discriminator would be prevention, at the cost of training stability.</p>
+      </div>
+
+      <div class="q">
+        <h3>Should timing be modelled jointly with position at all?</h3>
+        <p>Positions and <code>dt</code> share a decoder and a covariance-free diagonal Gaussian, so the model cannot express &ldquo;slow down <em>because</em> the path is about to turn&rdquo; except implicitly through the hidden state. Given that the accept/reject criterion is precisely the coupling between speed and curvature, a factorised path-then-timing model may be the more honest structure.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <footer>
+    <p>Stack: PyTorch 2.13.0+cu130, Python 3.12.14, single RTX 3090. Data: FUTO open-source swipe corpus (748 MB parquet, ~230k recordings), 380k train / 20k val after filtering. Target vocabulary ~5,100 words after hygiene filtering from 6,842. Figures current as of epoch 3 of a 30-epoch run; the Stage 1 gate result quoted in section 02 is from a 4-epoch model on a 20k slice.</p>
+  </footer>
+
+</div>
