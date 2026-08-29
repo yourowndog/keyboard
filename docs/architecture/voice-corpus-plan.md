@@ -301,6 +301,13 @@ reference clip from another take, matching VoxCPM2's official 30–50% recommend
 unprompted personalised generation in the remaining rows. The complete `segments-v2` recipe stays
 available for an all-data challenger; excluded material is never deleted.
 
+Titan's first-run configuration uses micro-batches of one with 16-step gradient accumulation,
+preserving the official effective batch size of 16 while reducing peak VRAM. It keeps the official
+rank-32 LM+DiT LoRA, 1e-4 learning rate, 4,096-token per-sample budget, and 1,000-step ceiling, with validation
+and checkpoints every 100 steps so perceptual quality can select an earlier checkpoint if the
+loss continues improving after the voice begins to overfit. A one-step gate runs the identical
+forward/backward/optimizer path before the long job starts.
+
 ### Models that become reasonable with more resources or data
 
 - **VoxCPM2 full fine-tuning:** official guidance targets large customization/roughly 1,000+
