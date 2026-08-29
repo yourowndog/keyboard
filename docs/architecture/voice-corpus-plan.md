@@ -11,13 +11,38 @@ rationale and the remaining personal-model work.
 OmniBoard's voice input serves two goals at once:
 
 1. **Dictation** — fast, clean text in the keyboard. Fillers removed, punctuation applied.
-2. **Corpus** — a permanent archive of natural speech for training a personal voice model later.
+2. **Corpus** — a permanent archive of Sam's natural speech for training a one-speaker personal
+   voice model.
 
 These two goals want *different transcripts of the same audio*, and only one of them is
 reversible. A cleaned transcript can always be regenerated from a verbatim one. Audio thrown
 away at capture time is gone permanently.
 
 Everything below follows from that asymmetry.
+
+### North Star: theatrical one-speaker realism
+
+The target is not a generic professional narrator. It is the most lifelike private/creative
+replica of one particular speaker, Sam, that the available hardware and corpus can produce. The
+quality reference is the naturalness of OpenAI's live voice and read-aloud experiences as they
+exist in August 2026: convincing timbre, cadence, breath, timing, emotion, and long-form
+stability. Matching that closed system exactly is not a promise; it is the direction against
+which local models are judged.
+
+Sam uses many fillers, pauses, false starts, repetitions, breaths, and changes of pace. Those are
+speaker identity and expressive performance, not defects to clean away. Therefore:
+
+- **Training labels are verbatim.** Every audible word and filler must be represented, and the
+  timing must remain matched to the audio.
+- **Pauses, breaths, and prosody stay in the audio.** Word timing identifies safe boundaries; it
+  does not justify deleting silence or vocal events.
+- **Clean transcripts exist only for dictation/text insertion.** They are never paired with audio
+  that contains omitted speech during training.
+- A narration subset may select or trim genuinely fluent passages, but its label must still match
+  exactly what remains audible.
+- Training time is not an optimisation target. A run may occupy the RTX 3090 for days or a week
+  when that is the best evidence-backed path to higher perceptual quality. VRAM capacity remains
+  a hard constraint even when elapsed time is not.
 
 ---
 
@@ -76,9 +101,10 @@ which returns per-word start/end times plus per-segment `avg_logprob`, `compress
 ratio means the model started looping, a low avg_logprob means it was guessing. Free quality
 signal.
 
-> **Stay on `whisper-1`.** `gpt-4o-transcribe` only supports `response_format=json` and cannot
-> return timestamps at all. The two feature sets are mutually exclusive across models, and
-> timestamps are non-negotiable for corpus work.
+> **Current provider trade-off.** OpenAI recommends `gpt-transcribe` for text accuracy and it
+> accepts `keywords`, but provider-native word timestamps remain a `whisper-1` feature. Titan's
+> local CrisperWhisper path remains the corpus authority because it supplies verbatim words and
+> can force-align finalized text. OpenAI is a dictation fallback, not the canonical trainer label.
 
 **We throw away what we do get.** `WhisperClient.transcribe()` does
 `JSONObject(it).getString("text")` and drops the rest.
@@ -118,9 +144,11 @@ stored and transcribed, Weakling demoted to cloud fallback only.
 ├── manifests/
 │   └── utterances.jsonl
 └── derived/
-    ├── 16k-asr/
-    ├── 24k-tts/
-    └── denoised/
+    └── segments-v1/
+        ├── audio/
+        ├── sidecars/
+        ├── manifests/
+        └── reports/
 ```
 
 Three rules that make this survive years of reprocessing:
@@ -131,6 +159,13 @@ Three rules that make this survive years of reprocessing:
    rebuilt from raw. That's what makes experimentation free.
 3. **The JSONL manifest is the index.** One line per utterance, appendable, greppable, no
    database. Points at the raw file and every derived version.
+
+The first model-neutral derived recipe uses verbatim word timing to create 3–30 second WAVs.
+It prefers natural silence near a target duration, cuts only between timed words, retains the
+surrounding pause, and records the parent take plus exact start/end offsets. Audio without a
+trusted verbatim transcript stays in an `awaiting-verbatim` report instead of being mislabeled.
+Every recipe is versioned so corrected transcripts or improved segmentation create a new derived
+tree rather than overwriting an old one.
 
 The `a8f31c` suffix is a content hash — it catches duplicates when a retry double-uploads.
 
@@ -229,16 +264,38 @@ back mangled in practice, and combine via `verbatimize()`.
 
 ---
 
-## Step 6 — Voice model tiers
+## Step 6 — Voice model programme
 
-All fit on the 3090 (24 GB) with room to spare.
+The model must learn Sam's complete expressive distribution, not merely match a short timbre
+reference. Zero-shot systems remain useful listening benchmarks, but they are not the destination
+unless they publish a trainer that can consume the corpus.
 
-| Tier | Model | Your data | VRAM |
-|---|---|---|---|
-| Instant clone | Chatterbox | 10 sec | ~6 GB |
-| Real fine-tune | F5-TTS | 30 min – 2 hrs | ~6 GB |
-| Best available | Higgs Audio V2 (5.8B) | 3–10 hrs, LoRA | ~14 GB |
-| Full fine-tune experiment | Higgs V2.5 1B / CSM-1B | 3–10 hrs | fits fully |
+### Current order of attack on the RTX 3090
+
+| Role | Model | Why |
+|---|---|---|
+| **Primary** | **VoxCPM2 2B LoRA** | Official one-speaker trainer, 48 kHz output, about 20 GB VRAM, exact-text training, and optional same-speaker reference conditioning. It can consume every curated segment while keeping the stronger 2B base model intact. |
+| Full-update challenger | Qwen3-TTS 0.6B Base SFT | Official single-speaker full fine-tuning path. Test memory before committing to a long run because the project publishes no 24 GB training guarantee. |
+| Mature baseline | F5-TTS fine-tune | Simple, maintained trainer and useful quality/control comparison on the same split. |
+| Experimental challenger | OmniVoice LoRA | Maintained LoRA trainer and small trainable fraction, but a more complex tokenized WebDataset pipeline and 24 kHz output. |
+| Inference benchmark only | Higgs Audio v3 / Chatterbox | Useful for hearing the current zero-shot ceiling. Neither official release provides the corpus trainer required by this project. |
+
+VoxCPM2 LoRA is the present first run. LoRA still trains on **all** of Sam's data; it changes
+adapter weights rather than every base weight. That is a capacity choice, not a decision to ignore
+the corpus. Official VoxCPM2 guidance puts LoRA near full fine-tuning for one-speaker similarity
+and is the only current high-end recipe with an explicit ~20 GB target that fits the 3090.
+
+### Models that become reasonable with more resources or data
+
+- **VoxCPM2 full fine-tuning:** official guidance targets large customization/roughly 1,000+
+  exactly labeled clips, but estimates about 40 GB VRAM. More time does not remove that memory
+  wall; use a larger GPU or a separately validated offload recipe.
+- **Dedicated single-speaker models such as StyleTTS2/VITS-family training:** reconsider after
+  roughly 10–20+ hours of consistently recorded, exactly labeled expressive speech. They offer
+  control and ownership, but starting them on the current few-hour corpus is a lower-confidence
+  route than adapting a modern pretrained model.
+- **Higgs Audio v2/v3:** remove the old claim that a supported 3–10 hour Higgs LoRA exists. The
+  official v3 release is zero-shot inference/serving only as of this verification.
 
 ### Notes that matter more than the table
 
@@ -246,34 +303,23 @@ All fit on the 3090 (24 GB) with room to spare.
 done. Fine-tuning contributes a few hours on top. That's the point — you inherit the model's
 general speech ability and supply only the voice.
 
-**LoRA is not a compromise.** With a few hours of data, updating all of a 5.8B model's parameters
-overfits and degrades it — the model memorises the recordings and forgets general speech
-(catastrophic forgetting). LoRA freezes the base and trains a small adapter alongside, which
-structurally protects the general ability. It is the correct method here, not the budget one.
-Full fine-tuning is right when you have hundreds of hours and want to change what the model
-fundamentally does.
+**LoRA does not mean using less corpus.** Every eligible sample participates in optimization.
+LoRA limits which parameters change, protecting the base model's general speech ability while the
+adapter learns Sam's voice and performance distribution.
 
-**Full fine-tuning at home is real but bounded.** A 5.8B full fine-tune needs ~70 GB (weights +
-gradients + Adam optimiser state + activations). That's a wall, not a slow lane — it OOMs rather
-than taking longer. DeepSpeed ZeRO-3 CPU offload genuinely works if Titan has the system RAM,
-at heavy PCIe cost. **Titan has 46 GB of system RAM, which settles this: a 5.8B full fine-tune
-is out even with offload, since the optimiser state alone wants ~70 GB.** A 1B model full
-fine-tunes on the 3090 with no tricks, which is the honest way to run that experiment.
+**Training time and memory are different constraints.** A week-long run is acceptable. A model
+whose training state cannot fit 24 GB VRAM still needs a proven checkpointing/offload strategy or
+different hardware; simply waiting longer does not prevent an OOM.
 
 **Don't chase model size to fix a data problem.** A published voice-clone comparison found
 Orpheus underperforming a much smaller model, then traced it to audio chunking and normalisation
 rather than the model. Corpus quality dominates. Model choice is cheap to change later; the
 corpus is not.
 
-**Fillers: keep them, and keep them matched.** The failure mode is not fillers in training data —
-it's fillers in the *audio* that are missing from the *transcript*. That teaches the model to
-emit random unexplained hesitations. Audio and transcript must agree, which is what makes the
-verbatim transcript load-bearing for the voice model and not just the corpus.
-
-Two adapters from one corpus, later:
-
-- **A** — trained on clean transcripts → narration voice, for reading text back.
-- **B** — trained on verbatim transcripts → conversational voice, with real hesitations.
+**Fillers are a target capability.** The failure mode is fillers in the audio missing from the
+label. All training variants use exact verbatim labels. A cleaner narration variant is made from
+fluent source passages or explicitly edited audio, never by relabeling disfluent audio with clean
+dictation text.
 
 ---
 
@@ -288,4 +334,5 @@ to regenerate.
 3. ✅ Archive upload to Titan + ingest to `~/datasets/sam-voice/`
 4. ✅ Provider selector in smartbar
 5. ✅ CrisperWhisper on Titan → OpenAI bill goes away
-6. Chatterbox clone as soon as any audio exists — cheapest way to see the ceiling
+6. Build the versioned verbatim segment corpus, then run matched VoxCPM2/Qwen3-TTS/F5-TTS
+   evaluations against the theatrical-realism North Star
