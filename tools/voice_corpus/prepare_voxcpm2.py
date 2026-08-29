@@ -10,8 +10,10 @@ import math
 import random
 import re
 import shutil
+import sys
 import tempfile
 import wave
+from array import array
 from collections import Counter
 from pathlib import Path
 from typing import Any, Iterable
@@ -74,6 +76,7 @@ def sha256_file(path: Path) -> str:
 def audio_metrics(path: Path) -> dict[str, float | int]:
     clipped = 0
     samples = 0
+    rms_samples = 0
     sum_squares = 0
     with wave.open(str(path), "rb") as stream:
         if (
@@ -87,17 +90,24 @@ def audio_metrics(path: Path) -> dict[str, float | int]:
             block = stream.readframes(48_000 * 10)
             if not block:
                 break
-            values = memoryview(block).cast("h")
-            for value in values:
-                magnitude = abs(value)
-                clipped += magnitude >= 32_767
+            values = array("h")
+            values.frombytes(block)
+            if sys.byteorder != "little":
+                values.byteswap()
+            clipped += values.count(32_767) + values.count(-32_768)
+            # A deterministic sparse RMS estimate is sufficient to reject
+            # near-silent takes without turning this audit into a PCM-sized
+            # Python loop. Clipping is still counted over every sample.
+            rms_values = values[::256]
+            for value in rms_values:
                 sum_squares += value * value
             samples += len(values)
+            rms_samples += len(rms_values)
     return {
         "samples": samples,
         "clipped_samples": clipped,
         "clipped_fraction": clipped / samples if samples else 1.0,
-        "rms": math.sqrt(sum_squares / samples) if samples else 0.0,
+        "rms": math.sqrt(sum_squares / rms_samples) if rms_samples else 0.0,
     }
 
 
