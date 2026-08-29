@@ -21,6 +21,7 @@ import json
 import os
 import re
 import shutil
+import struct
 import subprocess
 import tempfile
 from collections import Counter
@@ -80,6 +81,11 @@ def parse_args() -> argparse.Namespace:
         "--apply",
         action="store_true",
         help="Encode audio and atomically publish the recipe. Default is plan-only.",
+    )
+    parser.add_argument(
+        "--details",
+        action="store_true",
+        help="Include awaiting/rejected/unmanifested rows in the printed plan.",
     )
     return parser.parse_args()
 
@@ -166,7 +172,55 @@ def ffprobe(path: Path) -> dict[str, Any]:
         "sample_rate": int(stream.get("sample_rate") or 0),
         "channels": int(stream.get("channels") or 0),
         "sample_fmt": stream.get("sample_fmt"),
+        "placeholder_header": False,
     }
+
+
+def probe_source_audio(path: Path) -> dict[str, Any]:
+    try:
+        return ffprobe(path)
+    except subprocess.CalledProcessError:
+        if path.suffix.lower() != ".wav" or path.stat().st_size <= 44:
+            raise
+        with path.open("rb") as stream:
+            header = stream.read(44)
+        pcm_bytes = path.stat().st_size - 44
+        if any(header) or pcm_bytes % 2:
+            raise
+        return {
+            "duration": pcm_bytes / 96_000.0,
+            "codec": "pcm_s16le",
+            "sample_rate": 48_000,
+            "channels": 1,
+            "sample_fmt": "s16",
+            "placeholder_header": True,
+        }
+
+
+def repaired_placeholder_copy(source: Path, target: Path) -> None:
+    shutil.copyfile(source, target)
+    size = target.stat().st_size
+    pcm_bytes = size - 44
+    header = struct.pack(
+        "<4sI4s4sIHHIIHH4sI",
+        b"RIFF",
+        size - 8,
+        b"WAVE",
+        b"fmt ",
+        16,
+        1,
+        1,
+        48_000,
+        96_000,
+        2,
+        16,
+        b"data",
+        pcm_bytes,
+    )
+    with target.open("r+b") as stream:
+        stream.write(header)
+        stream.flush()
+        os.fsync(stream.fileno())
 
 
 def resolve_source(root: Path, raw_root: Path, relative: Any) -> Path:
@@ -389,7 +443,7 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
             verbatim = label_data.get("transcript_verbatim")
             if not isinstance(verbatim, str) or not verbatim.strip():
                 raise ValueError("missing_verbatim_text")
-            info = ffprobe(source)
+            info = probe_source_audio(source)
             words = parse_words(label_data, info["duration"])
             if lexical_tokens(verbatim) != lexical_tokens(render_words(words)):
                 raise ValueError("verbatim_text_word_timing_mismatch")
@@ -413,6 +467,7 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
                     "label_source": label_path,
                     "source_sha256": source_sha,
                     "source_duration": info["duration"],
+                    "source_placeholder_header": info["placeholder_header"],
                     "source_transcript_verbatim": verbatim.strip(),
                     "source_transcript_verbatim_sha256": hashlib.sha256(
                         verbatim.strip().encode("utf-8")
@@ -468,6 +523,10 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
         "unmanifested_audio": len(unmanifested),
         "applied": bool(args.apply),
     }
+    if args.details:
+        summary["awaiting_verbatim"] = awaiting
+        summary["rejected"] = rejected
+        summary["unmanifested"] = unmanifested
 
     if not args.apply:
         return summary
@@ -479,17 +538,22 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
         sidecar_dir = staging / "sidecars"
         manifest_dir = staging / "manifests"
         report_dir = staging / "reports"
-        for directory in (audio_dir, sidecar_dir, manifest_dir, report_dir):
+        work_dir = staging / ".work"
+        for directory in (audio_dir, sidecar_dir, manifest_dir, report_dir, work_dir):
             directory.mkdir(parents=True, exist_ok=True)
 
         segment_manifest: list[dict[str, Any]] = []
         for plan in plans:
             words: list[Word] = plan["words"]
+            encoding_source = plan["source"]
+            if plan["source_placeholder_header"]:
+                encoding_source = work_dir / f"{plan['id']}.repaired.wav"
+                repaired_placeholder_copy(plan["source"], encoding_source)
             for segment in plan["segments"]:
                 segment_id = f"{plan['id']}__s{segment.index:04d}"
                 audio_path = audio_dir / f"{segment_id}.wav"
                 sidecar_path = sidecar_dir / f"{segment_id}.json"
-                encode_segment(plan["source"], audio_path, segment)
+                encode_segment(encoding_source, audio_path, segment)
                 output_info = verify_segment_audio(audio_path, segment.duration)
                 output_sha = sha256_file(audio_path)
                 segment_words = words[segment.word_start : segment.word_end]
@@ -519,6 +583,7 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
                         "raw_audio": str(plan["source"].relative_to(root)),
                         "raw_sidecar": str(plan["sidecar"].relative_to(root)),
                         "label_source": str(plan["label_source"].relative_to(root)),
+                        "derived_header_repair": plan["source_placeholder_header"],
                         "sha256": plan["source_sha256"],
                         "duration_seconds": round(plan["source_duration"], 6),
                         "transcript_verbatim_sha256": plan[
@@ -563,6 +628,7 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
         write_jsonl(report_dir / "awaiting-verbatim.jsonl", awaiting)
         write_jsonl(report_dir / "rejected.jsonl", rejected)
         write_jsonl(report_dir / "unmanifested-audio.jsonl", unmanifested)
+        shutil.rmtree(work_dir)
         summary["generated_segments"] = len(segment_manifest)
         summary["generated_audio_hours"] = round(
             sum(row["duration"] for row in segment_manifest) / 3600.0, 6

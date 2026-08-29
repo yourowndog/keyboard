@@ -16,7 +16,7 @@ TOOLS = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(TOOLS))
 
 from backfill_verbatim import MAX_CHUNK_SECONDS, split_uploads, source_is_complete  # noqa: E402
-from segment_verbatim import build  # noqa: E402
+from segment_verbatim import build, probe_source_audio  # noqa: E402
 
 
 def write_wav(path: Path, seconds: float, sample_rate: int) -> None:
@@ -65,6 +65,16 @@ class BackfillToolsTest(unittest.TestCase):
 
 
 class SegmentOverlayTest(unittest.TestCase):
+    def test_placeholder_header_is_inspected_without_mutating_raw(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / "placeholder.wav"
+            path.write_bytes(bytes(44) + bytes(96_000))
+            before = hashlib.sha256(path.read_bytes()).hexdigest()
+            info = probe_source_audio(path)
+            self.assertTrue(info["placeholder_header"])
+            self.assertEqual(info["duration"], 1.0)
+            self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(), before)
+
     def test_annotation_overlay_makes_missing_raw_label_eligible(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -115,6 +125,7 @@ class SegmentOverlayTest(unittest.TestCase):
                     target_seconds=24.0,
                     max_seconds=30.0,
                     apply=False,
+                    details=False,
                 )
             )
             self.assertEqual(summary["eligible_sources"], 1)

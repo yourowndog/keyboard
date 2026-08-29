@@ -378,7 +378,23 @@ def main() -> int:
                 prepared = prepare_16k(source, work)
                 uploads = split_uploads(prepared, work)
                 parts = [(offset, transcribe(args.endpoint, token, audio)) for audio, offset in uploads]
-                response = merge_responses(parts)
+                try:
+                    response = merge_responses(parts)
+                except Exception:
+                    write_atomic_json(
+                        annotation_root / "diagnostics" / f"{source_id}.json",
+                        {
+                            "schema": "sam-voice-verbatim-diagnostic/1",
+                            "recipe": args.recipe,
+                            "id": source_id,
+                            "parent_sha256": source_sha,
+                            "chunks": [
+                                {"offset_seconds": offset, "response": response}
+                                for offset, response in parts
+                            ],
+                        },
+                    )
+                    raise
                 value = {
                     "schema": "sam-voice-verbatim-annotation/1",
                     "recipe": args.recipe,
