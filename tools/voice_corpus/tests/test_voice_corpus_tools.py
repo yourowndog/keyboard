@@ -16,6 +16,7 @@ TOOLS = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(TOOLS))
 
 from backfill_verbatim import MAX_CHUNK_SECONDS, split_uploads, source_is_complete  # noqa: E402
+from prepare_voxcpm2 import split_parents, trainer_bounds  # noqa: E402
 from segment_verbatim import Word, build, plan_training_segments, probe_source_audio  # noqa: E402
 
 
@@ -65,6 +66,24 @@ class BackfillToolsTest(unittest.TestCase):
 
 
 class SegmentOverlayTest(unittest.TestCase):
+    def test_voxcpm_trim_preserves_internal_pauses_and_limits_edges(self) -> None:
+        sidecar = {
+            "verbatim_words": [
+                {"word": "well", "start": 4.0, "end": 4.4},
+                {"word": "okay", "start": 12.0, "end": 12.5},
+            ]
+        }
+        self.assertEqual(trainer_bounds(sidecar, 20.0, 0.4), (3.6, 12.9))
+
+    def test_voxcpm_split_keeps_parent_takes_disjoint(self) -> None:
+        rows = [
+            {"parent_id": f"p{index}", "trainer_duration": float(index + 1)}
+            for index in range(20)
+        ]
+        train, validation = split_parents(rows, 0.1, 42)
+        self.assertFalse(train & validation)
+        self.assertEqual(train | validation, {f"p{index}" for index in range(20)})
+
     def test_training_plan_omits_only_excessive_unlabelled_spans(self) -> None:
         words = [
             Word("hello", 0.5, 1.0),

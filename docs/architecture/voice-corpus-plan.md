@@ -292,6 +292,15 @@ adapter weights rather than every base weight. That is a capacity choice, not a 
 the corpus. Official VoxCPM2 guidance puts LoRA near full fine-tuning for one-speaker similarity
 and is the only current high-end recipe with an explicit ~20 GB target that fits the 3090.
 
+The first trainer-specific recipe is deliberately stricter than the model-neutral corpus. It uses
+lossless WAV parents, rejects clips above 0.1% hard-clipped samples, trims only leading/trailing
+inactivity to 0.4 seconds, keeps every internal pause and vocal event, and does no loudness
+normalisation. Training and validation are split by original parent take to prevent adjacent
+segments leaking across the evaluation boundary. Forty percent of training rows receive a clean
+reference clip from another take, matching VoxCPM2's official 30–50% recommendation while retaining
+unprompted personalised generation in the remaining rows. The complete `segments-v2` recipe stays
+available for an all-data challenger; excluded material is never deleted.
+
 ### Models that become reasonable with more resources or data
 
 - **VoxCPM2 full fine-tuning:** official guidance targets large customization/roughly 1,000+
