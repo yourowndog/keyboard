@@ -626,6 +626,10 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
         "annotations_used": annotations_used,
         "eligible_sources": len(plans),
         "planned_segments": sum(len(plan["segments"]) for plan in plans),
+        "planned_audio_hours": round(
+            sum(segment.duration for plan in plans for segment in plan["segments"]) / 3600.0,
+            6,
+        ),
         "eligible_source_hours": round(
             sum(plan["source_duration"] for plan in plans) / 3600.0, 6
         ),
