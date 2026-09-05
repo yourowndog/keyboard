@@ -21,6 +21,8 @@ current behavior from plans, experiments, and history.
 
 ## Start here
 
+- [Roadmap](roadmap.md): unfinished product work, the keyboard/voice-lab seam,
+  and sequencing.
 - [System map](architecture/system-map.md): modules, runtime entry points, and
   subsystem ownership.
 - [Keyboard construction](keyboard/README.md): layouts, keys, geometry, popups,
