@@ -192,12 +192,12 @@ def install_summarizer_alignment_fix() -> None:
 
 
 def configure_providers() -> None:
-    """Pin local providers unless the caller has deliberately overridden them."""
-    os.environ.setdefault("JDOCMUNCH_EMBEDDING_PROVIDER", "fastembed")
-    os.environ.setdefault("JDOCMUNCH_SUMMARIZER_PROVIDER", "openai-compatible")
-    os.environ.setdefault("JDOCMUNCH_SUMMARIZER_URL", "http://100.104.232.94:8080/v1")
-    os.environ.setdefault("JDOCMUNCH_SUMMARIZER_MODEL", "qwen3.8-27b")
-    os.environ.setdefault("JDOCMUNCH_SUMMARIZER_API_KEY", "local")
+    """Pin the local providers and trusted summary model for this corpus."""
+    os.environ["JDOCMUNCH_EMBEDDING_PROVIDER"] = "fastembed"
+    os.environ["JDOCMUNCH_SUMMARIZER_PROVIDER"] = "openai-compatible"
+    os.environ["JDOCMUNCH_SUMMARIZER_URL"] = "http://100.104.232.94:8080/v1"
+    os.environ["JDOCMUNCH_SUMMARIZER_MODEL"] = "qwen3.8-27b"
+    os.environ["JDOCMUNCH_SUMMARIZER_API_KEY"] = "local"
 
 
 def verify_embeddings(storage: Path) -> tuple[bool, str]:
