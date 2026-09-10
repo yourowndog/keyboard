@@ -173,6 +173,12 @@
     <string name="pref__theme__theme_accent_color__label" comment="Label of accent color preference in Theme">
         Accent color (Material You themes)
     </string>
+    <string name="pref__theme__window_background_opacity__label" comment="Label of the keyboard background opacity preference in Theme">
+        Keyboard background opacity
+    </string>
+    <string name="pref__theme__window_background_opacity__summary" comment="Summary of the keyboard background opacity preference, explaining that it is visual only">
+        {v}% — how solid the plate behind the keys is. Lower values let the app show through. Keys and popups keep their own colours, and typing is unaffected.
+    </string>
     <string name="settings__theme_manager__title_manage" comment="Title of the theme manager screen for managing installed and custom themes">Manage installed themes</string>
     <string name="pref__theme__source_assets" comment="Label for the theme source field">OmniBoard App Assets</string>
     <string name="pref__theme__source_internal" comment="Label for the theme source field">Internal Storage</string>
