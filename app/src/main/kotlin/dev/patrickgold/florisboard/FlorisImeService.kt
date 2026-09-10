@@ -130,6 +130,7 @@ import org.florisboard.lib.snygg.ui.SnyggRow
 import org.florisboard.lib.snygg.ui.SnyggSurfaceView
 import org.florisboard.lib.snygg.ui.SnyggText
 import org.florisboard.lib.snygg.ui.rememberSnyggThemeQuery
+import org.florisboard.lib.snygg.ui.uriOrNull
 
 
 /**
@@ -657,6 +658,15 @@ class FlorisImeService : LifecycleInputMethodService() {
         LaunchedEffect(layoutDirection) {
             keyboardManager.activeState.layoutDirection = layoutDirection
         }
+        // The separate RGBA surface below exists to put a background *image* underneath
+        // inline-autofill chips. When the theme has no image there is nothing to put underneath
+        // anything, and the surface is pure cost: it punches a hole through the Compose background
+        // and then has to post a frame into every buffer it is handed. A resize hands it a new
+        // buffer, which is where the bottom-offset flash came from. With no image the Compose
+        // background paints the window colour on its own, alpha included, and there is no second
+        // surface to keep in step.
+        val windowStyle = rememberSnyggThemeQuery(FlorisImeUi.Window.elementName, attributes)
+        val hasBackgroundImage = windowStyle.backgroundImage.uriOrNull() != null
         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
             SnyggBox(
                 elementName = FlorisImeUi.Window.elementName,
@@ -674,7 +684,7 @@ class FlorisImeService : LifecycleInputMethodService() {
                 // The SurfaceView is used to render the background image under inline-autofill chips. These are only
                 // available on Android >=11, and SurfaceView causes trouble on Android 8/9, thus we render the image
                 // in the SurfaceView for Android >=11, and in the Compose View Tree for Android <=10.
-                if (AndroidVersion.ATLEAST_API30_R) {
+                if (AndroidVersion.ATLEAST_API30_R && hasBackgroundImage) {
                     SnyggSurfaceView(
                         elementName = FlorisImeUi.Window.elementName,
                         attributes = attributes,
