@@ -150,6 +150,7 @@ class KeyboardManager(
     private val transcriptionMutex = Mutex()
     @Volatile private var foregroundTranscriptionFile: String? = null
     private var pendingDrainJob: Job? = null
+    private var archiveDrainJob: Job? = null
 
     private data class VoiceTranscriptionOutcome(
         val cleanedText: String,
@@ -495,7 +496,12 @@ class KeyboardManager(
             return@withLock null
         }
         voiceManager.removePending(audioFile.absolutePath)
-        runCatching { archiveQueue.drain() }
+        // The corpus archive lives on Titan and is reached directly, not through the relay. It is a
+        // durability concern, never part of delivering text, so it must not sit on the path that
+        // returns the transcript. Draining it inline meant an unreachable Titan charged the editor
+        // one connect timeout per queued capture — a three-second transcription surfaced over a
+        // minute later — even when the take itself was transcribed by OpenAI.
+        requestArchiveDrain()
         VoiceTranscriptionOutcome(cleanedText, transcription.verbatimText)
     }
 
@@ -518,8 +524,25 @@ class KeyboardManager(
                 voiceManager.removePending(pending.filePath)
                 continue
             }
-            if (transcribeTake(audioFile, pending.provider, capture = null) == null) return
+            if (transcribeTake(audioFile, pending.provider, capture = null) != null) continue
+            // The pinned provider records the routing choice made when the take was captured, but a
+            // node that has since gone offline must not strand the queue. A capture pinned to an
+            // unreachable Titan is otherwise replayed on every keyboard start, ahead of everything
+            // queued behind it, and no amount of changing the picker reaches it. Fall back to the
+            // provider the user currently has selected before giving up on this pass.
+            val current = voiceManager.transcriptionProvider.value
+            if (current == pending.provider) return
+            if (transcribeTake(audioFile, current, capture = null) == null) return
         }
+    }
+
+    /**
+     * Drains the corpus archive off the transcription path. The queue serialises itself, so the
+     * only thing to prevent here is stacking one waiting job per take while Titan is unreachable.
+     */
+    private fun requestArchiveDrain() {
+        if (archiveDrainJob?.isActive == true) return
+        archiveDrainJob = scope.launch(Dispatchers.IO) { runCatching { archiveQueue.drain() } }
     }
 
     fun retryAllPending() {

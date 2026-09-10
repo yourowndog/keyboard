@@ -44,10 +44,19 @@ import org.florisboard.lib.snygg.ui.SnyggIconButton
 import org.florisboard.lib.snygg.ui.SnyggRow
 import org.florisboard.lib.snygg.ui.SnyggText
 
+/**
+ * The take records the wire name it was actually routed to. Naming a fixed node here instead made
+ * every take read as "Titan" whichever provider served it, which hid both the real backend and the
+ * fact that a stale queue entry was still pinned to one the picker had since moved off.
+ */
+private fun VoiceTake.providerLabel(): String =
+    VoiceManager.TranscriptionProvider.entries.firstOrNull { it.wireName == provider }?.label
+        ?: provider.ifBlank { "unknown" }
+
 private fun VoiceTake.statusLabel(): String = when (takeState) {
     VoiceTakeState.RECORDING -> "Recording"
     VoiceTakeState.SAVED -> "Saved · waiting to transcribe"
-    VoiceTakeState.TRANSCRIBING -> "Transcribing on Titan"
+    VoiceTakeState.TRANSCRIBING -> "Transcribing on ${providerLabel()}"
     VoiceTakeState.READY -> "Ready"
     VoiceTakeState.FAILED -> "Needs retry"
 }
