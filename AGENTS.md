@@ -55,18 +55,21 @@ detailed guides and preserve hard-won behavior when changing them.
 
 ## Exploration and Indexing Policy (jCodemunch & jDocMunch)
 
-Preserve context tokens at all costs. Use **jCodemunch** for code navigation and **jDocMunch** for documentation/textual navigation. These are not suggestions and not "when convenient" — they are the required entry points. Do not dump full files and do not use raw shell tools for exploration.
-
-**The rule, stated as a hard constraint:**
-
-- Code file → jCodeMunch. Never `Read`/`Grep`/`Glob`/`Bash` to explore it.
-- Doc or textual file (`.md`, `.txt`, `.xml`, `.json`, `.rst`, `.html`) → jDocMunch. Never `Read`/`Grep`/`Glob`/`wc`/`cat`/`head` to explore it.
-- **Only exception (both tools):** you are about to edit the file, and the harness requires a `Read` before `Edit`/`Write` will succeed. Read to edit, never read to explore.
+Prefer **jCodeMunch** for code navigation and **jDocMunch** for documentation
+navigation because they usually return the needed context with less output.
+This is a workflow preference, not a safety boundary. If either index is
+unavailable, stale, or inapplicable, state that you are using a fallback and
+use scoped repo-local `git grep`, `rg`, `grep`, `find`, or direct reads. Never
+silently exploit a hook gap, dump an entire tree, or call a database corrupt
+without checking the underlying error and index integrity.
 
 If you catch yourself reaching for `Read` on a `.md` file to find out what it says, that is the violation. Search sections first, then pull only the sections you need.
 
 **Session Start & Index Maintenance:**
-1. **Refresh Code Index**: Run `resolve_repo { "path": "." }` / `uvx jcodemunch-mcp index .` to verify/refresh the code index (805 source code files, ~5,168 symbols).
+1. **Check Code Index**: Use `resolve_repo { "path": "." }` or `list_repos` to
+   establish whether the existing index is usable. Reindex only when it is
+   genuinely missing or stale; a loader or permission error is not a reason to
+   rebuild a healthy database.
 2. **Refresh Doc Index**: Rebuild with `tools/docs/reindex_docs.py` — **not** a bare `index_local` call. The corpus is 89 prose files / ~893 sections; a default index pulls in ~2,500 sections of packaged assets, generated JSON, and wordlists that drown the prose. The script owns the 33-pattern exclusion list, pins local providers, and verifies the result. Pass `--incremental` to re-index only changed files (exclusions still apply, unchanged sections keep their summaries and vectors); add `--require-summarizer` to skip the run when Titan is down rather than write title-fallback summaries.
    - **The canonical doc repo identifier is `local/keyboard`.** Pass exactly that as `repo` on every jDocMunch call.
    - Nine obsolete forks (`local/keyboard-docs`, `local/keyboard-core-docs`, `local/omniboard-docs`, and others) were deleted on 2026-09-03; `local/keyboard` is now the only keyboard index. If a fork ever reappears in `doc_list_repos`, do not read from it — it will produce stale evidence.
@@ -74,8 +77,8 @@ If you catch yourself reaching for `Read` on a `.md` file to find out what it sa
 3. `suggest_queries` — when exploring unfamiliar areas of the codebase or documentation.
 
 **Code Exploration (jCodemunch):**
-- Always use jCodemunch-MCP tools for code navigation. Never fall back to Read, Grep, Glob, or Bash for code exploration.
-- **Exception:** Use `Read` only when you need to edit a file — the agent harness requires a `Read` before `Edit`/`Write` will succeed.
+- Prefer jCodeMunch-MCP tools for indexed code navigation. When they cannot
+  answer, use the narrowest repo-local fallback and say why.
 - symbol by name → `search_symbols` (add `kind=`, `language=`, `file_pattern=`, `decorator=` to narrow)
 - decorator-aware queries → `search_symbols(decorator="X")` to find symbols with a specific decorator (e.g. `@property`, `@route`); combine with set-difference to find symbols *lacking* a decorator (e.g. "which endpoints lack CSRF protection?")
 - string, comment, config value → `search_text` (supports regex, `context_lines`)
@@ -103,7 +106,10 @@ If you catch yourself reaching for `Read` on a `.md` file to find out what it sa
 
 ## Documentation Exploration (jDocMunch)
 
-Always use jDocMunch-MCP tools for documentation and textual navigation. Never fall back to `Read`, `Grep`, `Glob`, `wc`, `cat`, or `head` for doc exploration. Every call takes `repo: "local/keyboard"`.
+Prefer jDocMunch-MCP tools for documentation and textual navigation. Every
+jDocMunch call takes `repo: "local/keyboard"`. Scoped direct reads and search
+are valid fallbacks when the doc index is unavailable, stale, or less suitable
+for an exact textual check.
 
 **Finding the right doc:**
 - what documents exist, how they nest → `get_toc_tree` (nested) or `get_toc` (flat, document order)
@@ -130,15 +136,15 @@ Always use jDocMunch-MCP tools for documentation and textual navigation. Never f
 - jDocMunch is a navigation aid, not a substitute for the checkout. Before **editing** a doc, confirm the text at current HEAD.
 - If the index materially disagrees with the checkout, stop and report the mismatch rather than reasoning from stale sections.
 
-**Anti-patterns — these are the ways this policy actually gets violated:**
+**Token-waste anti-patterns:**
 - `wc -l` on a set of docs to "check sizes" before reading them → use `get_toc`/`get_document_outline`; size is irrelevant when you retrieve by section.
-- "the file is only ~70 lines, I'll just Read it" → short files are still whole-file dumps. `search_sections` + `get_section` costs less and stays targeted.
+- Reading a whole file when one indexed section or narrow line range answers the question.
 - `Read`ing four architecture docs up front "for context" → search for what the task needs; pull sections on demand.
-- `grep`/`git ls-files | grep` to locate a doc by name or topic → `search_sections`, or `get_toc_tree` when you need the layout.
+- Broad recursive search when `search_sections` or `get_toc_tree` is healthy and directly applicable.
 
 ## Session-Aware Routing
 
-**Opening move for any task:**
+**Opening move for an indexed task when JCodeMunch is healthy:**
 1. `plan_turn { "repo": "...", "query": "your task description", "model": "<your-model-id>" }` — get confidence + recommended files; the `model` parameter narrows the exposed tool list to match your capabilities at zero extra requests.
 2. Obey the confidence level:
    - `high` → go directly to recommended symbols, max 2 supplementary reads
