@@ -48,6 +48,8 @@ import dev.patrickgold.florisboard.ime.core.Subtype
 import dev.patrickgold.florisboard.ime.core.SubtypePreset
 import dev.patrickgold.florisboard.ime.editor.EditorContent
 import dev.patrickgold.florisboard.ime.editor.FlorisEditorInfo
+import dev.patrickgold.florisboard.ime.keyboard.geometry.KeyboardFrameGroup
+import dev.patrickgold.florisboard.ime.keyboard.geometry.frameGroup
 import dev.patrickgold.florisboard.ime.editor.ImeOptions
 import dev.patrickgold.florisboard.ime.editor.InputAttributes
 import dev.patrickgold.florisboard.ime.editor.OperationUnit
@@ -66,6 +68,7 @@ import dev.patrickgold.florisboard.ime.text.key.KeyCode
 import dev.patrickgold.florisboard.ime.text.key.KeyType
 import dev.patrickgold.florisboard.ime.text.key.UtilityKeyAction
 import dev.patrickgold.florisboard.ime.text.keyboard.TextKeyData
+import dev.patrickgold.florisboard.ime.text.keyboard.TextKeyboard
 import dev.patrickgold.florisboard.ime.text.keyboard.TextKeyboardCache
 import dev.patrickgold.florisboard.ime.voice.VoiceManager
 import dev.patrickgold.florisboard.ime.voice.VoiceTake
@@ -564,8 +567,24 @@ class KeyboardManager(
     val activeEvaluator get() = _activeEvaluator.asStateFlow()
     private val _activeSmartbarEvaluator = MutableStateFlow<ComputingEvaluator>(DefaultComputingEvaluator)
     val activeSmartbarEvaluator get() = _activeSmartbarEvaluator.asStateFlow()
-    private val _lastCharactersEvaluator = MutableStateFlow<ComputingEvaluator>(DefaultComputingEvaluator)
-    val lastCharactersEvaluator get() = _lastCharactersEvaluator.asStateFlow()
+    /**
+     * The keyboard whose rows decide the window height for the surface being drawn.
+     *
+     * For a [KeyboardFrameGroup.OWN_ROWS] mode this is the active keyboard itself. For the
+     * [KeyboardFrameGroup.TEXT_ENTRY] group it is the Characters keyboard for the *current* subtype
+     * and profile, so tapping `?123` does not resize the window under a moving thumb.
+     *
+     * This replaces a `lastCharactersEvaluator` that held whichever Characters keyboard had most
+     * recently been computed. That was wrong in three reachable ways: it was a four-row placeholder
+     * until the user had visited Characters at least once, it kept the previous language's row count
+     * after a subtype switch made from the Symbols layer, and it kept the previous row count after
+     * the number, developer or utility rows were toggled from anywhere but Characters. The value
+     * here is derived from what Characters *is* right now rather than from where the user has been.
+     *
+     * Null only before the first evaluator update, when there is no keyboard of any kind yet.
+     */
+    private val _frameReferenceKeyboard = MutableStateFlow<TextKeyboard?>(null)
+    val frameReferenceKeyboard get() = _frameReferenceKeyboard.asStateFlow()
 
     val inputEventDispatcher = InputEventDispatcher.new(
         repeatableKeyCodes = intArrayOf(
@@ -648,6 +667,51 @@ class KeyboardManager(
         }
     }
 
+    /**
+     * Computes the Characters keyboard for [subtype], preferring the active layout pack.
+     *
+     * Extracted in Stage 05 because two callers need it: the surface being drawn, and the frame
+     * reference for the rest of the text-entry group. Returns the keyboard and whether it came from
+     * a layout pack, which the caller needs in order to honour authored key widths.
+     */
+    private suspend fun computeCharactersKeyboard(
+        subtype: Subtype,
+        editorInfo: FlorisEditorInfo,
+        state: KeyboardState,
+    ): Pair<TextKeyboard, Boolean> {
+        val mode = KeyboardMode.CHARACTERS
+        val pack = layoutFlow.value
+        val layoutPackResult = runCatching {
+            layoutManager.computeKeyboardFromLayoutPack(
+                pack,
+                mode,
+                subtype,
+                editorInfo,
+                state,
+            )
+        }
+        val layoutPackKeyboard = layoutPackResult.getOrNull()
+        if (layoutPackKeyboard != null && layoutPackKeyboard.arrangement.isNotEmpty()) {
+            return layoutPackKeyboard to true
+        }
+        val error = layoutPackResult.exceptionOrNull()
+        if (error != null) {
+            flogWarning(LogTopic.LAYOUT_MANAGER) {
+                "Falling back to extension layout for characters: ${error.message}"
+            }
+        } else {
+            flogWarning(LogTopic.LAYOUT_MANAGER) {
+                "Layout pack produced an empty arrangement, falling back to extension layout"
+            }
+        }
+        return keyboardCache.getOrElseAsync(mode, subtype) {
+            layoutManager.computeKeyboardAsync(
+                keyboardMode = mode,
+                subtype = subtype,
+            ).await()
+        } to false
+    }
+
     private fun updateActiveEvaluators(action: () -> Unit = { }) = scope.launch {
         activeEvaluatorGuard.withLock {
             action()
@@ -661,37 +725,7 @@ class KeyboardManager(
                 state.inputShiftState = InputShiftState.UNSHIFTED
             }
             val (computedKeyboard, usesLayoutPack) = if (mode == KeyboardMode.CHARACTERS) {
-                val pack = layoutFlow.value
-                val layoutPackResult = runCatching {
-                    layoutManager.computeKeyboardFromLayoutPack(
-                        pack,
-                        mode,
-                        subtype,
-                        editorInfo,
-                        state,
-                    )
-                }
-                val layoutPackKeyboard = layoutPackResult.getOrNull()
-                if (layoutPackKeyboard != null && layoutPackKeyboard.arrangement.isNotEmpty()) {
-                    layoutPackKeyboard to true
-                } else {
-                    val error = layoutPackResult.exceptionOrNull()
-                    if (error != null) {
-                        flogWarning(LogTopic.LAYOUT_MANAGER) {
-                            "Falling back to extension layout for characters: ${error.message}"
-                        }
-                    } else {
-                        flogWarning(LogTopic.LAYOUT_MANAGER) {
-                            "Layout pack produced an empty arrangement, falling back to extension layout"
-                        }
-                    }
-                    keyboardCache.getOrElseAsync(mode, subtype) {
-                        layoutManager.computeKeyboardAsync(
-                            keyboardMode = mode,
-                            subtype = subtype,
-                        ).await()
-                    } to false
-                }
+                computeCharactersKeyboard(subtype, editorInfo, state)
             } else {
                 keyboardCache.getOrElseAsync(mode, subtype) {
                     layoutManager.computeKeyboardAsync(
@@ -727,8 +761,16 @@ class KeyboardManager(
             }
             _activeEvaluator.value = computingEvaluator
             _activeSmartbarEvaluator.value = computingEvaluator.asSmartbarQuickActionsEvaluator()
-            if (computedKeyboard.mode == KeyboardMode.CHARACTERS) {
-                _lastCharactersEvaluator.value = computingEvaluator
+            // The frame reference is recomputed rather than remembered. Only its row structure is
+            // read, so the keys are deliberately not computed for labels or drawables — that work is
+            // for the surface actually being drawn.
+            _frameReferenceKeyboard.value = when (computedKeyboard.mode.frameGroup()) {
+                KeyboardFrameGroup.OWN_ROWS -> computedKeyboard
+                KeyboardFrameGroup.TEXT_ENTRY -> if (computedKeyboard.mode == KeyboardMode.CHARACTERS) {
+                    computedKeyboard
+                } else {
+                    computeCharactersKeyboard(subtype, editorInfo, state).first
+                }
             }
         }
     }

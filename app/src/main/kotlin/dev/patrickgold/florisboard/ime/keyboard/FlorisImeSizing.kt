@@ -42,7 +42,6 @@ import dev.patrickgold.florisboard.ime.keyboard.geometry.TextKeyboardGeometryBri
 import dev.patrickgold.florisboard.ime.keyboard.geometry.rememberGeometryPreferences
 import dev.patrickgold.florisboard.ime.smartbar.ExtendedActionsPlacement
 import dev.patrickgold.florisboard.ime.smartbar.SmartbarLayout
-import dev.patrickgold.florisboard.ime.text.keyboard.TextKeyboard
 import dev.patrickgold.florisboard.keyboardManager
 import dev.patrickgold.florisboard.lib.observeAsTransformingState
 import dev.patrickgold.florisboard.lib.util.ViewUtils
@@ -77,17 +76,11 @@ object FlorisImeSizing {
         val configuration = LocalConfiguration.current
         val context = LocalContext.current
         val keyboardManager by context.keyboardManager()
-        val evaluator by keyboardManager.activeEvaluator.collectAsState()
-        val lastCharactersEvaluator by keyboardManager.lastCharactersEvaluator.collectAsState()
-        // Symbols and Numeric-Advanced deliberately keep the frame of the Characters surface they
-        // were opened from, so switching layers does not resize the window under the user's thumb.
-        val keyboard = when (evaluator.keyboard.mode) {
-            KeyboardMode.CHARACTERS,
-            KeyboardMode.NUMERIC_ADVANCED,
-            KeyboardMode.SYMBOLS,
-            KeyboardMode.SYMBOLS2 -> lastCharactersEvaluator.keyboard as TextKeyboard
-            else -> evaluator.keyboard as TextKeyboard
-        }
+        // Which rows decide this window's height is declared per mode by KeyboardFrameGroup and
+        // resolved in KeyboardManager, which is the only place able to compute the text-entry
+        // group's reference surface. No mode test survives here, and no cast: the frame reference
+        // is already a TextKeyboard.
+        val keyboard by keyboardManager.frameReferenceKeyboard.collectAsState()
         // Everything in this function is in dp, including the geometry preferences, so the solved
         // frame height is a dp value directly.
         val geometryPrefs = rememberGeometryPreferences(
@@ -100,15 +93,18 @@ object FlorisImeSizing {
             GeometryOrientation.PORTRAIT
         }
         val solvedHeight = remember(keyboard, geometryPrefs, configuration.screenWidthDp, orientation) {
-            TextKeyboardGeometryBridge.frameHeight(
-                keyboard = keyboard,
-                prefs = geometryPrefs,
-                availableWidth = configuration.screenWidthDp.toDouble(),
-                orientation = orientation,
-            )
+            keyboard?.let {
+                TextKeyboardGeometryBridge.frameHeight(
+                    keyboard = it,
+                    prefs = geometryPrefs,
+                    availableWidth = configuration.screenWidthDp.toDouble(),
+                    orientation = orientation,
+                )
+            }
         }
-        // A sentinel keyboard has no rows to measure. Four canonical rows is what the loading and
-        // editing placeholders occupy, and is the height the window has always reserved for them.
+        // A sentinel keyboard has no rows to measure, and before the first evaluator update there is
+        // no keyboard at all. Four canonical rows is what the loading and editing placeholders
+        // occupy, and is the height the window has always reserved for them.
         return (solvedHeight?.toFloat() ?: (keyboardRowBaseHeight.value * FALLBACK_ROW_COUNT)).dp
     }
 

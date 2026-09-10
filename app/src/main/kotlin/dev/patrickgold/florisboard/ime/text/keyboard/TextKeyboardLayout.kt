@@ -277,8 +277,13 @@ fun TextKeyboardLayout(
                 keyboard = keyboard,
                 prefs = geometryPrefs,
                 availableWidth = keyboardWidth.toDouble(),
-                // The frame height was already decided by FlorisImeSizing, from this same
-                // description of this same keyboard. The rows share out what it granted them.
+                // The frame height was already decided by FlorisImeSizing. For a mode in the
+                // OWN_ROWS frame group it was measured from this very keyboard, so the solve below
+                // reproduces it. For the TEXT_ENTRY group it was measured from the group's
+                // reference surface — the Characters keyboard — and this keyboard is a different
+                // shape that has to fit inside it. That is the point of the group: Symbols keeps
+                // the window Characters established rather than resizing it under a moving thumb.
+                // Either way the height is an input here, never re-derived.
                 framePolicy = FramePolicy.FitToHeight(keyboardHeight.toDouble()),
                 orientation = geometryOrientation,
             )
