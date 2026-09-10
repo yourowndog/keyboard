@@ -104,6 +104,33 @@ handling or in the no-background-image fast path.
 **Size:** one focused effort, on-device verification required. Read the hard-won lessons
 first; this area has already cost time.
 
+**Status (2026-09-10): implemented, device validation outstanding.** Branch
+`theme-window-background`. The code side is complete and the unit suite is green
+(353 tests, 0 failures across `:app` and `:lib:snygg`):
+
+- `SnyggSurfaceView` clears with `PorterDuff.Mode.SRC` instead of the `drawColor` default of
+  `SRC_OVER`, redraws from a generation counter bumped by a `SurfaceHolder.Callback` on
+  `surfaceCreated`/`surfaceChanged`, and retries a dropped frame instead of swallowing it.
+- `FlorisImeService.ImeUi` creates that surface only when the active theme's `window` element
+  declares a background image. The surface exists to put an image under inline-autofill chips;
+  with no image it only punches a hole through the Compose background.
+- A **Keyboard background opacity** preference (`theme__window_background_opacity`, default
+  `100`) scales the authored `window.background` alpha once at the `SnyggStylesheet` seam in
+  `FlorisImeTheme`, so `SnyggBox`, `SnyggSurfaceView` and the `SystemUiIme` navigation-icon
+  luminance check all resolve the same colour. At `100` it returns the same stylesheet
+  instance, so an untouched install is byte-identical to before.
+- `FlorisImeService.onComputeInsets()` is deliberately unchanged: the whole keyboard region is
+  still claimed as touchable. A see-through keyboard does not become a tap-through one.
+
+Behaviour is documented in
+[`docs/theming/hard-won-lessons.md`](theming/hard-won-lessons.md#transparency-and-the-ime-surface).
+
+**Remaining:** on-device validation on the SM_S938U daily driver — no black plate at reduced
+opacity, no touch-through regression, inline autofill still layers over a background image, the
+bottom-offset resize no longer flashes, the no-background-image fast path unregressed, and both
+orientations. This is deferred rather than skipped: it requires installing over the active IME,
+which cannot be done while the device is in use.
+
 ---
 
 ## 3. Autocorrect — harvest cadence and vocabulary hygiene
@@ -224,9 +251,11 @@ Ordered by ratio of shipped value to effort and by unblocking:
    research drift.
 2. Harvest skill repair (section 4), then resume the harvest (section 3, item 1) — the skill
    makes everything downstream of it recurring rather than manual.
-3. Background transparency (section 2) — self-contained, visible, evidence already gathered.
+3. Background transparency (section 2) — code done on `theme-window-background`; only the
+   on-device pass is left, and it shares the device queue with item 5's leftovers.
 4. Swipe height investigation (section 5) — investigation before implementation; gates item 6.
-5. Geometry Stage 05 (section 1) — largest single item; do not start it alongside another
-   on-device change, because both need device validation to be attributable.
+5. Geometry Stage 05 (section 1) — done as code and tests; landscape and non-default
+   height/gap checks still owe device time. Do not start another on-device change alongside
+   the outstanding checks, because both need device validation to be attributable.
 6. Dictionary scrub and rule inference (section 3, items 2–4) — continuous, rides the skill.
 7. FUTO vocabulary (section 6) — only if item 5 proves it is needed.
