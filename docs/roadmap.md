@@ -80,8 +80,20 @@ index or contents.
 **Size:** Stage 05 is one focused effort with a device-validation build. Stages 06–09 are
 separate and should not be bundled into it.
 
-**Note:** Stage 05 also carries a pre-existing blocker — a missing default
-`symbols2/western_wide` component — which its prompt says to fix in an isolated commit.
+**Note:** Stage 05 also carried a pre-existing blocker — a missing default
+`symbols2/western_wide` component — fixed in an isolated commit by pointing `SYMBOLS2_DEFAULT`
+at `western`, the component that exists. Two follow-ups came out of it:
+
+- **No wide Symbols2 arrangement exists.** Characters and Symbols both have wide components for
+  the Coding profile; Symbols2 does not, so `=\<` is a stock-width keyboard stretched into the
+  shared text-entry frame. Authoring one is a content decision — what belongs on a wide third
+  layer — not a geometry change. Pinned as a `@KNOWN_DEFECT` in `LayoutAssetDiagnosticTest`.
+- **Persisted subtypes keep the broken value.** `SubtypeJsonConfig` encodes with
+  `encodeDefaults = true`, so any subtype saved while the bad default was in force names
+  `western_wide` explicitly and decodes back to it. The corrected default repairs
+  `Subtype.DEFAULT` and newly created subtypes only. Repairing an existing install needs a
+  migration that rewrites unresolvable component names; whether Sam's install needs one is a
+  device-checkpoint question.
 
 ---
 

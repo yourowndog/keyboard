@@ -4,6 +4,8 @@ import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import dev.patrickgold.florisboard.ime.core.SubtypeLayoutMap
+import dev.patrickgold.florisboard.ime.keyboard.LayoutType
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonArray
@@ -71,28 +73,94 @@ class LayoutAssetDiagnosticTest {
 
     // -- Missing Symbols2 default -------------------------------------------------------------
 
+    /**
+     * Every layout default a subtype starts with resolves to a component that exists.
+     *
+     * This is the test that was missing. `SYMBOLS2_DEFAULT` was widened to `western_wide` in
+     * 27323ebe alongside the Characters and Symbols defaults, but `symbols2` has no `western_wide`
+     * component — and nothing failed. `loadLayoutAsync` throws, `mergeLayouts` logs a warning and
+     * takes its modifier-only branch, and the result is a keyboard rather than an error: `=\<`
+     * rendered the two rows of `symbols2Mod/default.json` and nothing else.
+     *
+     * A default is resolved through two independent things that have to agree — a component
+     * declared in `extension.json` and an arrangement file on disk — so both are checked. The map is
+     * read from the constructor rather than named here, which is what makes this catch the *next*
+     * default someone widens.
+     */
+    @EXPECTED_FIX("every default in SubtypeLayoutMap resolves to a declared component and a file")
+    @Test
+    fun `every subtype layout default resolves to a component that exists`() {
+        val declared = JSON.parseToJsonElement(EXTENSION_FILE.readText())
+            .jsonObject["layouts"]!!.jsonObject
+            .mapValues { (_, components) ->
+                components.jsonArray.associate { component ->
+                    val obj = component.jsonObject
+                    obj["id"]!!.jsonPrimitive.content to obj["arrangementFile"]?.jsonPrimitive?.content
+                }
+            }
+
+        val defaults = SubtypeLayoutMap()
+        val layoutTypes = listOf(
+            LayoutType.CHARACTERS,
+            LayoutType.SYMBOLS,
+            LayoutType.SYMBOLS2,
+            LayoutType.NUMERIC,
+            LayoutType.NUMERIC_ADVANCED,
+            LayoutType.NUMERIC_ROW,
+            LayoutType.PHONE,
+            LayoutType.PHONE2,
+        )
+
+        for (layoutType in layoutTypes) {
+            val component = defaults[layoutType]
+            assertTrue(component != null, "$layoutType has no default")
+
+            val family = declared[layoutType.id]
+            assertTrue(family != null, "extension.json declares no `${layoutType.id}` family at all")
+            assertTrue(
+                family.containsKey(component.componentId),
+                "the default $layoutType component `${component.componentId}` is not declared in " +
+                    "extension.json — declared there: ${family.keys.sorted()}",
+            )
+
+            val path = family[component.componentId] ?: "layouts/${layoutType.id}/${component.componentId}.json"
+            val file = File(LAYOUT_ROOT.parentFile, path)
+            assertTrue(
+                file.isFile,
+                "the default $layoutType component `${component.componentId}` declares $path, which " +
+                    "does not exist",
+            )
+        }
+    }
+
+    /**
+     * There is still no wide Symbols2 arrangement, which is why the default points at `western`.
+     *
+     * The Coding profile's Characters and Symbols layers are both five columns wider than stock, and
+     * Symbols2 is not, so `=\<` is a narrower keyboard stretched into the shared text-entry frame.
+     * That is a content gap rather than a code defect — closing it means authoring an arrangement and
+     * deciding what belongs on it — so it is pinned rather than papered over.
+     */
     @KNOWN_DEFECT(
-        "Subtype.kt declares SYMBOLS2_DEFAULT = extCoreLayout(\"western_wide\"), but no " +
-            "symbols2/western_wide.json exists. The default Symbols2 component cannot resolve. " +
-            "Filed as a narrow diagnostic only — Symbols2 is not redesigned in Stage 00.",
+        "The Coding profile has no wide Symbols2 layer. `=\\<` falls back to the stock `western` " +
+            "arrangement and is stretched to fill the frame the wide Characters layer establishes.",
     )
     @Test
-    fun `symbols2 has no western_wide component despite it being the declared default`() {
-        val symbols2 = layoutDir("symbols2")
-        assertTrue(symbols2.isDirectory, "symbols2 layout directory should exist")
-
-        val westernWide = File(symbols2, "western_wide.json")
+    fun `symbols2 still has no wide component`() {
         assertTrue(
-            !westernWide.exists(),
-            "This test documents a missing asset. If symbols2/western_wide.json now exists, the " +
-                "defect is fixed and this diagnostic should be removed.",
+            !File(layoutDir("symbols2"), "western_wide.json").exists(),
+            "symbols2/western_wide.json now exists — declare it in extension.json, point " +
+                "SYMBOLS2_DEFAULT at it, and remove this diagnostic",
         )
 
-        // The sibling family does have the component, which is why the default was plausible.
-        assertTrue(
-            File(layoutDir("symbols"), "western_wide.json").exists(),
-            "symbols/western_wide.json is expected to exist",
-        )
+        // The sibling families do have wide components, which is why the default was plausible.
+        for (family in listOf("characters", "symbols")) {
+            assertTrue(
+                File(layoutDir(family), "western_wide.json").exists() ||
+                    File(layoutDir(family), "qwerty_wide.json").exists(),
+                "$family is expected to carry a wide component",
+            )
+        }
     }
 
     @COMPATIBILITY("The Symbols2 components that do exist remain available.")
