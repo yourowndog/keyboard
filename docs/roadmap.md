@@ -128,8 +128,19 @@ Behaviour is documented in
 **Remaining:** on-device validation on the SM_S938U daily driver — no black plate at reduced
 opacity, no touch-through regression, inline autofill still layers over a background image, the
 bottom-offset resize no longer flashes, the no-background-image fast path unregressed, and both
-orientations. This is deferred rather than skipped: it requires installing over the active IME,
-which cannot be done while the device is in use.
+orientations.
+
+A candidate build carrying both this work and Stage 05 is installed on the device
+(`0.5.0-debug+a552a9ab`, from a merge of `keygeo-stage05` and `theme-window-background`); it
+replaced `0.5.0-debug+96bc27bf`, so no geometry work was lost. The checks themselves need an
+unlocked device: driving a text field, the theme settings slider, and an orientation change all
+require getting past the lock screen, and the agent neither has nor asks for that credential.
+Bundled themes carry no background image, so the daily driver takes the new
+no-separate-surface path from first use — that path is the one thing exercised before it is
+formally verified.
+
+Stage 05's own leftovers — landscape and non-default height/gap — are blocked on the same
+unlocked session and should be done in the same pass.
 
 ---
 
