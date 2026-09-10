@@ -625,7 +625,17 @@ class KeyboardManager(
             merge(prefs.keyboard.activeProfileId.asFlow(), *rowVisibilityFlows.toTypedArray())
                 .collectIn(scope) {
                     updateActiveEvaluators {
-                        keyboardCache.clear(KeyboardMode.CHARACTERS)
+                        // Every mode, not just Characters. `modRowsVisible` is read in `mergeLayouts`
+                        // and applies to whatever mode is being merged, `numberRow` is read by the
+                        // SYMBOLS branch as well as the CHARACTERS one, and SYMBOLS2 carries a modifier
+                        // layout of its own. Clearing only Characters left `?123` showing a keyboard
+                        // with the row the user had just toggled away.
+                        //
+                        // A declared list of affected modes would drift back into that bug the next time
+                        // someone reads a preference from a new mode branch. A full clear cannot: the
+                        // cost is one lazy recompute of whichever mode is asked for next, and
+                        // `updateActiveEvaluators` only recomputes the active one.
+                        keyboardCache.clear()
                     }
                 }
             prefs.keyboard.hintedNumberRowEnabled.asFlow().collectLatestIn(scope) {
@@ -1197,7 +1207,9 @@ class KeyboardManager(
             modRowsVisible.let { it.set(!it.get()) }
             android.util.Log.i("FlorisBoard_Debug", "New modRowsVisible: ${modRowsVisible.get()}")
             updateActiveEvaluators {
-                keyboardCache.clear(KeyboardMode.CHARACTERS)
+                // Full clear for the same reason as the row-visibility subscription above: the
+                // modifier rows this toggles are merged into Symbols and Symbols2 too.
+                keyboardCache.clear()
             }
         }
     }

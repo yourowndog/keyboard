@@ -418,23 +418,30 @@ class LayoutManager(context: Context) {
 
         // Add hints to keys
         if (keyboardMode == KeyboardMode.CHARACTERS && computedArrangement.isNotEmpty()) {
-            val symbolsComputedArrangement = computeKeyboardAsync(KeyboardMode.SYMBOLS, subtype).await().arrangement
-            // number row hint always happens on first row
-            if (prefs.keyboard.hintedNumberRowEnabled.get() && !prefs.keyboard.activeProfilePrefs().devRow.get() && symbolsComputedArrangement.isNotEmpty()) {
-                val row = computedArrangement[0]
-                val symbolRow = symbolsComputedArrangement[0]
-                addRowHints(row, symbolRow, KeyType.NUMERIC)
+            val symbolsKeyboard = computeKeyboardAsync(KeyboardMode.SYMBOLS, subtype).await()
+            val symbolsArrangement = symbolsKeyboard.arrangement
+            // Which symbol row feeds which letter row is decided by role, not by row index. See
+            // `HintRowPairing` for why the index arithmetic this replaces was wrong; the case that
+            // reaches Sam is the Coding profile, whose modifier layout has one more row than the
+            // symbol layer's and so slid every hint up by one.
+            val pairing = HintRowPairing.of(semanticRows.roles, symbolsKeyboard.semanticRows.map { it.role })
+            val numberHint = pairing.numberHint
+            if (numberHint != null &&
+                prefs.keyboard.hintedNumberRowEnabled.get() &&
+                !prefs.keyboard.activeProfilePrefs().devRow.get()
+            ) {
+                addRowHints(
+                    computedArrangement[numberHint.target],
+                    symbolsArrangement[numberHint.source],
+                    KeyType.NUMERIC,
+                )
             }
-            // all other symbols are added bottom-aligned
-            val rOffset = computedArrangement.size - symbolsComputedArrangement.size
-            for ((r, row) in computedArrangement.withIndex()) {
-                if (r < rOffset) {
-                    continue
-                }
-                val symbolRow = symbolsComputedArrangement.getOrNull(r - rOffset)
-                if (symbolRow != null) {
-                    addRowHints(row, symbolRow, KeyType.CHARACTER)
-                }
+            for (pair in pairing.symbolHints) {
+                addRowHints(
+                    computedArrangement[pair.target],
+                    symbolsArrangement[pair.source],
+                    KeyType.CHARACTER,
+                )
             }
         }
 
@@ -594,10 +601,13 @@ class LayoutManager(context: Context) {
                 modifier = LTN(LayoutType.CHARACTERS_MOD, extCoreLayout("default"))
             }
             KeyboardMode.EDITING -> {
-                // Layout for this mode is defined in custom layout xml file.
+                // Layout for this mode is defined in a custom layout xml file.
                 // The Editing keyboard renders from a custom XML layout, so it has no arrangement
-                // and no semantic rows. `bottomModRowCount` keeps its historic default because
-                // FlorisImeSizing still divides by it; `semantics` records what this really is.
+                // and no semantic rows. `bottomModRowCount` keeps its historic default only
+                // because the field is still part of the deprecated compatibility projection —
+                // no geometry authority reads it. `FlorisImeSizing` sizes every mode through the
+                // solver now, and an empty arrangement means it never reaches this keyboard at
+                // all. `semantics` records what this really is.
                 return@async TextKeyboard(
                     arrangement = arrayOf(),
                     mode = keyboardMode,

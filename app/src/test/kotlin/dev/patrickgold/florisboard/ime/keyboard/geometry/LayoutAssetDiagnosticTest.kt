@@ -5,6 +5,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -154,6 +155,71 @@ class LayoutAssetDiagnosticTest {
             withPlaceholder.isNotEmpty(),
             "expected at least one modifier layout that merges via a code-0 placeholder",
         )
+    }
+
+    // -- Hint source typing ------------------------------------------------------------------------
+
+    /**
+     * The wide symbol layer does not mark its digit row as numeric, so the number hint is inert.
+     *
+     * `LayoutManager.addRowHints` selects hints by the computed [KeyType] of the *source* key: the
+     * number-hint pass keeps only `numeric` keys and the symbol-hint pass keeps only `character`
+     * ones. `TextKeyData.type` defaults to `CHARACTER`, and `symbols/western_wide.json` sets no type
+     * on its digit row — so for the Coding profile those digits reach the letters through the symbol
+     * channel, and `hintedNumberRowEnabled` has never drawn anything at all.
+     *
+     * `numericRow/western_arabic.json` does type its keys, which is why the same feature works for
+     * the stock profile and why this reads as an omission rather than a convention.
+     *
+     * Fixing it is a one-field asset edit, but it is a visible change to a shipped layout — the
+     * digits would move from the symbol-hint style to the number-hint style and become subject to a
+     * different preference — so it is pinned here rather than made silently alongside a pairing
+     * change. See `HintRowPairing`.
+     */
+    @KNOWN_DEFECT(
+        "symbols/western_wide.json does not type its digit row `numeric`, so hintedNumberRowEnabled " +
+            "draws nothing for the Coding profile and the digits arrive as symbol hints instead."
+    )
+    @Test
+    fun `the wide symbol layer leaves its digit row untyped`() {
+        val reference = declaredTypes(rowsOf("numericRow", "western_arabic").first())
+        assertEquals(
+            setOf("numeric"),
+            reference.toSet(),
+            "the reference number row no longer types its keys, so this defect no longer has a contrast",
+        )
+
+        assertEquals(
+            emptyList(),
+            declaredTypes(rowsOf("symbols", "western_wide").first()),
+            "the wide digit row now declares a type — if it is `numeric`, this defect is fixed and " +
+                "the test should be replaced by a positive assertion",
+        )
+    }
+
+    /** The rows of a layout asset, unflattened, so nested selector branches stay readable. */
+    private fun rowsOf(type: String, name: String): List<JsonElement> {
+        val file = File(layoutDir(type), "$name.json")
+        assertTrue(file.isFile, "missing layout asset ${file.path}")
+        return JSON.parseToJsonElement(file.readText()).jsonArray
+    }
+
+    /**
+     * Every `type` declared anywhere inside [element], including inside a selector's branches.
+     *
+     * A key that declares none is a `character` key by default, which is the whole point of the
+     * defect above — the omission is invisible in the asset and only shows up as a hint that never
+     * gets drawn.
+     */
+    private fun declaredTypes(element: JsonElement): List<String> = buildList {
+        runCatching { element.jsonObject }.getOrNull()?.forEach { (name, value) ->
+            if (name == "type") {
+                runCatching { value.jsonPrimitive.content }.getOrNull()?.let { add(it) }
+            } else {
+                addAll(declaredTypes(value))
+            }
+        }
+        runCatching { element.jsonArray }.getOrNull()?.forEach { addAll(declaredTypes(it)) }
     }
 
     // -- Numeric / phone family shapes ------------------------------------------------------------

@@ -190,6 +190,15 @@ class NormalizedRowsBuilder {
     val size: Int
         get() = rows.size
 
+    /**
+     * The role of every row appended so far, in append order.
+     *
+     * Row `i` here is row `i` of the arrangement being built alongside it, so a caller mid-merge
+     * can ask what a row *is* instead of counting how many rows precede it.
+     */
+    val roles: List<SemanticRowRole>
+        get() = rows.map { it.role }
+
     fun add(role: SemanticRowRole, provenance: RowProvenance): NormalizedRow {
         val ordinal = ordinals.getOrElse(role) { 0 }
         ordinals[role] = ordinal + 1
