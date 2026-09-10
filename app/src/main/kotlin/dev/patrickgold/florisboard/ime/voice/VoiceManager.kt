@@ -50,9 +50,14 @@ class VoiceManager(context: Context) {
     private val _pendingFiles = MutableStateFlow<List<PendingRecording>>(emptyList())
     val pendingFiles = _pendingFiles.asStateFlow()
 
+    // Wire names are the contract with the relay's ALLOWED_TRANSCRIPTION_PROVIDERS set; the
+    // pickers and the persisted preference are both derived from these entries. Weakling is the
+    // always-on CPU path, so it answers without competing for Titan's GPU but returns no
+    // verbatim transcript — VERBATIM output falls back to the cleaned text for those takes.
     enum class TranscriptionProvider(val wireName: String, val label: String) {
         OPENAI_CLOUD("openai", "OpenAI Cloud"),
         TITAN_LOCAL("titan", "Titan Local"),
+        WEAKLING_LOCAL("weakling", "Weakling Local"),
     }
 
     private val _transcriptionProvider = MutableStateFlow(

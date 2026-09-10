@@ -13,10 +13,11 @@ described as one architecture.
 ## Voice transcription
 
 The voice key starts/stops recording through `KeyboardManager`. In the voice
-smartbar, the cloud icon opens a persisted provider selector: **OpenAI Cloud**
-or **Titan Local**. `WhisperClient` sends that constrained selection, the WAV,
-and the `verbose_json` word/segment request to the authenticated Brokentooth
-relay on weakling; the APK contains only its endpoint-scoped relay credential.
+smartbar, the cloud icon opens a persisted provider selector: **OpenAI Cloud**,
+**Titan Local**, or **Weakling Local**. `WhisperClient` sends that constrained
+selection, the WAV, and the `verbose_json` word/segment request to the
+authenticated Brokentooth relay on weakling; the APK contains only its
+endpoint-scoped relay credential.
 
 OpenAI Cloud remains the fallback and receives the allowlisted request fields.
 Titan Local is forwarded over Tailscale to the private CrisperWhisper adapter
@@ -27,6 +28,15 @@ transcripts and writes the full response to the Schema 2 sidecar, so filler
 words and their timestamps survive in the corpus. The persisted Cleaned versus
 Verbatim preference controls foreground auto-insertion. Either version can be
 copied or explicitly inserted from Voice Inbox.
+
+Weakling Local is forwarded to `weakling-whisper.service`, a loopback-bound
+faster-whisper (`large-v3-turbo-ct2`) adapter on the relay host itself. It is
+the always-on utility path: it runs on CPU, so it answers without competing for
+Titan's GPU, but it produces no verbatim transcript. Its `verbose_json` carries
+the clean text with real `words`/`segments` and confidence fields, and no
+`verbatim_text`. Takes transcribed this way therefore fall back to the cleaned
+text when the Verbatim preference is active, and their sidecars record a clean
+transcript only, so they do not contribute verbatim labels to the corpus.
 
 Each WAV receives a `VoiceTake` row in the local Room `voice_takes.db` as soon
 as capture starts. The row progresses through Recording, Saved, Transcribing,
