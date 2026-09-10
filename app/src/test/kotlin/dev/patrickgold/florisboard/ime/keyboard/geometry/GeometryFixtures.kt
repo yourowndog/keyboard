@@ -208,8 +208,16 @@ object GeometryFixtures {
     fun numberExtensionRow(): Array<TextKey> =
         Array(10) { key(code = '0'.code + it, isAlpha = true) }
 
+    /**
+     * Nine keys, matching the shipped `numericRow/dev_row.json` (`⎋ ⇥ Ψ # $ % ^ - _`).
+     *
+     * It was ten until Stage 05. Ten made the developer row the same width as the number row and
+     * the top alpha row, which hid the fact that an extension row fits its own units to the full
+     * content area instead of sitting on the alpha grid. The codes are synthetic — only the count
+     * is load-bearing for geometry.
+     */
     fun developerExtensionRow(): Array<TextKey> =
-        Array(10) { key(code = '!'.code + it, isAlpha = true) }
+        Array(9) { key(code = '!'.code + it, isAlpha = true) }
 
     // ---------------------------------------------------------------------------------------
     // Symbols

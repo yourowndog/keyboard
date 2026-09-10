@@ -44,8 +44,10 @@ class ModeGeometryCharacterizationTest {
         utilityKeyWidthPercent: Int = 100,
         alphaRowHeightPercent: Int = 100,
         utilityRowHeightPercent: Int = 75,
+        keySpacingHorizontalPx: Double = 0.0,
     ) = GeometryPreferences(
         rowBaseHeightPx = base,
+        keySpacingHorizontalPx = keySpacingHorizontalPx,
         alphaKeyWidthPercent = alphaKeyWidthPercent,
         utilityKeyWidthPercent = utilityKeyWidthPercent,
         alphaRowHeightPercent = alphaRowHeightPercent,
@@ -195,32 +197,51 @@ class ModeGeometryCharacterizationTest {
     }
 
     /**
-     * `@KNOWN_DEFECT` — the *Alpha Key Width* preference governs numeric and symbol rows.
+     * Fixed in Stage 05: the *Alpha Key Width* preference no longer reaches numeric or symbol rows.
      *
-     * Numeric and symbol rows consume no shared width reference, so they fit their own units to the
-     * content area — and are then multiplied by the alpha scale anyway, because
-     * `KeyboardGeometryPolicy` names no width scale for their roles and they fall through to the
-     * alpha branch. A slider labelled "Alpha Key Width" therefore narrows a keyboard that contains
-     * no letters at all.
+     * It used to. Numeric and symbol rows consume no shared width reference, so they fit their own
+     * units to the content area — and were then multiplied by the alpha scale anyway, because
+     * `KeyboardGeometryPolicy` named no width scale for their roles and they fell through an `else`
+     * into the alpha branch. A slider labelled "Alpha Key Width" narrowed a keyboard containing no
+     * letters at all.
      *
-     * Stage 05 required scope 1 and the compatibility requirement that specialized rows must not
-     * inherit alpha width policy both land on this assertion.
+     * The scale tables are now exhaustive over `SemanticRowRole` with no `else`, so the next role
+     * anybody adds cannot inherit the alpha control by being forgotten.
      */
-    @KNOWN_DEFECT("the Alpha Key Width slider governs numeric and symbol rows, which contain no letters")
+    @COMPATIBILITY("specialized surfaces do not inherit the alpha width policy (Stage 05 scope 1)")
     @Test
-    fun `alpha key width silently scales numeric and symbol rows`() {
+    fun `alpha key width leaves numeric and symbol rows alone`() {
         val narrow = prefs(alphaKeyWidthPercent = 80)
 
         val numeric = (solveIntrinsic(GeometryFixtures.numeric(), narrow)
             as TextKeyboardGeometryBridge.Result.Solved).geometry
         val numericSpan = numeric.rows[0].items.last().bounds.right - numeric.rows[0].items.first().bounds.left
-        assertEquals((width * 0.8).toInt(), numericSpan, "numeric rows shrink with the alpha slider")
+        assertEquals(width.toInt(), numericSpan, "a numeric row keeps its own full content width")
 
         val symbols = (solveIntrinsic(GeometryFixtures.wideSymbols(), narrow)
             as TextKeyboardGeometryBridge.Result.Solved).geometry
         val symbolRow = symbols.rows[0]
         val symbolSpan = symbolRow.items.last().bounds.right - symbolRow.items.first().bounds.left
-        assertEquals((width * 0.8).toInt(), symbolSpan, "symbol rows shrink with the alpha slider")
+        assertEquals(width.toInt(), symbolSpan, "a symbol row keeps its own full content width")
+    }
+
+    /**
+     * The same solve, at the slider position that used to destroy every other preference.
+     *
+     * 105% alpha width still overflows the shared alpha reference and still drops a Characters
+     * surface back to canonical — that defect is pinned immediately below, unfixed. What changed is
+     * that a numeric surface no longer participates, so the numeric layer now honours the user's
+     * spacing and gaps instead of being a second casualty of a control it should never have read.
+     */
+    @COMPATIBILITY("a numeric surface stays solvable at alpha widths that overflow the alpha grid")
+    @Test
+    fun `numeric surfaces stay solvable above one hundred percent alpha width`() {
+        val wide = prefs(alphaKeyWidthPercent = 140, keySpacingHorizontalPx = 4.0)
+        val result = solveIntrinsic(GeometryFixtures.numeric(), wide)
+        assertTrue(
+            result is TextKeyboardGeometryBridge.Result.Solved,
+            "expected a real solve, got ${result::class.simpleName}",
+        )
     }
 
     /**
@@ -272,6 +293,40 @@ class ModeGeometryCharacterizationTest {
         val primarySpan = primaryRow.items.last().bounds.right - primaryRow.items.first().bounds.left
         assertEquals((width * 0.8).toInt(), alphaSpan, "the letter block narrows")
         assertEquals(width.toInt(), primarySpan, "the primary action row keeps the full grid")
+    }
+
+    /**
+     * `@KNOWN_DEFECT` — an extension row is not on the alpha grid, so a short one does not line up.
+     *
+     * Extension rows track the alpha *scale* (they render directly above the letters, so they must
+     * narrow when the letters narrow) but they are not alpha grid *consumers*, so each fits its own
+     * units to the full content width. A ten-key number row therefore lands exactly on the ten-key
+     * alpha row by arithmetic coincidence, while the nine-key developer row spreads across the full
+     * width and overhangs the nine-key alpha row beneath it by a full alpha unit on each side.
+     *
+     * Stage 05 leaves this alone deliberately. Its required scope is specialized *modes*, and the
+     * repair — making EXTENSION a consumer of the alpha reference — changes a visible row at default
+     * settings on a daily-driver keyboard, so it wants its own change with device validation behind
+     * it rather than riding along inside a semantics migration.
+     */
+    @KNOWN_DEFECT("a short extension row overhangs the alpha rows because it is not on the alpha grid")
+    @Test
+    fun `a short extension row does not align with the alpha rows below it`() {
+        val geometry = (solveIntrinsic(GeometryFixtures.codingWithBothExtensions())
+            as TextKeyboardGeometryBridge.Result.Solved).geometry
+
+        val devRow = geometry.rows[1]
+        val shortAlphaRow = geometry.rows.first { it.role == SemanticRowRole.ALPHA && it.items.size == 9 }
+        assertEquals(9, devRow.items.size, "the developer row is the nine-key fixture")
+
+        val devSpan = devRow.items.last().bounds.right - devRow.items.first().bounds.left
+        val alphaSpan = shortAlphaRow.items.last().bounds.right - shortAlphaRow.items.first().bounds.left
+        assertEquals(width.toInt(), devSpan, "the developer row fits nine units to the full width")
+        assertEquals((width * 0.9).toInt(), alphaSpan, "the nine-key alpha row is inset on the ten-unit grid")
+
+        val numberRow = geometry.rows[0]
+        val numberSpan = numberRow.items.last().bounds.right - numberRow.items.first().bounds.left
+        assertEquals(width.toInt(), numberSpan, "the ten-key number row happens to match the alpha grid")
     }
 
     // -- Height policy per role -----------------------------------------------------------------

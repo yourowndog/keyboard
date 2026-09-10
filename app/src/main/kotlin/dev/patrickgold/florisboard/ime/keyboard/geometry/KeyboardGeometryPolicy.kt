@@ -114,20 +114,6 @@ object KeyboardGeometryPolicy {
      */
     private val WIDTH_CONSUMER_ROLES = WIDTH_REFERENCE_ROLES + SemanticRowRole.PRIMARY_ACTION
 
-    /** Roles that take the utility row-height adjustment rather than the alpha one. */
-    private val SHORT_ROW_ROLES = setOf(SemanticRowRole.CODING_UTILITY, SemanticRowRole.EXTENSION)
-
-    /** Roles the utility key-width control applies to. */
-    private val UTILITY_WIDTH_ROLES = setOf(SemanticRowRole.CODING_UTILITY)
-
-    /**
-     * Roles that are immune to both width controls.
-     *
-     * The primary action row is a fixed semantic composition whose only flexible member is Space;
-     * scaling its cells would move the one row users rely on being where they left it.
-     */
-    private val UNSCALED_WIDTH_ROLES = setOf(SemanticRowRole.PRIMARY_ACTION, SemanticRowRole.PLACEHOLDER)
-
     // -- Input construction ----------------------------------------------------------------------
 
     /**
@@ -151,14 +137,52 @@ object KeyboardGeometryPolicy {
         val alphaWidthScale = safe.alphaKeyWidthPercent / 100.0
         val utilityWidthScale = safe.utilityKeyWidthPercent / 100.0
 
+        // Both scale tables are exhaustive over SemanticRowRole with no `else`. That is the point:
+        // the alpha width control used to reach numeric and symbol rows precisely because an `else`
+        // swept up every role nobody had thought about. A new role must now fail to compile until
+        // someone decides what the two controls mean for it.
+
         val heightScales = SemanticRowRole.entries.associateWith { role ->
-            if (role in SHORT_ROW_ROLES) utilityHeightScale else alphaHeightScale
+            when (role) {
+                // The short rows. A utility or extension row is a secondary band around the main
+                // block and gets its own height so the block stays dominant.
+                SemanticRowRole.CODING_UTILITY,
+                SemanticRowRole.EXTENSION -> utilityHeightScale
+                // Every entry row is a full row. Numeric and symbol surfaces answer the row-height
+                // control because it is the only height authority they have; refusing it would
+                // leave them frozen while every other surface responded.
+                SemanticRowRole.ALPHA,
+                SemanticRowRole.NUMERIC,
+                SemanticRowRole.SYMBOL,
+                SemanticRowRole.PRIMARY_ACTION,
+                SemanticRowRole.PLACEHOLDER -> alphaHeightScale
+            }
         }
         val widthScales = SemanticRowRole.entries.associateWith { role ->
             when (role) {
-                in UNSCALED_WIDTH_ROLES -> 1.0
-                in UTILITY_WIDTH_ROLES -> utilityWidthScale
-                else -> alphaWidthScale
+                // The alpha block. The number and developer rows are inserted *into* Characters and
+                // render directly above the letters, so they track the letters: narrowing the keys
+                // must not leave a full-width number row sitting on top of an inset QWERTY block.
+                // They are still not on the alpha *grid* — see WIDTH_CONSUMER_ROLES — so a nine-key
+                // developer row spreads across the full width while the nine-key alpha row below it
+                // is inset. That mismatch predates this stage and is pinned as a known defect.
+                SemanticRowRole.ALPHA,
+                SemanticRowRole.EXTENSION -> alphaWidthScale
+
+                SemanticRowRole.CODING_UTILITY -> utilityWidthScale
+
+                // Specialized surfaces are not reachable at the same time as the alpha block, so
+                // there is nothing for them to align with and no reason for a control named after
+                // letters to resize a keyboard that contains none. They fill their own content
+                // width with equal units, which is what the policy KDoc has always claimed.
+                SemanticRowRole.NUMERIC,
+                SemanticRowRole.SYMBOL -> 1.0
+
+                // The primary action row is a fixed semantic composition whose only flexible member
+                // is Space; scaling its cells would move the one row users rely on being where they
+                // left it. The placeholder is never shown long enough to be measured against.
+                SemanticRowRole.PRIMARY_ACTION,
+                SemanticRowRole.PLACEHOLDER -> 1.0
             }
         }
         // Spacing is declared, never applied to a structural rectangle. KeyBoundsDerivation insets
