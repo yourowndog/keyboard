@@ -59,11 +59,13 @@ semantic row identity, and the merged space/punctuation/action row is already cl
 third first-class row — alpha keys, modifier rows, and the space row as its own thing — is
 therefore designed but not yet load-bearing.
 
-What remains is the unexecuted half of the migration. Stages 00 through 04.5 have result
-documents; Stages 05 through 09 are written but have never been run:
+What remains is the unexecuted half of the migration. Stages 00 through 05 have result
+documents; Stages 06 through 09 are written but have never been run:
 
-- `05-mode-semantics-frame-policy.md` — honest mode roles, explicit frame groups, height
-  resolved through the common solver instead of borrowing the last Characters evaluator
+- `05-mode-semantics-frame-policy.md` — **run.** Honest mode roles, explicit frame groups, and
+  height resolved through the common solver instead of borrowing the last Characters evaluator.
+  See `keyboard-geometry-results/05-mode-semantics-frame-policy-results.md`. Portrait frame
+  stability was validated on device; landscape and non-default height/gap were not.
 - `06-layout-pack-schema.md`
 - `07-responsive-customization.md`
 - `08-text-profile.md`
@@ -71,7 +73,10 @@ documents; Stages 05 through 09 are written but have never been run:
 
 Stage 05 is the one that gives the space row independent geometry authority, and it is
 also where `isAlpha` and `bottomModRowCount` stop being the real height inputs. Stage 09
-removes them.
+removes them. `PRIMARY_ACTION` now takes a width scale of `1.0` from an exhaustive `when` in
+`KeyboardGeometryPolicy` rather than falling into an `else`, so the space row's geometry is
+addressed by name; `bottomModRowCount` survives only inside the deprecated compatibility
+projection and no geometry authority reads it.
 
 **Done means:** space-row height, padding, and gaps are addressable independently of the
 alpha rows through the shared solver, with no consumer inferring the row's role from its
@@ -92,8 +97,15 @@ at `western`, the component that exists. Two follow-ups came out of it:
   `encodeDefaults = true`, so any subtype saved while the bad default was in force names
   `western_wide` explicitly and decodes back to it. The corrected default repairs
   `Subtype.DEFAULT` and newly created subtypes only. Repairing an existing install needs a
-  migration that rewrites unresolvable component names; whether Sam's install needs one is a
-  device-checkpoint question.
+  migration that rewrites unresolvable component names. The device checkpoint answered whether
+  Sam's install needs one: **yes** — all three of his persisted subtypes name
+  `org.florisboard.layouts:western_wide` for `symbols2` explicitly.
+
+A third follow-up came out of the device checkpoint rather than the code: the Coding profile has
+no key that reaches Symbols2 or Numeric-Advanced at all. `symbolsMod/western_wide_mod.json`
+carries neither `-203` (VIEW_SYMBOLS2) nor `-205` (VIEW_NUMERIC_ADVANCED), so the repaired default
+fixes a layer that is currently unreachable. Adding the key is a layout-content decision for
+Stage 06.
 
 ---
 
