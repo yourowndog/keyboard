@@ -967,6 +967,21 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "theme__editor_level",
             default = SnyggLevel.ADVANCED,
         )
+        /**
+         * How opaque the keyboard's own background plate is, as a percentage.
+         *
+         * Every bundled theme paints `window.background` with an opaque colour, so the keyboard sits
+         * on a solid plate whatever is behind it. This scales that colour's alpha at the stylesheet
+         * seam, which is the one place all three readers of the window background agree on.
+         *
+         * 100 is the default and leaves the theme exactly as authored. Lower values are visual only:
+         * `FlorisImeService.onComputeInsets` still claims the whole keyboard region as touchable, so
+         * a see-through keyboard does not become a tap-through one.
+         */
+        val windowBackgroundOpacity = int(
+            key = "theme__window_background_opacity",
+            default = 100,
+        )
     }
 
     override fun migrate(entry: PreferenceMigrationEntry): PreferenceMigrationEntry {

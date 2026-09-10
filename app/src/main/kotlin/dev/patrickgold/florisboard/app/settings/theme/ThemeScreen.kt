@@ -22,6 +22,7 @@ import androidx.compose.material.icons.filled.BrightnessAuto
 import androidx.compose.material.icons.filled.ColorLens
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material.icons.filled.Opacity
 import androidx.compose.material.icons.filled.WbTwilight
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -41,6 +42,8 @@ import dev.patrickgold.florisboard.lib.ext.ExtensionComponentName
 import dev.patrickgold.florisboard.themeManager
 import dev.patrickgold.jetpref.datastore.model.observeAsState
 import dev.patrickgold.jetpref.datastore.ui.ColorPickerPreference
+import dev.patrickgold.jetpref.datastore.ui.DialogSliderPreference
+import dev.patrickgold.jetpref.datastore.ui.ExperimentalJetPrefDatastoreUi
 import dev.patrickgold.jetpref.datastore.ui.ListPreference
 import dev.patrickgold.jetpref.datastore.ui.LocalTimePickerPreference
 import dev.patrickgold.jetpref.datastore.ui.Preference
@@ -48,6 +51,7 @@ import dev.patrickgold.jetpref.datastore.ui.isMaterialYou
 import org.florisboard.lib.color.ColorMappings
 import org.florisboard.lib.compose.stringRes
 
+@OptIn(ExperimentalJetPrefDatastoreUi::class)
 @Composable
 fun ThemeScreen() = FlorisScreen {
     title = stringRes(R.string.settings__theme__title)
@@ -119,6 +123,17 @@ fun ThemeScreen() = FlorisScreen {
                     it
                 }
             }
+        )
+
+        DialogSliderPreference(
+            prefs.theme.windowBackgroundOpacity,
+            icon = Icons.Default.Opacity,
+            title = stringRes(R.string.pref__theme__window_background_opacity__label),
+            summary = { stringRes(R.string.pref__theme__window_background_opacity__summary, "v" to it) },
+            valueLabel = { stringRes(R.string.unit__percent__symbol, "v" to it) },
+            min = 0,
+            max = 100,
+            stepIncrement = 5,
         )
 
         AddonManagementReferenceBox(type = ExtensionListScreenType.EXT_THEME)

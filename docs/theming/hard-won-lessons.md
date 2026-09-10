@@ -83,11 +83,13 @@ transparent Android input-method window
 
 Important consequences:
 
-- Snygg color values accept alpha, so an alpha-valued `window.background` can
-  plausibly reveal the target app. All bundled themes currently use an opaque
-  window color. Treat deliberate translucency as device-experimental until it
-  is checked across apps, IME resize modes, navigation bars, and inline
-  autofill.
+- Snygg color values accept alpha (`#RRGGBBAA` and `rgba()`), so an alpha-valued
+  `window.background` reveals the target app. All bundled themes still author an
+  opaque window color; the **Keyboard background opacity** preference
+  (`theme__window_background_opacity`, default `100`) scales that authored alpha
+  instead of replacing it, so a theme that already asked for translucency keeps
+  its intent. Treat deliberate translucency as device-experimental until it is
+  checked across apps, IME resize modes, navigation bars, and inline autofill.
 - Visual transparency is not touch-through. `FlorisImeService.onComputeInsets()`
   still marks the measured keyboard region as touchable and obscuring.
 - Portrait/landscape bottom offset is padding *inside* the themed window box.
@@ -96,22 +98,65 @@ Important consequences:
 - Navigation-icon light/dark appearance is derived from the theme's window
   color, not from whatever app is visible beneath an alpha background.
 
-There is a strongly supported redraw race in the API 30+ surface path. For a
-static background, `SnyggSurfaceView` uses `PixelFormat.TRANSPARENT`, then posts
-one canvas frame from an effect keyed by the view, color, image, and content
-scale. Surface size is not a key, there is no `SurfaceHolder.Callback` redraw on
-`surfaceChanged`, and an invalid surface aborts drawing without a retry.
-Changing bottom offset resizes this separate RGBA surface. A new or expanded
-buffer can therefore briefly contain transparent pixels and expose the app
-below, which matches the reported glitch. For the installed LCARS
-static/no-image case, SurfaceFlinger confirmed the separate non-opaque layer and
-a single posted 1440x1115 frame; the resize glitch itself was not safely
-captured, so this remains the leading mechanism rather than a reproduced proof.
+### One colour, three readers
 
-Any future reliability fix should redraw on `surfaceCreated` and
-`surfaceChanged`, include size in redraw state, and retry after an invalid
-surface. Avoiding the separate surface when no background image is present may
-also help, but inline-autofill layering must be checked before doing that.
+Three places paint or reason about the window background: the Compose `SnyggBox`,
+the RGBA `SnyggSurfaceView` when one exists, and the navigation-icon luminance
+check in `SystemUiIme`. They must agree, or a translucent plate produces a
+double-composited colour or a navigation bar whose icons are picked for a colour
+nobody can see.
+
+The opacity preference is therefore applied **once, at the stylesheet seam**:
+`FlorisImeTheme` calls `SnyggStylesheet.withWindowBackgroundOpacity()` before the
+stylesheet is compiled into a theme, so every reader downstream resolves the same
+value. The transform resolves a `var(--…)` window background against the
+`@defines` block exactly the way compilation would — one hop, not a chain — and
+writes a static colour back into the `window` rules only. It never touches the
+`@defines` entry itself, because that variable is usually shared with keys and
+the smartbar, and fading it there would fade the whole keyboard rather than the
+plate behind it. At `100` it returns the same stylesheet *instance*, so the
+default costs nothing and invalidates no `remember`.
+
+### The surface redraw race (fixed)
+
+For a static background, `SnyggSurfaceView` uses `PixelFormat.TRANSPARENT` and
+posts canvas frames from an effect. As originally written, that effect was keyed
+only by the view, color, image, and content scale: surface size was not a key,
+there was no `SurfaceHolder.Callback` redraw on `surfaceChanged`, and an invalid
+surface aborted drawing without a retry. Changing bottom offset resizes this
+separate RGBA surface, so a new or expanded buffer could briefly contain
+transparent pixels and expose the app below — the reported glitch. SurfaceFlinger
+confirmed the separate non-opaque layer and a single posted 1440x1115 frame for
+the installed LCARS static/no-image case; the glitch itself was never safely
+captured, so this was the leading mechanism rather than a reproduced proof.
+
+Three changes close it:
+
+- A `SurfaceHolder.Callback` bumps a generation counter on `surfaceCreated` and
+  `surfaceChanged`, and that counter is a redraw key. Size deliberately is *not*
+  the key: two resizes landing back on the same dimensions are still two freshly
+  allocated buffers, and each needs a frame posted into it.
+- `drawToSurface` clears with `PorterDuff.Mode.SRC`, not the `drawColor` default
+  of `SRC_OVER`. `lockCanvas(null)` hands back a swap-chain buffer that still
+  holds an earlier frame; compositing onto that is invisible for an opaque colour
+  and wrong for a translucent one, where each redraw would creep towards opaque.
+- An invalid surface now returns `false` rather than being swallowed, and the
+  caller retries a few times at frame cadence. This covers the gap between the
+  view existing and its surface being ready — exactly when a first frame would
+  otherwise be dropped for good.
+
+### The surface only exists for background images
+
+`FlorisImeService.ImeUi` now creates the API 30+ `SnyggSurfaceView` only when the
+active theme's `window` element actually declares a background image. That
+surface exists to put an *image* underneath inline-autofill chips; with no image
+there is nothing to put underneath anything, and the surface is pure cost — it
+punches a hole through the Compose background and then has to post a frame into
+every buffer it is handed. With no image the Compose background paints the window
+colour on its own, alpha included, and there is no second surface to keep in step.
+
+Inline-autofill layering is unchanged for themes that *do* carry a background
+image, which is the only case where the surface was load-bearing.
 
 ## Geometry belongs elsewhere
 
