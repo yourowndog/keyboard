@@ -3,6 +3,9 @@
 **Scope:** one session, one agent, one job. Do not expand into autocorrect
 ranking, dictionary work, or the harvest schema beyond the coordinate fields.
 
+**Priority: this blocks Phase 0.** It is not a Phase 3 item and must not be
+scheduled like one. Read the next section before anything else.
+
 ---
 
 ## The job in one sentence
@@ -30,6 +33,45 @@ Two consequences, currently both unhandled:
    will be corrupted by the same distortion if it lands first.
 
 The root cause is shared. Fix the frame once.
+
+---
+
+## Why this runs before the logger, not after
+
+This work gates Phase 0. Both consumers of spatial data feed from the same
+frame, and the frame is currently wrong:
+
+- **Glide typing** reads it now, and degrades now.
+- **The v4 logger** (Phase 0.3) will read it the moment it is wired.
+
+Coordinates are the one kind of harvest data that cannot be repaired after the
+fact. A misspelled word logged with the wrong dictionary can be re-scored later
+against a better one, because the text is still there. A tap logged against a
+distorted frame is not recoverable by any later pass: the distortion is a
+function of the layout configuration at the instant of the tap, and that
+configuration is exactly what the broken frame fails to record. There is no
+back-computation. The sample is simply wrong, and indistinguishable from a
+sample that is right.
+
+So shipping the logger first does not buy early data. It manufactures a second
+poisoned corpus while the first one is still being cleaned up, and it burns the
+one resource Phase 0 is racing: calendar time during which Sam is typing. Every
+day the logger runs on a bad frame is a day of taps that has to be thrown away.
+
+The dependency, concretely:
+
+```
+  coordinate frame  ->  Phase 0.3 (tap telemetry)  ->  Phase 3.4 (spatial retrieval)
+         |                                               ^
+         +-----------> glide typing (already broken) ----+
+```
+
+Nothing downstream of the frame can be trusted until the frame is. Phase 3.4 --
+Gaussian proximity retrieval, the single largest reachability lever that needs
+no neural net -- consumes Phase 0.3's output directly, so a bad frame does not
+just delay it, it silently degrades it.
+
+`ROADMAP.md` files this as **Phase 0.0**, ahead of 0.3 for this reason.
 
 ---
 

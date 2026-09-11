@@ -127,6 +127,18 @@ That document is the contract; this is the summary.
 Deadline is real and unrecoverable: every day spent on other phases is a day of
 typing recorded in a format that cannot answer the questions Phases 3–5 ask.
 
+**0.0 Coordinate-frame hardening (blocks 0.3).** Runs first, in its own session
+--- see `docs/development/spatial-coordinate-hardening-prompt.md`. The frame is
+currently wrong in two documented ways, and both consumers read it: glide typing
+degrades today, and tap telemetry would be corrupted the moment 0.3 is wired.
+Coordinates are the one harvest field that cannot be repaired retroactively --
+the distortion is a function of the layout configuration at the instant of the
+tap, which is precisely what the broken frame fails to record. Logging first
+would not buy early data, it would manufacture a second poisoned corpus while
+burning the calendar time this phase is racing. Delivers the canonical frame,
+aspect-corrected thresholds, `LayoutFingerprint`, and the key-resolution helper
+that 0.3 consumes.
+
 **0.1 Wire the dead APIs.** `HarvestManager.kt` already defines `logPicked`,
 `logIntent`, `logNoSuggestion`, `logMultiAttempt`, `logSuggestionsIgnored`,
 `logBackspaceStorm`, `startAttemptTracking`, `addAttempt` and
@@ -314,33 +326,15 @@ revert thresholds — never hand-written. This automatically excludes the brief'
 (one observation, and `sdk` is real vocabulary here) and `dure`→`sure` (5 reverts). Removal
 trigger: an entry retires when the ranker handles its class unaided on the bench.
 
-**3.3b Coordinate-frame hardening (D13) — prerequisite for 3.4.** Normalize to
-the alpha-key bounding box only, per `FutoGlideTypingClassifier.kt:230-256` and
-`docs/development/touch-coordinates-and-spatial-telemetry.md` §3. Mod rows and
-the number row sit outside that box, so toggling them does not move the frame —
-but they do move alpha keys in screen space, so `layout.fp` must record
-number-row state, mod-row counts, and aspect ratio.
+**3.3b Coordinate frame.** **Moved to Phase 0.0.** This was originally scoped
+here, which was a sequencing error: Phase 0.3 records touch coordinates against
+this frame, so the frame has to exist first. The work, the two live defects, and
+the digit-handling note are unchanged --- see Phase 0.0 and
+`docs/development/spatial-coordinate-hardening-prompt.md`. The only item that
+genuinely belongs in Phase 3 is the consumer, 3.4.
 
-Two live defects to fix here, documented in that file's §4:
-
-1. **Vertical aspect distortion.** `boardH` derives from the alpha rows, so when
-   `KeyboardGeometrySolver.kt` stretches or compresses them, normalized vertical
-   distance stops meaning what it meant at training time.
-2. **Hardcoded thresholds.** `StatisticalGlideTypingClassifier.kt:160` derives
-   `distanceThresholdSquared` from the *first key's width*, uncorrected for
-   non-uniform vertical stretch or mod-row insertion.
-
-This is the same root cause as the swipe-typing degradation Sam already lives
-with (glide works reliably only at medium key height with unexpanded mod rows).
-**Tap telemetry and glide classification must be fixed as one job**, not two.
-
-*Digits.* `CommitPolicy.isNumberRowSlip` calls
-`KeyboardLayout.isAdjacent(digit, letter)`, which presumes the number row is
-present. With the row toggled off, digits arrive from long-press or the symbol
-layer and letter-adjacency is not the right model. Condition it on
-`layout.numberRow`.
-
-**3.4 Spatial-aware candidate expansion.** Requires Phase 0.1 touch coordinates. Gaussian
+**3.4 Spatial-aware candidate expansion.** Requires Phase 0.3 touch coordinates,
+which in turn require the Phase 0.0 frame. Gaussian
 proximity retrieval over the key-center grid. This is the single biggest reachability lever
 and it needs no neural net.
 
@@ -367,7 +361,10 @@ already tagged) is sitting in the right format with no retroactive extraction ne
 
 ## 5. Sequencing rationale
 
-Phase 0 is first because it is the only phase whose cost grows while you wait. Phase 1 is
+Phase 0.0 is first *within* Phase 0 because coordinates are the only harvest field
+that cannot be repaired retroactively; logging taps against a broken frame spends
+calendar time to produce samples that must be discarded. Phase 0 is first overall
+because it is the only phase whose cost grows while you wait. Phase 1 is
 second because Phase 2 multiplies whatever quality Phase 1 leaves behind — extending a
 1-in-6-wrong engine into 43% more of your typing makes the keyboard worse, not better. Phase 3
 carries the largest measured upside but depends on Phase 0's touch data for its best component.
@@ -440,5 +437,7 @@ Recorded so these stop consuming attention:
 7. **Live relay.** Deferred to implementation judgement: schema first, relay
    second, both inside Phase 0. Tailnet-only, no provider keys in
    `BuildConfig`.
-8. **Coordinate-frame hardening owner.** Phase 3.3b is scoped as its own
-   session — see `docs/development/spatial-coordinate-hardening-prompt.md`.
+8. **Coordinate-frame hardening owner.** Promoted to **Phase 0.0** and scoped
+   as its own session --- it blocks 0.3. See
+   `docs/development/spatial-coordinate-hardening-prompt.md`. Needs an owner
+   before Phase 0 instrumentation can start.
