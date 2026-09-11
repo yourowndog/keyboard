@@ -216,6 +216,16 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "correction__remember_caps_lock_state",
             default = false,
         )
+        /**
+         * Autocorrect inside raw input editors (terminals such as Termux, which report
+         * inputType=NULL). Defaults to true: these fields were a silent dead zone, and a
+         * preference that defaults off is indistinguishable from the feature not existing.
+         * Line-shape suppression in AbstractEditorInstance keeps shell commands untouched.
+         */
+        val rawEditorAutoCorrect = boolean(
+            key = "correction__raw_editor_auto_correct",
+            default = true,
+        )
     }
 
     val devtools = Devtools()

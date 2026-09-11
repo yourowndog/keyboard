@@ -204,6 +204,12 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         return keyboardManager.resources.composers.value?.get(composerName) ?: Appender
     }
 
+    override fun rawAutoCorrectEnabled(): Boolean {
+        return prefs.correction.rawEditorAutoCorrect.get() &&
+            activeState.keyVariation != KeyVariation.PASSWORD &&
+            !activeInfo.inputAttributes.flagTextNoSuggestions
+    }
+
     override fun shouldDetermineComposingRegion(editorInfo: FlorisEditorInfo): Boolean {
         return super.shouldDetermineComposingRegion(editorInfo) &&
             (phantomSpace.isInactive || phantomSpace.showComposingRegion)
@@ -566,6 +572,10 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
     fun deleteBackwards(unit: OperationUnit): Boolean {
         val content = activeContent
         lastCommitAppendedSpace = false
+        if (unit == OperationUnit.CHARACTERS) {
+            // Raw editors have no composing region, so our own buffers must track the deletion.
+            rawHandleBackspace()
+        }
         // iOS-style undo: if the last commit auto-corrected, a single backspace restores the original word.
         if (unit == OperationUnit.CHARACTERS && tryRevertLastAutoCorrect()) {
             return true
