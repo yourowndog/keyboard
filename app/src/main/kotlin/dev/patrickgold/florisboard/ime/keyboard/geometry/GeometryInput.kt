@@ -228,7 +228,10 @@ data class GeometrySolverInput(
     val overrides: GeometryOverrides = GeometryOverrides(),
     val insets: GeometryInsets = GeometryInsets(),
     val spacingByRole: Map<SemanticRowRole, GeometrySpacing> = emptyMap(),
+    val horizontalInsetByRole: Map<SemanticRowRole, Double> = emptyMap(),
     val orientation: GeometryOrientation = GeometryOrientation.PORTRAIT,
 ) {
     fun spacingFor(role: SemanticRowRole): GeometrySpacing = spacingByRole[role] ?: GeometrySpacing()
+
+    fun horizontalInsetFor(role: SemanticRowRole): Double = horizontalInsetByRole[role] ?: 0.0
 }

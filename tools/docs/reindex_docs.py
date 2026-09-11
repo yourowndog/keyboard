@@ -339,8 +339,15 @@ def main(argv: list[str] | None = None) -> int:
         incremental=args.incremental,
     )
 
+    if not result.get("success"):
+        print("\nindexing failed before verification:", file=sys.stderr)
+        print(json.dumps(result, indent=2, sort_keys=True), file=sys.stderr)
+        return 1
+
     for key in ("files_indexed", "documents", "sections", "sections_indexed",
-                "semantic_search", "embedded_sections", "embedding_coverage"):
+                "file_count", "section_count", "indexed_at", "changed", "new",
+                "deleted", "semantic_search", "embedded_sections",
+                "embedding_coverage"):
         if key in result:
             print(f"  reported {key}: {result[key]}")
     for warning in result.get("warnings", []) or []:

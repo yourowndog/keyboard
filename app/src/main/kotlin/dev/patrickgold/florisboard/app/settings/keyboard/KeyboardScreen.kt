@@ -202,6 +202,61 @@ fun KeyboardScreen() = FlorisScreen {
                 max = 100,
                 stepIncrement = 5,
             )
+            SwitchPreference(
+                pref = profile.primaryActionRowHeightIndependent,
+                title = stringRes(R.string.pref__keyboard__primary_action_row_height_independent__label),
+                summary = stringRes(R.string.pref__keyboard__primary_action_row_height_independent__summary),
+            )
+            DialogSliderPreference(
+                pref = profile.primaryActionRowHeightFactor,
+                title = stringRes(R.string.pref__keyboard__primary_action_row_height__label),
+                valueLabel = { stringRes(R.string.unit__percent__symbol, "v" to it) },
+                min = 50,
+                max = 150,
+                stepIncrement = 5,
+                enabledIf = { profile.primaryActionRowHeightIndependent.isTrue() },
+            )
+            DialogSliderPreference(
+                pref = profile.primaryActionRowInsetHorizontal,
+                title = stringRes(R.string.pref__keyboard__primary_action_row_inset__label),
+                valueLabel = { stringRes(R.string.unit__display_pixel__symbol, "v" to it) },
+                min = 0,
+                max = 80,
+                stepIncrement = 1,
+            )
+            SwitchPreference(
+                pref = profile.primaryActionKeySpacingIndependent,
+                title = stringRes(R.string.pref__keyboard__primary_action_key_spacing_independent__label),
+                summary = stringRes(R.string.pref__keyboard__primary_action_key_spacing_independent__summary),
+            )
+            DialogSliderPreference(
+                primaryPref = profile.primaryActionKeySpacingVertical,
+                secondaryPref = profile.primaryActionKeySpacingHorizontal,
+                title = stringRes(R.string.pref__keyboard__primary_action_key_spacing__label),
+                primaryLabel = stringRes(R.string.screen_orientation__vertical),
+                secondaryLabel = stringRes(R.string.screen_orientation__horizontal),
+                valueLabel = { stringRes(R.string.unit__display_pixel__symbol, "v" to it) },
+                min = 0.0f,
+                max = 10.0f,
+                stepIncrement = 0.5f,
+                enabledIf = { profile.primaryActionKeySpacingIndependent.isTrue() },
+            )
+            DialogSliderPreference(
+                pref = profile.primaryActionRowGapAbove,
+                title = stringRes(R.string.pref__keyboard__primary_action_row_gap_above__label),
+                valueLabel = { stringRes(R.string.unit__display_pixel__symbol, "v" to it) },
+                min = 0,
+                max = 40,
+                stepIncrement = 1,
+            )
+            DialogSliderPreference(
+                pref = profile.primaryActionRowGapBelow,
+                title = stringRes(R.string.pref__keyboard__primary_action_row_gap_below__label),
+                valueLabel = { stringRes(R.string.unit__display_pixel__symbol, "v" to it) },
+                min = 0,
+                max = 40,
+                stepIncrement = 1,
+            )
             DialogSliderPreference(
                 pref = profile.alphaRowHeightFactor,
                 title = stringRes(R.string.pref__keyboard__alpha_row_height__label),

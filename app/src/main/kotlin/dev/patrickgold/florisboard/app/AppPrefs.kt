@@ -598,6 +598,38 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
                 key = "keyboard__${profileId}__alpha_row_height_factor",
                 default = 100,
             )
+            val primaryActionRowHeightIndependent = boolean(
+                key = "keyboard__${profileId}__primary_action_row_height_independent",
+                default = false,
+            )
+            val primaryActionRowHeightFactor = int(
+                key = "keyboard__${profileId}__primary_action_row_height_factor",
+                default = 100,
+            )
+            val primaryActionRowInsetHorizontal = int(
+                key = "keyboard__${profileId}__primary_action_row_inset_horizontal",
+                default = 0,
+            )
+            val primaryActionKeySpacingIndependent = boolean(
+                key = "keyboard__${profileId}__primary_action_key_spacing_independent",
+                default = false,
+            )
+            val primaryActionKeySpacingVertical = float(
+                key = "keyboard__${profileId}__primary_action_key_spacing_vertical",
+                default = 2.0f,
+            )
+            val primaryActionKeySpacingHorizontal = float(
+                key = "keyboard__${profileId}__primary_action_key_spacing_horizontal",
+                default = 2.0f,
+            )
+            val primaryActionRowGapAbove = int(
+                key = "keyboard__${profileId}__primary_action_row_gap_above",
+                default = 0,
+            )
+            val primaryActionRowGapBelow = int(
+                key = "keyboard__${profileId}__primary_action_row_gap_below",
+                default = 0,
+            )
             val modRowUpperGap = int(
                 key = "keyboard__${profileId}__mod_row_upper_gap",
                 default = 0,

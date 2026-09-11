@@ -83,6 +83,12 @@ for its row; the row's role owns the difference. The historical `1.1` spacebar
 height factor, its special vertical centring, and the comment claiming it
 compensated for `1.33` were evidence of a control that no longer exists.
 
+Alpha, primary-action (the space row), and coding-utility heights have separate
+profile controls. The space row follows the alpha height until its independent
+height switch is enabled; this preserves an upgrading user's tuned geometry.
+After that, changing its height changes neither letter nor utility rows. Both
+frame sizing and inner layout consume the same role adjustment from the solver.
+
 ### Bottom offset and IME insets
 
 Portrait and landscape bottom offset are different from structural gaps, and
@@ -112,6 +118,14 @@ sides is what turned a value of `2` into a 4dp gap. The per-region
 `alphaSpacing*` / `modSpacing*` sliders were removed: they no longer controlled
 anything.
 
+The primary-action row is the deliberate exception: an opt-in horizontal and
+vertical spacing pair supports a visually distinct space-row treatment. Until
+enabled, it follows the global pair so existing custom spacing does not change
+on upgrade. It also has a symmetric side inset that narrows the row's structural
+band, not merely its painted keycaps. The fixed action keys keep the shared alpha
+unit while Space absorbs the remainder inside that narrower band. A zero inset
+is exactly the historical full-width solution.
+
 The three layers are derived, never guessed:
 
 - **structural** (`SolvedItem.bounds`) — integer rectangles partitioning the row
@@ -129,10 +143,11 @@ intentional and is now a property of the derivation rather than an ad-hoc
 expansion applied to alpha keys only.
 
 Structural semantic boundary gaps (`RoleBlockGaps`) are a separate concept from
-keycap spacing. They are declared for the `CODING_UTILITY` block only, so hiding
-the utility rows leaves no orphaned gap and Numeric, Phone and Symbols receive
-none at all. This replaced the positional "row N-2 / N-1" mutation, which shifted
-whichever rows happened to sit at those indices.
+keycap spacing. Coding utility has above/within/below controls; the primary-action
+row has independent above/below controls. Because gaps belong to semantic role
+blocks, hiding utility rows leaves no orphaned utility gap and Numeric, Phone and
+Symbols receive none at all. This replaced the positional "row N-2 / N-1"
+mutation, which shifted whichever rows happened to sit at those indices.
 
 ## Per-key customization
 

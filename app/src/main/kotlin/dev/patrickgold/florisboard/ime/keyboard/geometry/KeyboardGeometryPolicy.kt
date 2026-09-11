@@ -134,6 +134,7 @@ object KeyboardGeometryPolicy {
         val safe = prefs.sanitized()
         val alphaHeightScale = safe.alphaRowHeightPercent / 100.0
         val utilityHeightScale = safe.utilityRowHeightPercent / 100.0
+        val primaryActionHeightScale = safe.primaryActionRowHeightPercent?.div(100.0) ?: alphaHeightScale
         val alphaWidthScale = safe.alphaKeyWidthPercent / 100.0
         val utilityWidthScale = safe.utilityKeyWidthPercent / 100.0
 
@@ -154,8 +155,8 @@ object KeyboardGeometryPolicy {
                 SemanticRowRole.ALPHA,
                 SemanticRowRole.NUMERIC,
                 SemanticRowRole.SYMBOL,
-                SemanticRowRole.PRIMARY_ACTION,
                 SemanticRowRole.PLACEHOLDER -> alphaHeightScale
+                SemanticRowRole.PRIMARY_ACTION -> primaryActionHeightScale
             }
         }
         val widthScales = SemanticRowRole.entries.associateWith { role ->
@@ -193,6 +194,10 @@ object KeyboardGeometryPolicy {
             horizontal = safe.keySpacingHorizontalPx,
             vertical = safe.keySpacingVerticalPx,
         )
+        val primaryActionSpacing = GeometrySpacing(
+            horizontal = safe.primaryActionSpacingHorizontalPx ?: safe.keySpacingHorizontalPx,
+            vertical = safe.primaryActionSpacingVerticalPx ?: safe.keySpacingVerticalPx,
+        )
 
         return GeometrySolverInput(
             availableWidth = availableWidth,
@@ -204,6 +209,10 @@ object KeyboardGeometryPolicy {
             rowHeightPolicy = RowHeightPolicy(defaultHeightUnits = 1.0),
             gapPolicy = BoundaryGapPolicy(
                 mapOf(
+                    SemanticRowRole.PRIMARY_ACTION to RoleBlockGaps(
+                        above = safe.primaryActionGapAbovePx,
+                        below = safe.primaryActionGapBelowPx,
+                    ),
                     SemanticRowRole.CODING_UTILITY to RoleBlockGaps(
                         above = safe.utilityGapAbovePx,
                         within = safe.utilityGapWithinPx,
@@ -225,7 +234,12 @@ object KeyboardGeometryPolicy {
                 rowHeightScaleByRole = heightScales,
                 itemWidthScaleByRole = widthScales,
             ),
-            spacingByRole = SemanticRowRole.entries.associateWith { spacing },
+            spacingByRole = SemanticRowRole.entries.associateWith { role ->
+                if (role == SemanticRowRole.PRIMARY_ACTION) primaryActionSpacing else spacing
+            },
+            horizontalInsetByRole = mapOf(
+                SemanticRowRole.PRIMARY_ACTION to safe.primaryActionInsetHorizontalPx,
+            ),
             orientation = orientation,
         )
     }
@@ -242,10 +256,16 @@ data class GeometryPreferences(
     val rowBaseHeightPx: Double,
     val alphaRowHeightPercent: Int = 100,
     val utilityRowHeightPercent: Int = 75,
+    val primaryActionRowHeightPercent: Int? = null,
     val alphaKeyWidthPercent: Int = 100,
     val utilityKeyWidthPercent: Int = 100,
     val keySpacingHorizontalPx: Double = 0.0,
     val keySpacingVerticalPx: Double = 0.0,
+    val primaryActionInsetHorizontalPx: Double = 0.0,
+    val primaryActionSpacingHorizontalPx: Double? = null,
+    val primaryActionSpacingVerticalPx: Double? = null,
+    val primaryActionGapAbovePx: Double = 0.0,
+    val primaryActionGapBelowPx: Double = 0.0,
     val utilityGapAbovePx: Double = 0.0,
     val utilityGapWithinPx: Double = 0.0,
     val utilityGapBelowPx: Double = 0.0,
@@ -261,10 +281,16 @@ data class GeometryPreferences(
         rowBaseHeightPx = rowBaseHeightPx.clampFinite(MIN_ROW_BASE_HEIGHT_PX, MAX_ROW_BASE_HEIGHT_PX, 65.0),
         alphaRowHeightPercent = alphaRowHeightPercent.coerceIn(MIN_SCALE_PERCENT, MAX_SCALE_PERCENT),
         utilityRowHeightPercent = utilityRowHeightPercent.coerceIn(MIN_SCALE_PERCENT, MAX_SCALE_PERCENT),
+        primaryActionRowHeightPercent = primaryActionRowHeightPercent?.coerceIn(MIN_SCALE_PERCENT, MAX_SCALE_PERCENT),
         alphaKeyWidthPercent = alphaKeyWidthPercent.coerceIn(MIN_SCALE_PERCENT, MAX_SCALE_PERCENT),
         utilityKeyWidthPercent = utilityKeyWidthPercent.coerceIn(MIN_SCALE_PERCENT, MAX_SCALE_PERCENT),
         keySpacingHorizontalPx = keySpacingHorizontalPx.clampFinite(0.0, MAX_SPACING_PX, 0.0),
         keySpacingVerticalPx = keySpacingVerticalPx.clampFinite(0.0, MAX_SPACING_PX, 0.0),
+        primaryActionInsetHorizontalPx = primaryActionInsetHorizontalPx.clampFinite(0.0, MAX_GAP_PX, 0.0),
+        primaryActionSpacingHorizontalPx = primaryActionSpacingHorizontalPx?.clampFinite(0.0, MAX_SPACING_PX, 0.0),
+        primaryActionSpacingVerticalPx = primaryActionSpacingVerticalPx?.clampFinite(0.0, MAX_SPACING_PX, 0.0),
+        primaryActionGapAbovePx = primaryActionGapAbovePx.clampFinite(0.0, MAX_GAP_PX, 0.0),
+        primaryActionGapBelowPx = primaryActionGapBelowPx.clampFinite(0.0, MAX_GAP_PX, 0.0),
         utilityGapAbovePx = utilityGapAbovePx.clampFinite(0.0, MAX_GAP_PX, 0.0),
         utilityGapWithinPx = utilityGapWithinPx.clampFinite(0.0, MAX_GAP_PX, 0.0),
         utilityGapBelowPx = utilityGapBelowPx.clampFinite(0.0, MAX_GAP_PX, 0.0),

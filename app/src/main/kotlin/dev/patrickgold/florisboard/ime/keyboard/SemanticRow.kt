@@ -25,10 +25,9 @@ import dev.patrickgold.florisboard.lib.ext.ExtensionComponentName
  * downstream code was left to guess from row index, row count, `isAlpha`, or a literal Space code.
  * The types here let composition state row identity explicitly and carry it to consumers.
  *
- * This stage only records semantics. Nothing here drives geometry yet — `isAlpha` and
- * [dev.patrickgold.florisboard.ime.text.keyboard.TextKeyboard.bottomModRowCount] remain the
- * compatibility projection that sizing and layout consume. See
- * `omniboard-artifacts/implementation/keyboard-geometry/01-semantic-rows.md`.
+ * These roles are now load-bearing geometry inputs. [SemanticRowRole] selects row height, width,
+ * spacing, boundary gaps, and role-specific insets through `KeyboardGeometryPolicy`; sizing and
+ * layout consume the same solved geometry rather than inferring meaning from row position.
  */
 
 /**

@@ -27,6 +27,11 @@ enum class FlorisImeUi(val elementName: String, val resId: Int?) {
         elementName = "window",
         resId = R.string.snygg__rule_element__window,
     ),
+    /** Decorative surface behind the Smartbar and key rows; their foreground elements stay independent. */
+    KeyboardChassis(
+        elementName = "keyboard-chassis",
+        resId = R.string.snygg__rule_element__keyboard_chassis,
+    ),
 
     Key(
         elementName = "key",

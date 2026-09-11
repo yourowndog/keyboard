@@ -158,6 +158,32 @@ colour on its own, alpha included, and there is no second surface to keep in ste
 Inline-autofill layering is unchanged for themes that *do* carry a background
 image, which is the only case where the surface was load-bearing.
 
+### The text keyboard has one cohesive chassis layer
+
+`TextInputLayout` renders the `keyboard-chassis` Snygg element behind the whole
+text input surface: Smartbar, overflow panel, and key rows. It supports both an
+ordinary Snygg background and a `background-image`; the image is decorative,
+participates in the normal Compose layout, and preserves PNG alpha. This makes
+one silhouette possible instead of visually stacking a Smartbar plate on a
+separate keyboard plate.
+
+The Smartbar still owns its foreground styling. Its container may be transparent
+so the chassis shows through, while action icons, candidate text, tiles, and key
+controls remain independently themed and can stay fully opaque. Chassis alpha
+must never be multiplied into those descendants.
+
+This is a new element rather than activating the old dormant `keyboard` rules
+found in some bundled LCARS stylesheets. Those rules commonly specify a solid,
+full-width background and would turn transparent-window themes back into an
+opaque rectangle merely by upgrading the app. Existing themes therefore remain
+visually unchanged until they opt into `keyboard-chassis`.
+
+A transparent pixel in a chassis image reveals the Snygg `window` layer beneath
+it. To reveal the target application through that cutout as well, the window
+background must also have alpha. This remains visual only: Android still gives
+the application and IME rectangular insets and touch regions, regardless of the
+PNG's silhouette.
+
 ## Geometry belongs elsewhere
 
 Snygg margin and padding affect themed content, but keyboard allocation,

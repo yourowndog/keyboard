@@ -50,10 +50,18 @@ fun rememberGeometryPreferences(
 
     val alphaRowHeight by profile.alphaRowHeightFactor.observeAsState()
     val utilityRowHeight by profile.bottomRowHeightFactor.observeAsState()
+    val primaryActionRowHeightIndependent by profile.primaryActionRowHeightIndependent.observeAsState()
+    val primaryActionRowHeight by profile.primaryActionRowHeightFactor.observeAsState()
     val alphaKeyWidth by profile.alphaKeyWidth.observeAsState()
     val utilityKeyWidth by profile.modKeyWidth.observeAsState()
     val spacingH by profile.keySpacingHorizontal.observeAsState()
     val spacingV by profile.keySpacingVertical.observeAsState()
+    val primaryActionInsetH by profile.primaryActionRowInsetHorizontal.observeAsState()
+    val primaryActionSpacingIndependent by profile.primaryActionKeySpacingIndependent.observeAsState()
+    val primaryActionSpacingH by profile.primaryActionKeySpacingHorizontal.observeAsState()
+    val primaryActionSpacingV by profile.primaryActionKeySpacingVertical.observeAsState()
+    val primaryActionGapAbove by profile.primaryActionRowGapAbove.observeAsState()
+    val primaryActionGapBelow by profile.primaryActionRowGapBelow.observeAsState()
     val gapAbove by profile.modRowUpperGap.observeAsState()
     val gapWithin by profile.modRowInnerGap.observeAsState()
     val gapBelow by profile.modRowLowerGap.observeAsState()
@@ -62,12 +70,20 @@ fun rememberGeometryPreferences(
         rowBaseHeightPx = rowBaseHeight,
         alphaRowHeightPercent = alphaRowHeight,
         utilityRowHeightPercent = utilityRowHeight,
+        primaryActionRowHeightPercent = primaryActionRowHeight.takeIf { primaryActionRowHeightIndependent },
         alphaKeyWidthPercent = alphaKeyWidth,
         utilityKeyWidthPercent = utilityKeyWidth,
         // One preference, one visible gap. KeyBoundsDerivation charges half of it to each of the
         // two keycaps that share the gap, rather than the whole of it to both.
         keySpacingHorizontalPx = convertLength(spacingH),
         keySpacingVerticalPx = convertLength(spacingV),
+        primaryActionInsetHorizontalPx = convertLength(primaryActionInsetH.toFloat()),
+        primaryActionSpacingHorizontalPx = convertLength(primaryActionSpacingH)
+            .takeIf { primaryActionSpacingIndependent },
+        primaryActionSpacingVerticalPx = convertLength(primaryActionSpacingV)
+            .takeIf { primaryActionSpacingIndependent },
+        primaryActionGapAbovePx = convertLength(primaryActionGapAbove.toFloat()),
+        primaryActionGapBelowPx = convertLength(primaryActionGapBelow.toFloat()),
         utilityGapAbovePx = convertLength(gapAbove.toFloat()),
         utilityGapWithinPx = convertLength(gapWithin.toFloat()),
         utilityGapBelowPx = convertLength(gapBelow.toFloat()),

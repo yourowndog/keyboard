@@ -101,28 +101,31 @@ object KeyboardGeometrySolver {
                 }
                 is VerticalElement.Row -> {
                     val row = element.row
+                    val horizontalInset = input.horizontalInsetFor(row.role)
+                    val rowContentLeft = contentLeft + horizontalInset
+                    val rowContentWidth = contentWidth - (horizontalInset * 2.0)
                     cursorY += rowHeights[element.index]
                     val bottom = cursorY.roundToPx()
                     val placement = placeItems(
                         input = input,
                         row = row,
                         unitWidth = unitWidths[element.index],
-                        contentLeft = contentLeft,
-                        contentWidth = contentWidth,
+                        contentLeft = rowContentLeft,
+                        contentWidth = rowContentWidth,
                         top = top,
                         bottom = bottom,
                     )
                     if (placement.overflowBy > OVERFLOW_TOLERANCE) {
                         overflowing += "row '${row.stableId}' needs " +
-                            "${contentWidth + placement.overflowBy}px but the content area is ${contentWidth}px"
+                            "${rowContentWidth + placement.overflowBy}px but its content area is ${rowContentWidth}px"
                     }
                     solvedRows += SolvedRow(
                         stableId = row.stableId,
                         role = row.role,
                         bounds = GeometryRect(
-                            left = contentLeft.roundToPx(),
+                            left = rowContentLeft.roundToPx(),
                             top = top,
-                            right = (contentLeft + contentWidth).roundToPx(),
+                            right = (rowContentLeft + rowContentWidth).roundToPx(),
                             bottom = bottom,
                         ),
                         items = placement.items,
@@ -288,11 +291,13 @@ object KeyboardGeometrySolver {
                 ?: 0.0
             if (maxUnits > 0.0) (contentWidth - ref.insetH) / maxUnits else null
         }
+        val sharedConsumerRoles = reference?.consumerRoles.orEmpty()
         return input.rows.map { row ->
-            val useShared = sharedUnitWidth != null && reference != null && row.role in reference.consumerRoles
+            val useShared = sharedUnitWidth != null && row.role in sharedConsumerRoles
+            val rowContentWidth = contentWidth - (input.horizontalInsetFor(row.role) * 2.0)
             when {
                 useShared -> sharedUnitWidth!!
-                row.totalWidthUnits > 0.0 -> contentWidth / row.totalWidthUnits
+                row.totalWidthUnits > 0.0 -> rowContentWidth / row.totalWidthUnits
                 else -> 0.0
             }
         }
@@ -366,6 +371,12 @@ object KeyboardGeometrySolver {
         val contentWidth = input.availableWidth - input.insets.horizontal
         if (input.rows.isNotEmpty() && contentWidth <= 0.0) {
             reasons += "insets of ${input.insets.horizontal}px leave no content width in ${input.availableWidth}px"
+        }
+        for ((role, horizontalInset) in input.horizontalInsetByRole) {
+            requireFiniteNonNegative(horizontalInset, "horizontal row inset for $role")
+            if (input.rows.any { it.role == role } && horizontalInset * 2.0 >= contentWidth) {
+                reasons += "horizontal row inset ${horizontalInset}px for $role consumes the whole content width"
+            }
         }
         input.widthPolicy.sharedReference?.let { ref ->
             requireFiniteNonNegative(ref.insetH, "shared width reference inset")
