@@ -71,8 +71,10 @@ which is the only item-default authority; the old intrinsic table in
 | Role | Base | Role adjustment | Result |
 | --- | --- | --- | --- |
 | Alpha | `1.0` | 100% | one full row |
+| Optional number row | `1.0` | 75% by inheritance | follows utility height until made independent |
 | Primary action | `1.0` | 100% | one full row |
 | Coding utility | `1.0` | 75% | three quarters of a row |
+| Other extension | `1.0` | 75% | follows utility height |
 
 The `75%` is a role adjustment applied to a `1.0` base, never a `0.75` base
 multiplied by a preference into `56.25%`. Set the utility preference to 100% and
@@ -83,11 +85,18 @@ for its row; the row's role owns the difference. The historical `1.1` spacebar
 height factor, its special vertical centring, and the comment claiming it
 compensated for `1.33` were evidence of a control that no longer exists.
 
-Alpha, primary-action (the space row), and coding-utility heights have separate
-profile controls. The space row follows the alpha height until its independent
-height switch is enabled; this preserves an upgrading user's tuned geometry.
-After that, changing its height changes neither letter nor utility rows. Both
+Alpha, optional-number, primary-action (the space row), and coding-utility
+heights have separate profile controls. The number row follows utility height
+until its independent switch is enabled; the space row similarly follows alpha
+height. These inheritance defaults preserve an upgrading user's tuned geometry.
+After either switch is enabled, changing that row changes no other role. Both
 frame sizing and inner layout consume the same role adjustment from the solver.
+
+The number row has its own `NUMBER_ROW` semantic role. The developer row remains
+`EXTENSION`, so resizing the digits never resizes that separate tool row. The
+Keyboard settings landing page keeps common behavior controls visible, while
+the detailed sliders are grouped on **Size, rows and spacing** by overall,
+letter, number, space, utility, and positioning concerns.
 
 ### Bottom offset and IME insets
 

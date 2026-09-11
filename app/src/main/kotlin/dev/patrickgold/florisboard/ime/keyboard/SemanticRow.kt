@@ -44,10 +44,13 @@ enum class SemanticRowRole(internal val idPrefix: String) {
     /** The main Space/punctuation/action row. Present in both Text and Coding. */
     PRIMARY_ACTION("primary_action"),
 
+    /** The optional digit row inserted above the letter block. */
+    NUMBER_ROW("number_row"),
+
     /** A Coding utility row: navigation, arrows, Escape, modifiers and related controls. */
     CODING_UTILITY("coding_utility"),
 
-    /** An explicitly inserted extension row, such as the number row or the developer row. */
+    /** An explicitly inserted non-number extension row, such as the developer row. */
     EXTENSION("extension"),
 
     /** Numeric-entry row (Numeric, Numeric-Advanced, Phone, Phone2). */

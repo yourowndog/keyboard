@@ -134,6 +134,7 @@ object KeyboardGeometryPolicy {
         val safe = prefs.sanitized()
         val alphaHeightScale = safe.alphaRowHeightPercent / 100.0
         val utilityHeightScale = safe.utilityRowHeightPercent / 100.0
+        val numberRowHeightScale = safe.numberRowHeightPercent?.div(100.0) ?: utilityHeightScale
         val primaryActionHeightScale = safe.primaryActionRowHeightPercent?.div(100.0) ?: alphaHeightScale
         val alphaWidthScale = safe.alphaKeyWidthPercent / 100.0
         val utilityWidthScale = safe.utilityKeyWidthPercent / 100.0
@@ -149,6 +150,7 @@ object KeyboardGeometryPolicy {
                 // block and gets its own height so the block stays dominant.
                 SemanticRowRole.CODING_UTILITY,
                 SemanticRowRole.EXTENSION -> utilityHeightScale
+                SemanticRowRole.NUMBER_ROW -> numberRowHeightScale
                 // Every entry row is a full row. Numeric and symbol surfaces answer the row-height
                 // control because it is the only height authority they have; refusing it would
                 // leave them frozen while every other surface responded.
@@ -168,6 +170,7 @@ object KeyboardGeometryPolicy {
                 // developer row spreads across the full width while the nine-key alpha row below it
                 // is inset. That mismatch predates this stage and is pinned as a known defect.
                 SemanticRowRole.ALPHA,
+                SemanticRowRole.NUMBER_ROW,
                 SemanticRowRole.EXTENSION -> alphaWidthScale
 
                 SemanticRowRole.CODING_UTILITY -> utilityWidthScale
@@ -256,6 +259,7 @@ data class GeometryPreferences(
     val rowBaseHeightPx: Double,
     val alphaRowHeightPercent: Int = 100,
     val utilityRowHeightPercent: Int = 75,
+    val numberRowHeightPercent: Int? = null,
     val primaryActionRowHeightPercent: Int? = null,
     val alphaKeyWidthPercent: Int = 100,
     val utilityKeyWidthPercent: Int = 100,
@@ -281,6 +285,7 @@ data class GeometryPreferences(
         rowBaseHeightPx = rowBaseHeightPx.clampFinite(MIN_ROW_BASE_HEIGHT_PX, MAX_ROW_BASE_HEIGHT_PX, 65.0),
         alphaRowHeightPercent = alphaRowHeightPercent.coerceIn(MIN_SCALE_PERCENT, MAX_SCALE_PERCENT),
         utilityRowHeightPercent = utilityRowHeightPercent.coerceIn(MIN_SCALE_PERCENT, MAX_SCALE_PERCENT),
+        numberRowHeightPercent = numberRowHeightPercent?.coerceIn(MIN_SCALE_PERCENT, MAX_SCALE_PERCENT),
         primaryActionRowHeightPercent = primaryActionRowHeightPercent?.coerceIn(MIN_SCALE_PERCENT, MAX_SCALE_PERCENT),
         alphaKeyWidthPercent = alphaKeyWidthPercent.coerceIn(MIN_SCALE_PERCENT, MAX_SCALE_PERCENT),
         utilityKeyWidthPercent = utilityKeyWidthPercent.coerceIn(MIN_SCALE_PERCENT, MAX_SCALE_PERCENT),

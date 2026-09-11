@@ -598,6 +598,14 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
                 key = "keyboard__${profileId}__alpha_row_height_factor",
                 default = 100,
             )
+            val numberRowHeightIndependent = boolean(
+                key = "keyboard__${profileId}__number_row_height_independent",
+                default = false,
+            )
+            val numberRowHeightFactor = int(
+                key = "keyboard__${profileId}__number_row_height_factor",
+                default = 75,
+            )
             val primaryActionRowHeightIndependent = boolean(
                 key = "keyboard__${profileId}__primary_action_row_height_independent",
                 default = false,

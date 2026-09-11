@@ -50,6 +50,8 @@ fun rememberGeometryPreferences(
 
     val alphaRowHeight by profile.alphaRowHeightFactor.observeAsState()
     val utilityRowHeight by profile.bottomRowHeightFactor.observeAsState()
+    val numberRowHeightIndependent by profile.numberRowHeightIndependent.observeAsState()
+    val numberRowHeight by profile.numberRowHeightFactor.observeAsState()
     val primaryActionRowHeightIndependent by profile.primaryActionRowHeightIndependent.observeAsState()
     val primaryActionRowHeight by profile.primaryActionRowHeightFactor.observeAsState()
     val alphaKeyWidth by profile.alphaKeyWidth.observeAsState()
@@ -70,6 +72,7 @@ fun rememberGeometryPreferences(
         rowBaseHeightPx = rowBaseHeight,
         alphaRowHeightPercent = alphaRowHeight,
         utilityRowHeightPercent = utilityRowHeight,
+        numberRowHeightPercent = numberRowHeight.takeIf { numberRowHeightIndependent },
         primaryActionRowHeightPercent = primaryActionRowHeight.takeIf { primaryActionRowHeightIndependent },
         alphaKeyWidthPercent = alphaKeyWidth,
         utilityKeyWidthPercent = utilityKeyWidth,

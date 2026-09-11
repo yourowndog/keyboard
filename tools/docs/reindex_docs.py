@@ -102,6 +102,7 @@ EXCLUDE_PATTERNS = [
     "data/harvest/derived/**",
     "data/harvest/raw/**",
     "data/harvest/reports/harvest_manifest.json",
+    "data/hotwords_candidates.txt",
     "research/swipe-training/*.json",
     "research/swipe-training/legacy/**",
     "training/data/**",

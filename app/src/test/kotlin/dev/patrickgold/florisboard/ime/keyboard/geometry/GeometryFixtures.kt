@@ -119,6 +119,7 @@ object GeometryFixtures {
 
     private val ALPHA = SemanticRowRole.ALPHA
     private val PRIMARY = SemanticRowRole.PRIMARY_ACTION
+    private val NUMBER = SemanticRowRole.NUMBER_ROW
     private val UTILITY = SemanticRowRole.CODING_UTILITY
     private val EXTENSION = SemanticRowRole.EXTENSION
 
@@ -166,7 +167,7 @@ object GeometryFixtures {
             utilityRow(),
             utilityRow(),
         ),
-        roles = listOf(EXTENSION, ALPHA, ALPHA, ALPHA, PRIMARY, UTILITY, UTILITY),
+        roles = listOf(NUMBER, ALPHA, ALPHA, ALPHA, PRIMARY, UTILITY, UTILITY),
         bottomModRowCount = 2,
     )
 
@@ -197,7 +198,7 @@ object GeometryFixtures {
             utilityRow(),
             utilityRow(),
         ),
-        roles = listOf(EXTENSION, EXTENSION, ALPHA, ALPHA, ALPHA, PRIMARY, UTILITY, UTILITY),
+        roles = listOf(NUMBER, EXTENSION, ALPHA, ALPHA, ALPHA, PRIMARY, UTILITY, UTILITY),
         bottomModRowCount = 2,
     )
 

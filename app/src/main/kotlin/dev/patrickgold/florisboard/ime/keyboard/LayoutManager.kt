@@ -58,6 +58,12 @@ private data class LTN(
     val name: ExtensionComponentName,
 )
 
+/** Classifies an inserted layout while its source type is still available. */
+internal fun LayoutType.extensionSemanticRole(): SemanticRowRole = when (this) {
+    LayoutType.NUMERIC_ROW -> SemanticRowRole.NUMBER_ROW
+    else -> SemanticRowRole.EXTENSION
+}
+
 data class CachedLayout(
     val type: LayoutType,
     val name: ExtensionComponentName,
@@ -340,10 +346,13 @@ class LayoutManager(context: Context) {
 
         for (extLayout in extensionLayouts) {
             if (extLayout != null) {
+                // The optional digit row is a first-class geometry region. Other inserted rows
+                // (currently the developer row) retain the generic extension policy.
+                val extensionRole = extLayout.type.extensionSemanticRole()
                 for ((extRowI, row) in extLayout.arrangement.withIndex()) {
                     val rowArray = Array(row.size) { TextKey(row[it]) }
                     computedArrangement.add(rowArray)
-                    semanticRows.add(SemanticRowRole.EXTENSION, extLayout.provenanceOfRow(extRowI))
+                    semanticRows.add(extensionRole, extLayout.provenanceOfRow(extRowI))
                 }
             }
         }

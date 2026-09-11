@@ -450,12 +450,28 @@
     <string name="pref__keyboard__capitalization_behavior__label" comment="Preference title">Capitalization behavior</string>
     <string name="pref__keyboard__font_size_multiplier__label" comment="Preference title">Font size multiplier</string>
     <string name="pref__keyboard__group_layout__label" comment="Preference group title">Layout</string>
+    <string name="pref__keyboard__group_rows_and_keys__label" comment="Preference group title">Rows and keys</string>
+    <string name="pref__keyboard__group_display__label" comment="Preference group title">Display and behavior</string>
+    <string name="pref__keyboard__group_customization__label" comment="Preference group title">Customization</string>
+    <string name="settings__keyboard_geometry__title" comment="Title of keyboard geometry screen">Size, rows and spacing</string>
+    <string name="settings__keyboard_geometry__summary" comment="Preference summary">Keyboard dimensions, row-specific sizing, gaps and positioning</string>
+    <string name="pref__keyboard__group_overall_size__label" comment="Preference group title">Overall sizing</string>
+    <string name="pref__keyboard__group_letter_rows__label" comment="Preference group title">Letter rows</string>
+    <string name="pref__keyboard__group_number_row__label" comment="Preference group title">Number row</string>
+    <string name="pref__keyboard__group_space_row__label" comment="Preference group title">Space row</string>
+    <string name="pref__keyboard__group_utility_rows__label" comment="Preference group title">Utility rows</string>
+    <string name="pref__keyboard__group_positioning__label" comment="Preference group title">Position and modes</string>
     <string name="pref__keyboard__one_handed_mode__label" comment="Preference title">One-handed mode</string>
     <string name="pref__keyboard__one_handed_mode_scale_factor__label" comment="Preference title">One-handed mode keyboard width</string>
     <string name="pref__keyboard__landscape_input_ui_mode__label" comment="Preference value">Landscape fullscreen input</string>
     <string name="pref__keyboard__height_factor__label" comment="Preference title">Keyboard height</string>
     <string name="pref__keyboard__key_spacing__label" comment="Preference title">Key spacing</string>
+    <string name="pref__keyboard__alpha_key_width__label" comment="Preference title">Letter key width</string>
+    <string name="pref__keyboard__mod_key_width__label" comment="Preference title">Utility key width</string>
     <string name="pref__keyboard__bottom_row_height__label" comment="Preference title">Utility row height</string>
+    <string name="pref__keyboard__number_row_height_independent__label" comment="Preference title">Independent number row height</string>
+    <string name="pref__keyboard__number_row_height_independent__summary" comment="Preference summary">When off, the number row follows the utility row height</string>
+    <string name="pref__keyboard__number_row_height__label" comment="Preference title">Number row height</string>
     <string name="pref__keyboard__primary_action_row_height_independent__label" comment="Preference title">Independent space row height</string>
     <string name="pref__keyboard__primary_action_row_height_independent__summary" comment="Preference summary">When off, the space row follows the alpha row height</string>
     <string name="pref__keyboard__primary_action_row_height__label" comment="Preference title">Space row height</string>

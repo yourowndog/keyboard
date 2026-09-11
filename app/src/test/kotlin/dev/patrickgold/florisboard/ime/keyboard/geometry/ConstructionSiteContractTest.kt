@@ -2,6 +2,7 @@ package dev.patrickgold.florisboard.ime.keyboard.geometry
 
 import dev.patrickgold.florisboard.ime.keyboard.KeyboardMode
 import dev.patrickgold.florisboard.ime.keyboard.KeyboardSemantics
+import dev.patrickgold.florisboard.ime.keyboard.LayoutType
 import dev.patrickgold.florisboard.ime.keyboard.LayoutPackRowSemantics
 import dev.patrickgold.florisboard.ime.keyboard.NormalizedRow
 import dev.patrickgold.florisboard.ime.keyboard.NormalizedRowsBuilder
@@ -11,6 +12,7 @@ import dev.patrickgold.florisboard.ime.keyboard.RowProvenance
 import dev.patrickgold.florisboard.ime.keyboard.SemanticRowRole
 import dev.patrickgold.florisboard.ime.keyboard.SentinelKind
 import dev.patrickgold.florisboard.ime.keyboard.SmartbarQuickActionsKeyboard
+import dev.patrickgold.florisboard.ime.keyboard.extensionSemanticRole
 import dev.patrickgold.florisboard.ime.text.keyboard.TextKeyboard
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -30,6 +32,12 @@ import kotlin.test.assertTrue
 class ConstructionSiteContractTest {
 
     // -- Site 1: normal bundled composition (mergeLayouts) ---------------------------------
+
+    @Test
+    fun `number layout is first class while other inserted layouts remain extensions`() {
+        assertEquals(SemanticRowRole.NUMBER_ROW, LayoutType.NUMERIC_ROW.extensionSemanticRole())
+        assertEquals(SemanticRowRole.EXTENSION, LayoutType.EXTENSION.extensionSemanticRole())
+    }
 
     @COMPATIBILITY("Default Coding composes 6 rows and declares 2 bottom modifier rows.")
     @Test
