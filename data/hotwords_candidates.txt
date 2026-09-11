@@ -1,0 +1,175 @@
+# Hotwords Candidates for Parakeet TDT 0.6B v2 on Weakling
+# Format: Word:score or Word
+# Grounded in empirical ASR acoustic misrecognitions and harvest typing logs
+
+# === 1. Personal & Family (Identity / High Emotion) ===
+# Severe phonetic collision with Carrie, Keri, Curry
+Kiry:2.5
+Sam:2.0
+Elijah:2.0
+Levi:2.0
+Violet:2.0
+Donna:2.0
+Pepa:2.0
+Mimi:2.0
+Chip:2.0
+
+# === 2. Cluster Nodes & Topology (Empirical Phonetic Traps) ===
+# Heard as "Pierce" / "Pierus"
+Pyrrhus:2.5
+# Heard as "Chesmois" / "Chez moi" / "Shay moi" (12+ occurrences)
+Chezmoi:2.5
+# Heard as "weak link" / "weclaim" (4 occurrences)
+Weakling:2.5
+# Heard as "iCarryOn" / "I carry on" / "carry on" (24 occurrences)
+Icarion:2.5
+# Heard as "broken tooth" (4 occurrences)
+Brokentooth:2.5
+# Heard as "gee-guff" / severe acoustic distortion
+GGUF:2.5
+FastEmbed:2.5
+Beksinski:2.5
+# Heard as "tail scale" / "tail net" (22 occurrences)
+Tailscale:2.0
+Tailnet:2.0
+Titan:2.0
+Sleeper:2.0
+Tungsten:2.0
+Caddy:2.0
+Sherpa:2.0
+RustDesk:2.0
+Starlink:2.0
+MagicDNS:2.0
+T480:2.0
+
+# === 3. Agents & Internal Ecosystem (Empirical Acoustic Mishearings) ===
+# Heard as "herder" (62 occurrences in voice!)
+Herdr:2.5
+# Heard as "Soma" / "comma" (20+ comma/soma collisions)
+SOMA:2.5
+# Heard as "open cloth" / "open claw" (5 occurrences)
+OpenClaw:2.5
+# Heard as "Omni board" / "on the board" (5 occurrences)
+OmniBoard:2.5
+# Heard as "Florist board"
+FlorisBoard:2.5
+# Heard as "j code munch" / "code munch" (7 occurrences)
+JCodeMunch:2.5
+# Heard as "j doc munch" / "doc munch" (11 occurrences)
+JDocMunch:2.5
+# Heard as "cc gram" (19 occurrences)
+CCGram:2.5
+# Heard as "open code" (17 occurrences)
+OpenCode:2.5
+# Heard as "headwind" / "head room"
+Headroom:2.5
+# Heard as "screen sense"
+ScreenSense:2.5
+# Heard as "Vox CPM"
+VoxCPM:2.5
+# Heard as "Crisper whisper"
+CrisperWhisper:2.5
+Parakeet:2.0
+Antigravity:2.0
+KeyGeo:2.0
+
+# === 4. Developer Tools, Shell & Linux Stack (Severe Phonetic Traps) ===
+# Heard as "team ups" / "team up"
+tmux:2.5
+# Heard as "tarmac" / "termites" / "tarmacs" (12 occurrences!)
+Termux:2.5
+# Heard as "Shizuku" / non-English phonetics
+Shizuku:2.5
+# Arch package manager heard as "pac man"
+pacman:2.0
+yay:2.0
+mDNS:2.0
+sshd:2.0
+WireGuard:2.0
+Zellij:2.0
+AOSP:2.0
+Gboard:2.0
+Tasker:2.0
+Logcat:2.0
+Neovim:2.0
+ripgrep:2.0
+
+# === 5. AI Models, Model Families & Frontier Providers ===
+# Heard as "Laura" / "Lori" (19 occurrences in voice!)
+LoRA:2.5
+QLoRA:2.5
+# Heard as "Notebook LN" / "notebook lm" (14 occurrences)
+NotebookLM:2.5
+Claude:2.0
+Claude Code:2.0
+Gemini:2.0
+ChatGPT:2.0
+DeepSeek:2.0
+Qwen:2.0
+Grok:2.0
+Llama:2.0
+Gemma:2.0
+Mistral:2.0
+Codex:2.0
+Sonnet:2.0
+Opus:2.0
+Haiku:2.0
+Whisper:2.0
+Piper:2.0
+Kokoro:2.0
+OpenRouter:2.0
+Anthropic:2.0
+OpenAI:2.0
+Perplexity:2.0
+Midjourney:2.0
+ElevenLabs:2.0
+Kimi:2.0
+BraveSearch:2.0
+Playwright:2.0
+Pinecone:2.0
+
+# === 6. Technical Acronyms, Frameworks & Quant Terms (Score 1.5) ===
+ADB:1.5
+APK:1.5
+AAB:1.5
+CUDA:1.5
+VRAM:1.5
+LLM:1.5
+LLMs:1.5
+RAG:1.5
+ONNX:1.5
+TDT:1.5
+ASR:1.5
+TTS:1.5
+MCP:1.5
+MoE:1.5
+GGML:1.5
+NPU:1.5
+TPU:1.5
+GPU:1.5
+RTX:1.5
+PEFT:1.5
+RLHF:1.5
+DPO:1.5
+AGI:1.5
+ASI:1.5
+AGY:1.5
+CLI:1.5
+SSH:1.5
+SCP:1.5
+Kotlin:1.5
+FUTO:1.5
+ProGuard:1.5
+GraphQL:1.5
+SQLite:1.5
+PostgreSQL:1.5
+Docker:1.5
+Kubernetes:1.5
+GitHub:1.5
+OAuth:1.5
+Wi-Fi:1.5
+fp16:1.5
+int8:1.5
+int4:1.5
+Q4_K_M:1.5
+SWE-bench:1.5

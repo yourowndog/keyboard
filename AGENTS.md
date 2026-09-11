@@ -70,10 +70,27 @@ If you catch yourself reaching for `Read` on a `.md` file to find out what it sa
    establish whether the existing index is usable. Reindex only when it is
    genuinely missing or stale; a loader or permission error is not a reason to
    rebuild a healthy database.
-2. **Refresh Doc Index**: Rebuild with `tools/docs/reindex_docs.py` — **not** a bare `index_local` call. The corpus is 89 prose files / ~893 sections; a default index pulls in ~2,500 sections of packaged assets, generated JSON, and wordlists that drown the prose. The script owns the 33-pattern exclusion list, pins local providers, and verifies the result. Pass `--incremental` to re-index only changed files (exclusions still apply, unchanged sections keep their summaries and vectors); add `--require-summarizer` to skip the run when Titan is down rather than write title-fallback summaries.
-   - **The canonical doc repo identifier is `local/keyboard`.** Pass exactly that as `repo` on every jDocMunch call.
-   - Nine obsolete forks (`local/keyboard-docs`, `local/keyboard-core-docs`, `local/omniboard-docs`, and others) were deleted on 2026-09-03; `local/keyboard` is now the only keyboard index. If a fork ever reappears in `doc_list_repos`, do not read from it — it will produce stale evidence.
-   - Never trust a "successful" index without checking coverage: jDocMunch reports success even when it silently embedded a fraction of the corpus. The script's verification gate is the check — see its module docstring for the two defects it guards.
+2. **Refresh Doc Index**: Rebuild with `tools/docs/reindex_docs.py` — **not** a bare `index_local` call. The corpus is ~94 prose files / ~972 sections; a default index pulls in ~2,500 sections of packaged assets, generated JSON, and wordlists that drown the prose. The script owns the 34-pattern exclusion list, pins local providers, and verifies the result.
+
+   **The only invocation known to produce a complete index:**
+
+   ```
+   ~/.local/bin/uvx --from 'jdocmunch-mcp[openai,fastembed]==1.139.1' \
+       python tools/docs/reindex_docs.py
+   ```
+
+   The `[openai,fastembed]` extras and the version pin are both load-bearing. Verified on 2026-09-11:
+
+   | invocation | mode | result |
+   |---|---|---|
+   | `uvx --with jdocmunch-mcp` (no extras) | either | no sidecar written — **silent no-op** |
+   | pinned, with extras | `--incremental` | sidecar written, sections of **newly-added files skipped** — reports success at 0.94 coverage |
+   | pinned, with extras | full (no flag) | 972/972 sections, coverage 1.0 |
+
+   **Do not use `--incremental`.** It does not embed sections belonging to files that are new since the last index, and it still exits 0 and reports success. A full run takes a few minutes; an incremental run silently leaves new documents unsearchable, which is worse. `--require-summarizer` skips the run when Titan is down rather than writing title-fallback summaries, and is safe to add.
+
+   Always read the verification block the script prints. `embedding verification: PASS` with `coverage 1.0` is the only acceptable outcome; a FAIL line names the missing section hashes. The script currently exits 0 even when its summarizer-alignment import fails, so exit status alone is not evidence.
+
 3. `suggest_queries` — when exploring unfamiliar areas of the codebase or documentation.
 
 **Code Exploration (jCodemunch):**
@@ -162,7 +179,7 @@ for an exact textual check.
 
 **After editing files:**
 - **The code index self-heals.** A user-level PostToolUse hook (`~/.claude/settings.json`, matcher `Edit|Write`) runs `jcodemunch-mcp hook-posttooluse`, so code files you edit are reindexed automatically. This is Claude Code only — other agents must invalidate manually.
-- **The doc index does not.** There is no equivalent jDocMunch hook. After editing `.md` files, call `register_edit` with the paths; rerun `tools/docs/reindex_docs.py` when the change is large enough to need fresh summaries and embeddings.
+- **The doc index does not.** There is no equivalent jDocMunch hook. After editing `.md` files, call `register_edit` with the paths; rerun `tools/docs/reindex_docs.py` (full run, per the invocation in step 2 — never `--incremental`) when the change is large enough to need fresh summaries and embeddings, and **always** after adding a new `.md` file, since `register_edit` does not index files the corpus has not seen before.
 - If `register_edit` is unavailable to your agent, say so rather than silently reasoning from a stale index.
 - For bulk edits (5+ files), always use `register_edit` with all paths to batch-invalidate
 
