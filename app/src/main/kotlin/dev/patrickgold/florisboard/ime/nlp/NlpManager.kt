@@ -113,6 +113,8 @@ class NlpManager(context: Context) {
                 wouldFire = snap.decision.shouldFire,
                 agrees = agrees,
                 ranked = snap.decision.ranked.map { it.term to it.probability },
+                ngramRanked = candidatePairs,
+                policyBlockers = snap.policyBlockers,
             )
         }
 

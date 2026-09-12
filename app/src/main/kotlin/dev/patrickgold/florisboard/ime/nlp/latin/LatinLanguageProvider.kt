@@ -84,6 +84,7 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         val prevWord: String?,
         val ngramTop: String?,
         val decision: NeuralScorer.Decision,
+        val policyBlockers: List<String>,
     )
     @Volatile var lastNeuralSnapshot: NeuralSnapshot? = null
         private set
@@ -349,19 +350,12 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
                 ),
                 threshold = prefs.suggestion.neuralThreshold.get(),
             )
+            val ngramTopStr = ngramRanked.firstOrNull()?.text?.toString()
             if (prefs.suggestion.neuralScorerShadow.get() && neuralDecision != null) {
-                val ngramTopStr = ngramRanked.firstOrNull()?.text?.toString()
                 logNeuralShadow(
                     typed = currentWordRaw,
                     previousWord = previousWord,
                     currentTop = ngramTopStr,
-                    decision = neuralDecision,
-                )
-                // Surface for NlpManager's privacy-safe JSONL logging
-                lastNeuralSnapshot = NeuralSnapshot(
-                    typed = currentWordRaw,
-                    prevWord = previousWord,
-                    ngramTop = ngramTopStr,
                     decision = neuralDecision,
                 )
             }
@@ -399,7 +393,8 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
             )
             val rankedSuggestions = ngramRanked
             
-            return rankedSuggestions.map { candidate ->
+            var topPolicyBlockers = emptyList<String>()
+            return rankedSuggestions.mapIndexed { index, candidate ->
                 if (candidate is WordSuggestionCandidate) {
                     // Use SymSpellManager's casing logic which handles i→I, proper nouns, sentence start
                     val casedText = SymSpellManager.applyPredictedCasing(
@@ -423,6 +418,9 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
                                 .isAntiCorrection(currentWordRaw, casedText),
                         ),
                     )
+                    if (index == 0) {
+                        topPolicyBlockers = decision.blockers.map { it.name }
+                    }
 
                     // DEBUG: Uncomment to trace commit decisions
                     // android.util.Log.d("LatinProvider", "Input: '$currentWordRaw' | Cand: '$casedText' | Blockers: ${CommitPolicy.blockers(...)}")
@@ -436,6 +434,16 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
                     candidate
                 }
             }.let { suggestions ->
+                if (prefs.suggestion.neuralScorerShadow.get() && neuralDecision != null) {
+                    // Surface complete counterfactual evidence for NlpManager's privacy-safe logger.
+                    lastNeuralSnapshot = NeuralSnapshot(
+                        typed = currentWordRaw,
+                        prevWord = previousWord,
+                        ngramTop = ngramTopStr,
+                        decision = neuralDecision,
+                        policyBlockers = topPolicyBlockers,
+                    )
+                }
                 // iOS/Gboard style: Always show typed word as first suggestion
                 // When user picks this, it signals they want this exact word (INSISTED)
                 val typedWordCandidate = WordSuggestionCandidate(

@@ -29,9 +29,17 @@ import java.util.Locale
 data class AppContext(
     val packageName: String,
     val fieldId: Int,
+    val inputType: String = "unknown",
     val inputVariation: String,
     val flags: String,
     val isPassword: Boolean = false,
+    val isHarvestBlocked: Boolean = isPassword,
+    val imeOptions: String = "unspecified",
+    val hint: String? = null,
+    val label: String? = null,
+    val actionLabel: String? = null,
+    val privateImeOptions: String? = null,
+    val extrasKeys: List<String> = emptyList(),
 )
 
 object HarvestManager {
@@ -88,9 +96,39 @@ object HarvestManager {
      * Returns the jsonl event id, or -1 if blocked/unavailable.
      */
     private fun jsonl(type: String, appContext: AppContext?, vararg fields: Pair<String, Any?>): Long {
-        if (appContext?.isPassword == true || currentAppContext?.isPassword == true) return -1L
-        return HarvestJsonl.event(type, appContext ?: currentAppContext, fields.toList())
+        val resolvedContext = appContext ?: currentAppContext ?: return -1L
+        if (resolvedContext.isHarvestBlocked || currentAppContext?.isHarvestBlocked == true) return -1L
+        return HarvestJsonl.event(type, resolvedContext, fields.toList())
     }
+
+    /** Establishes the field boundary used by both privacy gating and v4 inputSession ids. */
+    fun onInputAttached(appContext: AppContext, restarting: Boolean) {
+        if (!restarting && currentAppContext != null) {
+            flushSession(appContext = currentAppContext)
+        }
+        currentAppContext = appContext
+        HarvestV4.attach(appContext, restarting)
+    }
+
+    fun onInputFinished() {
+        currentAppContext?.let { flushSession(appContext = it) }
+        HarvestV4.finish()
+        currentAppContext = null
+    }
+
+    fun updateLayout(fingerprint: dev.patrickgold.florisboard.ime.keyboard.geometry.LayoutFingerprint) {
+        HarvestV4.updateLayout(fingerprint)
+    }
+
+    fun beginVoice(audioRef: String, transcriptKind: String, asrConfidence: Float? = null) =
+        HarvestV4.beginVoice(audioRef, transcriptKind, asrConfidence)
+
+    fun endVoice() = HarvestV4.endVoice()
+
+    fun recordTouch(touch: HarvestTouch) = HarvestV4.touch(touch)
+    fun recordTyped(text: String) = HarvestV4.typed(text)
+    fun recordEdit(operation: String, count: Int = 1, left: String? = null) =
+        HarvestV4.edit(operation, count, left)
     
     private fun writeHeader() {
         harvestFile?.let { file ->
@@ -129,8 +167,20 @@ object HarvestManager {
         candidates: List<Pair<String, Double>>? = null,
         trace: String? = null,
         auto: Boolean = false,
+        v4Route: String = HarvestRoute.AUTO_APPLIED,
+        barIndex: Int? = null,
+        commitChar: String? = " ",
     ) {
         if (typed == correctedTo) return // Not actually a correction
+        HarvestV4.commit(
+            final = correctedTo,
+            route = v4Route,
+            prevWord = prevWord,
+            prevPrevWord = prevPrevWord,
+            autoFrom = typed,
+            barIndex = barIndex,
+            commitChar = commitChar,
+        )
         append("ACCEPTED", "$typed → $correctedTo", prevWord, prevPrevWord, appContext)
         val id = jsonl(
             "AUTO_APPLIED", appContext,
@@ -142,6 +192,7 @@ object HarvestManager {
             "trace" to trace,
             "candidates" to candidates,
             "shadow" to HarvestJsonl.findShadowId(typed),
+            "slot" to HarvestV4.slotForLegacy(),
         )
         HarvestJsonl.rememberApplied(id, typed, correctedTo)
     }
@@ -155,6 +206,7 @@ object HarvestManager {
      * @param appContext App/field context for per-app learning
      */
     fun logRejected(typed: String, rejectedCorrection: String, prevWord: String?, prevPrevWord: String? = null, appContext: AppContext? = null) {
+        HarvestV4.revert(typed, rejectedCorrection)
         append("REJECTED", "$typed ← $rejectedCorrection (reverted)", prevWord, prevPrevWord, appContext)
         jsonl(
             "REVERTED", appContext,
@@ -164,6 +216,7 @@ object HarvestManager {
             "prev2" to prevPrevWord,
             "undoes" to HarvestJsonl.findUndoId(typed, rejectedCorrection),
             "shadow" to HarvestJsonl.findShadowId(typed),
+            "slot" to HarvestV4.slotForLegacy(),
         )
     }
     
@@ -181,7 +234,12 @@ object HarvestManager {
         if (word.contains("@") || word.contains("://")) return // URLs/emails
 
         append("NEW_WORD", word, prevWord, null, appContext)
-        jsonl("NEW_WORD", appContext, "word" to word, "prev" to prevWord)
+        jsonl(
+            "NEW_WORD", appContext,
+            "word" to word,
+            "prev" to prevWord,
+            "slot" to HarvestV4.slotForLegacy(),
+        )
     }
     
     /**
@@ -196,6 +254,8 @@ object HarvestManager {
     fun logManualCorrection(original: String, corrected: String, prevWord: String?, appContext: AppContext? = null, trace: String? = null) {
         if (original.isEmpty() || corrected.isEmpty()) return
         if (original.equals(corrected, ignoreCase = true)) return
+        HarvestV4.returnEdit(original, corrected)
+        HarvestV4.commit(corrected, HarvestRoute.TYPED_THROUGH, prevWord = prevWord)
         append("MANUAL_FIX", "\"$original\" → \"$corrected\"", prevWord, null, appContext)
         jsonl(
             "MANUAL_EDIT", appContext,
@@ -204,6 +264,7 @@ object HarvestManager {
             "prev" to prevWord,
             "trace" to trace,
             "shadow" to HarvestJsonl.findShadowId(original),
+            "slot" to HarvestV4.slotForLegacy(),
         )
     }
 
@@ -214,13 +275,33 @@ object HarvestManager {
      * @param prevWord The word before (context)
      * @param appContext App/field context for per-app learning
      */
-    fun logInsisted(word: String, prevWord: String?, appContext: AppContext? = null) {
+    fun logInsisted(
+        word: String,
+        prevWord: String?,
+        appContext: AppContext? = null,
+        v4Route: String = HarvestRoute.BAR_PICK,
+        barIndex: Int? = null,
+    ) {
+        HarvestV4.commit(
+            word,
+            v4Route,
+            prevWord = prevWord,
+            autoFrom = word,
+            barIndex = barIndex,
+            commitChar = " ",
+        )
         // Smart Check: If the user insisted on a word that ISN'T in our dict, it's a NEW_WORD candidate.
         if (!dev.patrickgold.florisboard.ime.nlp.SymSpellManager.hasWord(word)) {
             logNewWord(word, prevWord, appContext)
         } else {
             append("INSISTED", word, prevWord, null, appContext)
-            jsonl("INSISTED", appContext, "word" to word, "prev" to prevWord, "shadow" to HarvestJsonl.findShadowId(word))
+            jsonl(
+                "INSISTED", appContext,
+                "word" to word,
+                "prev" to prevWord,
+                "shadow" to HarvestJsonl.findShadowId(word),
+                "slot" to HarvestV4.slotForLegacy(),
+            )
         }
     }
     
@@ -267,7 +348,14 @@ object HarvestManager {
      */
     fun logSuggestionsShown(typed: String, prevWord: String?, candidates: List<Pair<String, Double>>) {
         if (typed.isEmpty() || candidates.isEmpty()) return
-        jsonl("SUGGESTIONS_SHOWN", null, "typed" to typed, "prev" to prevWord, "candidates" to candidates)
+        HarvestV4.offer(typed, candidates, shown = candidates.size)
+        jsonl(
+            "SUGGESTIONS_SHOWN", null,
+            "typed" to typed,
+            "prev" to prevWord,
+            "candidates" to candidates,
+            "slot" to HarvestV4.slotForLegacy(),
+        )
     }
 
     /**
@@ -329,7 +417,19 @@ object HarvestManager {
         wouldFire: Boolean,
         agrees: Boolean,
         ranked: List<Pair<String, Float>>? = null,
+        ngramRanked: List<Pair<String, Double>>? = null,
+        policyBlockers: List<String>? = null,
     ) {
+        HarvestV4.shadow(
+            heuristicTop = ngramTop,
+            heuristicRanked = ngramRanked,
+            neuralTop = neuralTop,
+            neuralRanked = ranked,
+            neuralMargin = margin,
+            wouldFire = wouldFire,
+            agrees = agrees,
+            policyBlockers = policyBlockers,
+        )
         val id = jsonl(
             "NEURAL_SHADOW", null,
             "typed" to typed,
@@ -342,6 +442,7 @@ object HarvestManager {
             "wouldFire" to wouldFire,
             "agrees" to agrees,
             "ranked" to ranked,
+            "slot" to HarvestV4.slotForLegacy(),
         )
         HarvestJsonl.rememberShadow(id, typed)
     }
@@ -384,20 +485,37 @@ object HarvestManager {
 
     private var currentAppContext: AppContext? = null  // Track active field context
 
-    fun addToSession(word: String, appContext: AppContext? = null, trace: String? = null) {
+    fun addToSession(
+        word: String,
+        appContext: AppContext? = null,
+        trace: String? = null,
+        v4Route: String = if (currentSessionSource == "VOICE") HarvestRoute.VOICE else HarvestRoute.TYPED_THROUGH,
+        prevWord: String? = null,
+        prevPrevWord: String? = null,
+        commitChar: String? = null,
+    ) {
         synchronized(sessionBuffer) {
             // Update context if provided
             if (appContext != null) {
                 currentAppContext = appContext
             }
 
-            if (currentAppContext?.isPassword == true) return
+            if (currentAppContext?.isHarvestBlocked == true) return
+
+            HarvestV4.commit(
+                word,
+                v4Route,
+                prevWord = prevWord,
+                prevPrevWord = prevPrevWord,
+                commitChar = commitChar,
+            )
 
             jsonl(
                 "WORD_COMMITTED", appContext,
                 "word" to word,
                 "trace" to trace,
                 "src" to currentSessionSource,
+                "slot" to HarvestV4.slotForLegacy(),
             )
 
             if (sessionBuffer.isNotEmpty() && !word.matches(Regex("^[.,?!;:]$"))) {
@@ -450,7 +568,7 @@ object HarvestManager {
         val file = harvestFile ?: return
 
         // NEVER log anything if we're in a password field
-        if (appContext?.isPassword == true || currentAppContext?.isPassword == true) return
+        if (appContext?.isHarvestBlocked == true || currentAppContext?.isHarvestBlocked == true) return
 
         CoroutineScope(Dispatchers.IO).launch {
             try {

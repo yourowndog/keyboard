@@ -410,8 +410,8 @@ never found it" from "the engine found it but the bar was too narrow."
 ]
 ```
 
-`op` is one of `BKSP`, `BKSP_WORD`, `SELECT_DELETE`, `CURSOR_MOVE`,
-`RETURN_EDIT`. `burst: true` marks rapid repeats coalesced from key-repeat.
+`op` is one of `BKSP`, `BKSP_WORD`, `SELECT_DELETE`, `DELETE_FORWARD`,
+`CURSOR_MOVE`, `RETURN_EDIT`. `burst: true` marks rapid repeats coalesced from key-repeat.
 `RETURN_EDIT` reopens a closed slot when you come back later and change it —
 the strongest correction signal available, because it is entirely unprompted.
 
@@ -425,6 +425,7 @@ the strongest correction signal available, because it is entirely unprompted.
   "autoFrom": null,
   "reverted": false,
   "revertedTo": null,
+  "revertedFrom": null,
   "returnEdited": false,
   "committedAt": "2026-09-11T14:22:41.702",
   "commitChar": " "
@@ -446,6 +447,12 @@ the strongest correction signal available, because it is entirely unprompted.
 `barIndex` is the 0-based position tapped. Position matters: picking slot 3
 means the engine had it but ranked it badly, which is a different failure from
 not having it at all.
+
+On a revert, `revertedTo` is the restored typed form and `revertedFrom` preserves
+the rejected correction. Keeping both sides makes later capitulation labels
+recomputable instead of relying on a derived boolean alone. Reachability is
+also repeated in `outcome` for simple extractors; `shadow.reachable` remains the
+canonical contract field.
 
 ### 9.4 `shadow` — what each scorer thought
 
@@ -507,7 +514,9 @@ disagreement rather than invisible as a silently wrong training label.
 one or more reverts or rejections of the same target, followed by accepting it.
 This exists because of the `fso` case — twelve commits that looked like
 vocabulary evidence and were actually you giving up on `fos`. A bare
-`WORD_COMMITTED` cannot distinguish intent from surrender. The chain can.
+`WORD_COMMITTED` cannot distinguish intent from surrender. The chain can. The
+on-device derivation uses a bounded 60-second, same-input-session rejection
+window; `revertedFrom` preserves the evidence for offline recomputation.
 
 ---
 
@@ -526,6 +535,10 @@ Dictated words get `outcome.route: "VOICE"`, empty `keys`, and:
 
 `audioRef` is an opaque id into retained audio; no path or filename is written
 into the JSONL.
+
+The current transcription interface does not expose a trustworthy utterance
+confidence, so `asrConf` is emitted as `null`. It remains reserved for a future
+provider that supplies a calibrated value; the logger never fabricates one.
 
 **Two transcripts per recording, both retained:**
 
@@ -797,8 +810,9 @@ is redundant.
 
 An implementation is complete when, on a device build:
 
-1. Every field in §§4–10 has a non-null value in at least one real slot, and
-   the emission table in §12 has no unwired row.
+1. Every field in §§4–10 has a non-null value in at least one real slot, except
+   the documented reserved/offline `ctx.register` and unavailable
+   `voice.asrConf`; the emission table in §12 has no unwired row.
 2. `grep -c '"route":"BAR_PICK"'` is greater than zero after deliberately
    tapping the smart bar.
 3. A deliberate type-then-backspace-six-then-retype produces **one** slot

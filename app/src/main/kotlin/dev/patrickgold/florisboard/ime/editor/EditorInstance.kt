@@ -46,6 +46,7 @@ import kotlinx.coroutines.runBlocking
 import org.florisboard.lib.android.showShortToastSync
 import dev.patrickgold.florisboard.ime.nlp.HarvestManager
 import dev.patrickgold.florisboard.ime.nlp.AppContext
+import dev.patrickgold.florisboard.ime.nlp.HarvestRoute
 
 class EditorInstance(context: Context) : AbstractEditorInstance(context) {
     companion object {
@@ -87,6 +88,9 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
     // Cached AppContext — rebuilt on each new input view, reused per keystroke
     private var cachedAppContext: AppContext? = null
 
+    // Set only around an explicit voice/paste commit so generic commitText remains unchanged.
+    private var explicitHarvestRoute: String? = null
+
     private fun currentInputConnection() = FlorisImeService.currentInputConnection()
 
     /**
@@ -108,12 +112,23 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
             if (info.imeOptions.flagForceAscii) add("forceAscii")
         }.joinToString(",").ifEmpty { "none" }
 
+        val variation = info.inputAttributes.variation
+        val isEmailEntry = variation == InputAttributes.Variation.EMAIL_ADDRESS ||
+            variation == InputAttributes.Variation.WEB_EMAIL_ADDRESS
         val ctx = AppContext(
             packageName = pkg,
             fieldId = info.base.fieldId,
-            inputVariation = info.inputAttributes.variation.toString(),
+            inputType = info.inputAttributes.type.name.lowercase(),
+            inputVariation = variation.name.lowercase(),
             flags = flags,
             isPassword = info.inputAttributes.isPassword,
+            isHarvestBlocked = info.inputAttributes.isPassword || isEmailEntry,
+            imeOptions = "action${info.imeOptions.action.name.lowercase().replaceFirstChar { it.uppercase() }}",
+            hint = info.base.hintText?.toString(),
+            label = info.base.label?.toString(),
+            actionLabel = info.base.actionLabel?.toString(),
+            privateImeOptions = info.base.privateImeOptions,
+            extrasKeys = info.base.extras?.keySet()?.sorted() ?: emptyList(),
         )
         cachedAppContext = ctx
         return ctx
@@ -130,6 +145,7 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         currentWordBuffer.setLength(0)  // Word state never carries across fields
         currentWordTrace.setLength(0)
         super.handleStartInputView(editorInfo, isRestart)
+        buildAppContext()?.let { HarvestManager.onInputAttached(it, isRestart) }
         val keyboardMode = when (editorInfo.inputAttributes.type) {
             InputAttributes.Type.NUMBER -> {
                 activeState.keyVariation = KeyVariation.NORMAL
@@ -196,6 +212,16 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         }
     }
 
+    override fun handleFinishInputView() {
+        HarvestManager.onInputFinished()
+        super.handleFinishInputView()
+    }
+
+    override fun handleFinishInput() {
+        HarvestManager.onInputFinished()
+        super.handleFinishInput()
+    }
+
     override fun determineComposingEnabled(): Boolean {
         return nlpManager.isSuggestionOn()
     }
@@ -229,6 +255,13 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         phantomSpace.setInactive()
         lastCommitAppendedSpace = false
         val selection = EditorRange.normalized(start, end)
+        if (selection != activeContent.selection) {
+            HarvestManager.recordEdit(
+                operation = "CURSOR_MOVE",
+                count = selection.length,
+                left = "${selection.start}:${selection.end}",
+            )
+        }
         return super.setSelection(selection)
     }
 
@@ -319,11 +352,14 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
             insertSpaceBeforeChar = isInsertAutoSpaceBeforeChar || isPhantomSpaceActive,
             insertSpaceAfterChar = isInsertAutoSpaceAfterChar,
         )
+        if (result && !isWordBoundary) {
+            HarvestManager.recordTyped(char)
+        }
         // Flush AFTER the commit so a word-separator-triggered autocorrect
         // (commitTextInternal) has already recorded its undo state and the session
         // logs what actually landed in the editor.
         if (isWordBoundary) {
-            flushCurrentWordToSession(buildAppContext(), prevWord, prevPrevWord)
+            flushCurrentWordToSession(buildAppContext(), prevWord, prevPrevWord, char)
             // Flush session on sentence terminators
             if (isPunctuation || char == "\n") {
                 pendingManualCorrect = null  // Abandon tracking at sentence boundary
@@ -341,7 +377,12 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
      *    harvest — and record the corrected form in the session.
      *  - Otherwise record the typed word, with the manual-correction check preserved.
      */
-    private fun flushCurrentWordToSession(ctx: AppContext?, prevWord: String?, prevPrevWord: String?) {
+    private fun flushCurrentWordToSession(
+        ctx: AppContext?,
+        prevWord: String?,
+        prevPrevWord: String?,
+        commitChar: String,
+    ) {
         val typed = currentWordBuffer.toString()
         val trace = currentWordTrace.toString()
         currentWordBuffer.setLength(0)
@@ -361,11 +402,15 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
                 candidates = nlpManager.candidatesSnapshotFor(undo.originalText),
                 trace = trace.takeIf { it.isNotEmpty() && it != undo.correctedText },
                 auto = true,
+                commitChar = commitChar,
             )
             pendingManualCorrect = null
             HarvestManager.addToSession(
                 undo.correctedText, ctx,
                 trace = trace.takeIf { it.isNotEmpty() && it != undo.correctedText },
+                prevWord = prevWord,
+                prevPrevWord = prevPrevWord,
+                commitChar = commitChar,
             )
             return
         }
@@ -378,7 +423,13 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
             }
             pendingManualCorrect = null
         }
-        HarvestManager.addToSession(typed, ctx, trace = trace.takeIf { it != typed })
+        HarvestManager.addToSession(
+            typed, ctx,
+            trace = trace.takeIf { it != typed },
+            prevWord = prevWord,
+            prevPrevWord = prevPrevWord,
+            commitChar = commitChar,
+        )
     }
 
     /**
@@ -394,6 +445,7 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
      * @return True on success, false if an error occurred or the input connection is invalid.
      */
     override fun commitText(text: String): Boolean {
+        val harvestRoute = explicitHarvestRoute
         val isPhantomSpaceActive = phantomSpace.determine(text)
         autoSpace.setInactive()
         phantomSpace.setInactive()
@@ -405,30 +457,51 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         val isWhitespaceLeading = text.isNotEmpty() && (text.isBlank() || text.first().isWhitespace())
         val needsWordFlush = isWhitespaceLeading || text == "\n"
         // Context words must be read before the commit mutates editor content
-        val (prevWord, prevPrevWord) = if (needsWordFlush) {
+        val (prevWord, prevPrevWord) = if (needsWordFlush || harvestRoute != null) {
             getContextWords(currentWordBuffer.toString())
         } else null to null
         return if (isPhantomSpaceActive) {
             super.commitText("$SPACE$text")
         } else {
             super.commitText(text)
-        }.also {
+        }.also { committed ->
+            if (!committed) return@also
             // SESSION LOGGING: commitText is called for autocorrect, swipe, paste
             // Text may be multi-word, so parse it
             val ctx = buildAppContext()
             if (text == "\n") {
-                flushCurrentWordToSession(ctx, prevWord, prevPrevWord)
+                flushCurrentWordToSession(ctx, prevWord, prevPrevWord, text)
                 HarvestManager.flushSession(text, ctx)
             } else {
                 if (isWhitespaceLeading) {
-                    flushCurrentWordToSession(ctx, prevWord, prevPrevWord)
+                    flushCurrentWordToSession(ctx, prevWord, prevPrevWord, text.first().toString())
                 }
                 // Parse text into words and add each
                 val words = text.split(Regex("\\s+")).filter { it.isNotEmpty() }
+                var runningPrev = prevWord
+                var runningPrevPrev = prevPrevWord
                 for (word in words) {
-                    HarvestManager.addToSession(word, ctx)
+                    HarvestManager.addToSession(
+                        word,
+                        ctx,
+                        v4Route = harvestRoute ?: HarvestRoute.TYPED_THROUGH,
+                        prevWord = runningPrev,
+                        prevPrevWord = runningPrevPrev,
+                    )
+                    runningPrevPrev = runningPrev
+                    runningPrev = word
                 }
             }
+        }
+    }
+
+    /** Commits text through a route that cannot be inferred from the resulting editor text. */
+    fun commitTextFromRoute(text: String, route: String): Boolean {
+        explicitHarvestRoute = route
+        return try {
+            commitText(text)
+        } finally {
+            explicitHarvestRoute = null
         }
     }
 
@@ -443,7 +516,11 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
      *
      * @return True on success, false if an error occurred or the input connection is invalid.
      */
-    fun commitCompletion(candidate: SuggestionCandidate): Boolean {
+    fun commitCompletion(
+        candidate: SuggestionCandidate,
+        harvestRoute: String = HarvestRoute.AUTO_APPLIED,
+        barIndex: Int? = null,
+    ): Boolean {
         val text = candidate.text.toString()
         if (text.isEmpty() || activeInfo.isRawInputEditor) return false
         val content = activeContent
@@ -470,16 +547,29 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
                         candidates = nlpManager.candidatesSnapshotFor(original),
                         trace = trace.takeIf { it.isNotEmpty() && it != text },
                         auto = false,
+                        v4Route = harvestRoute,
+                        barIndex = barIndex,
                     )
                 } else if (original.isNotEmpty() && text.equals(original, ignoreCase = true)) {
                     // User explicitly picked their typed word - log as INSISTED
                     // This is a strong signal this word should be in the dictionary
-                    HarvestManager.logInsisted(original, prevWord, ctx)
+                    HarvestManager.logInsisted(
+                        original, prevWord, ctx,
+                        v4Route = harvestRoute,
+                        barIndex = barIndex,
+                    )
                 }
                 // The completed word replaces whatever chars were accumulated
                 currentWordBuffer.setLength(0)
                 currentWordTrace.setLength(0)
-                HarvestManager.addToSession(text, ctx, trace = trace.takeIf { it.isNotEmpty() && it != text })
+                HarvestManager.addToSession(
+                    text, ctx,
+                    trace = trace.takeIf { it.isNotEmpty() && it != text },
+                    v4Route = harvestRoute,
+                    prevWord = prevWord,
+                    prevPrevWord = prevPrevWord,
+                    commitChar = " ",
+                )
             }
         } else {
             val isPhantomSpaceActive = phantomSpace.determine(textWithSpace)
@@ -510,7 +600,19 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         // A raw editor (a terminal, inputType=NULL) exposes no composing region and no readable
         // text around the cursor, so the phantom-space bookkeeping below has nothing to work from.
         // Commit the word plainly rather than dropping it on the floor.
-        if (activeInfo.isRawInputEditor) return super.commitText(text)
+        if (activeInfo.isRawInputEditor) {
+            return super.commitText(text).also { committed ->
+                if (committed) {
+                    HarvestManager.addToSession(
+                        text,
+                        buildAppContext(),
+                        v4Route = HarvestRoute.GLIDE,
+                        commitChar = " ",
+                    )
+                }
+            }
+        }
+        val (prevWord, prevPrevWord) = getContextWords(null)
         val isPhantomSpaceActive = phantomSpace.determine(text, forceActive = true)
         phantomSpace.setActive(showComposingRegion = true)
         return if (isPhantomSpaceActive) {
@@ -519,6 +621,15 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
             super.commitText(text)
         }.also {
             updateLastCommitPosition()
+            if (it) {
+                HarvestManager.addToSession(
+                    text, buildAppContext(),
+                    v4Route = HarvestRoute.GLIDE,
+                    prevWord = prevWord,
+                    prevPrevWord = prevPrevWord,
+                    commitChar = " ",
+                )
+            }
         }
     }
 
@@ -536,7 +647,7 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         val mimeTypes = item.mimeTypes
         return when (item.type) {
             ItemType.TEXT -> {
-                commitText(item.text.toString()).also {
+                commitTextFromRoute(item.text.toString(), HarvestRoute.PASTE).also {
                     updateLastCommitPosition()
                 }
             }
@@ -572,6 +683,15 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
     fun deleteBackwards(unit: OperationUnit): Boolean {
         val content = activeContent
         lastCommitAppendedSpace = false
+        HarvestManager.recordEdit(
+            operation = when {
+                content.selection.isSelectionMode -> "SELECT_DELETE"
+                unit == OperationUnit.WORDS -> "BKSP_WORD"
+                else -> "BKSP"
+            },
+            count = if (content.selection.isSelectionMode) content.selection.length.coerceAtLeast(1) else 1,
+            left = content.currentWordText.toString(),
+        )
         if (unit == OperationUnit.CHARACTERS) {
             // Raw editors have no composing region, so our own buffers must track the deletion.
             rawHandleBackspace()
@@ -624,6 +744,11 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
     fun deleteForwards(unit: OperationUnit): Boolean {
         val content = activeContent
         lastCommitAppendedSpace = false
+        HarvestManager.recordEdit(
+            operation = if (content.selection.isSelectionMode) "SELECT_DELETE" else "DELETE_FORWARD",
+            count = if (content.selection.isSelectionMode) content.selection.length.coerceAtLeast(1) else 1,
+            left = content.currentWordText.toString(),
+        )
         autoSpace.setInactive()
         phantomSpace.setInactive()
         return if (content.selection.isSelectionMode) {

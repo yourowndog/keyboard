@@ -852,7 +852,10 @@ private fun SmartbarPhraseRow(modifier: Modifier = Modifier) {
                         .padding(horizontal = 4.dp, vertical = 4.dp)
                         .clip(RoundedCornerShape(8.dp))
                         .clickable {
-                            keyboardManager.commitCandidate(candidate)
+                            keyboardManager.commitCandidate(
+                                candidate,
+                                dev.patrickgold.florisboard.ime.nlp.HarvestRoute.BAR_PICK,
+                            )
                             nlpManager.clearPhraseCandidates()
                         },
                     contentAlignment = Alignment.Center,

@@ -113,7 +113,12 @@ fun CandidatesRow(modifier: Modifier = Modifier) {
                 modifier = candidateModifier,
                 candidate = candidate,
                 displayMode = displayMode,
-                onClick = { keyboardManager.commitCandidate(candidate) },
+                onClick = {
+                    keyboardManager.commitCandidate(
+                        candidate,
+                        dev.patrickgold.florisboard.ime.nlp.HarvestRoute.BAR_PICK,
+                    )
+                },
                 onLongPress = {
                     if (candidate.isEligibleForUserRemoval) {
                         nlpManager.removeSuggestion(subtypeManager.activeSubtype, candidate)

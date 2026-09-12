@@ -60,6 +60,7 @@ import dev.patrickgold.florisboard.ime.input.InputShiftState
 import dev.patrickgold.florisboard.ime.nlp.ClipboardSuggestionCandidate
 import dev.patrickgold.florisboard.ime.nlp.PunctuationRule
 import dev.patrickgold.florisboard.ime.nlp.SuggestionCandidate
+import dev.patrickgold.florisboard.ime.nlp.HarvestRoute
 import dev.patrickgold.florisboard.ime.onehanded.OneHandedMode
 import dev.patrickgold.florisboard.ime.popup.PopupMappingComponent
 import dev.patrickgold.florisboard.ime.text.composing.Composer
@@ -448,9 +449,17 @@ class KeyboardManager(
                 )
                 if (text.isNotBlank()) {
                     dev.patrickgold.florisboard.ime.nlp.HarvestManager.setSessionSource("VOICE")
-                    editorInstance.commitText(text)
-                    dev.patrickgold.florisboard.ime.nlp.HarvestManager.flushSession()
-                    dev.patrickgold.florisboard.ime.nlp.HarvestManager.setSessionSource("TYPING")
+                    dev.patrickgold.florisboard.ime.nlp.HarvestManager.beginVoice(
+                        audioRef = audioFile.nameWithoutExtension,
+                        transcriptKind = voiceManager.outputMode.value.name,
+                    )
+                    try {
+                        editorInstance.commitTextFromRoute(text, HarvestRoute.VOICE)
+                        dev.patrickgold.florisboard.ime.nlp.HarvestManager.flushSession()
+                    } finally {
+                        dev.patrickgold.florisboard.ime.nlp.HarvestManager.endVoice()
+                        dev.patrickgold.florisboard.ime.nlp.HarvestManager.setSessionSource("TYPING")
+                    }
                 }
                 foregroundTranscriptionFile = null
                 activeState.batchEdit {
@@ -858,13 +867,24 @@ class KeyboardManager(
         }
     }
 
-    fun commitCandidate(candidate: SuggestionCandidate) {
+    fun commitCandidate(
+        candidate: SuggestionCandidate,
+        harvestRoute: String = HarvestRoute.AUTO_APPLIED,
+    ) {
         scope.launch {
             candidate.sourceProvider?.notifySuggestionAccepted(subtypeManager.activeSubtype, candidate)
         }
         when (candidate) {
             is ClipboardSuggestionCandidate -> editorInstance.commitClipboardItem(candidate.clipboardItem)
-            else -> editorInstance.commitCompletion(candidate)
+            else -> editorInstance.commitCompletion(
+                candidate,
+                harvestRoute = harvestRoute,
+                barIndex = if (harvestRoute == HarvestRoute.BAR_PICK) {
+                    nlpManager.activeCandidates.indexOf(candidate).takeIf { it >= 0 }
+                } else {
+                    null
+                },
+            )
         }
     }
 

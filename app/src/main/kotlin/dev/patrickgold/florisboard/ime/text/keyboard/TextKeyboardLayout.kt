@@ -72,11 +72,17 @@ import dev.patrickgold.florisboard.ime.keyboard.KeyboardProfile
 import dev.patrickgold.florisboard.ime.keyboard.SpaceBarMode
 import dev.patrickgold.florisboard.ime.keyboard.geometry.FramePolicy
 import dev.patrickgold.florisboard.ime.keyboard.geometry.GeometryOrientation
+import dev.patrickgold.florisboard.ime.keyboard.geometry.LayoutFingerprint
+import dev.patrickgold.florisboard.ime.keyboard.geometry.OneHandedGeometry
+import dev.patrickgold.florisboard.ime.keyboard.geometry.SpatialCoordinateFrame
 import dev.patrickgold.florisboard.ime.keyboard.geometry.TextKeyboardGeometryBridge
 import dev.patrickgold.florisboard.ime.keyboard.geometry.rememberGeometryPreferences
+import dev.patrickgold.florisboard.ime.onehanded.OneHandedMode
 import dev.patrickgold.florisboard.ime.popup.ExceptionsForKeyCodes
 import dev.patrickgold.florisboard.ime.popup.PopupUiController
 import dev.patrickgold.florisboard.ime.popup.rememberPopupUiController
+import dev.patrickgold.florisboard.ime.nlp.HarvestManager
+import dev.patrickgold.florisboard.ime.nlp.HarvestTouch
 import dev.patrickgold.florisboard.ime.text.gestures.GlideTypingGesture
 import dev.patrickgold.florisboard.ime.text.gestures.SwipeAction
 import dev.patrickgold.florisboard.ime.text.gestures.SwipeGesture
@@ -137,6 +143,9 @@ fun TextKeyboardLayout(
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
     val glideTypingManager by context.glideTypingManager()
+    val oneHandedMode by prefs.keyboard.oneHandedMode.observeAsState()
+    val oneHandedModeEnabled by prefs.keyboard.oneHandedModeEnabled.observeAsState()
+    val oneHandedModeScaleFactor by prefs.keyboard.oneHandedModeScaleFactor.observeAsState()
 
     val keyboard = evaluator.keyboard as TextKeyboard
     val glideEnabledInternal by prefs.glide.enabled.observeAsState()
@@ -258,6 +267,20 @@ fun TextKeyboardLayout(
         } else {
             GeometryOrientation.PORTRAIT
         }
+        val oneHandedGeometry = if (oneHandedModeEnabled && geometryOrientation == GeometryOrientation.PORTRAIT) {
+            val scaleFactor = oneHandedModeScaleFactor / 100f
+            OneHandedGeometry(
+                side = oneHandedMode.name,
+                scaleFactor = scaleFactor,
+                offsetPx = if (oneHandedMode == OneHandedMode.END && scaleFactor > 0f) {
+                    keyboardWidth * (1f - scaleFactor) / scaleFactor
+                } else {
+                    0f
+                },
+            )
+        } else {
+            null
+        }
 
         // The whole geometry of this keyboard, solved once and written onto its keys.
         //
@@ -338,6 +361,21 @@ fun TextKeyboardLayout(
         SideEffect {
             if (glideEnabled && !isPreview && keyboard.mode == KeyboardMode.CHARACTERS) {
                 glideTypingManager.setLayout(keyboard.keys().asSequence().toList())
+            }
+            if (!isPreview && keyboard.mode == KeyboardMode.CHARACTERS) {
+                SpatialCoordinateFrame.from(keyboard.keys().asSequence().asIterable())?.let { frame ->
+                    controller.spatialFrame = frame
+                    HarvestManager.updateLayout(
+                        LayoutFingerprint.create(
+                            keyboard = keyboard,
+                            preferences = geometryPrefs,
+                            frame = frame,
+                            densityDpi = configuration.densityDpi,
+                            orientation = geometryOrientation,
+                            oneHanded = oneHandedGeometry,
+                        ),
+                    )
+                }
             }
         }
 
@@ -529,6 +567,7 @@ private class TextKeyboardLayoutController(
     private var initSelectionStart: Int = 0
     private var initSelectionEnd: Int = 0
     var isGliding by mutableStateOf(false)
+    var spatialFrame: SpatialCoordinateFrame? = null
 
     val glideTypingDetector = GlideTypingGesture.Detector(context)
     val glideDataForDrawing = mutableStateListOf<Pair<GlideTypingGesture.Detector.Position, Long>>()
@@ -689,6 +728,7 @@ private class TextKeyboardLayoutController(
         flogDebug(LogTopic.TEXT_KEYBOARD_VIEW) { "pointer=$pointer" }
 
         val key = keyboard.getKeyForPos(event.getX(pointer.index), event.getY(pointer.index))
+        pointer.downTimeMs = event.eventTime
         if (key != null && key.isEnabled) {
             key.computedDataOnDown = key.computedData
             pointer.pressedKeyInfo = inputEventDispatcher.sendDown(
@@ -783,9 +823,63 @@ private class TextKeyboardLayoutController(
         val initialKey = pointer.initialKey
         val activeKey = pointer.activeKey
         if (initialKey != null && activeKey != null) {
+            val popupSuitable = popupUiController.isSuitableForPopups(activeKey)
+            val popupData = if (popupSuitable) {
+                popupUiController.getActiveKeyData(activeKey)
+            } else {
+                null
+            }
+            val producedData = popupData ?: activeKey.computedData
+            val code = producedData.code
+            val keyCode = activeKey.computedData.code
+            val keyName = when (keyCode) {
+                KeyCode.DELETE -> "BKSP"
+                KeyCode.DELETE_WORD -> "BKSP_WORD"
+                KeyCode.SHIFT -> "SHIFT"
+                KeyCode.SPACE, KeyCode.CJK_SPACE -> "SPACE"
+                KeyCode.ENTER -> "ENTER"
+                else -> if (keyCode in KeyCode.Spec.CHARACTERS) {
+                    String(Character.toChars(keyCode))
+                } else {
+                    activeKey.computedData.label.ifEmpty { keyCode.toString() }
+                }
+            }
+            val willProduce = !pointer.hasTriggeredGestureMove && (!popupSuitable || popupData != null)
+            val character = when {
+                !willProduce -> null
+                code == KeyCode.SPACE || code == KeyCode.CJK_SPACE -> " "
+                code in KeyCode.Spec.CHARACTERS && code != KeyCode.ENTER -> String(Character.toChars(code))
+                else -> null
+            }
+            val x = event.getX(pointer.index)
+            val y = event.getY(pointer.index)
+            val isAlphaKey = keyCode in 'a'.code..'z'.code || keyCode in 'A'.code..'Z'.code
+            val spatial = if (isAlphaKey) {
+                spatialFrame?.resolveTouch(x, y) { _, _ -> activeKey }
+            } else {
+                null
+            }
+            HarvestManager.recordTouch(
+                HarvestTouch(
+                    character = character,
+                    key = keyName,
+                    xn = spatial?.xn,
+                    yn = spatial?.yn,
+                    dx = spatial?.dx,
+                    dy = spatial?.dy,
+                    px = (event.rawX + x - event.x).toInt(),
+                    py = (event.rawY + y - event.y).toInt(),
+                    durationMs = (event.eventTime - pointer.downTimeMs).coerceAtLeast(0L),
+                    source = when {
+                        popupData != null && popupData != activeKey.computedData -> "POPUP"
+                        pointer.hasTriggeredLongPress -> "LONGPRESS"
+                        else -> "TAP"
+                    },
+                ),
+            )
             activeKey.isPressed = false
-            if (popupUiController.isSuitableForPopups(activeKey)) {
-                val retData = popupUiController.getActiveKeyData(activeKey)
+            if (popupSuitable) {
+                val retData = popupData
                 if (retData != null && !pointer.hasTriggeredGestureMove) {
                     if (retData == activeKey.computedData) {
                         if (activeKey.computedData != activeKey.computedDataOnDown) {
@@ -1134,6 +1228,7 @@ private class TextKeyboardLayoutController(
         var hasTriggeredLongPress: Boolean = false
         var hasTriggeredMassSelection: Boolean = false
         var pressedKeyInfo: InputEventDispatcher.PressedKeyInfo? = null
+        var downTimeMs: Long = 0L
 
         override fun reset() {
             super.reset()
@@ -1143,6 +1238,7 @@ private class TextKeyboardLayoutController(
             hasTriggeredLongPress = false
             hasTriggeredMassSelection = false
             pressedKeyInfo = null
+            downTimeMs = 0L
         }
 
         override fun toString(): String {
