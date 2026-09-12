@@ -147,6 +147,8 @@ def parse_jsonl(stats):
             except json.JSONDecodeError:
                 stats["jsonl_bad_lines"] += 1
 
+    v4_slot_ids = {e.get("slot") for e in events
+                   if e.get("v") == 4 and e.get("type") == "WORD_SLOT" and e.get("slot")}
     reverted_ids = {e["undoes"] for e in events
                     if e.get("type") == "REVERTED" and e.get("undoes") is not None}
     pair_keys = set()   # (typed, final) already represented in eval_pairs
@@ -158,8 +160,72 @@ def parse_jsonl(stats):
         prev2 = e.get("prev2") if prev is not None else None  # stale-prev2 quirk
         return (prev.lower() if prev else None), (prev2.lower() if prev2 else None)
 
+    def v4_ctx(e):
+        previous = e.get("prev") or []
+        prev = previous[-1] if previous else None
+        prev2 = previous[-2] if len(previous) >= 2 else None
+        return (prev.lower() if isinstance(prev, str) else None,
+                prev2.lower() if isinstance(prev2, str) else None)
+
+    def v4_trace(e):
+        chars = []
+        for key in e.get("keys") or []:
+            if key.get("k") in ("BKSP", "BKSP_WORD"):
+                chars.append(BACKSPACE)
+                continue
+            char = key.get("c")
+            if isinstance(char, str) and len(char) == 1 and not char.isspace():
+                chars.append(char)
+        return "".join(chars)
+
     for e in events:
         etype = e.get("type")
+        if e.get("v") == 3 and e.get("slot") in v4_slot_ids:
+            stats["dual_write_v3_dropped"] += 1
+            continue
+        if e.get("v") == 4 and etype == "WORD_SLOT":
+            outcome = e.get("outcome") or {}
+            route = outcome.get("route")
+            final = outcome.get("final")
+            typed = outcome.get("autoFrom")
+            prev, prev2 = v4_ctx(e)
+            if route == "AUTO_APPLIED" and valid_word(typed or ""):
+                if outcome.get("reverted"):
+                    negatives.append({"typed": typed.lower(), "prev": prev,
+                                      "prev2": prev2, "src": "v4-reverted"})
+                elif valid_intended(final or "") and typed.lower() != final.lower() \
+                        and edit_filter_ok(typed, final):
+                    pairs.append({"typed": typed.lower(), "intended": final.lower(),
+                                  "prev": prev, "prev2": prev2, "src": "v4-auto"})
+                    pair_keys.add((typed.lower(), final.lower()))
+            elif route == "BAR_PICK" and valid_word(typed or "") \
+                    and valid_intended(final or ""):
+                if typed.lower() == final.lower():
+                    negatives.append({"typed": typed.lower(), "prev": prev,
+                                      "prev2": prev2, "src": "v4-bar-pick-original"})
+                elif edit_filter_ok(typed, final):
+                    pairs.append({"typed": typed.lower(), "intended": final.lower(),
+                                  "prev": prev, "prev2": prev2, "src": "v4-bar-pick"})
+                    pair_keys.add((typed.lower(), final.lower()))
+
+            for edit in reversed(e.get("edits") or []):
+                if edit.get("op") != "RETURN_EDIT":
+                    continue
+                before, after = edit.get("before"), edit.get("left")
+                if before and after and valid_word(before) and valid_word(after) \
+                        and before.lower() != after.lower() and edit_filter_ok(before, after):
+                    traces.append({"trace": before, "final": after, "src": "v4-return-edit"})
+                else:
+                    stats["manual_filtered"] += 1
+                break
+
+            trace = v4_trace(e)
+            if route not in ("VOICE", "PASTE", "GLIDE") and valid_intended(final or "") \
+                    and trace and (trace, final) not in trace_seen:
+                trace_seen.add((trace, final))
+                trace_rows.append((trace, final))
+            stats["v4_slots"] += 1
+            continue
         if etype == "SESSION_TEXT":
             text = (e.get("text") or "").strip()
             src = "V" if e.get("src") == "VOICE" else "T"

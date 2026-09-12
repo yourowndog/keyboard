@@ -16,9 +16,10 @@ back to app-private storage when necessary:
 - `usage_harvest.md`: human-readable legacy/current event log.
 - `usage_harvest.jsonl`: machine-readable structured event stream.
 
-The JSONL stream carries IDs and relationships useful for joining neural shadow,
-application, revert, and edit events. Prefer it for new machine analysis while
-retaining Markdown compatibility until the review tools are migrated.
+The JSONL stream dual-writes legacy schema-v3 events and schema-v4 `WORD_SLOT`
+records. V4 keeps the complete touch/edit/offer/outcome journey in one record;
+v3 remains schema-compatible for the existing review tools. New readers prefer a
+v4 slot when its `slot` join key also appears on a v3 mirror row.
 
 Repository copies live under `data/harvest/raw/`. Exact device captures first
 land in the ignored `data/harvest/inbox/`; capture never merges or line-deduplicates
@@ -27,9 +28,10 @@ the canonical corpus. Operational commands are documented in
 
 ## Sensitive fields
 
-Editor context includes password detection. Both Markdown and JSONL paths reject
-events when the supplied or current context is a password field. This is current
-implemented behavior, not merely a planned privacy fix.
+Editor context includes a single pre-assembly harvest guard. Markdown, v3 JSONL,
+and v4 JSONL reject events in password, visible-password, web-password,
+email-address, and web-email-address fields. This is implemented behavior, not
+merely a planned privacy fix.
 
 ## Event interpretation
 
@@ -45,6 +47,35 @@ Events are evidence, not labels that can always be trusted independently:
   register-aware classification.
 - Missing or ambiguous follow-up events remain unresolved; do not force-label
   them.
+
+## Training coverage and historical migration
+
+Schema v3 remains fully useful for language/register clustering, typed-versus-
+voice corpus weighting, autocorrect ranking/outcome labels, candidate lists that
+were actually logged, and the subset of edits represented by traces or explicit
+manual-edit events. Schema v4 additionally enables spatial-personalization,
+touch timing, stable per-layout conditioning, complete backspace/retype journeys,
+reliable smartbar-pick labels, input-attachment boundaries, and continuous
+candidate reachability measurement.
+
+Historical rows cannot reconstruct touch coordinates, touch duration, layout
+fingerprints, or unwired smartbar taps. The migration therefore leaves those
+features missing; it never substitutes zeroes.
+
+Create new canonical training inputs without modifying the raw corpus:
+
+```bash
+python3 tools/harvesting/migrate_harvest_v4.py \
+  data/harvest/raw/usage_harvest.jsonl \
+  data/harvest/derived/word_slots.v4.jsonl
+```
+
+The companion `word_slots.v4.sessions.jsonl` retains v3 `SESSION_TEXT` language
+context. The converter preserves source lines/event IDs, folds v3
+`AUTO_APPLIED`/`REVERTED`/`SUGGESTIONS_SHOWN` evidence into word slots, prefers
+native v4 during mixed-schema deduplication, and fails if v3 word-count
+preservation does not balance. `training/extract.py` also reads mixed v3/v4
+directly and suppresses joined v3 mirrors.
 
 ## Review boundary
 
