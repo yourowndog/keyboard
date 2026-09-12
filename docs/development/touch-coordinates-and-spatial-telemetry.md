@@ -141,7 +141,11 @@ This representation remains invariant regardless of screen DPI, system navigatio
 
 ---
 
-## 4. Known Hardening Issue: Swipe Sensitivity & Layout Expansion
+## 4. Spatial Frame Hardening
+
+> Source status: implemented and unit-tested 2026-09-11
+> Runtime status: device-validated successfully by Sam on 2026-09-12 across all
+> tested keyboard-layout configurations and permutations
 
 ### The Observed Defect
 Swipe/glide typing currently works reliably **only** when:
@@ -151,15 +155,38 @@ Swipe/glide typing currently works reliably **only** when:
 
 When mod rows are expanded or key heights change significantly, gesture recognition accuracy degrades or fails.
 
-### Root Causes in the Referenced Files
-1. **Vertical Aspect Distortion:**
-   `FutoGlideTypingClassifier.kt` normalizes `cy` using `boardH = maxOf(letters.bottom) - minOf(letters.top)`. If the alpha rows are compressed or stretched relative to horizontal widths due to solver adjustments (`KeyboardGeometrySolver.kt`), gesture velocity and trajectory angle thresholds skew relative to training data.
-2. **Hardcoded Distance Thresholds:**
-   In `StatisticalGlideTypingClassifier.kt` (line 160):
-   ```kotlin
-   distanceThresholdSquared = (keyViews.first().visibleBounds.width / 4).toInt()
-   distanceThresholdSquared *= distanceThresholdSquared
-   ```
-   Thresholds depend on the first key's width and do not account for non-uniform vertical stretching, mod row insertion, or non-medium row heights.
-3. **Implication for Telemetry & Solver Hardening:**
-   The files governing geometry solving (`KeyboardGeometrySolver.kt`, `KeyboardGeometryPolicy.kt`), sizing (`FlorisImeSizing.kt`), and gesture classification (`FutoGlideTypingClassifier.kt`, `TextKeyboardLayout.kt`) need systematic hardening. Spatial models for both tapping and swiping must be anchored to canonical, aspect-corrected coordinates rather than uncompensated screen-space dimensions.
+### Implemented correction
+
+`SpatialCoordinateFrame` is now the authority for the alpha-only bounds used by
+both glide classifiers and the Phase 0.3 tap-telemetry seam. It exposes two
+deliberately distinct projections:
+
+- `normalize()` produces the independently normalized 0–1 `xn`/`yn` required
+  by harvest v4 and by FUTO's pretrained model. FUTO's learned reference rows
+  are at 0.167/0.500/0.833, so feeding it an isotropic Y coordinate would break
+  the model contract rather than harden it.
+- `toIsotropic()` measures both axes in alpha-block widths. Consumers doing
+  Euclidean distance, velocity, or angle calculations must use this projection
+  (or raw pixels with geometry-derived thresholds), never assume the 0–1
+  rectangle is physically square.
+
+The Statistical classifier now:
+
+1. maps cached gestures into the alpha block's real left/top/width/height,
+   instead of scaling the whole keyboard from an assumed `(0, 0)` origin;
+2. fingerprints actual letter-key rectangles, so in-place bounds mutations
+   cannot make `setLayout()` incorrectly skip a geometry refresh; and
+3. derives its point-sampling threshold from the geometric mean of the median
+   alpha-key width and height instead of the first key's width.
+
+`LayoutFingerprint` hashes the solved letter rectangles plus row roles,
+geometry preferences, number-row presence, top/bottom mod-row counts,
+one-handed geometry, orientation, and DPI. `resolveTouch()` returns `xn`, `yn`,
+`dx`, `dy`, and the key selected by the existing keyboard hit tester. Phase 0.3
+can consume both without duplicating coordinate math.
+
+Unit tests prove 2% frame stability across medium/collapsed, tall+number-row,
+and medium/three-utility-row configurations, with a distinct fingerprint for
+each. The source correction is complete; the observed glide behavior above
+must still be repeated on a device before this section can claim runtime
+closure.

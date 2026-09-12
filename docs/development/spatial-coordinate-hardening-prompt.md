@@ -6,6 +6,10 @@ ranking, dictionary work, or the harvest schema beyond the coordinate fields.
 **Priority: this blocks Phase 0.** It is not a Phase 3 item and must not be
 scheduled like one. Read the next section before anything else.
 
+**Status (2026-09-12): COMPLETE.** Source implementation and unit coverage passed;
+Sam validated the deployed build across every tested keyboard-layout configuration
+and permutation, including expanded rows and non-medium heights.
+
 ---
 
 ## The job in one sentence
@@ -100,19 +104,14 @@ just delay it, it silently degrades it.
 
 ## The two defects to fix
 
-### Defect 1 — vertical aspect distortion
+### Defect 1 — mixed coordinate contracts
 
-`FutoGlideTypingClassifier.kt` normalizes `cy` using
-`boardH = maxOf(letters.bottom) - minOf(letters.top)`. When
-`KeyboardGeometrySolver.kt` compresses or stretches the alpha rows relative to
-horizontal key widths, a normalized vertical distance stops meaning what it
-meant when the gesture thresholds were tuned. Trajectory angle and velocity
-thresholds skew accordingly.
-
-The frame itself is right — alpha-only bounding box is correct and immune to
-mod rows. What is missing is **aspect correction**: normalized coordinates must
-either be aspect-corrected before threshold comparison, or thresholds must be
-scaled by the current aspect ratio.
+The alpha-only bounding box is correct and immune to mod rows, but two
+projections had not been named separately. Harvest v4 and FUTO's pretrained
+model require independently normalized 0–1 axes; physical distance/angle code
+requires an isotropic projection with a shared denominator. The implementation
+must expose both and prevent one from being mistaken for the other. FUTO must
+retain its learned 0.167/0.500/0.833 row coordinates.
 
 ### Defect 2 — hardcoded distance threshold
 
@@ -123,17 +122,20 @@ distanceThresholdSquared *= distanceThresholdSquared
 ```
 
 Derived from one key's width, with no account for non-uniform vertical
-stretching, mod-row insertion, or non-medium row heights. Must become a
-function of the actual current geometry.
+stretching, mod-row insertion, or non-medium row heights. Cached Statistical
+paths were also scaled against the whole keyboard from `(0,0)`, and mutable key
+bounds could make its layout refresh return early. All three must become
+functions of the actual current alpha geometry.
 
 ---
 
 ## What to deliver
 
 1. **A single canonical coordinate frame** used by both glide classification and
-   tap telemetry. Alpha-key bounding box per `FutoGlideTypingClassifier.kt:230-256`,
-   with aspect correction applied consistently.
-2. **Aspect-corrected thresholds** replacing both hardcoded constants.
+   tap telemetry. It exposes schema/FUTO 0–1 normalization and a separate
+   isotropic projection for physical calculations.
+2. **Geometry-derived Statistical thresholds and cached-path transforms** using
+   the alpha frame's real dimensions and origin.
 3. **A `LayoutFingerprint`** — a stable hash over everything that moves keys:
    alpha row count, per-row height multipliers, padding, gaps, **number-row
    presence**, mod-row stack counts (top and bottom), one-handed offset,
@@ -169,10 +171,10 @@ function of the actual current geometry.
 
 ## Definition of done
 
-- Both defects in §4 of the telemetry doc are closed, and that document is
-  updated to say so rather than describing them as open.
+- Source-side defects in §4 of the telemetry doc are closed, and that document
+  records the remaining runtime validation explicitly.
 - Glide typing works at expanded mod rows and non-medium key heights — verified
   on device, with the configurations tested named explicitly.
 - The key-resolution helper and `LayoutFingerprint` exist, are tested, and match
   the harvest v4 spec §5/§7 field-for-field.
-- `ROADMAP.md` Phase 3.3b is marked done with the device validation recorded.
+- `ROADMAP.md` Phase 0.0 is marked complete with the 2026-09-12 operator validation.

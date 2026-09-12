@@ -19,8 +19,7 @@ package dev.patrickgold.florisboard.ime.text.gestures
 import android.content.Context
 import android.util.Log
 import dev.patrickgold.florisboard.ime.core.Subtype
-import dev.patrickgold.florisboard.ime.keyboard.KeyData
-import dev.patrickgold.florisboard.ime.text.key.KeyCode
+import dev.patrickgold.florisboard.ime.keyboard.geometry.SpatialCoordinateFrame
 import dev.patrickgold.florisboard.ime.text.keyboard.TextKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -29,9 +28,6 @@ import kotlinx.coroutines.launch
 import org.futo.ml.inference.SwipeDecoder
 import org.futo.ml.inference.VocabTrie
 import java.io.File
-import kotlin.math.max
-
-private fun TextKey.baseCode(): Int = (data as? KeyData)?.code ?: KeyCode.UNSPECIFIED
 
 /**
  * Glide typing backed by FUTO's pretrained swipe models, driven through FUTO's own
@@ -104,10 +100,7 @@ class FutoGlideTypingClassifier(private val context: Context) : GlideTypingClass
     private val ptsY = ArrayList<Float>(256)
     private val ptsT = ArrayList<Long>(256)
 
-    private var boardLeft = 0f
-    private var boardTop = 0f
-    private var boardW = 1f
-    private var boardH = 1f
+    private var coordinateFrame: SpatialCoordinateFrame? = null
 
     val ready: Boolean
         get() = synchronized(lock) { decoder != null && layoutApplied }
@@ -228,40 +221,35 @@ class FutoGlideTypingClassifier(private val context: Context) : GlideTypingClass
     // ---------------------------------------------------------------- geometry
 
     override fun setLayout(keyViews: List<TextKey>, subtype: Subtype) {
-        val byChar = HashMap<Char, TextKey>()
-        for (k in keyViews) {
-            val c = k.baseCode()
-            if (c in 'a'.code..'z'.code) byChar[c.toChar()] = k
-        }
-        // The encoder needs a centre for every letter it might emit; a partial layout would
-        // misplace the ones that are missing.
-        if (byChar.size < LETTERS.length) {
-            Log.d(TAG, "layout ignored: only ${byChar.size}/${LETTERS.length} letter keys")
+        val frame = SpatialCoordinateFrame.from(keyViews)
+        if (frame == null) {
+            Log.d(TAG, "layout ignored: a complete 26-letter spatial frame is unavailable")
             return
         }
-
-        val letters = byChar.values
-        boardLeft = letters.minOf { it.visibleBounds.left }
-        boardTop = letters.minOf { it.visibleBounds.top }
-        boardW = max(1f, letters.maxOf { it.visibleBounds.right } - boardLeft)
-        boardH = max(1f, letters.maxOf { it.visibleBounds.bottom } - boardTop)
 
         val cx = FloatArray(LETTERS.length)
         val cy = FloatArray(LETTERS.length)
         for ((i, ch) in LETTERS.withIndex()) {
-            val k = byChar.getValue(ch)
-            cx[i] = ((k.visibleBounds.left + k.visibleBounds.right) / 2f - boardLeft) / boardW
-            cy[i] = ((k.visibleBounds.top + k.visibleBounds.bottom) / 2f - boardTop) / boardH
+            val center = frame.normalizedCenter(ch) ?: return
+            cx[i] = center.x
+            cy[i] = center.y
         }
 
         synchronized(lock) {
+            // Update the physical frame even when the model-space centres are unchanged. Uniform
+            // row scaling keeps centres at 0.167/0.500/0.833 but changes how raw points reach them.
+            coordinateFrame = frame
             val unchanged = keyX?.contentEquals(cx) == true && keyY?.contentEquals(cy) == true
             if (unchanged && layoutApplied) return
             keyX = cx
             keyY = cy
             layoutApplied = false
         }
-        Log.d(TAG, "layout set: ${LETTERS.length} keys, board ${boardW.toInt()}x${boardH.toInt()}px")
+        Log.d(
+            TAG,
+            "layout set: ${LETTERS.length} keys, alpha ${frame.alphaW.toInt()}x" +
+                "${frame.alphaH.toInt()}px aspect=${"%.3f".format(frame.aspect)}",
+        )
 
         ensureDecoderAsync()
         applyLayout()
@@ -290,7 +278,12 @@ class FutoGlideTypingClassifier(private val context: Context) : GlideTypingClass
     }
 
     override fun getSuggestions(maxSuggestionCount: Int, gestureCompleted: Boolean): List<String> {
-        val engine = synchronized(lock) { if (layoutApplied) decoder else null } ?: return emptyList()
+        val state = synchronized(lock) {
+            val engine = if (layoutApplied) decoder else null
+            val frame = coordinateFrame
+            if (engine == null || frame == null) null else engine to frame
+        } ?: return emptyList()
+        val (engine, frame) = state
 
         val n = ptsX.size
         if (n < 2) return emptyList()
@@ -303,8 +296,9 @@ class FutoGlideTypingClassifier(private val context: Context) : GlideTypingClass
         val t = FloatArray(n)
         val t0 = ptsT[0]
         for (i in 0 until n) {
-            x[i] = ((ptsX[i] - boardLeft) / boardW).coerceIn(0f, 1f)
-            y[i] = ((ptsY[i] - boardTop) / boardH).coerceIn(0f, 1f)
+            val normalized = frame.normalize(ptsX[i], ptsY[i])
+            x[i] = normalized.x.coerceIn(0f, 1f)
+            y[i] = normalized.y.coerceIn(0f, 1f)
             t[i] = (ptsT[i] - t0).toFloat()
         }
 

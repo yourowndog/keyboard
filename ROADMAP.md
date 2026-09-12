@@ -127,17 +127,19 @@ That document is the contract; this is the summary.
 Deadline is real and unrecoverable: every day spent on other phases is a day of
 typing recorded in a format that cannot answer the questions Phases 3–5 ask.
 
-**0.0 Coordinate-frame hardening (blocks 0.3).** Runs first, in its own session
---- see `docs/development/spatial-coordinate-hardening-prompt.md`. The frame is
-currently wrong in two documented ways, and both consumers read it: glide typing
-degrades today, and tap telemetry would be corrupted the moment 0.3 is wired.
+**0.0 Coordinate-frame hardening (blocks 0.3) — COMPLETE.** Source implementation
+and unit coverage landed on 2026-09-11; Sam validated the deployed build on
+2026-09-12 across every tested keyboard-layout configuration and permutation,
+including expanded utility rows, number-row changes, and non-medium alpha
+heights. See
+`docs/development/spatial-coordinate-hardening-prompt.md`. The shared frame,
+geometry-aware Statistical thresholds, `LayoutFingerprint`, and touch resolver
+now exist and the device gate passed.
 Coordinates are the one harvest field that cannot be repaired retroactively --
 the distortion is a function of the layout configuration at the instant of the
 tap, which is precisely what the broken frame fails to record. Logging first
 would not buy early data, it would manufacture a second poisoned corpus while
-burning the calendar time this phase is racing. Delivers the canonical frame,
-aspect-corrected thresholds, `LayoutFingerprint`, and the key-resolution helper
-that 0.3 consumes.
+burning the calendar time this phase is racing.
 
 **0.1 Wire the dead APIs.** `HarvestManager.kt` already defines `logPicked`,
 `logIntent`, `logNoSuggestion`, `logMultiAttempt`, `logSuggestionsIgnored`,
@@ -438,6 +440,7 @@ Recorded so these stop consuming attention:
    second, both inside Phase 0. Tailnet-only, no provider keys in
    `BuildConfig`.
 8. **Coordinate-frame hardening owner.** Promoted to **Phase 0.0** and scoped
-   as its own session --- it blocks 0.3. See
-   `docs/development/spatial-coordinate-hardening-prompt.md`. Needs an owner
-   before Phase 0 instrumentation can start.
+   as its own session --- it blocks 0.3. Source implementation and unit coverage
+   were completed on 2026-09-11; expanded-row/non-medium-height device
+   validation remains. See
+   `docs/development/spatial-coordinate-hardening-prompt.md`.

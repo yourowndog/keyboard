@@ -22,6 +22,7 @@ import androidx.collection.SparseArrayCompat
 import androidx.collection.set
 import dev.patrickgold.florisboard.ime.core.Subtype
 import dev.patrickgold.florisboard.ime.keyboard.KeyData
+import dev.patrickgold.florisboard.ime.keyboard.geometry.SpatialCoordinateFrame
 import dev.patrickgold.florisboard.ime.text.key.KeyCode
 import dev.patrickgold.florisboard.ime.text.keyboard.TextKey
 import dev.patrickgold.florisboard.nlpManager
@@ -61,14 +62,14 @@ class StatisticalGlideTypingClassifier(context: Context) : GlideTypingClassifier
         get() = currentSubtype == layoutSubtype && wordDataSubtype == layoutSubtype && wordDataSubtype != null
     private val prunerCache = LruCache<Subtype, Pruner>(PRUNER_CACHE_SIZE)
     
-    // Keyboard dimensions for scaling precomputed gestures
-    private var keyboardWidth: Float = 1.0f
-    private var keyboardHeight: Float = 1.0f
+    private var coordinateFrame: SpatialCoordinateFrame? = null
+    private var layoutGeometrySignature: String? = null
+    private var representativeKeyRadius: Float = 1.0f
 
     /**
      * The minimum distance between points to be added to a gesture.
      */
-    private var distanceThresholdSquared = 0
+    private var distanceThresholdSquared = 0f
     
     init {
         // Load precomputed gestures in background
@@ -130,41 +131,29 @@ class StatisticalGlideTypingClassifier(context: Context) : GlideTypingClassifier
 
     override fun setLayout(keyViews: List<TextKey>, subtype: Subtype) {
         setWordData(subtype)
-        // stop duplicate calls
-        if (layoutSubtype == subtype && keys == keyViews) {
+        val frame = SpatialCoordinateFrame.from(keyViews) ?: return
+        val geometryChanged = layoutGeometrySignature != frame.geometrySignature
+        // Key bounds mutate in place, so comparing the TextKey list itself cannot detect a relayout.
+        if (layoutSubtype == subtype && !geometryChanged) {
             return
         }
 
-        // if only layout changed but not subtype
-        val layoutChanged = layoutSubtype == subtype
-
         keysByCharacter.clear()
         keys.clear()
-        
-        // Calculate keyboard dimensions for scaling precomputed gestures
-        if (keyViews.isNotEmpty()) {
-            val minX = keyViews.minOf { it.visibleBounds.left }
-            val maxX = keyViews.maxOf { it.visibleBounds.right }
-            val minY = keyViews.minOf { it.visibleBounds.top }
-            val maxY = keyViews.maxOf { it.visibleBounds.bottom }
-            
-            keyboardWidth = maxX - minX
-            keyboardHeight = maxY - minY
-        }
-        
+
         keyViews.forEach {
             keysByCharacter[it.baseCode()] = it
             keys.add(it)
         }
+        coordinateFrame = frame
+        layoutGeometrySignature = frame.geometrySignature
+        representativeKeyRadius = min(frame.representativeKeyWidth, frame.representativeKeyHeight)
         layoutSubtype = subtype
-        distanceThresholdSquared = (keyViews.first().visibleBounds.width / 4).toInt()
-        distanceThresholdSquared *= distanceThresholdSquared
+        distanceThresholdSquared = frame.samplingDistanceThresholdSquared()
+        lruSuggestionCache.evictAll()
 
-        if (
-            (wordDataSubtype == layoutSubtype)
-            || layoutChanged // should force a re-initialize
-        ) {
-            initializePruner(layoutChanged)
+        if (wordDataSubtype == layoutSubtype) {
+            initializePruner(geometryChanged)
         }
     }
 
@@ -229,8 +218,8 @@ class StatisticalGlideTypingClassifier(context: Context) : GlideTypingClassifier
         
         val candidates = arrayListOf<String>()
         val candidateWeights = arrayListOf<Float>()
-        val key = keys.firstOrNull() ?: return listOf()
-        val radius = min(key.visibleBounds.height, key.visibleBounds.width)
+        val frame = coordinateFrame ?: return emptyList()
+        val radius = representativeKeyRadius
         val gestureLength = gesture.getLength()
         
         // === NEW SIMPLE PRUNING ===
@@ -277,7 +266,7 @@ class StatisticalGlideTypingClassifier(context: Context) : GlideTypingClassifier
             val word = remainingWords[i]
             
             // Try to get precomputed gestures first (FAST PATH)
-            val idealGestures = precomputedGestures.getScaledGestures(word, keyboardWidth, keyboardHeight)
+            val idealGestures = precomputedGestures.getScaledGestures(word, frame)
                 ?.also { precomputedHits++ }
                 ?: run {
                     runtimeGenerations++

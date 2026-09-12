@@ -324,23 +324,27 @@ Using the same frame as the glide classifier is deliberate: tap and glide
 telemetry become directly comparable, and any future fix to the frame improves
 both at once.
 
-### 7.2 The known distortion, which is a live bug
+### 7.2 Spatial-frame hardening status
 
-`touch-coordinates-and-spatial-telemetry.md` §4 documents that glide typing
-degrades when key heights change or mod rows are expanded. Two named causes:
+The source-side prerequisite was implemented on 2026-09-11. A shared
+`SpatialCoordinateFrame` now owns the alpha-only bounds, schema normalization,
+isotropic projection, and key-local touch resolution. `LayoutFingerprint`
+provides the §5 fields and hashes actual solved alpha-key rectangles plus the
+configuration inputs that produced them.
 
-1. **Vertical aspect distortion.** `boardH` is derived from the alpha rows, so
-   when `KeyboardGeometrySolver.kt` compresses or stretches them, a normalized
-   vertical distance stops meaning what it meant at training time.
-2. **Hardcoded thresholds.** `StatisticalGlideTypingClassifier.kt:160` derives
-   `distanceThresholdSquared` from the *first key's width*, with no correction
-   for non-uniform vertical stretching or mod-row insertion.
+The 0–1 `xn`/`yn` fields remain independently normalized by design. They are the
+harvest contract and the input contract of FUTO's pretrained model. Code that
+computes physical distances or angles uses the frame's isotropic projection or
+raw pixels with geometry-derived thresholds; it must not treat `[0,1]²` as a
+physically square keyboard.
 
-This is the same defect that would corrupt tap telemetry. Your swipe-typing
-flakiness and the spatial-autocorrect problem share one root cause. Logging
-`aspect` and `fp` does not fix it, but it makes it measurable and lets training
-compensate; the structural fix belongs with the geometry hardening work and
-should be scheduled as one job covering both.
+Statistical glide now scales and translates cached paths into the live alpha
+frame, refreshes when mutable key bounds change, and derives its sampling
+threshold from both representative key dimensions. Unit tests cover the three
+§15 configurations and distinct fingerprints. Sam validated the deployed build
+on 2026-09-12 across every tested keyboard-layout configuration and permutation,
+including expanded rows and non-medium heights. Phase 0.0 is complete and Phase
+0.3 may use the frame/helper.
 
 ---
 

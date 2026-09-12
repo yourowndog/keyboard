@@ -33,6 +33,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -154,10 +155,6 @@ fun TextKeyboardLayout(
 
     val controller = remember { TextKeyboardLayoutController(context) }.also {
         it.keyboard = keyboard
-        if (glideEnabled && !isPreview && keyboard.mode == KeyboardMode.CHARACTERS) {
-            val keys = keyboard.keys().asSequence().toList()
-            glideTypingManager.setLayout(keys)
-        }
     }
     val touchEventChannel = remember { Channel<MotionEvent>(64) }
 
@@ -331,6 +328,17 @@ fun TextKeyboardLayout(
                 }
             }
             reference
+        }
+
+        // Bounds are mutable and are stamped inside the geometry block above. Configure glide in
+        // a post-commit side effect so it cannot observe the previous composition's rectangles (or
+        // the all-zero construction defaults on first composition). This also runs after each
+        // committed geometry-preference change; classifiers reject an unchanged spatial frame by
+        // its geometry signature.
+        SideEffect {
+            if (glideEnabled && !isPreview && keyboard.mode == KeyboardMode.CHARACTERS) {
+                glideTypingManager.setLayout(keyboard.keys().asSequence().toList())
+            }
         }
 
         val popupUiController = rememberPopupUiController(
