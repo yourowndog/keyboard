@@ -25,7 +25,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil3.compose.AsyncImage
+import androidx.compose.ui.draw.paint
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import coil3.compose.rememberAsyncImagePainter
 import coil3.request.ImageRequest
 import coil3.request.allowHardware
 import org.florisboard.lib.snygg.SnyggQueryAttributes
@@ -79,29 +82,41 @@ fun SnyggBox(
             }
             else -> null
         }
+        val painter = if (imagePath != null) {
+            rememberAsyncImagePainter(
+                // https://github.com/coil-kt/coil/issues/159
+                model = ImageRequest.Builder(context)
+                    .data(imagePath)
+                    .allowHardware(false) // slower, but hey at least it doesn't crash out of the blue
+                    .build(),
+            )
+        } else null
+
         Box(
             modifier = modifier
                 .snyggMargin(style)
                 .snyggShadow(style)
                 .snyggBorder(style)
                 .snyggBackground(style, allowClip = allowClip)
+                .then(
+                    if (painter != null) {
+                        Modifier.paint(
+                            painter = painter,
+                            contentScale = style.contentScale(),
+                        ).then(
+                            if (backgroundImageDescription != null) {
+                                Modifier.semantics {
+                                    contentDescription = backgroundImageDescription
+                                }
+                            } else Modifier
+                        )
+                    } else Modifier
+                )
                 .then(clickAndSemanticsModifier)
                 .snyggPadding(style),
             contentAlignment = contentAlignment,
             propagateMinConstraints = propagateMinConstraints,
         ) {
-            if (imagePath != null) {
-                AsyncImage(
-                    modifier = Modifier.matchParentSize(),
-                    // https://github.com/coil-kt/coil/issues/159
-                    model = ImageRequest.Builder(context)
-                        .data(imagePath)
-                        .allowHardware(false) // slower, but hey at least it doesn't crash out of the blue
-                        .build(),
-                    contentScale = style.contentScale(),
-                    contentDescription = backgroundImageDescription,
-                )
-            }
             content()
         }
     }

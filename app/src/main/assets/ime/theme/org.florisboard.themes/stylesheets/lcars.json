@@ -28,9 +28,13 @@
     "--pill-shape": "rounded-corner(24dp, 24dp, 24dp, 24dp)"
   },
   "window": {
-    "background": "var(--background)",
+    "background": "#0B0D1380",
     "foreground": "var(--on-background)",
     "clip": "no"
+  },
+  "keyboard-chassis": {
+    "background-image": "url('assets://ime/theme/com.brokentooth.lcars/images/rail.png')",
+    "padding": "0dp 0dp 20dp 48dp"
   },
   "key": {
     "background": "var(--surface)",
