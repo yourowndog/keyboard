@@ -86,6 +86,8 @@ loop: fit Sam's error model → synthesize training data → train ranker → ev
 | Script | Purpose | Location |
 |---|---|---|
 | `autocorrect_trace.py` | Frozen offline replay for autocorrect forensics | `tools/autocorrect/` |
+| `evaluate.py` | Offline autocorrect/suggestion evaluation harness (exact-word, typo, ranking, rejection, punctuation, corpus health); emits machine-readable JSON + committed baseline | `tools/autocorrect/` |
+| `evaluate-baseline.json` | Committed baseline summary from `evaluate.py` (compact) for regression comparison | `tools/autocorrect/` |
 | `utils/*` | Older upstream dictionary/config generators (not active workflow) | `utils/` |
 
 ---
