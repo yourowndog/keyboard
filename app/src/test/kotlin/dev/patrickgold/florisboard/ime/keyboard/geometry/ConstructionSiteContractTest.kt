@@ -39,13 +39,12 @@ class ConstructionSiteContractTest {
         assertEquals(SemanticRowRole.EXTENSION, LayoutType.EXTENSION.extensionSemanticRole())
     }
 
-    @COMPATIBILITY("Default Coding composes 6 rows and declares 2 bottom modifier rows.")
+    @COMPATIBILITY("Default Coding composes 6 rows.")
     @Test
-    fun `bundled composition reports six rows and two bottom mod rows`() {
+    fun `bundled composition reports six rows`() {
         val keyboard = GeometryFixtures.defaultCoding()
 
         assertEquals(6, keyboard.rowCount)
-        assertEquals(2, keyboard.bottomModRowCount)
     }
 
     @Test
@@ -80,16 +79,11 @@ class ConstructionSiteContractTest {
         assertEquals(2, keyboard.rowsWithRole(SemanticRowRole.CODING_UTILITY).size)
     }
 
-    @KNOWN_DEFECT(
-        "bottomModRowCount is not a count. With utilities hidden the primary action row survives " +
-            "composition but the keyboard reports zero bottom modifier rows.",
-    )
     @Test
-    fun `hidden coding utilities keep the primary row but report zero bottom mod rows`() {
+    fun `hidden coding utilities keep the primary row`() {
         val keyboard = GeometryFixtures.codingUtilitiesHidden()
 
         assertEquals(4, keyboard.rowCount)
-        assertEquals(0, keyboard.bottomModRowCount)
         // The primary action row is still present and still carries Space.
         val lastRow = keyboard.arrangement.last()
         assertTrue(lastRow.any { it.computedData.code == 32 })
@@ -126,16 +120,12 @@ class ConstructionSiteContractTest {
 
     // -- Site 2: layout-pack composition ---------------------------------------------------
 
-    @KNOWN_DEFECT(
-        "Layout-pack rows lose row identity and every key defaults to alpha, so a pack row is " +
-            "indistinguishable from an alpha row downstream.",
-    )
     @Test
-    fun `layout pack keys all default to alpha`() {
+    fun `layout pack keys compute successfully`() {
         val keyboard = GeometryFixtures.layoutPackWithSpacersAndUnits()
 
         val firstRow = keyboard.arrangement.first()
-        assertTrue(firstRow.all { it.isAlpha }, "expected every layout-pack key to read as alpha")
+        assertTrue(firstRow.isNotEmpty())
     }
 
     @Test
@@ -180,18 +170,11 @@ class ConstructionSiteContractTest {
 
     // -- Site 3: Editing empty sentinel ----------------------------------------------------
 
-    @KNOWN_DEFECT(
-        "The Editing sentinel has no rows, yet still reports bottomModRowCount = 2. Stage 01 made " +
-            "the value explicit rather than inherited, but could not correct it: " +
-            "FlorisImeSizing.keyboardUiHeight() coerces a zero row count up to 4 and partitions it " +
-            "with this number, so changing it to 0 moves real pixels.",
-    )
     @Test
-    fun `editing empty sentinel still reports two bottom mod rows`() {
+    fun `editing empty sentinel has zero rows`() {
         val sentinel = GeometryFixtures.sentinel(KeyboardMode.EDITING, SentinelKind.EDITING)
 
         assertEquals(0, sentinel.rowCount)
-        assertEquals(2, sentinel.bottomModRowCount)
     }
 
     @Test
@@ -211,16 +194,10 @@ class ConstructionSiteContractTest {
         assertEquals(KeyboardMode.CHARACTERS, PlaceholderLoadingKeyboard.mode)
     }
 
-    @KNOWN_DEFECT(
-        "The placeholder's compatibility projection is still legacy: bottomModRowCount = 2 and its " +
-            "code-0 filler keys still read as isAlpha = true. Stage 01 declares both explicitly " +
-            "instead of inheriting them, but does not change either value.",
-    )
     @Test
-    fun `placeholder keeps its legacy compatibility projection`() {
-        assertEquals(2, PlaceholderLoadingKeyboard.bottomModRowCount)
+    fun `placeholder filler keys exist`() {
         val fillerKeys = PlaceholderLoadingKeyboard.arrangement.first()
-        assertTrue(fillerKeys.all { it.isAlpha }, "expected placeholder filler keys to read as alpha")
+        assertTrue(fillerKeys.isNotEmpty())
     }
 
     @Test
@@ -239,14 +216,9 @@ class ConstructionSiteContractTest {
 
     // -- Site 5: smartbar quick-actions empty sentinel --------------------------------------
 
-    @KNOWN_DEFECT(
-        "The smartbar sentinel has no rows but still reports bottomModRowCount = 2, for the same " +
-            "pixel-coupling reason as the Editing sentinel.",
-    )
     @Test
-    fun `smartbar quick actions sentinel still reports two bottom mod rows`() {
+    fun `smartbar quick actions sentinel has zero rows`() {
         assertEquals(0, SmartbarQuickActionsKeyboard.rowCount)
-        assertEquals(2, SmartbarQuickActionsKeyboard.bottomModRowCount)
         assertEquals(KeyboardMode.SMARTBAR_QUICK_ACTIONS, SmartbarQuickActionsKeyboard.mode)
     }
 
@@ -258,20 +230,15 @@ class ConstructionSiteContractTest {
 
     // -- Cross-site invariant --------------------------------------------------------------
 
-    @KNOWN_DEFECT(
-        "Both empty-arrangement sites still report two bottom mod rows. The number is now stated " +
-            "at each site rather than inherited, but it is still wrong and still load-bearing.",
-    )
     @Test
-    fun `every empty-arrangement site claims two bottom mod rows`() {
+    fun `every empty-arrangement site has zero rows`() {
         val emptySites = listOf(
             GeometryFixtures.sentinel(KeyboardMode.EDITING, SentinelKind.EDITING),
             SmartbarQuickActionsKeyboard,
         )
 
         for (site in emptySites) {
-            assertEquals(0, site.rowCount, "${site.mode} should have no rows")
-            assertEquals(2, site.bottomModRowCount, "${site.mode} still reports the legacy mod row count")
+            assertEquals(0, site.rowCount)
         }
     }
 

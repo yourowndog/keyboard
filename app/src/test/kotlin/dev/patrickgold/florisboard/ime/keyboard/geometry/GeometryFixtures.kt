@@ -54,11 +54,11 @@ object GeometryFixtures {
 
     /** A row of [count] alpha keys, each one unit wide. */
     fun alphaRow(count: Int): Array<TextKey> =
-        Array(count) { key(code = 'a'.code + (it % 26), isAlpha = true) }
+        Array(count) { key(code = 'a'.code + (it % 26)) }
 
     /** A row of [count] non-alpha keys, each one canonical unit wide. */
     fun modRow(count: Int): Array<TextKey> =
-        Array(count) { key(code = KeyCode.UNSPECIFIED - it, isAlpha = false, type = KeyType.MODIFIER) }
+        Array(count) { key(code = KeyCode.UNSPECIFIED - it, type = KeyType.MODIFIER) }
 
     /** A coding utility row: [count] equal structural cells, nine in the shipped layout. */
     fun utilityRow(count: Int = 9): Array<TextKey> = modRow(count)
@@ -71,11 +71,11 @@ object GeometryFixtures {
      * be able to observe.
      */
     fun primaryActionRow(): Array<TextKey> = arrayOf(
-        key(KeyCode.TAB, isAlpha = false, type = KeyType.MODIFIER),
-        key(','.code, isAlpha = false),
-        key(KeyCode.SPACE, isAlpha = false),
-        key('.'.code, isAlpha = false),
-        key(KeyCode.ENTER, isAlpha = false, type = KeyType.ENTER_EDITING),
+        key(KeyCode.TAB, type = KeyType.MODIFIER),
+        key(','.code),
+        key(KeyCode.SPACE),
+        key('.'.code),
+        key(KeyCode.ENTER, type = KeyType.ENTER_EDITING),
     )
 
     /**
@@ -197,18 +197,18 @@ object GeometryFixtures {
      * their own semantics. The fixtures reproduce that inheritance on purpose.
      */
     fun numberExtensionRow(): Array<TextKey> =
-        Array(10) { key(code = '0'.code + it, isAlpha = true) }
+        Array(10) { key(code = '0'.code + it) }
 
     /**
      * Nine keys, matching the shipped `numericRow/dev_row.json` (`⎋ ⇥ Ψ # $ % ^ - _`).
      *
      * It was ten until Stage 05. Ten made the developer row the same width as the number row and
-     * the top alpha row, which hid the fact that an extension row fits its own units to the full
-     * content area instead of sitting on the alpha grid. The codes are synthetic — only the count
+     * made it impossible for a test to tell them apart without reading key labels. Nine makes the
+     * developer row distinct by count alone, which matches the shipped asset and means row count
      * is load-bearing for geometry.
      */
     fun developerExtensionRow(): Array<TextKey> =
-        Array(9) { key(code = '!'.code + it, isAlpha = true) }
+        Array(9) { key(code = '!'.code + it) }
 
     // ---------------------------------------------------------------------------------------
     // Symbols

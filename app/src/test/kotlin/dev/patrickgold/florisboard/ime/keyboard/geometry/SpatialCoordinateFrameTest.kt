@@ -25,9 +25,9 @@ class SpatialCoordinateFrameTest {
     )
 
     private fun qwertyRows(): List<Array<TextKey>> = listOf(
-        "qwertyuiop".map { GeometryFixtures.key(it.code, isAlpha = true) }.toTypedArray(),
-        "asdfghjkl".map { GeometryFixtures.key(it.code, isAlpha = true) }.toTypedArray(),
-        "zxcvbnm".map { GeometryFixtures.key(it.code, isAlpha = true) }.toTypedArray(),
+        "qwertyuiop".map { GeometryFixtures.key(it.code) }.toTypedArray(),
+        "asdfghjkl".map { GeometryFixtures.key(it.code) }.toTypedArray(),
+        "zxcvbnm".map { GeometryFixtures.key(it.code) }.toTypedArray(),
     )
 
     private fun configuration(
@@ -37,7 +37,7 @@ class SpatialCoordinateFrameTest {
     ): Configuration {
         val rows = buildList {
             if (numberRow) {
-                add(Array(10) { index -> GeometryFixtures.key('0'.code + index, isAlpha = false) })
+                add(Array(10) { index -> GeometryFixtures.key('0'.code + index) })
             }
             addAll(qwertyRows())
             add(GeometryFixtures.primaryActionRow())
