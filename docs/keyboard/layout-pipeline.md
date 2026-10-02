@@ -128,23 +128,33 @@ the period popup in the main character file does not change this active key.
 
 ## Layout Builder packs
 
-Layout Builder packs use `LayoutPack`, `LayoutRow`, and `LayoutKey`, then enter
-`LayoutManager.computeKeyboardFromLayoutPack()`.
+Layout Builder packs are read as versioned `LayoutPackDocument`s by
+`ime/keyboard/pack/LayoutPackCodec.kt`, validated, resolved into semantic rows,
+then enter `LayoutManager.computeKeyboardFromLayoutPack()`.
 
 Important differences from bundled JSON:
 
 - Currently supported only for character mode.
 - Rows marked `enabled = false` are skipped.
-- Each key has integer `units`; those units become the key's runtime width
-  factor after evaluation.
-- A spacer occupies units but is disabled and not rendered.
+- Schema version 2 requires stable pack and row IDs plus an explicit semantic
+  role for every row. Historical row IDs are interpreted only by the schema-1
+  compatibility mapping.
+- Keys and spacers are separate element kinds with finite positive fractional
+  `widthUnits`; spacers occupy geometry but do not receive touch handling.
 - Internal key labels, aliases, single Unicode code points, and numeric key
   codes can be resolved.
-- `showIfSetting` exists in the serialized model but is not consumed by the
-  current runtime computation path.
-- Pack and row unit totals are checked by `LayoutValidation`, but row-level
-  conditional behavior should not be assumed merely because it is representable
-  in the data model.
+- `visibleWhen` is a closed vocabulary evaluated against the active profile's
+  modifier-, number-, and developer-row preferences. The schema-1
+  `showIfSetting` field was inert and is dropped during migration so an existing
+  row does not become newly conditional.
+- Unknown schema-2 fields and unsupported newer schema versions are refused
+  rather than ignored. Missing, corrupt, invalid, newer, or deleted selected
+  packs fall back to bundled composition.
+- The selected pack ID is persisted separately from subtype and profile. Startup
+  restores it from `files/layouts/user/packs/<packId>.json`; the historical
+  fixed user file is preserved during idempotent compatibility import.
+- Optional row policy overrides are serialized and validated but are not applied
+  to geometry until Stage 07.
 
 ## Debug order
 

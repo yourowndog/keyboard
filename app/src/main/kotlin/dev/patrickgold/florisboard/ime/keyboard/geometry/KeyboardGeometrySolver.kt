@@ -315,18 +315,25 @@ object KeyboardGeometrySolver {
         bottom: Int,
     ): RowPlacement {
         val scale = input.overrides.itemWidthScale(row.role)
-        val fixedWidths = row.items.map { it.widthUnits * unitWidth * scale }
+        val fixedWidths = row.items.map { item ->
+            val itemMultiplier = input.overrides.itemWidthMultiplier(item.stableId)
+            (item.widthUnits * itemMultiplier).coerceAtLeast(0.0) * unitWidth * scale
+        }
         val fixedTotal = fixedWidths.sum()
 
         // Flexible growth. Whatever width the fixed demand leaves over is shared among the items
         // that declare a grow weight, in proportion to it. Nothing here consults an item's kind,
         // code, or position: an item grows because it says it grows. A row without growers, or one
         // whose unit width already fits it to the content area, is placed exactly as before.
-        val totalGrowWeight = row.items.sumOf { it.growWeight }
+        val growWeights = row.items.map { item ->
+            val delta = input.overrides.itemGrowWeightDelta(item.stableId)
+            max(0.0, item.growWeight + delta)
+        }
+        val totalGrowWeight = growWeights.sum()
         val remainder = contentWidth - fixedTotal
         val widths = if (totalGrowWeight > 0.0 && remainder > 0.0) {
-            row.items.mapIndexed { index, item ->
-                fixedWidths[index] + remainder * (item.growWeight / totalGrowWeight)
+            row.items.mapIndexed { index, _ ->
+                fixedWidths[index] + remainder * (growWeights[index] / totalGrowWeight)
             }
         } else {
             fixedWidths

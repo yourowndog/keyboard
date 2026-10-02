@@ -211,10 +211,19 @@ data class GeometrySpacing(
 data class GeometryOverrides(
     val rowHeightScaleByRole: Map<SemanticRowRole, Double> = emptyMap(),
     val itemWidthScaleByRole: Map<SemanticRowRole, Double> = emptyMap(),
+    val itemWidthMultiplierByStableId: Map<String, Double> = emptyMap(),
+    val itemGrowWeightDeltaByStableId: Map<String, Double> = emptyMap(),
+    val itemHeightMultiplierByStableId: Map<String, Double> = emptyMap(),
 ) {
     fun rowHeightScale(role: SemanticRowRole): Double = rowHeightScaleByRole[role] ?: 1.0
 
     fun itemWidthScale(role: SemanticRowRole): Double = itemWidthScaleByRole[role] ?: 1.0
+
+    fun itemWidthMultiplier(stableId: String): Double = itemWidthMultiplierByStableId[stableId] ?: 1.0
+
+    fun itemGrowWeightDelta(stableId: String): Double = itemGrowWeightDeltaByStableId[stableId] ?: 0.0
+
+    fun itemHeightMultiplier(stableId: String): Double = itemHeightMultiplierByStableId[stableId] ?: 1.0
 }
 
 /** The complete, immutable input to one solve. */
