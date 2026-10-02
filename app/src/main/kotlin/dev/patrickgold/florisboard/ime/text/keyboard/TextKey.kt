@@ -34,7 +34,7 @@ import dev.patrickgold.florisboard.ime.text.key.KeyVariation
 import dev.patrickgold.florisboard.lib.lowercase
 
 class TextKey(override val data: AbstractKeyData) : Key(data) {
-    var isAlpha: Boolean = true
+    var isHintable: Boolean = true
     var computedData: KeyData = TextKeyData.UNSPECIFIED
         private set
     val computedPopups: MutablePopupSet<KeyData> = MutablePopupSet()

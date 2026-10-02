@@ -29,17 +29,12 @@ import dev.patrickgold.florisboard.ime.popup.PopupMapping
  * @param semantics what each row of [arrangement] is, as known by whichever code composed it. Every
  *   construction site declares this explicitly — there is no default, because a keyboard that
  *   inherits semantics it never stated is exactly the failure this model exists to prevent.
- * @param bottomModRowCount **deprecated compatibility projection, no longer consulted by geometry.**
- *   Despite the name it is not a count of the keyboard's bottom modifier rows. Nothing in the
- *   solved geometry pipeline reads it; it survives only for the construction sites that still pass
- *   it, and Stage 04 removes it. Read [semantics] for what rows actually are.
  */
 class TextKeyboard(
     val arrangement: Array<Array<TextKey>>,
     override val mode: KeyboardMode,
     val extendedPopupMapping: PopupMapping?,
     val extendedPopupMappingDefault: PopupMapping?,
-    val bottomModRowCount: Int = 2,
     val semantics: KeyboardSemantics,
 ) : Keyboard() {
     init {

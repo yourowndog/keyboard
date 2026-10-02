@@ -297,8 +297,6 @@ class LayoutManager(context: Context) {
             }
         }
 
-        var visibleExtraModRows = 0
-
         if (mainLayout != null && modifierLayout != null) {
             for (mainRowI in mainLayout.arrangement.indices) {
                 val mainRow = mainLayout.arrangement[mainRowI]
@@ -312,9 +310,9 @@ class LayoutManager(context: Context) {
                     val firstModRow = modifierLayout.arrangement.firstOrNull()
                     for (modKey in (firstModRow ?: listOf())) {
                         if (modKey is TextKeyData && modKey.code == 0) {
-                            rowArray.addAll(mainRow.map { TextKey(it).apply { isAlpha = true } })
+                            rowArray.addAll(mainRow.map { TextKey(it) })
                         } else {
-                            rowArray.add(TextKey(modKey).apply { isAlpha = false })
+                            rowArray.add(TextKey(modKey))
                         }
                     }
                     val temp = Array(rowArray.size) { rowArray[it] }
@@ -331,35 +329,25 @@ class LayoutManager(context: Context) {
                     )
                 }
             }
-            for (modRowI in 1 until modifierLayout.arrangement.size) {
-                val modRow = modifierLayout.arrangement[modRowI]
-                if (modRowsHidden) {
-                    var debugFoundSpace = false
-                    val hasSpace = modRow.any { keyData ->
-                        val computed = keyData.compute(DefaultComputingEvaluator) ?: return@any false
-                        val isSpace = (computed.code == KeyCode.SPACE || computed.code == KeyCode.CJK_SPACE)
-                        if (isSpace) debugFoundSpace = true
-                        isSpace
-                    }
-                    android.util.Log.i("FlorisBoard_Debug", "modRowI=$modRowI hasSpace=$debugFoundSpace. Keys count=${modRow.size}")
-                    if (!hasSpace) continue
+            if (!modRowsHidden) {
+                for (modRowI in 1 until modifierLayout.arrangement.size) {
+                    val modRow = modifierLayout.arrangement[modRowI]
+                    val rowArray = Array(modRow.size) { TextKey(modRow[it]) }
+                    computedArrangement.add(rowArray)
+                    // Only rows that actually survived the visibility filter are recorded, so hiding
+                    // utility rows removes utility rows and nothing else.
+                    semanticRows.add(SemanticRowRole.CODING_UTILITY, modifierLayout.provenanceOfRow(modRowI))
                 }
-                val rowArray = Array(modRow.size) { TextKey(modRow[it]).apply { isAlpha = false } }
-                computedArrangement.add(rowArray)
-                // Only rows that actually survived the visibility filter are recorded, so hiding
-                // utility rows removes utility rows and nothing else.
-                semanticRows.add(SemanticRowRole.CODING_UTILITY, modifierLayout.provenanceOfRow(modRowI))
-                visibleExtraModRows++
             }
         } else if (mainLayout != null && modifierLayout == null) {
             for ((mainRowI, mainRow) in mainLayout.arrangement.withIndex()) {
-                val rowArray = Array(mainRow.size) { TextKey(mainRow[it]).apply { isAlpha = true } }
+                val rowArray = Array(mainRow.size) { TextKey(mainRow[it]) }
                 computedArrangement.add(rowArray)
                 semanticRows.add(mainRowRole, mainLayout.provenanceOfRow(mainRowI))
             }
         } else if (mainLayout == null && modifierLayout != null) {
             for ((modRowI, modRow) in modifierLayout.arrangement.withIndex()) {
-                val rowArray = Array(modRow.size) { TextKey(modRow[it]).apply { isAlpha = false } }
+                val rowArray = Array(modRow.size) { TextKey(modRow[it]) }
                 computedArrangement.add(rowArray)
                 semanticRows.add(SemanticRowRole.CODING_UTILITY, modifierLayout.provenanceOfRow(modRowI))
             }
@@ -395,9 +383,6 @@ class LayoutManager(context: Context) {
         }
 
         val array = Array(computedArrangement.size) { computedArrangement[it] }
-        // When modRowsHidden: count only the actually visible extra mod rows
-        // When visible: count all mod rows (including row 0 which is merged but counted in sizing)
-        val bottomModRows = if (modRowsHidden) visibleExtraModRows else (modifierLayout?.arrangement?.size ?: 0)
         return TextKeyboard(
             arrangement = array,
             mode = keyboardMode,
@@ -407,20 +392,12 @@ class LayoutManager(context: Context) {
             extendedPopupMappingDefault = extendedPopupsDefault.await().onFailure {
                 flogWarning(LogTopic.LAYOUT_MANAGER) { it.toString() }
             }.getOrNull()?.mapping,
-            // Deprecated compatibility projection. Left exactly as it was: it counts the modifier
-            // asset's rows (including the one consumed by the splice), which is not the number of
-            // coding utility rows in `semantics`. Deriving it from the semantic rows would move
-            // pixels, so it stays until the geometry authorities read roles directly.
-            bottomModRowCount = bottomModRows,
             semantics = semanticRows.build(),
         )
     }
 
     private fun addRowHints(main: Array<TextKey>, hint: Array<TextKey>, hintType: KeyType) {
         for ((k,key) in main.withIndex()) {
-            // Only assign hints to alpha keys — mod-row keys are already visible symbols
-            // and mis-aligned hints (e.g. "_" on period) pollute their popups.
-            if (!key.isAlpha) continue
             val hintKey = hint.getOrNull(k)?.data?.compute(DefaultComputingEvaluator)
             if (hintKey?.type != hintType) {
                 continue
@@ -528,10 +505,6 @@ class LayoutManager(context: Context) {
             extendedPopupMappingDefault = extendedPopupsDefault.await().onFailure {
                 flogWarning(LogTopic.LAYOUT_MANAGER) { it.toString() }
             }.getOrNull()?.mapping,
-            // Deprecated compatibility projection, stated explicitly rather than inherited. The
-            // value is the constructor default this path has always silently picked up; changing
-            // it would move pixels, which is out of scope here.
-            bottomModRowCount = 2,
             semantics = semanticRows.build(),
         )
     }
@@ -574,7 +547,6 @@ class LayoutManager(context: Context) {
                     mode = keyboardMode,
                     extendedPopupMapping = null,
                     extendedPopupMappingDefault = null,
-                    bottomModRowCount = 2,
                     semantics = KeyboardSemantics.Sentinel(SentinelKind.EDITING),
                 )
             }
