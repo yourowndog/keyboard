@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.ime.keyboard.geometry
 
+import dev.patrickgold.florisboard.ime.keyboard.KeyCustomizationDocument
+import dev.patrickgold.florisboard.ime.keyboard.KeyCustomizationManager
 import dev.patrickgold.florisboard.ime.keyboard.SemanticRowRole
 import dev.patrickgold.florisboard.ime.text.keyboard.TextKeyboard
 import dev.patrickgold.florisboard.lib.FlorisRect
@@ -123,6 +125,7 @@ object TextKeyboardGeometryBridge {
         availableWidth: Double,
         framePolicy: FramePolicy,
         orientation: GeometryOrientation = GeometryOrientation.PORTRAIT,
+        overrides: GeometryOverrides = GeometryOverrides(),
     ): Result {
         val rows = describeRows(keyboard)
         if (rows.isEmpty()) {
@@ -132,7 +135,7 @@ object TextKeyboardGeometryBridge {
             return Result.Unavailable(listOf("available width ${availableWidth}px is not usable"))
         }
 
-        val requested = KeyboardGeometryPolicy.buildInput(rows, prefs, availableWidth, framePolicy, orientation)
+        val requested = KeyboardGeometryPolicy.buildInput(rows, prefs, availableWidth, framePolicy, orientation, overrides)
         when (val solution = KeyboardGeometrySolver.solve(requested)) {
             is GeometrySolution.Solved -> return Result.Solved(solution.geometry)
             is GeometrySolution.Unsatisfiable -> {
@@ -173,6 +176,7 @@ object TextKeyboardGeometryBridge {
         prefs: GeometryPreferences,
         availableWidth: Double,
         orientation: GeometryOrientation = GeometryOrientation.PORTRAIT,
+        overrides: GeometryOverrides = GeometryOverrides(),
     ): Int? {
         val result = solve(
             keyboard = keyboard,
@@ -180,6 +184,7 @@ object TextKeyboardGeometryBridge {
             availableWidth = availableWidth,
             framePolicy = FramePolicy.Intrinsic(prefs.sanitized().rowBaseHeightPx),
             orientation = orientation,
+            overrides = overrides,
         )
         return when (result) {
             is Result.Solved -> result.geometry.frame.height
@@ -201,24 +206,59 @@ object TextKeyboardGeometryBridge {
         keyboard: TextKeyboard,
         geometry: SolvedGeometry,
         extendTouchBoundariesDownwards: Boolean,
+        customizationDoc: KeyCustomizationDocument = KeyCustomizationDocument(),
+        profileId: String = "",
+        layoutId: String? = null,
+        density: Float = 1.0f,
     ) {
         val lastRowIndex = geometry.rows.lastIndex
         for ((rowIndex, solvedRow) in geometry.rows.withIndex()) {
             val keys = keyboard.arrangement.getOrNull(rowIndex) ?: continue
+            val semanticRow = keyboard.semanticRows.getOrNull(rowIndex)
             val extendToBottomEdge = extendTouchBoundariesDownwards && rowIndex == lastRowIndex
             for ((keyIndex, solvedItem) in solvedRow.items.withIndex()) {
                 val key = keys.getOrNull(keyIndex) ?: continue
+                val itemInstanceId = solvedItem.stableId
+                val rowId = semanticRow?.stableId ?: "$rowIndex"
+                val custom = KeyCustomizationManager.findCustomization(
+                    doc = customizationDoc,
+                    profileId = profileId,
+                    layoutId = layoutId,
+                    rowId = rowId,
+                    itemInstanceId = itemInstanceId,
+                    keyCode = key.computedData.code,
+                )
+
                 KeyBoundsDerivation.touchBounds(
                     item = solvedItem,
                     rowHeight = solvedRow.bounds.height,
                     extendToBottomEdge = extendToBottomEdge,
                     into = key.touchBounds,
                 )
+
+                // Touch layer customization (hitbox expansion/margins)
+                if (custom != null && !custom.touch.isDefault()) {
+                    val dx = custom.touch.touchMarginHorizontalDp * density
+                    val dy = custom.touch.touchMarginVerticalDp * density
+                    key.touchBounds.left -= dx
+                    key.touchBounds.right += dx
+                    key.touchBounds.top -= dy
+                    key.touchBounds.bottom += dy
+                }
+
                 KeyBoundsDerivation.visibleBounds(
                     item = solvedItem,
                     spacing = solvedRow.declaredSpacing,
                     into = key.visibleBounds,
                 )
+
+                // Visual layer customization (padding and visual insets)
+                if (custom != null && !custom.visual.isDefault()) {
+                    key.visibleBounds.top += custom.visual.paddingTop
+                    key.visibleBounds.bottom -= custom.visual.paddingBottom
+                    key.visibleBounds.left += custom.visual.paddingLeft
+                    key.visibleBounds.right -= custom.visual.paddingRight
+                }
             }
         }
     }
