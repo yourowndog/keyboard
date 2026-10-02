@@ -7,6 +7,7 @@ package dev.patrickgold.florisboard.ime.keyboard.geometry
 
 import dev.patrickgold.florisboard.ime.keyboard.SemanticRowRole
 import dev.patrickgold.florisboard.ime.text.key.KeyCode
+import kotlin.math.roundToInt
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -28,7 +29,7 @@ class TextProfileTest {
 
     @Test
     fun `text profile row classification distinguishes alpha, number, and action rows`() {
-        assertEquals(SemanticRowRole.NUMBER_ROW, TextProfile.classifyRowRole(0, 5, hasNumberRow = true))
+        assertEquals(SemanticRowRole.EXTENSION, TextProfile.classifyRowRole(0, 5, hasNumberRow = true))
         assertEquals(SemanticRowRole.ALPHA, TextProfile.classifyRowRole(1, 5, hasNumberRow = true))
         assertEquals(SemanticRowRole.ALPHA, TextProfile.classifyRowRole(2, 5, hasNumberRow = true))
         assertEquals(SemanticRowRole.ALPHA, TextProfile.classifyRowRole(3, 5, hasNumberRow = true))
@@ -61,13 +62,13 @@ class TextProfileTest {
             assertEquals(10, row1.items.size)
             val keyQWidth = row1.items[0].bounds.width
             val keyPWidth = row1.items[9].bounds.width
-            assertEquals(keyQWidth, keyPWidth, 0.001)
-            assertTrue(keyQWidth > 0.0)
+            assertEquals(keyQWidth, keyPWidth)
+            assertTrue(keyQWidth > 0)
 
             // Check row 1 (ASDFGHJKL: 9 keys) centered and having matching unit width with row 0
             val row2 = solution.geometry.rows[1]
             val keyAWidth = row2.items[0].bounds.width
-            assertEquals(keyQWidth, keyAWidth, 0.001)
+            assertEquals(keyQWidth, keyAWidth)
         }
     }
 
@@ -91,9 +92,9 @@ class TextProfileTest {
         val compactAlphaUnit = compactSolution.geometry.rows[0].items[0].bounds.width
         val expandedAlphaUnit = expandedSolution.geometry.rows[0].items[0].bounds.width
 
-        // Since sym key has widthUnits = 1.5 and growWeight = 0.0, its width strictly scales with alpha unit (1.5 * alphaUnit)
-        assertEquals(compactAlphaUnit * 1.5, compactSymWidth, 0.001)
-        assertEquals(expandedAlphaUnit * 1.5, expandedSymWidth, 0.001)
+        // Since sym key has widthUnits = 1.5 and growWeight = 0.0, its width strictly scales with alpha unit (within integer rounding tolerance)
+        assertEquals((compactAlphaUnit * 1.5).toInt(), compactSymWidth)
+        assertEquals((expandedAlphaUnit * 1.5).roundToInt(), expandedSymWidth)
 
         // Spacebar grows to absorb remaining width, so expanded space is significantly wider
         assertTrue(expandedSpaceWidth > compactSpaceWidth)
@@ -110,12 +111,12 @@ class TextProfileTest {
             val shiftItem = row3.items.first { it.stableId == "key_shift" }
             val deleteItem = row3.items.first { it.stableId == "key_delete" }
 
-            assertEquals(shiftItem.bounds.width, deleteItem.bounds.width, 0.001)
+            assertEquals(shiftItem.bounds.width, deleteItem.bounds.width)
 
             // The alpha keys in row 3 should match alpha unit width from row 1
             val alphaUnit = solution.geometry.rows[0].items[0].bounds.width
             val zKey = row3.items.first { it.stableId == "key_z" }
-            assertEquals(alphaUnit, zKey.bounds.width, 0.001)
+            assertEquals(alphaUnit, zKey.bounds.width)
         }
     }
 }

@@ -35,16 +35,17 @@ enum class TextKeyRole {
          * Maps a key code and optional label/hint to a [TextKeyRole].
          */
         fun fromKeyCode(keyCode: Int): TextKeyRole = when (keyCode) {
-            KeyCode.SPACE, KeyCode.CJK_SPACE -> EDITING
+            KeyCode.SPACE, KeyCode.CJK_SPACE, KeyCode.HALF_SPACE -> EDITING
             KeyCode.ENTER -> EDITING
-            KeyCode.DELETE, KeyCode.FORWARD_DELETE -> EDITING
-            KeyCode.SHIFT, KeyCode.SHIFT_LOCK -> FUNCTION
-            KeyCode.VIEW_CHARACTERS, KeyCode.VIEW_SYMBOLS, KeyCode.VIEW_SYMBOLS2, KeyCode.SWITCH_TO_TEXT_CONTEXT -> FUNCTION
+            KeyCode.DELETE, KeyCode.DELETE_WORD, KeyCode.FORWARD_DELETE, KeyCode.FORWARD_DELETE_WORD -> EDITING
+            KeyCode.SHIFT, KeyCode.CAPS_LOCK -> FUNCTION
+            KeyCode.VIEW_CHARACTERS, KeyCode.VIEW_SYMBOLS, KeyCode.VIEW_SYMBOLS2, KeyCode.IME_UI_MODE_TEXT -> FUNCTION
             KeyCode.VIEW_NUMERIC, KeyCode.VIEW_NUMERIC_ADVANCED, KeyCode.VIEW_PHONE, KeyCode.VIEW_PHONE2 -> FUNCTION
             KeyCode.VOICE_INPUT -> UTILITY
             KeyCode.SETTINGS -> UTILITY
-            KeyCode.IME_SUB_TYPE_SELECTOR, KeyCode.SYSTEM_INPUT_METHOD_PICKER, KeyCode.SYSTEM_PREV_INPUT_METHOD, KeyCode.SYSTEM_NEXT_INPUT_METHOD -> UTILITY
-            KeyCode.CLIPBOARD -> UTILITY
+            KeyCode.SHOW_SUBTYPE_PICKER, KeyCode.IME_SUBTYPE_PICKER, KeyCode.LANGUAGE_SWITCH,
+            KeyCode.SYSTEM_INPUT_METHOD_PICKER, KeyCode.SYSTEM_PREV_INPUT_METHOD, KeyCode.SYSTEM_NEXT_INPUT_METHOD -> UTILITY
+            KeyCode.IME_UI_MODE_CLIPBOARD, KeyCode.CLIPBOARD_PASTE, KeyCode.CLIPBOARD_COPY -> UTILITY
             in '0'.code..'9'.code -> NUMBER
             else -> ALPHA
         }
@@ -98,7 +99,7 @@ object TextProfile {
      * Standard role classification for text keyboard rows.
      */
     fun classifyRowRole(rowIndex: Int, totalRows: Int, hasNumberRow: Boolean): SemanticRowRole = when {
-        hasNumberRow && rowIndex == 0 -> SemanticRowRole.NUMBER_ROW
+        hasNumberRow && rowIndex == 0 -> SemanticRowRole.EXTENSION
         rowIndex == totalRows - 1 -> SemanticRowRole.PRIMARY_ACTION
         else -> SemanticRowRole.ALPHA
     }
@@ -111,11 +112,11 @@ object TextProfile {
         keyRole: TextKeyRole = TextKeyRole.fromKeyCode(keyCode),
         config: TextProfileResponsiveConfig = TextProfileResponsiveConfig(),
     ): Double = when (keyCode) {
-        KeyCode.SPACE, KeyCode.CJK_SPACE -> 4.0
+        KeyCode.SPACE, KeyCode.CJK_SPACE, KeyCode.HALF_SPACE -> 4.0
         KeyCode.SHIFT, KeyCode.DELETE, KeyCode.FORWARD_DELETE -> config.shiftDeleteBalancedWidthUnits
         KeyCode.ENTER -> 1.5
-        KeyCode.VIEW_SYMBOLS, KeyCode.VIEW_CHARACTERS, KeyCode.SWITCH_TO_TEXT_CONTEXT -> 1.5
-        KeyCode.VOICE_INPUT, KeyCode.SETTINGS, KeyCode.IME_SUB_TYPE_SELECTOR, KeyCode.CLIPBOARD -> 1.0
+        KeyCode.VIEW_SYMBOLS, KeyCode.VIEW_CHARACTERS, KeyCode.IME_UI_MODE_TEXT -> 1.5
+        KeyCode.VOICE_INPUT, KeyCode.SETTINGS, KeyCode.SHOW_SUBTYPE_PICKER, KeyCode.LANGUAGE_SWITCH, KeyCode.IME_UI_MODE_CLIPBOARD -> 1.0
         else -> when (keyRole) {
             TextKeyRole.ALPHA -> config.alphaWidthUnits
             TextKeyRole.NUMBER -> 1.0
@@ -138,31 +139,17 @@ object TextProfile {
     }
 
     /**
-     * Builds a [BoundaryGapPolicy] tuned for the current responsive breakpoint.
-     */
-    fun buildBoundaryGapPolicy(
-        availableWidth: Double,
-        config: TextProfileResponsiveConfig = TextProfileResponsiveConfig(),
-    ): BoundaryGapPolicy {
-        val breakpoint = ResponsiveBreakpoint.forWidth(availableWidth)
-        val sidePadding = when (breakpoint) {
-            ResponsiveBreakpoint.COMPACT -> config.compactSidePaddingDp
-            ResponsiveBreakpoint.MEDIUM -> config.mediumSidePaddingDp
-            ResponsiveBreakpoint.EXPANDED -> config.expandedSidePaddingDp
-        }
-        return BoundaryGapPolicy(keyboardSidePadding = sidePadding)
-    }
-
-    /**
      * Builds a standard [RowWidthPolicy] tying alphanumeric reference widths
      * to consumer rows like [SemanticRowRole.PRIMARY_ACTION].
      */
     fun buildRowWidthPolicy(
         alignment: RowAlignment = RowAlignment.CENTER,
+        insetH: Double = 0.0,
     ): RowWidthPolicy = RowWidthPolicy(
         sharedReference = SharedWidthReference(
             measuredRoles = setOf(SemanticRowRole.ALPHA),
             consumerRoles = setOf(SemanticRowRole.ALPHA, SemanticRowRole.PRIMARY_ACTION),
+            insetH = insetH,
         ),
         alignment = alignment,
     )
@@ -173,8 +160,9 @@ object TextProfile {
     fun createStandardQwertyInput(
         availableWidth: Double,
         hasNumberRow: Boolean = false,
+        rowBaseHeight: Double = 65.0,
         config: TextProfileResponsiveConfig = TextProfileResponsiveConfig(),
-        overrides: GeometryOverrides = GeometryOverrides.EMPTY,
+        overrides: GeometryOverrides = GeometryOverrides(),
     ): GeometrySolverInput {
         val rows = mutableListOf<GeometryRow>()
 
@@ -190,7 +178,7 @@ object TextProfile {
             rows.add(
                 GeometryRow(
                     stableId = "row_number",
-                    role = SemanticRowRole.NUMBER_ROW,
+                    role = SemanticRowRole.EXTENSION,
                     items = numberItems,
                 )
             )
@@ -258,13 +246,21 @@ object TextProfile {
         )
         rows.add(GeometryRow(stableId = "row_primary", role = SemanticRowRole.PRIMARY_ACTION, items = row4Items))
 
+        val breakpoint = ResponsiveBreakpoint.forWidth(availableWidth)
+        val sidePadding = when (breakpoint) {
+            ResponsiveBreakpoint.COMPACT -> config.compactSidePaddingDp
+            ResponsiveBreakpoint.MEDIUM -> config.mediumSidePaddingDp
+            ResponsiveBreakpoint.EXPANDED -> config.expandedSidePaddingDp
+        }
+
         return GeometrySolverInput(
             availableWidth = availableWidth,
             rows = rows,
-            framePolicy = FramePolicy.WrapContent,
+            framePolicy = FramePolicy.Intrinsic(rowBaseHeight = rowBaseHeight),
             rowHeightPolicy = RowHeightPolicy(),
-            gapPolicy = buildBoundaryGapPolicy(availableWidth, config),
-            widthPolicy = buildRowWidthPolicy(),
+            gapPolicy = BoundaryGapPolicy(),
+            widthPolicy = buildRowWidthPolicy(insetH = sidePadding),
+            insets = GeometryInsets(left = sidePadding, right = sidePadding),
             overrides = overrides,
         )
     }
