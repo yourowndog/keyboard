@@ -130,6 +130,7 @@ object KeyboardGeometryPolicy {
         availableWidth: Double,
         framePolicy: FramePolicy,
         orientation: GeometryOrientation = GeometryOrientation.PORTRAIT,
+        overrides: GeometryOverrides = GeometryOverrides(),
     ): GeometrySolverInput {
         val safe = prefs.sanitized()
         val alphaHeightScale = safe.alphaRowHeightPercent / 100.0
@@ -222,8 +223,11 @@ object KeyboardGeometryPolicy {
                 alignment = RowAlignment.CENTER,
             ),
             overrides = GeometryOverrides(
-                rowHeightScaleByRole = heightScales,
-                itemWidthScaleByRole = widthScales,
+                rowHeightScaleByRole = heightScales + overrides.rowHeightScaleByRole,
+                itemWidthScaleByRole = widthScales + overrides.itemWidthScaleByRole,
+                itemWidthMultiplierByStableId = overrides.itemWidthMultiplierByStableId,
+                itemGrowWeightDeltaByStableId = overrides.itemGrowWeightDeltaByStableId,
+                itemHeightMultiplierByStableId = overrides.itemHeightMultiplierByStableId,
             ),
             spacingByRole = SemanticRowRole.entries.associateWith { spacing },
             orientation = orientation,
