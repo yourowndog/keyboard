@@ -18,9 +18,12 @@ package dev.patrickgold.florisboard.ime.keyboard
 
 import android.content.Context
 import android.os.Build
-import dev.patrickgold.florisboard.app.layoutbuilder.LayoutPack
 import dev.patrickgold.florisboard.app.layoutbuilder.LayoutPackRepository
-import dev.patrickgold.florisboard.app.layoutbuilder.LayoutValidation
+import dev.patrickgold.florisboard.ime.keyboard.pack.ActiveLayoutPack
+import dev.patrickgold.florisboard.ime.keyboard.pack.LayoutPackDocument
+import dev.patrickgold.florisboard.ime.keyboard.pack.LayoutPackSchema
+import dev.patrickgold.florisboard.ime.keyboard.pack.LayoutPackStore
+import dev.patrickgold.florisboard.ime.keyboard.pack.LayoutPackValidation
 import dev.patrickgold.florisboard.audio.Recorder
 import dev.patrickgold.florisboard.audio.WavTools
 import dev.patrickgold.florisboard.net.WhisperClient
@@ -73,6 +76,7 @@ import dev.patrickgold.florisboard.ime.text.keyboard.TextKeyboardCache
 import dev.patrickgold.florisboard.ime.voice.VoiceManager
 import dev.patrickgold.florisboard.ime.voice.VoiceTake
 import dev.patrickgold.florisboard.lib.devtools.LogTopic
+import dev.patrickgold.florisboard.lib.devtools.flogInfo
 import dev.patrickgold.florisboard.lib.devtools.flogError
 import dev.patrickgold.florisboard.lib.devtools.flogWarning
 import dev.patrickgold.florisboard.lib.ext.ExtensionComponentName
@@ -127,7 +131,17 @@ class KeyboardManager(
     private val subtypeManager by context.subtypeManager()
 
     private val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
-    val layoutFlow = MutableStateFlow(loadInitialLayout())
+
+    /**
+     * The layout pack composing the Characters keyboard right now.
+     *
+     * Starts at [ActiveLayoutPack.None] and is replaced by [restoreSelectedLayoutPack], which reads
+     * the persisted selection off disk. It is not initialised from the store directly because this
+     * constructor runs on whichever thread first touches `KeyboardManager` — reading and decoding a
+     * pack there would be file I/O on the main thread, and would read the preference store before it
+     * has finished loading.
+     */
+    val layoutFlow = MutableStateFlow(ActiveLayoutPack.None)
     val layoutManager = LayoutManager(context)
     private val keyboardCache = TextKeyboardCache()
 
@@ -154,6 +168,7 @@ class KeyboardManager(
     @Volatile private var foregroundTranscriptionFile: String? = null
     private var pendingDrainJob: Job? = null
     private var archiveDrainJob: Job? = null
+    private var layoutRestorationJob: Job? = null
 
     private data class VoiceTranscriptionOutcome(
         val cleanedText: String,
@@ -166,29 +181,105 @@ class KeyboardManager(
             voiceManager.initializeDurableStateAndRecover()
             drainPendingSequentially()
         }
-    }
-
-    private fun loadInitialLayout(): LayoutPack {
-        // Return a blank layout pack to force the KeyboardManager to use the
-        // original, extension-based layout loading logic by default. This bypasses
-        // the new, experimental LayoutPackRepository on startup.
-        return LayoutPack(id = "dev.florisboard.layoutpacks.empty", label = "Empty")
-    }
-
-    fun setLayout(newPack: LayoutPack): Result<Unit> {
-        val errors = LayoutValidation.validatePack(newPack)
-        if (errors.isNotEmpty()) {
-            val message = errors.joinToString(separator = "\n")
-            return Result.failure(IllegalArgumentException(message))
+        layoutRestorationJob = scope.launch(Dispatchers.IO) {
+            restoreSelectedLayoutPack()
         }
-        return runCatching {
-            layoutPackRepository.save(newPack)
-            layoutFlow.value = newPack
-            updateActiveEvaluators {
-                keyboardCache.clear()
+    }
+
+    /**
+     * Restores the layout pack the user last applied.
+     *
+     * This replaces the empty sentinel `loadInitialLayout()` returned, which existed to keep the
+     * then-experimental pack path away from startup and meant an applied pack silently reverted to
+     * the bundled composition on every process restart.
+     *
+     * Restoration is gated on the persisted selection, not on the presence of a file. An install
+     * that has never applied a pack composes from the bundled extension layouts exactly as before,
+     * and a pre-existing legacy user file is brought forward to the current schema but *not*
+     * activated — importing a file the user saved once is not the same as them choosing it, and
+     * silently swapping someone's keyboard on upgrade is the worse of the two mistakes.
+     *
+     * Every way of failing to honour a selection ends at [ActiveLayoutPack.None] with a specific log
+     * line, so a corrupt pack costs the user their customisation rather than their keyboard.
+     */
+    private fun restoreSelectedLayoutPack() {
+        when (val import = layoutPackRepository.importLegacyUserFile()) {
+            is LayoutPackStore.LegacyImport.Imported -> flogInfo(LogTopic.LAYOUT_MANAGER) {
+                "imported the legacy layout pack '${import.packId}' at the current schema; " +
+                    "it is available but not activated. " +
+                    import.diagnostics.joinToString { "${it.path}: ${it.detail}" }
             }
-            Unit
+            is LayoutPackStore.LegacyImport.Failed -> flogWarning(LogTopic.LAYOUT_MANAGER) {
+                "the legacy layout pack could not be migrated and was left untouched: " +
+                    import.problems.joinToString { it.describe() }
+            }
+            is LayoutPackStore.LegacyImport.AlreadyImported,
+            LayoutPackStore.LegacyImport.NothingToImport -> Unit
         }
+
+        val selectedId = prefs.keyboard.selectedLayoutPackId.get()
+        when (val restoration = layoutPackRepository.restore(selectedId)) {
+            LayoutPackStore.Restoration.NoSelection -> Unit
+            is LayoutPackStore.Restoration.Restored -> {
+                applyLayoutPack(restoration.pack)
+                flogInfo(LogTopic.LAYOUT_MANAGER) {
+                    "restored layout pack '$selectedId' (${restoration.outcome.describe()})"
+                }
+            }
+            is LayoutPackStore.Restoration.FellBack -> flogWarning(LogTopic.LAYOUT_MANAGER) {
+                "layout pack '$selectedId' could not be restored (${restoration.reason}); " +
+                    "falling back to the bundled layouts. " +
+                    restoration.problems.joinToString { it.describe() }
+            }
+        }
+    }
+
+    /** Makes [pack] the active layout and recomputes every cached keyboard against it. */
+    private fun applyLayoutPack(pack: ActiveLayoutPack) {
+        layoutFlow.value = pack
+        updateActiveEvaluators {
+            keyboardCache.clear()
+        }
+    }
+
+    /**
+     * Validates, persists and activates [document].
+     *
+     * The selection is persisted alongside the file, because a pack that is written but not selected
+     * is exactly the state the old sentinel left every user in. Persisting the id is also what makes
+     * the choice survive a process restart.
+     */
+    suspend fun setLayout(document: LayoutPackDocument): Result<Unit> {
+        val problems = LayoutPackValidation.validate(document)
+        if (problems.isNotEmpty()) {
+            return Result.failure(
+                IllegalArgumentException(problems.joinToString(separator = "\n") { it.describe() })
+            )
+        }
+        return when (val saved = layoutPackRepository.save(document)) {
+            is LayoutPackStore.SaveResult.Written -> runCatching {
+                val persisted = document.copy(schemaVersion = LayoutPackSchema.CURRENT_VERSION)
+                prefs.keyboard.selectedLayoutPackId.set(persisted.id)
+                // A pack written at the current schema declares its roles, so no inference is
+                // carried alongside it.
+                applyLayoutPack(ActiveLayoutPack(persisted))
+            }
+            is LayoutPackStore.SaveResult.Rejected -> Result.failure(
+                IllegalArgumentException(saved.problems.joinToString(separator = "\n") { it.describe() })
+            )
+            is LayoutPackStore.SaveResult.Failed -> Result.failure(IllegalStateException(saved.message))
+        }
+    }
+
+    /**
+     * Deselects the active pack, returning the keyboard to the bundled composition.
+     *
+     * The pack's file is left alone: deselecting is not deleting, and a user who turns a pack off
+     * must be able to turn it back on.
+     */
+    suspend fun clearLayout() {
+        prefs.keyboard.selectedLayoutPackId.set("")
+        applyLayoutPack(ActiveLayoutPack.None)
     }
 
     private fun requestAudioPermission() {
@@ -691,6 +782,17 @@ class KeyboardManager(
     ): Pair<TextKeyboard, Boolean> {
         val mode = KeyboardMode.CHARACTERS
         val pack = layoutFlow.value
+        // No pack selected is the normal state, not a failure. Before Stage 06 this path produced a
+        // warning on every single recompute, because the startup sentinel was an empty pack and an
+        // empty pack was indistinguishable from a broken one.
+        if (pack.document.isEmpty) {
+            return keyboardCache.getOrElseAsync(mode, subtype) {
+                layoutManager.computeKeyboardAsync(
+                    keyboardMode = mode,
+                    subtype = subtype,
+                ).await()
+            } to false
+        }
         val layoutPackResult = runCatching {
             layoutManager.computeKeyboardFromLayoutPack(
                 pack,
@@ -711,7 +813,8 @@ class KeyboardManager(
             }
         } else {
             flogWarning(LogTopic.LAYOUT_MANAGER) {
-                "Layout pack produced an empty arrangement, falling back to extension layout"
+                "Layout pack '${pack.document.id}' contributed no rows under the current " +
+                    "preferences, falling back to extension layout"
             }
         }
         return keyboardCache.getOrElseAsync(mode, subtype) {

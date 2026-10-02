@@ -18,14 +18,15 @@ package dev.patrickgold.florisboard.ime.keyboard
 
 import android.content.Context
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
-import dev.patrickgold.florisboard.app.layoutbuilder.LayoutKey
-import dev.patrickgold.florisboard.app.layoutbuilder.LayoutKeyStyle
-import dev.patrickgold.florisboard.app.layoutbuilder.LayoutPack
-import dev.patrickgold.florisboard.app.layoutbuilder.LayoutRow
 import dev.patrickgold.florisboard.appContext
 import dev.patrickgold.florisboard.extensionManager
 import dev.patrickgold.florisboard.ime.core.Subtype
 import dev.patrickgold.florisboard.ime.editor.FlorisEditorInfo
+import dev.patrickgold.florisboard.ime.keyboard.pack.ActiveLayoutPack
+import dev.patrickgold.florisboard.ime.keyboard.pack.LayoutPackComposition
+import dev.patrickgold.florisboard.ime.keyboard.pack.LayoutPackConditions
+import dev.patrickgold.florisboard.ime.keyboard.pack.LayoutPackElement
+import dev.patrickgold.florisboard.ime.keyboard.pack.LayoutPackKeyResolver
 import dev.patrickgold.florisboard.ime.popup.PopupMapping
 import dev.patrickgold.florisboard.ime.popup.PopupMappingComponent
 import dev.patrickgold.florisboard.ime.text.key.KeyCode
@@ -121,27 +122,6 @@ class LayoutManager(context: Context) {
     private val popupMappingCacheGuard: Mutex = Mutex(locked = false)
     private val ioScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
-    private val internalKeyMap = TextKeyData.InternalKeys.associateBy { it.label.uppercase() }
-
-    private val internalKeyAliases: Map<String, String> = mapOf(
-        "KEYCODE_TAB"           to "TAB",
-        "KEYCODE_ENTER"         to "ENTER",
-        "KEYCODE_SPACE"         to "SPACE",
-        "KEYCODE_DELETE"        to "DELETE",
-        "KEYCODE_SHIFT"         to "SHIFT",
-
-        "CTRL_MOD"              to "CTRL",
-        "CTRL"                  to "CTRL",
-
-        "MODE_SYMBOLS"          to "VIEW_SYMBOLS",
-        "MODE_SYMBOLS2"         to "VIEW_SYMBOLS2",
-        "MODE_CHARACTERS"       to "VIEW_CHARACTERS",
-        "MODE_NUMERIC"          to "VIEW_NUMERIC",
-        "MODE_NUMERIC_ADVANCED" to "VIEW_NUMERIC_ADVANCED",
-
-        "MENU_TOGGLE"           to "TOGGLE_ACTIONS_OVERFLOW"
-    )
-
     val debugLayoutComputationResultFlow = MutableStateFlow<DebugLayoutComputationResult?>(null)
 
     /**
@@ -208,64 +188,24 @@ class LayoutManager(context: Context) {
         }.await().getOrThrow()
     }
 
-    private fun resolveLayoutPackTextKeyData(
-        rawCode: String,
-        rawLabel: String,
-        style: LayoutKeyStyle,
-    ): TextKeyData? {
-        val trimmedCode = rawCode.trim()
-        if (trimmedCode.isBlank()) {
-            return null
-        }
-        val preferredLabel = rawLabel.ifEmpty { trimmedCode }
-        val groupId = when (style) {
-            LayoutKeyStyle.SPECIAL_LEFT -> KeyData.GROUP_LEFT
-            LayoutKeyStyle.SPECIAL_RIGHT -> KeyData.GROUP_RIGHT
-            else -> KeyData.GROUP_DEFAULT
-        }
-
-        val normalizedCode = trimmedCode.uppercase()
-        val lookupKey = internalKeyAliases[normalizedCode] ?: normalizedCode
-        internalKeyMap[lookupKey]?.let { base ->
-            return base.copy(label = preferredLabel, groupId = groupId)
-        }
-
-        val codePointCount = trimmedCode.codePointCount(0, trimmedCode.length)
-        if (codePointCount == 1) {
-            val codePoint = trimmedCode.codePointAt(0)
-            return TextKeyData(
-                type = KeyType.CHARACTER,
-                code = codePoint,
-                label = preferredLabel,
-                groupId = groupId,
-            )
-        }
-
-        trimmedCode.toIntOrNull()?.let { numericCode ->
-            TextKeyData.getCodeInfoAsTextKeyData(numericCode)?.let { base ->
-                return base.copy(label = preferredLabel, groupId = groupId)
-            }
-        }
-
-        return null
-    }
-
-    private fun LayoutKey.toLayoutPackKeyData(pack: LayoutPack, row: LayoutRow): LayoutPackKeyData {
-        val keyData = resolveLayoutPackTextKeyData(code, label, style)
-        if (keyData == null && !spacer) {
+    private fun LayoutPackElement.toLayoutPackKeyData(
+        packId: String,
+        rowId: String,
+    ): LayoutPackKeyData {
+        val keyData = if (isSpacer) null else LayoutPackKeyResolver.resolve(code, label, style)
+        if (keyData == null && !isSpacer) {
+            // Validation refuses a pack with an unresolvable key, so reaching this means a pack was
+            // activated without passing through it. Rendering a hole is still better than crashing
+            // the keyboard, but the log line says the key is gone rather than merely absent.
             flogWarning(LogTopic.LAYOUT_MANAGER) {
-                "Unable to resolve layout pack key '${code}' in row '${row.id}' of pack '${pack.id}'"
+                "Unable to resolve layout pack key '$code' in row '$rowId' of pack '$packId'; " +
+                    "it will render as a gap"
             }
-        }
-        val resolvedData = keyData ?: TextKeyData.UNSPECIFIED.copy(label = label)
-        val widthUnits = when {
-            units > 0 -> units.toFloat()
-            else -> 1f
         }
         return LayoutPackKeyData(
-            delegate = resolvedData,
+            delegate = keyData ?: TextKeyData.UNSPECIFIED.copy(label = label),
             widthUnits = widthUnits,
-            isSpacer = spacer || keyData == null,
+            isSpacer = isSpacer || keyData == null,
         )
     }
 
@@ -491,8 +431,23 @@ class LayoutManager(context: Context) {
         }
     }
 
+    /**
+     * The preference state the pack's visibility conditions are evaluated against.
+     *
+     * Read here and passed in, so [LayoutPackComposition] stays a pure function of pack plus
+     * conditions and can be exercised without a preference store.
+     */
+    private fun layoutPackConditions(): LayoutPackConditions {
+        val profile = prefs.keyboard.activeProfilePrefs()
+        return LayoutPackConditions(
+            modRowsVisible = profile.modRowsVisible.get(),
+            numberRowEnabled = profile.numberRow.get(),
+            devRowEnabled = profile.devRow.get(),
+        )
+    }
+
     suspend fun computeKeyboardFromLayoutPack(
-        pack: LayoutPack,
+        pack: ActiveLayoutPack,
         keyboardMode: KeyboardMode,
         subtype: Subtype,
         editorInfo: FlorisEditorInfo,
@@ -504,38 +459,35 @@ class LayoutManager(context: Context) {
         val extendedPopupsDefault = loadPopupMappingAsync()
         val extendedPopups = loadPopupMappingAsync(subtype)
 
+        val document = pack.document
+        // Which rows a pack contributes is decided by `LayoutPackComposition`, not here, so the
+        // required restart test exercises the same resolution the runtime uses rather than a copy of
+        // it. A schema version 2 pack states each row's role; a migrated version 1 pack carries the
+        // inference's provenance in `pack.roleSources`, and neither is allowed to masquerade as the
+        // other.
+        val resolvedRows = LayoutPackComposition.resolve(pack, layoutPackConditions())
         val computedArrangement: ArrayList<Array<TextKey>> = arrayListOf()
-        // Packs carry no role metadata yet, so roles are decoded explicitly and every inferred one
-        // is flagged as such. Nothing here silently defaults a pack to "all alpha, two mod rows".
         val semanticRows = NormalizedRowsBuilder()
-        for ((packRowI, row) in pack.rows.withIndex()) {
-            if (!row.enabled) {
-                continue
+        for (row in resolvedRows) {
+            val rowKeys = Array(row.elements.size) { index ->
+                TextKey(row.elements[index].toLayoutPackKeyData(document.id, row.rowId))
             }
-            val rowKeys = Array(row.keys.size) { index ->
-                val keySpec = row.keys[index]
-                val keyData = keySpec.toLayoutPackKeyData(pack, row)
-                TextKey(keyData)
-            }
-            if (rowKeys.isNotEmpty()) {
-                computedArrangement.add(rowKeys)
-                val (role, roleSource) = LayoutPackRowSemantics.resolve(row.id)
-                if (roleSource == PackRoleSource.COMPATIBILITY_FALLBACK) {
-                    flogWarning(LogTopic.LAYOUT_MANAGER) {
-                        "layout pack '${pack.id}' row '${row.id}' declares no semantic role; " +
-                            "falling back to $role for compatibility"
-                    }
+            computedArrangement.add(rowKeys)
+            if (!row.roleSource.isPackDeclared) {
+                flogWarning(LogTopic.LAYOUT_MANAGER) {
+                    "layout pack '${document.id}' row '${row.rowId}' did not declare a semantic " +
+                        "role; using ${row.role} via ${row.roleSource}"
                 }
-                semanticRows.add(
-                    role = role,
-                    provenance = RowProvenance.Pack(
-                        packId = pack.id,
-                        rowId = row.id,
-                        sourceRowIndex = packRowI,
-                        roleSource = roleSource,
-                    ),
-                )
             }
+            semanticRows.add(
+                role = row.role,
+                provenance = RowProvenance.Pack(
+                    packId = document.id,
+                    rowId = row.rowId,
+                    sourceRowIndex = row.sourceIndex,
+                    roleSource = row.roleSource,
+                ),
+            )
         }
 
         if (computedArrangement.isNotEmpty()) {

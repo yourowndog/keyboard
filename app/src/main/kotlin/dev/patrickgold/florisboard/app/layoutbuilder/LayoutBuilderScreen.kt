@@ -21,20 +21,27 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import dev.patrickgold.florisboard.R
+import dev.patrickgold.florisboard.ime.keyboard.pack.LayoutPackDocument
+import dev.patrickgold.florisboard.ime.keyboard.pack.LayoutPackProblem
+import dev.patrickgold.florisboard.ime.keyboard.pack.LayoutPackValidation
 import dev.patrickgold.florisboard.keyboardManager
 import dev.patrickgold.florisboard.layoutPackRepository
 import dev.patrickgold.florisboard.lib.compose.FlorisScreen
+import kotlinx.coroutines.launch
 import org.florisboard.lib.compose.stringRes
 
 private data class LayoutBuilderUiState(
-    val workingPack: LayoutPack,
-    val undoStack: List<LayoutPack> = emptyList(),
-    val redoStack: List<LayoutPack> = emptyList(),
+    val workingPack: LayoutPackDocument,
+    val undoStack: List<LayoutPackDocument> = emptyList(),
+    val redoStack: List<LayoutPackDocument> = emptyList(),
+    /** Problems reported by the last import, as opposed to problems with the working pack itself. */
+    val importProblems: List<LayoutPackProblem> = emptyList(),
 )
 
 @Composable
@@ -43,39 +50,47 @@ fun LayoutBuilderScreen() = FlorisScreen {
     previewFieldVisible = false
 
     val context = LocalContext.current
+    val uiScope = rememberCoroutineScope()
     val keyboardManager by context.keyboardManager()
     val repo = context.layoutPackRepository
-    val currentPack by keyboardManager.layoutFlow.collectAsState()
-    var state by remember(currentPack) { mutableStateOf(LayoutBuilderUiState(currentPack)) }
+    val activePack by keyboardManager.layoutFlow.collectAsState()
+
+    // When no pack is selected the builder opens on the bundled pack as an editable starting point.
+    // Opening on the empty "nothing selected" document would show the user a keyboard with no rows
+    // and nothing to edit.
+    val openingPack = remember(activePack) {
+        if (activePack.document.isEmpty) {
+            repo.loadBundled()?.document ?: activePack.document
+        } else {
+            activePack.document
+        }
+    }
+    var state by remember(openingPack) { mutableStateOf(LayoutBuilderUiState(openingPack)) }
 
     val validationErrors = remember(state.workingPack) {
-        LayoutValidation.validatePack(state.workingPack)
+        LayoutPackValidation.validate(state.workingPack)
     }
 
     val importLauncher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri: Uri? ->
         if (uri != null) {
-            try {
-                val pack = repo.load(uri)
-                state = LayoutBuilderUiState(pack)
-                // TODO: Provide user-visible feedback for successful imports.
-            } catch (e: Exception) {
-                // TODO: Provide user-visible feedback for failed imports.
+            val outcome = repo.load(uri)
+            val document = outcome.document
+            state = if (document != null) {
+                LayoutBuilderUiState(document, importProblems = outcome.problems)
+            } else {
+                state.copy(importProblems = outcome.problems)
             }
         }
     }
 
     val exportLauncher = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { uri: Uri? ->
         if (uri != null) {
-            try {
-                repo.save(state.workingPack, uri)
-                // TODO: Provide user-visible feedback for successful exports.
-            } catch (e: Exception) {
-                // TODO: Provide user-visible feedback for failed exports.
-            }
+            repo.export(state.workingPack, uri)
+            // TODO: Provide user-visible feedback for export outcomes.
         }
     }
 
-    fun mutatePack(block: (LayoutPack) -> LayoutPack) {
+    fun mutatePack(block: (LayoutPackDocument) -> LayoutPackDocument) {
         val next = block(state.workingPack)
         if (next != state.workingPack) {
             state = state.copy(
@@ -108,9 +123,13 @@ fun LayoutBuilderScreen() = FlorisScreen {
         }
     }
 
+    // Applying writes a file and a preference, both of which suspend, so it runs in the screen's own
+    // scope rather than on the click.
     fun applyToIme() {
-        keyboardManager.setLayout(state.workingPack).onFailure {
-            // TODO: Provide user-visible feedback for apply failures.
+        uiScope.launch {
+            keyboardManager.setLayout(state.workingPack).onFailure {
+                // TODO: Provide user-visible feedback for apply failures.
+            }
         }
     }
 
@@ -166,6 +185,29 @@ fun LayoutBuilderScreen() = FlorisScreen {
                     text = "${state.workingPack.id} — ${state.workingPack.label}",
                     style = MaterialTheme.typography.bodyLarge,
                 )
+                Text(
+                    text = "Schema ${state.workingPack.schemaVersion}, " +
+                        "${state.workingPack.rows.size} rows",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+
+            if (state.importProblems.isNotEmpty()) {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        text = "The imported file could not be used as-is:",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.error,
+                    )
+                    state.importProblems.forEach { problem ->
+                        Text(
+                            text = problem.describe(),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.error,
+                        )
+                    }
+                }
             }
 
             if (validationErrors.isEmpty()) {
@@ -181,9 +223,9 @@ fun LayoutBuilderScreen() = FlorisScreen {
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.error,
                     )
-                    validationErrors.forEach { error ->
+                    validationErrors.forEach { problem ->
                         Text(
-                            text = error,
+                            text = problem.describe(),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.error,
                         )

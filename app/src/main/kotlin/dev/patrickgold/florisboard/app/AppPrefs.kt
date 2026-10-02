@@ -546,6 +546,28 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
         )
 
         /**
+         * Which layout pack the keyboard composes from, by the pack's own stable id.
+         *
+         * Deliberately its own preference rather than a field of the subtype or a property of the
+         * profile. A pack is a serialized arrangement of semantic rows; a subtype is a language and
+         * its component selection; a profile is an experience and its geometry. Collapsing the pack
+         * into either of the others would mean a user could not keep one arrangement across two
+         * languages, or two arrangements within one profile, and it would make the pack's identity
+         * change whenever an unrelated setting did.
+         *
+         * Blank — the default, and the state of every install that has never applied a pack — means
+         * no pack is selected and the keyboard composes from the bundled extension layouts, which is
+         * what every install does today. `LayoutPackStore.restore` resolves this at startup and uses
+         * the no-pack fallback when the named pack is missing, corrupt, invalid, or written by a
+         * newer build. The stored id is retained so the failure remains diagnosable and a temporarily
+         * unavailable file can be restored later.
+         */
+        val selectedLayoutPackId = string(
+            key = "keyboard__selected_layout_pack_id",
+            default = "",
+        )
+
+        /**
          * The geometry, row visibility, and key customization belonging to one profile.
          *
          * These were global preferences until Stage 04. Everything that stayed global did so

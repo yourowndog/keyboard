@@ -17,6 +17,8 @@
 package dev.patrickgold.florisboard.ime.keyboard
 
 import dev.patrickgold.florisboard.lib.ext.ExtensionComponentName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 /**
  * Stage 01 normalized semantic row model.
@@ -38,27 +40,48 @@ import dev.patrickgold.florisboard.lib.ext.ExtensionComponentName
  * and the merged Space/punctuation/action row does not become [CODING_UTILITY] because its asset
  * happens to live in a directory historically named `mod`.
  */
+@Serializable
 enum class SemanticRowRole(internal val idPrefix: String) {
     /** Letter-entry row. */
+    @SerialName("alpha")
     ALPHA("alpha"),
 
     /** The main Space/punctuation/action row. Present in both Text and Coding. */
+    @SerialName("primary_action")
     PRIMARY_ACTION("primary_action"),
 
     /** A Coding utility row: navigation, arrows, Escape, modifiers and related controls. */
+    @SerialName("coding_utility")
     CODING_UTILITY("coding_utility"),
 
     /** An explicitly inserted extension row, such as the number row or the developer row. */
+    @SerialName("extension")
     EXTENSION("extension"),
 
     /** Numeric-entry row (Numeric, Numeric-Advanced, Phone, Phone2). */
+    @SerialName("numeric")
     NUMERIC("numeric"),
 
     /** Symbol-entry row. */
+    @SerialName("symbol")
     SYMBOL("symbol"),
 
     /** Loading-only row. Never persisted and never customizable. */
+    @SerialName("placeholder")
     PLACEHOLDER("placeholder"),
+    ;
+
+    companion object {
+        /**
+         * The role whose serialized name is [name], or null when nothing matches.
+         *
+         * Stage 06 writes roles into layout packs, so this vocabulary is now persisted user data.
+         * The serial names above are deliberately the same strings as [idPrefix] — one vocabulary
+         * for stable row IDs and for pack metadata, rather than two that can drift. An annotation
+         * cannot be derived from a property, so `LayoutPackSchemaTest` pins the equality instead.
+         */
+        fun fromSerialName(name: String?): SemanticRowRole? = entries.find { it.idPrefix == name }
+    }
 }
 
 /**
@@ -97,15 +120,37 @@ sealed interface RowProvenance {
 /**
  * How a layout-pack row's [SemanticRowRole] was determined.
  *
- * Packs written before Stage 06 carry no role metadata, so their roles are inferred. Recording the
- * source keeps an inferred role from being mistaken for pack-declared metadata.
+ * Schema version 1 packs carry no role metadata, so their roles are inferred. Recording the source
+ * keeps an inferred role from being mistaken for pack-declared metadata. The four sources are
+ * ordered by how much the pack actually said, most to least.
  */
 enum class PackRoleSource {
+    /**
+     * The pack declared a `role` field. Only a schema version 2 or later pack can reach this, and
+     * it is the only source that is pack *metadata* rather than an inference.
+     */
+    DECLARED_ROLE,
+
     /** The pack's row id named a known role. */
     DECLARED_ROW_ID,
 
+    /**
+     * The row id is a known historical id — `row_letters_top`, `row_space` and friends — and was
+     * resolved through [LayoutPackRowSemantics.LEGACY_ROW_IDS].
+     *
+     * This is deliberately distinct from [DECLARED_ROW_ID]: a legacy id is not authoritative
+     * semantics, it is a documented guess about what the pack author meant. Stage 06 requires the
+     * guess to be explicit and named rather than implied by the id's spelling.
+     */
+    COMPATIBILITY_MAPPING,
+
     /** The pack was ambiguous and the row fell back to the documented compatibility role. */
     COMPATIBILITY_FALLBACK,
+    ;
+
+    /** Whether the pack itself stated the role, as opposed to the role having been inferred. */
+    val isPackDeclared: Boolean
+        get() = this == DECLARED_ROLE
 }
 
 /**
@@ -234,29 +279,64 @@ internal fun KeyboardMode.mainRowRole(): SemanticRowRole = when (this) {
 }
 
 /**
- * Maps a layout-pack row onto a semantic role.
+ * Maps a layout-pack row with no declared role onto a semantic role.
  *
- * Packs have no role metadata yet (Stage 06 adds a versioned schema), so this is an explicit
- * compatibility decoder, not a native reader. A row whose id names a known role is taken at its
- * word; anything else is genuinely ambiguous and falls back to [SemanticRowRole.ALPHA] — the role
- * whose geometry pack rows already receive — flagged as
- * [PackRoleSource.COMPATIBILITY_FALLBACK] so callers can tell an inferred role from a declared one.
+ * A schema version 2 pack states its roles and never comes here. This is the compatibility decoder
+ * for schema version 1 packs, which carry no role metadata at all, and it resolves a row id in
+ * three documented steps:
+ *
+ * 1. the id *is* a role name (`alpha`, `primary_action`, …) — taken at its word,
+ *    [PackRoleSource.DECLARED_ROW_ID];
+ * 2. the id is a known historical id listed in [LEGACY_ROW_IDS] — mapped explicitly,
+ *    [PackRoleSource.COMPATIBILITY_MAPPING];
+ * 3. anything else is genuinely ambiguous and falls back to [COMPATIBILITY_FALLBACK_ROLE] — the
+ *    role whose geometry pack rows already receive — flagged
+ *    [PackRoleSource.COMPATIBILITY_FALLBACK].
+ *
+ * Step 2 exists because Stage 06 forbids treating ids such as `row_letters_*` or `row_space` as
+ * authoritative semantics *without an explicit compatibility mapping*. The table below is that
+ * mapping, and a row resolved through it is never reported as pack-declared.
  */
 object LayoutPackRowSemantics {
 
     /** The role assigned to a pack row that declares nothing recognisable. */
     val COMPATIBILITY_FALLBACK_ROLE = SemanticRowRole.ALPHA
 
+    /**
+     * Historical schema version 1 row ids and what they are taken to mean.
+     *
+     * Every entry is a decision about an existing on-disk pack, not a naming convention for new
+     * ones: version 2 packs declare `role` and must not rely on any of these spellings. The bundled
+     * `layouts/lcars_hacker_en_us.json` supplies the first four; the rest are the ids the Layout
+     * Builder's own row-insertion labels produce.
+     */
+    val LEGACY_ROW_IDS: Map<String, SemanticRowRole> = mapOf(
+        "row_letters_top" to SemanticRowRole.ALPHA,
+        "row_letters_home" to SemanticRowRole.ALPHA,
+        "row_letters_bottom" to SemanticRowRole.ALPHA,
+        "row_space" to SemanticRowRole.PRIMARY_ACTION,
+        "row_alpha" to SemanticRowRole.ALPHA,
+        "row_letters" to SemanticRowRole.ALPHA,
+        "row_primary" to SemanticRowRole.PRIMARY_ACTION,
+        "row_primary_action" to SemanticRowRole.PRIMARY_ACTION,
+        "row_number" to SemanticRowRole.EXTENSION,
+        "row_numbers" to SemanticRowRole.EXTENSION,
+        "row_dev" to SemanticRowRole.EXTENSION,
+        "row_mod" to SemanticRowRole.CODING_UTILITY,
+        "row_utility" to SemanticRowRole.CODING_UTILITY,
+        "row_ctrl" to SemanticRowRole.CODING_UTILITY,
+        "row_symbols" to SemanticRowRole.SYMBOL,
+        "row_numeric" to SemanticRowRole.NUMERIC,
+    )
+
     private val declaredRoles: Map<String, SemanticRowRole> =
         SemanticRowRole.entries.associateBy { it.idPrefix }
 
     /** Resolves [rowId] to a role and records how that role was determined. */
     fun resolve(rowId: String): Pair<SemanticRowRole, PackRoleSource> {
-        val declared = declaredRoles[rowId.trim().lowercase()]
-        return if (declared != null) {
-            declared to PackRoleSource.DECLARED_ROW_ID
-        } else {
-            COMPATIBILITY_FALLBACK_ROLE to PackRoleSource.COMPATIBILITY_FALLBACK
-        }
+        val normalized = rowId.trim().lowercase()
+        declaredRoles[normalized]?.let { return it to PackRoleSource.DECLARED_ROW_ID }
+        LEGACY_ROW_IDS[normalized]?.let { return it to PackRoleSource.COMPATIBILITY_MAPPING }
+        return COMPATIBILITY_FALLBACK_ROLE to PackRoleSource.COMPATIBILITY_FALLBACK
     }
 }
