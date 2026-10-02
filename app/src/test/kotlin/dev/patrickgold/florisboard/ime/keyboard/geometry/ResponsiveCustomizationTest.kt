@@ -21,20 +21,17 @@ import dev.patrickgold.florisboard.ime.keyboard.CustomizationTarget
 import dev.patrickgold.florisboard.ime.keyboard.KeyCustomization
 import dev.patrickgold.florisboard.ime.keyboard.KeyCustomizationDocument
 import dev.patrickgold.florisboard.ime.keyboard.KeyCustomizationManager
-import dev.patrickgold.florisboard.ime.keyboard.SemanticItemKind
-import dev.patrickgold.florisboard.ime.keyboard.SemanticRow
-import dev.patrickgold.florisboard.ime.keyboard.SemanticRowItem
 import dev.patrickgold.florisboard.ime.keyboard.SemanticRowRole
 import dev.patrickgold.florisboard.ime.keyboard.StructuralCustomization
 import dev.patrickgold.florisboard.ime.keyboard.TouchCustomization
 import dev.patrickgold.florisboard.ime.keyboard.VisualCustomization
 import dev.patrickgold.florisboard.ime.text.key.KeyCode
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
-import org.junit.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 class ResponsiveCustomizationTest {
 
@@ -155,32 +152,42 @@ class ResponsiveCustomizationTest {
 
     @Test
     fun `solver item width and grow weight overrides take effect responsive to geometry`() {
-        val row = GeometryRow(
-            stableId = "row_test",
+        val alphaRow = GeometryRow(
+            stableId = "row_alpha",
+            role = SemanticRowRole.ALPHA,
+            items = (0 until 10).map { i ->
+                GeometryItem(stableId = "alpha_$i", kind = GeometryItemKind.KEY, widthUnits = 1.0, growWeight = 0.0)
+            },
+        )
+        val primaryRow = GeometryRow(
+            stableId = "row_primary",
             role = SemanticRowRole.PRIMARY_ACTION,
             items = listOf(
-                GeometryItem(stableId = "item1", kind = ItemKind.KEY, widthUnits = 1.0, growWeight = 0.0),
-                GeometryItem(stableId = "item2_space", kind = ItemKind.KEY, widthUnits = 4.0, growWeight = 1.0),
-                GeometryItem(stableId = "item3", kind = ItemKind.KEY, widthUnits = 1.0, growWeight = 0.0),
+                GeometryItem(stableId = "item1", kind = GeometryItemKind.KEY, widthUnits = 1.0, growWeight = 0.0),
+                GeometryItem(stableId = "item2_space", kind = GeometryItemKind.KEY, widthUnits = 4.0, growWeight = 1.0),
+                GeometryItem(stableId = "item3", kind = GeometryItemKind.KEY, widthUnits = 1.0, growWeight = 0.0),
             ),
         )
 
         val defaultInput = GeometrySolverInput(
             availableWidth = 600.0,
-            rows = listOf(row),
-            framePolicy = FramePolicy.Intrinsic(100),
+            rows = listOf(alphaRow, primaryRow),
+            framePolicy = FramePolicy.Intrinsic(100.0),
             rowHeightPolicy = RowHeightPolicy(),
             gapPolicy = BoundaryGapPolicy(),
             widthPolicy = RowWidthPolicy(
-                sharedReference = SharedWidthReference(measuredRoles = setOf(SemanticRowRole.PRIMARY_ACTION)),
+                sharedReference = SharedWidthReference(
+                    measuredRoles = setOf(SemanticRowRole.ALPHA),
+                    consumerRoles = setOf(SemanticRowRole.ALPHA, SemanticRowRole.PRIMARY_ACTION),
+                ),
                 alignment = RowAlignment.CENTER,
             ),
             overrides = GeometryOverrides(),
         )
 
         val defaultSolution = KeyboardGeometrySolver.solve(defaultInput) as GeometrySolution.Solved
-        val defaultItem1Width = defaultSolution.geometry.rows[0].items[0].bounds.width
-        val defaultSpaceWidth = defaultSolution.geometry.rows[0].items[1].bounds.width
+        val defaultItem1Width = defaultSolution.geometry.rows[1].items[0].bounds.width
+        val defaultSpaceWidth = defaultSolution.geometry.rows[1].items[1].bounds.width
 
         // Now apply structural override: expand item1 by 1.5x width
         val overrideInput = defaultInput.copy(
@@ -189,8 +196,8 @@ class ResponsiveCustomizationTest {
             ),
         )
         val overriddenSolution = KeyboardGeometrySolver.solve(overrideInput) as GeometrySolution.Solved
-        val overriddenItem1Width = overriddenSolution.geometry.rows[0].items[0].bounds.width
-        val overriddenSpaceWidth = overriddenSolution.geometry.rows[0].items[1].bounds.width
+        val overriddenItem1Width = overriddenSolution.geometry.rows[1].items[0].bounds.width
+        val overriddenSpaceWidth = overriddenSolution.geometry.rows[1].items[1].bounds.width
 
         assertTrue(overriddenItem1Width > defaultItem1Width)
         // In a fixed container with flexible space, space absorbs the remainder without breaking row bounds
