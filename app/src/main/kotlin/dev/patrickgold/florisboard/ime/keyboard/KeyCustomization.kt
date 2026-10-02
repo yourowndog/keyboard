@@ -171,6 +171,31 @@ data class KeyCustomization(
     val heightFactor: Float = structural.heightFactor,
     val widthFactor: Float = structural.widthFactor,
 ) {
+    constructor(
+        widthFactor: Float = 1.0f,
+        heightFactor: Float = 1.0f,
+        paddingTop: Float = 0f,
+        paddingBottom: Float = 0f,
+        paddingLeft: Float = 0f,
+        paddingRight: Float = 0f,
+        target: CustomizationTarget = CustomizationTarget(),
+    ) : this(
+        target = target,
+        structural = StructuralCustomization(heightFactor = heightFactor, widthFactor = widthFactor),
+        touch = TouchCustomization(),
+        visual = VisualCustomization(
+            paddingTop = paddingTop,
+            paddingBottom = paddingBottom,
+            paddingLeft = paddingLeft,
+            paddingRight = paddingRight,
+        ),
+        paddingTop = paddingTop,
+        paddingBottom = paddingBottom,
+        paddingLeft = paddingLeft,
+        paddingRight = paddingRight,
+        heightFactor = heightFactor,
+        widthFactor = widthFactor,
+    )
     fun isDefault(): Boolean = structural.isDefault() && touch.isDefault() && visual.isDefault()
 
     fun sanitized(): KeyCustomization = KeyCustomization(
