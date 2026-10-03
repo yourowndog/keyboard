@@ -54,7 +54,7 @@ class TextKey(override val data: AbstractKeyData) : Key(data) {
             computedData = TextKeyData.UNSPECIFIED
             computedPopups.clear()
             isEnabled = false
-            isVisible = false
+            applyVisibility(false)
         } else {
             computedData = computed
             computedPopups.clear()
@@ -117,7 +117,7 @@ class TextKey(override val data: AbstractKeyData) : Key(data) {
                 }
             }
             isEnabled = evaluator.evaluateEnabled(computed)
-            isVisible = true
+            applyVisibility(true)
 
             // No geometry is decided here. A key's structural width is a property of the row it
             // sits in, so it is stated once, by role, in
