@@ -46,6 +46,17 @@ so recovery cannot fan out into many simultaneous Titan requests. A manual
 Voice Inbox Retry instead uses the provider currently selected in the voice UI,
 which makes an explicit switch from a creditless or unavailable provider useful.
 
+A single take's transcription is bounded by a watchdog. `WhisperClient` already
+caps each HTTP call (connect 10 s / read 180 s / call 240 s), but a take can hold
+the transcription mutex across several chunked calls plus their rate-limit retry
+delays, so a relay that is merely slow or rate-limited could stall the whole voice
+pipeline for tens of minutes. `KeyboardManager` fails the take after a 10-minute
+wall-clock cap on that mutex, marks it Failed (recoverable from Voice Inbox), and
+lets the queue move on. The automatic pending drain likewise skips a take that
+cannot be transcribed by either its pinned provider or the currently-selected
+provider on that pass; the take stays pending for the next drain trigger instead
+of holding the takes queued behind it hostage.
+
 Voice capture is owned by the application-scoped `KeyboardManager`, not by a
 Compose view. A non-finishing input-view restart can therefore reattach to the
 same recording/transcription state after rotation. If the input session,

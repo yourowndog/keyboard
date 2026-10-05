@@ -97,6 +97,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.florisboard.lib.android.AndroidKeyguardManager
@@ -110,6 +111,16 @@ import java.util.concurrent.atomic.AtomicInteger
 
 
 private val DoubleSpacePeriodMatcher = """([^.!?‽\s]\s)""".toRegex()
+
+/**
+ * Watchdog bounding how long a single take may hold the voice transcription mutex. WhisperClient
+ * already caps each HTTP call (connect 10s / read 180s / call 240s), but a take is free to hold
+ * [transcriptionMutex] across many chunked calls plus their 429 retry delays — up to ~20 minutes of
+ * bare Retry-After delay per chunk — so a slowly-stalled relay can starve every other take and every
+ * manual retry that serialize on the mutex. Failing the take at this cap is deliberate: it stays
+ * recoverable from Voice Inbox, and the drain can move past it instead of blocking the whole queue.
+ */
+private val TranscriptionWatchdogMillis = 10L * 60 * 1000
 
 internal fun shouldClearTmuxPrefixVisualState(isActive: Boolean, nextKeyCode: Int): Boolean {
     return isActive && nextKeyCode != KeyCode.TMUX_PREFIX
@@ -481,9 +492,19 @@ class KeyboardManager(
     ): VoiceTranscriptionOutcome? = transcriptionMutex.withLock {
         val voiceManager = appContext.voiceManager().value
         voiceManager.markTranscribing(audioFile, provider)
-        val transcription = WhisperClient.transcribe(audioFile, provider).getOrElse { error ->
-            voiceManager.markFailed(audioFile, provider, error.message ?: error.javaClass.simpleName)
+        val transcribeResult = withTimeoutOrNull(TranscriptionWatchdogMillis) {
+            WhisperClient.transcribe(audioFile, provider)
+        }
+        val transcription = if (transcribeResult == null) {
+            // The relay stalled for the whole watchdog window while holding the mutex. Mark the
+            // take failed so the drain can skip it; it remains recoverable from Voice Inbox.
+            voiceManager.markFailed(audioFile, provider, "Transcription timed out after ${TranscriptionWatchdogMillis / 1000}s")
             return@withLock null
+        } else {
+            transcribeResult.getOrElse { error ->
+                voiceManager.markFailed(audioFile, provider, error.message ?: error.javaClass.simpleName)
+                return@withLock null
+            }
         }
         val rawText = transcription.text
         val cleanedText = applyDictionaryFixups(rawText)
@@ -528,8 +549,14 @@ class KeyboardManager(
 
     private suspend fun drainPendingSequentially() {
         val voiceManager = appContext.voiceManager().value
+        // A take that fails for both its pinned provider and the currently-selected provider is
+        // "stuck" for this pass. Leave it pending (it is not lost — it is retried on the next drain
+        // trigger or startup) but move on to the remaining takes, so one unreachable or hung take
+        // cannot hold the queue behind it hostage. Each take is attempted at most once per pass.
+        val attemptedThisPass = mutableSetOf<String>()
         while (true) {
-            val pending = voiceManager.getPendingFiles().firstOrNull() ?: return
+            val pending = voiceManager.getPendingFiles().firstOrNull { it.filePath !in attemptedThisPass } ?: return
+            attemptedThisPass.add(pending.filePath)
             val audioFile = File(pending.filePath)
             if (!audioFile.exists()) {
                 voiceManager.markFailed(audioFile, pending.provider, "Audio file is no longer available")
@@ -541,10 +568,11 @@ class KeyboardManager(
             // node that has since gone offline must not strand the queue. A capture pinned to an
             // unreachable Titan is otherwise replayed on every keyboard start, ahead of everything
             // queued behind it, and no amount of changing the picker reaches it. Fall back to the
-            // provider the user currently has selected before giving up on this pass.
+            // provider the user currently has selected before treating the take as stuck this pass.
             val current = voiceManager.transcriptionProvider.value
-            if (current == pending.provider) return
-            if (transcribeTake(audioFile, current, capture = null) == null) return
+            if (current != pending.provider) {
+                transcribeTake(audioFile, current, capture = null)
+            }
         }
     }
 
