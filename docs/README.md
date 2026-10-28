@@ -21,6 +21,8 @@ current behavior from plans, experiments, and history.
 
 ## Start here
 
+- [LCARS slate reference programme](design/slate-reference-2026-10/README.md): source images,
+  visual anatomy, runtime gaps, and ordered delegation cards for the new design direction.
 - [Planning state](planning-state.md): project-wide workstreams, numbered programmes,
   acceptance limits, Git landmarks, and the next reconciliation pass (2026-10-28).
 - [Roadmap](roadmap.md): unfinished product work, the keyboard/voice-lab seam,

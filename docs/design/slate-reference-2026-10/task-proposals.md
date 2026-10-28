@@ -1,0 +1,66 @@
+# Reference-clone task architecture
+
+Planning proposals, 2026-10-28. These are candidate task boundaries for integration by the parent, not completed implementation or a runtime acceptance report.
+
+## Controlling visual decision
+
+The slate-gray keyboard with coral and cyan accents is the primary target. The peach keyboard and blue/teal treatments are secondary variants. Clone the primary keyboard's physical composition before final palette authoring. The screenshots are raster reference evidence, never runtime keyboard assets.
+
+Visible primary relationships include a black backing field; three staggered alpha rows; a small upper panel and a larger lower letter panel at each position; a slate left shift control with coral circular center/rings; a special right delete assembly; outlined EMOJI and LANG controls separated from MENU by a coral bar; a segmented VOICE assembly; a broad lower instrument/space region; and a tall right Enter assembly with an inset curved line. The lower instrument is most legible in upload 01's middle panel. Different screenshots crop and obstruct different parts.
+
+No still proves whether upper panels are independent tap regions, long-press hints, previews, or persistent subkeys. No popup is unambiguously shown hovering above a pressed key. Preserve current input semantics until a task explicitly establishes the mapping. Draw observed halves without inventing new actions. Likewise, dots and traces are visible but no animation or signal meaning is established.
+
+## Existing programme reconciliation
+
+- KeyGeo Stage 07 already owns instance-aware structural overrides, reflow, validation, old customization migration, and declared structural/touch/visual layers. Reuse it; do not create an independent reference-clone rectangle layout engine.
+- Stage 08 already owns a real Text profile, independent Text/Coding defaults, settings selection, and persisted active profile. The reference is a conventional alpha layout, but adopting that as Text must use that programme. Do not replace the user's Coding profile or call hidden Coding utilities a completed Text profile.
+- Stage 09 owns removal only after consumers and migration coverage prove it safe. New reference work is not permission to delete legacy assets or fields early.
+- The old design branch's ROADMAP contains **C0–C17**, not only C0–C5. C1 geometry, C2 lab, C5 semantic theme adapter, C6 separate heights, C7 live mounting, C8/C9 content zoning, C10/C11 surface/opacity, C12/C13 deck/join, C14 matrix, C15 rollout, C16/C17 voice instruments all exist as planned boundaries.
+- The old asymmetric left elbow and thin rail are a different composition from these keyboard references. The new visual preference supersedes that *target topology*, while preserving reusable geometry, clipping, lab, theme, fallback, and verification infrastructure. Do not force an elbow into the reference's black field, or run C3/C4/C13 merely to satisfy old numbering.
+- Reuse existing opacity work where relevant. This reference needs opaque black behind its keys, so new transparent-window research is not a prerequisite for the clone. Visual transparency and touch pass-through remain separate.
+- Voice C16/C17 animation programmes are later optional work; reference decoration must not be presented as a real meter, progress reading, or recording state without a truthful data binding.
+
+## Task cards
+
+Each card is a separately reviewable change. Source and unit evidence can close model tasks; production geometry/touch behavior requires a known-build device checkpoint. A task report must contain base and tip commit, touched files, tests/results, before/after evidence, residual unknowns, and the next eligible task. No worker should pull unrelated dirty changes into its branch.
+
+| ID | Work item | Depends on | Small scope and acceptance | Explicit non-goals |
+|---|---|---|---|---|
+| RC-00 | Preserve and classify reference evidence | None | Commit original three JPGs, hashes, panel coordinates, obstruction masks/notes, primary/secondary designation, and an observation-versus-inference register. Complete primary keyboard is assembled conceptually from overlapping views, never hallucinated under overlays. | No image resynthesis, inferred interactions, code changes |
+| RC-01 | Choose integration baseline and feature boundary | RC-00 | Audit Stage06 verified ref versus current dirty checkout; record what is integrated, candidate-only, or missing. Select a clean base and reversible reference-design selector; document Text/Coding consequences. | No sweeping merge or device install |
+| RC-01a | Integrate one missing baseline capability | RC-01 | Conditional repeatable prerequisite: RC-01 emits one numbered subcard per missing capability/commit slice. Port and review one slice per run, preserving spatial, harvest, correction and voice contracts with relevant checks. Record the final accepted integrated tip. Close without code only if RC-01 proves all capabilities are already present. | No sweeping merge, dirty-worktree adoption, device default switch or unrelated redesign |
+| RC-02 | Freeze measurable composition contract | RC-00, RC-01 | Define normalized row bands, 10/9/7 alpha positions, stagger, upper/lower panel fractions, gaps, header and bottom bays, right-side special envelopes. Mark approximations and use dimensionless ratios; keep fixed screenshot pixels out of runtime. | No full renderer or guessed popup semantics |
+| RC-03 | Confirm Stage07 identity and structural input substrate | RC-01, accepted RC-01a gate | If not already implemented, deliver the Stage07 identity/schema slice: stable profile/layout/row/key-instance targets, migration fixtures, distinct structural/touch/visual overrides. Retain ambiguous legacy entries recoverably. | No appearance redesign or controls UI |
+| RC-03a | Define separate presentation contract | RC-01, RC-02, accepted RC-01a gate | Resolve variant/layout/key-instance presentation IDs into cap primitives, band metrics and semantic theme/type roles. Version persistence only if required; prove fallback. Stage06 pack `style` remains popup grouping and contains no visual paths/colors. | No misuse of structural pack schema or second solver |
+| RC-04 | Solve reference row allocations | RC-02, RC-03 | Feed reference template units, spacers, gaps and asymmetric edge envelopes into the single solver; test conservation, non-overlap, minimum width, rotations, duplicate key codes and invalid inputs. | No second geometry authority or post-layout rectangle mutation |
+| RC-05 | Draw split cap surfaces on one existing key | RC-02, RC-03a, RC-04 | Introduce reusable primary/secondary surface geometry: shared width, explicit separator, independent role fills and label anchors. Fixture shows a letter plus its visible upper symbol; correct clipping/pixel alignment at several densities. | No independent upper-region action until interaction contract established |
+| RC-06 | Define split-surface interaction and accessibility contract | RC-05 | Inventory current secondary symbols/long-press semantics; explicitly choose preserving them for initial clone. Test pointer ownership, long press, repeat, glide, accessibility labels and upper-panel taps. If separate actions are later requested, treat that as a new binding change. | No inferred gesture or accidental duplicate input |
+| RC-07 | Add analytic special-key shape primitives | RC-03a, RC-04 | Half-disc/flat-end forms, rings, inset corner curves and small segmented bars are native shapes with named radii. Monochrome fixtures at multiple sizes; paint bounds and touch envelopes are distinct. | No palette freeze, arbitrary Bezier dump, or raster keys |
+| RC-08 | Assemble shift and delete controls | RC-06, RC-07 | Shift cap plus ring/disc; right delete upper stripe/perforation treatment and lower label. Preserve Shift/caps/repeat-delete actions; edge tapping and long-press tests. Decorative holes do not create touch holes. | No new state meanings assigned to coral without mapping |
+| RC-09 | Assemble bottom action region and Enter | RC-03a, RC-04, RC-07 | Allocate 123/comma and period/Enter envelopes plus center Space/instrument envelope; render inset Enter curve and center decorative geometry. Verify no lost Space target or changed Enter action; bottom-edge touch remains available. | No permanent Space gesture or fake instrument state |
+| RC-10 | Resolve and package condensed typography | RC-02 | Select available/licensed font or document a metrically close fallback; measure MENU/EMOJI/LANG/VOICE, tall alpha glyphs and small symbols at target widths/font scales. Explicit baseline/anchor behavior avoids clipping. | No pretending screenshot font identity is known |
+| RC-11 | Compose reference Smartbar controls | RC-03a, RC-07, RC-10 | Adapt existing zones to MENU, EMOJI, LANG, VOICE composition with coral divider and cyan terminal segment. MENU and LANG must map to existing reachable behavior or show a documented disabled/fallback state. Candidate/expanded/autofill/voice views remain reachable. | No deletion of suggestion functionality or voice lifecycle redesign |
+| RC-12 | Repair popup geometry for new surfaces | RC-05, RC-06, RC-08, RC-09 | Inspect existing previews/extended popups, anchor to declared visual/structural inputs, constrain edge placement, show native-resolution evidence for center and edge keys. Keep upper static panels distinguished from transient popups. | No claim that screenshots establish popup animation, shape or timing |
+| RC-13 | Mount monochrome reference composition | RC-08, RC-09, RC-10, RC-11, RC-12 | Mount behind reversible selector; screenshot must prove actual live path. Existing theme/profile remains selectable. Freeze geometry and touch correctness before final colors. | No device default switch or final palette claim |
+| RC-14 | Bind slate/coral/cyan semantic roles | RC-13 | Snygg adapter supplies fills, outlines, labels, states and accent roles without moving geometry. Provisional sampled colors marked approximate; validate pressed/disabled/caps/voice/error contrast and unknown-role fallback. | No geometry encoded in palette files; no premature peach/teal tuning |
+| RC-15 | Primary visual fidelity and device acceptance | RC-14 | Compare known-build screenshots to normalized reference at matching content bounds. Score row/stagger, gaps, panel fractions, special shapes, label anchors, header, bottom region separately. Record visible deviations; exercise modes, profiles, rotation, height changes, bottom offset, popups, inline autofill, voice state, and frame timing. | No pixel-perfect claim under unknown source scaling/obstruction |
+| RC-16 | Secondary variants, naming and rollout | RC-15 | Derive peach and teal from same accepted geometry, add distinct provisional LCARS names pending Sam's naming choice, preserve classic fallback, update closest canonical docs. Make default only after device acceptance and explicit rollout scope. | No alternate layout engine or automatic paid service changes |
+
+## Suggested dispatch order and concurrency
+
+RC-00/01/02 are the first batch: evidence and code reconnaissance can run independently, but RC-02 consumes both results before freezing ratios. RC-01a closes the integration gate through one scoped subcard per missing capability before runtime implementation. RC-03 then RC-04 supply shared structural ownership; RC-03a supplies the presentation contract for all new shape/key/header consumers. RC-10 typography research can run alongside these; it must consume the measured bands before metrics are frozen.
+
+After RC-04, independent workers can implement RC-05 split surfaces and RC-07 shape primitives on separate branches. Their reviewed results unlock RC-06/08/09. RC-11 header and RC-12 popup work are separate tasks after their prerequisites. RC-13 is a deliberate integration checkpoint, not a blind merge of all workers. RC-14 palette comes after structural review. RC-15 is required before expansion to RC-16.
+
+Do not begin all tasks simultaneously. Dispatch only cards whose dependencies and baseline are accepted. Maintain one owner per touching subsystem; serialize solver consumers when they share types or source files. Agent completion is not acceptance: independent review must verify actual mounted path and committed evidence.
+
+## Unresolved questions that should not block initial evidence work
+
+- Original source image/video resolution and exact font identity are unavailable.
+- Split cap interactive semantics are unknown; preserve current key behavior initially.
+- The lower center may be a Space surface with decoration or separate instrument area; confirm the action mapping before shipping.
+- Coral shift dot state and top/bottom small indicator meanings are unknown.
+- The primary reference may be cropped on the right; measure relative internal landmarks rather than assuming its panel width is final device width.
+- Names for the new themes are not yet selected. Use descriptive working IDs in plans; do not silently rename existing themes.
+
+These are evidence/interaction issues, not reasons to ask Sam to supervise the decomposition overnight. Record a conservative assumption, keep it reversible, and continue independent prerequisites.

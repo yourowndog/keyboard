@@ -62,6 +62,13 @@ a later verified stage does not by itself prove every earlier matrix cell passed
 
 ## 2. Appearance — opacity and LCARS chassis
 
+**Direction update, October 28:** Sam selected the supplied slate/coral/cyan keyboard as the
+primary near-clone target. See the [reference programme](design/slate-reference-2026-10/README.md)
+and [delegation queue](design/slate-reference-2026-10/delegation-backlog.md). Its split keycaps,
+special controls and black deck supersede the old elbow topology as the immediate visual target.
+Retain reusable geometry/theme/fallback infrastructure; outer transparency is not a prerequisite.
+The sequence below describes the preceding chassis programme.
+
 The agreed sequence is:
 
 **Opacity foundation → unified LCARS chassis → visual audit → further inspiration.**
@@ -78,6 +85,22 @@ Visual transparency must not introduce touch pass-through.
 | C3 | Primary LCARS elbow |
 | C4 | Secondary band, channel, and instrument viewport clipping |
 | C5 | Semantic Snygg theme-role adapter and cross-theme fallback |
+| C6 | Separate main and auxiliary Smartbar heights |
+| C7 | Live Smartbar mount behind a debug switch |
+| C8 | Normal Smartbar content zoning |
+| C9 | Voice content zoning with the existing waveform |
+| C10 | Controlled alpha probe |
+| C11 | SurfaceView redraw repair or bypass |
+| C12 | Shaped opaque key deck |
+| C13 | Join elbow and deck |
+| C14 | Device matrix and performance |
+| C15 | Sam-default rollout with fallback |
+| C16 | Truthful voice instrument |
+| C17 | Deterministic processing instrument |
+
+Correction: the original summary stopped at C5; inspection of the specification branch
+confirmed the complete programme is C0–C17. The new reference packet records what to reuse
+and which topology-specific work is superseded.
 
 These C checkpoints are separate from the KeyGeo stage numbers. Geometry owns
 measurements, paths, clipping, and touch allocation; Snygg supplies appearance and state.
