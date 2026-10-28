@@ -21,6 +21,8 @@ current behavior from plans, experiments, and history.
 
 ## Start here
 
+- [Planning state](planning-state.md): project-wide workstreams, numbered programmes,
+  acceptance limits, Git landmarks, and the next reconciliation pass (2026-10-28).
 - [Roadmap](roadmap.md): unfinished product work, the keyboard/voice-lab seam,
   and sequencing.
 - [System map](architecture/system-map.md): modules, runtime entry points, and
