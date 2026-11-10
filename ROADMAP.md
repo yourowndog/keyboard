@@ -61,6 +61,60 @@ separately testable from visible bounds.
 
 ## Appearance
 
+### LCARS Jefferies: remaining phases
+
+The stylesheet-only phase is done and awaits device validation. See
+`docs/theming/lcars-jefferies.md` for what the theme engine can and cannot
+express here. Remaining work, in order, each gated on device validation:
+
+**Pick the typeface.** Four variants ship (Chakra Petch, Oxanium, Saira
+Condensed, Rajdhani). Judge on device, then collapse to the winner per
+`tools/theme/README.md`.
+
+**Stacked hint plates.** The signature of the reference: each letter key is a
+two-plate stack, with the symbol layer permanently visible above the cap rather
+than hidden behind a long press. The data already exists and is already aligned
+1:1 — `LayoutManager.addRowHints()` populates `computedSymbolHint` and
+`computedNumberHint` from the symbols layout, indexed against the letter row.
+Today `TextKeyButton` draws it as a corner glyph. Needs a new `key-plate`
+element in `FlorisImeUi`, a column in `TextKeyButton`, and a row-height budget
+in `FlorisImeSizing.keyboardUiHeight()` — which counts rows in two places, so
+both must be checked.
+
+Start render-only, with no touch behavior change: long-press and swipe-up keep
+working exactly as now. Volatile hitboxes are the main risk to typing accuracy,
+so plate tappability is deliberately deferred.
+
+**Ornament layer.** The artwork Snygg cannot express: the delete grille and its
+coral rule, the spacebar line art and cyan dot run, the shift ring, the
+smartbar divider rules and pill. Proposed shape is a registry of
+`keycode -> composable` drawn inside the key's `SnyggBox`, reading its colors
+from the resolved Snygg style so ornaments re-theme instead of hard-coding hex
+in Kotlin. `VoiceVisualizer` and `WhisperBar` in `Smartbar.kt` are the
+precedent. Ornaments should query their own registered elements rather than
+motivating new Snygg engine features.
+
+**Smartbar relayout.** The reference is a fixed `MENU | EMOJI | LANG | ... |
+VOICE` strip of wide text buttons, with candidates swapping in while typing.
+`QuickActionButton` hard-codes `Modifier.aspectRatio(1f)`, forcing every action
+key square; that constraint has to come out first.
+
+**Motion.** Spacebar dot animation and press transitions, once the ornament
+layer exists.
+
+**Later, optional: plate tappability as a preference.** Numbers tappable (the
+top row is the safe one), symbol rows hold-only or behind a modifier chord.
+Only after the render-only plates have been in daily use.
+
+### Bezel and the missing keyboard surface
+
+The reference has a `#0C1014` bezel around a black key field. There is no
+themable surface between `window` and `key`: `FlorisImeUi.Root` is declared but
+never queried, and only `window` paints. Either register an element for the key
+field or drop the bezel. Low value on its own (about 5% of the reference's
+pixels); worth doing alongside `key-plate` since both are element registration.
+
+
 ### Transparent or frosted keyboard background
 
 The transparent IME host plus alpha-capable Snygg window color appears
