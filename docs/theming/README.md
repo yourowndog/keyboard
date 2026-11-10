@@ -26,3 +26,18 @@ stylesheet.
 - [Theme authoring](theme-authoring.md)
 - [Coverage checklist](coverage-checklist.md)
 - [Hard-won lessons](hard-won-lessons.md)
+- [LCARS Jefferies](lcars-jefferies.md): the current design target, and a
+  verified account of what Snygg can and cannot express for it.
+- [Design references](reference/README.md): source imagery and measurements.
+
+## Packaging
+
+All built-in themes live in the single `org.florisboard.themes` extension.
+A second extension, `com.brokentooth.lcars`, used to carry diverged copies of
+the LCARS stylesheets; it was removed and its two unique themes
+(`neon_synthwave`, `vaporwave`) moved into the canonical extension under the
+same component ids. `extCoreTheme()` hard-codes `org.florisboard.themes`, so
+that is the extension a built-in theme belongs in.
+
+Validate any stylesheet edit with `tools/theme/validate_stylesheets.py`; it
+catches dead elements, schema-invalid values, and unknown key codes.

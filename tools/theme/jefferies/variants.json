@@ -1,0 +1,11 @@
+{
+  "_comment": "Font bakeoff variants for LCARS Jefferies. Each entry generates one stylesheet and one theme registry entry. Once Sam picks a face, delete the losing entries and rerun build_jefferies.py; the base stylesheet is unaffected.",
+  "base_id": "lcars_jefferies",
+  "base_label": "LCARS Jefferies",
+  "variants": [
+    { "suffix": "",           "label_suffix": " (Chakra Petch)", "font_family": "Chakra Petch", "font_file": "ChakraPetch-SemiBold.ttf" },
+    { "suffix": "_oxanium",   "label_suffix": " (Oxanium)",      "font_family": "Oxanium",      "font_file": "Oxanium-SemiBold.ttf" },
+    { "suffix": "_saira",     "label_suffix": " (Saira Cond.)",  "font_family": "Saira Condensed", "font_file": "SairaCondensed-SemiBold.ttf" },
+    { "suffix": "_rajdhani",  "label_suffix": " (Rajdhani)",     "font_family": "Rajdhani",     "font_file": "Rajdhani-SemiBold.ttf" }
+  ]
+}

@@ -903,6 +903,27 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
     override fun migrate(entry: PreferenceMigrationEntry): PreferenceMigrationEntry {
         return when (entry.key) {
 
+            // The com.brokentooth.lcars theme extension was a stale fork of the
+            // themes already shipped in org.florisboard.themes. It was removed and
+            // its two unique themes (neon_synthwave, vaporwave) were moved into the
+            // canonical extension under the same component ids. A stored theme id
+            // pointing at the removed extension resolves to no extension, and
+            // ThemeManager silently leaves the previous theme in place rather than
+            // reporting a load failure, so rewrite the extension id here.
+            // Keep migration rule until: 0.7 dev cycle
+            "theme__day_theme_id", "theme__night_theme_id" -> {
+                if (entry.rawValue.startsWith("com.brokentooth.lcars:")) {
+                    entry.transform(
+                        rawValue = entry.rawValue.replaceFirst(
+                            "com.brokentooth.lcars:",
+                            "org.florisboard.themes:",
+                        ),
+                    )
+                } else {
+                    entry.keepAsIs()
+                }
+            }
+
             // Migrate media prefs to emoji prefs
             // Keep migration rule until: 0.6 dev cycle
             "media__emoji_recently_used" -> {

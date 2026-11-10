@@ -19,9 +19,6 @@
     "background": "var(--med-bg)",
     "clip": "no"
   },
-  "keyboard": {
-    "background": "var(--med-bg)"
-  },
   "key": {
     "background": "var(--med-key)",
     "foreground": "var(--med-text)",
