@@ -29,8 +29,11 @@ current behavior from plans, experiments, and history.
   neural gating, phrase prediction, and feedback.
 - [Snygg theming](theming/README.md): verified selectors, authoring, packaging,
   coverage, and hard-won lessons.
-- [Development](development/building.md): local/Beksinski builds, tests, device
-  validation, and repository organization.
+- [Development](development/building.md): local and sisyphus builds, tests,
+  device validation, and repository organization.
+- [Fleet and infrastructure](development/fleet.md): the machines, the build
+  host, the device-validation phone, and a changelog of infrastructure
+  changes.
 - [Agent reorientation](development/agent-reorientation.md): entering the
   cleaned repository or recovering interrupted work safely.
 

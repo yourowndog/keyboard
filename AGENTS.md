@@ -30,17 +30,21 @@ were removed after their durable knowledge was extracted.
 - Verify source claims against live code, tests, schemas, and assets.
 - For layout/touch/theme/IME behavior, include device validation when source and
   unit tests cannot establish the result.
-- Do not push, invoke the build factory, install an APK, or rewrite harvested
-  data unless the task authorizes it.
+- Do not push, run a build, install an APK, or rewrite harvested data unless
+  the task authorizes it.
 - Keep plans in `ROADMAP.md`; keep current behavior in `docs/`.
 - Update the closest canonical document when behavior changes. Avoid creating a
   new root-level handoff as a substitute.
 
 ## Build workflow
 
-Development builds are local or use the `factory` remote on Beksinski. GitHub
-Actions is not the normal build path. See the building guide before invoking a
-remote build.
+Builds run on **sisyphus**, which has JDK 17, the Android SDK and adb. Build in
+its checkout at `/home/sam/projects/keyboard`; there is no build-factory git
+remote to push to. GitHub Actions is not the normal build path. See
+[fleet and infrastructure](docs/development/fleet.md) for the machines and
+[the building guide](docs/development/building.md) before invoking a build.
+
+Do not build on sleeper. Its disk is small and build output fills it.
 
 ## Priority knowledge areas
 
