@@ -93,7 +93,7 @@ Start render-only, with no touch behavior change: long-press and swipe-up keep
 working exactly as now. Volatile hitboxes are the main risk to typing accuracy,
 so plate tappability is deliberately deferred.
 
-**Ornament layer.** The artwork Snygg cannot express: the delete grille and its
+**Ornament layer.** Static ornaments landed (shift dial, delete grille, spacebar dots, Enter corner); see `docs/theming/lcars-jefferies.md`. Still open: the smartbar divider rules and pill. Original notes follow. The artwork Snygg cannot express: the delete grille and its
 coral rule, the spacebar line art and cyan dot run, the shift ring, the
 smartbar divider rules and pill. Proposed shape is a registry of
 `keycode -> composable` drawn inside the key's `SnyggBox`, reading its colors

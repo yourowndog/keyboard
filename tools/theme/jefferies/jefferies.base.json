@@ -45,13 +45,19 @@
   "key-plate": { "background": "var(--plate)", "foreground": "var(--glyph)", "font-family": "var(--font)", "font-size": "12sp", "font-weight": "normal", "shape": "var(--radius)", "margin": "1.5dp", "shadow-elevation": "0dp" },
   "key-plate:pressed": { "background": "var(--plate-lit)", "foreground": "var(--glyph)" },
 
+  "key-ornament[code=-11]": { "foreground": "var(--coral)", "background": "var(--recess)" },
+  "key-ornament[code=-7]": { "foreground": "var(--coral)", "background": "var(--recess)" },
+  "key-ornament[code=-7]:pressed": { "foreground": "var(--glyph)", "background": "var(--recess)" },
+  "key-ornament[code=32]": { "foreground": "var(--cyan-lit)", "background": "var(--recess)" },
+  "key-ornament[code=10]": { "foreground": "var(--recess)" },
+  "key-ornament[code=10]:pressed": { "foreground": "var(--glyph)" },
+
   "key[code=-7]": { "background": "var(--chrome)", "foreground": "var(--glyph)", "font-size": "14sp" },
   "key[code=-7]:pressed": { "background": "var(--coral)", "foreground": "var(--glyph)" },
   "key[code=-8]": { "background": "var(--chrome)", "foreground": "var(--glyph)" },
 
   "key[code=-11]": { "background": "var(--recess)", "foreground": "var(--coral)", "shape": "rounded-corner(50%,50%,50%,50%)" },
-  "key[code=-11]:pressed": { "background": "var(--coral)", "foreground": "var(--glyph)" },
-  "key[code=-11][shiftstate=`caps_lock`]": { "background": "var(--coral)", "foreground": "var(--glyph)" },
+  "key[code=-11]:pressed": { "background": "var(--chrome)", "foreground": "var(--coral)" },
 
   "key[code=10]": { "background": "var(--cap)", "foreground": "var(--glyph)", "font-size": "14sp", "shape": "rounded-corner(5dp,5dp,22dp,5dp)" },
   "key[code=10]:pressed": { "background": "var(--cyan-lit)", "foreground": "var(--glyph)" },
