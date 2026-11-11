@@ -93,8 +93,13 @@ object TextKeyboardGeometryBridge {
                         widthUnits = when {
                             authored != null -> authored.toDouble().coerceAtLeast(0.0)
                             // A key the evaluator hid collapses to nothing rather than leaving a
-                            // hole its neighbours have to be told about.
-                            !key.isVisible -> 0.0
+                            // hole its neighbours have to be told about. Read from the plain
+                            // [dev.patrickgold.florisboard.ime.keyboard.Key.isVisibleProjection]
+                            // mirror, never from the Compose `isVisible` snapshot state — reading
+                            // snapshot state here is what threw the stale-snapshot crash when a
+                            // background recomposition wrote keys after the solving pass's snapshot
+                            // was taken.
+                            !key.isVisibleProjection -> 0.0
                             else -> KeyboardGeometryPolicy.canonicalWidthUnits(row.role, code)
                         },
                         growWeight = if (authored != null) {

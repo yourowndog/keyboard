@@ -63,6 +63,35 @@ abstract class Key(open val data: AbstractKeyData) {
     open var isVisible: Boolean by mutableStateOf(true)
 
     /**
+     * Plain, non-Compose projection of [isVisible], written alongside it by the evaluator.
+     *
+     * Compose snapshot states like [isVisible] may only be read while the reading pass's snapshot is
+     * still the latest one that wrote them. Key recomposition happens elsewhere in the lifecycle:
+     * `updateActiveEvaluators` recomputes keys on a background coroutine, while the geometry solve
+     * runs inside a layout pass (`FlorisImeSizing.keyboardUiHeight`). When a recomposition lands
+     * after that pass took its snapshot, reading [isVisible] from the geometry bridge throws
+     * `IllegalStateException: Reading a state that was created after the snapshot was taken or in a
+     * snapshot that has not yet been applied`.
+     *
+     * Geometry must therefore never read a Compose snapshot state. The evaluator records the
+     * visibility it decided here as an ordinary value the same moment it writes [isVisible], and the
+     * geometry bridge consumes this projection instead. For the lifetime of a solve this is an
+     * immutable snapshot of key visibility: written once per recomposition, never mutated mid-solve.
+     * Writes to the pair go through [applyVisibility] so they cannot drift apart.
+     */
+    open var isVisibleProjection: Boolean = true
+
+    /**
+     * Applies an evaluator-decided visibility to both the Compose state the renderer reacts to and
+     * the plain projection the geometry solver reads. Keeping the pair together here is what stops
+     * them drifting apart; every writer of [isVisible] must go through this.
+     */
+    fun applyVisibility(visible: Boolean) {
+        isVisible = visible
+        isVisibleProjection = visible
+    }
+
+    /**
      * The touch bounds of this key. All bounds defined here are absolute coordinates within the parent keyboard.
      */
     open val touchBounds: FlorisRect = FlorisRect.empty()

@@ -203,6 +203,16 @@ geometry.
 3. Reproduce on the JVM. `TextKeyboardGeometryBridge` is pure — no Compose, no
    `Context`, no logging — so any question about placement can be asked in a unit
    test against `GeometryFixtures`. See `NormalizedGeometryTest`.
+
+   One purity rule is load-bearing: the bridge reads *no Compose snapshot state*.
+   Key visibility is consumed through the plain, non-Compose
+   `Key.isVisibleProjection` mirror rather than the Compose `isVisible` snapshot
+   state. Recomposition (`KeyboardManager.updateActiveEvaluators`) writes key
+   visibility on a background coroutine; reading the Compose state from a layout
+   pass can then throw `IllegalStateException: Reading a state that was created
+   after the snapshot was taken or in a snapshot that has not yet been applied`
+   (crash observed on `SM-S938U`, 2026-10-03). Writers keep the pair in lockstep
+   via `Key.applyVisibility`; covered by `KeyVisibilityProjectionTest`.
 4. Compare touch and visible bounds using the developer overlay.
 5. Change the policy, not the pixels. If a key is the wrong size, the answer is
    in `KeyboardGeometryPolicy` or in the row's declared role — not a local
