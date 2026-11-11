@@ -41,6 +41,14 @@ enum class FlorisImeUi(val elementName: String, val resId: Int?) {
         elementName = "key-hint",
         resId = R.string.snygg__rule_element__key_hint,
     ),
+    /**
+     * The hint plate drawn above a letter key's cap, showing the symbol its long press types.
+     * Opt-in: a theme that gives `key-plate` no background keeps the classic corner hint.
+     */
+    KeyPlate(
+        elementName = "key-plate",
+        resId = R.string.snygg__rule_element__key_plate,
+    ),
     KeyPopupBox(
         elementName = "key-popup-box",
         resId = R.string.snygg__rule_element__key_popup_box,

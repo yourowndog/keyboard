@@ -76,7 +76,10 @@ both Chakra Petch and Oxanium as really good. Saira Condensed and Rajdhani were
 not approved. The final pick between the two approved faces is still open;
 once it is made, collapse to the winner per `tools/theme/README.md`.
 
-**Stacked hint plates.** The signature of the reference: each letter key is a
+**Stacked hint plates.** Render-only plates landed: see
+`docs/theming/lcars-jefferies.md`. They split the existing key height rather
+than adding a row-height budget; revisit the budget only if device use shows the
+caps are too short. Original notes follow. The signature of the reference: each letter key is a
 two-plate stack, with the symbol layer permanently visible above the cap rather
 than hidden behind a long press. The data already exists and is already aligned
 1:1 — `LayoutManager.addRowHints()` populates `computedSymbolHint` and

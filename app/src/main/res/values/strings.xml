@@ -240,6 +240,7 @@
 
     <string name="snygg__rule_element__key">Key</string>
     <string name="snygg__rule_element__key_hint">Key hint</string>
+    <string name="snygg__rule_element__key_plate">Key hint plate</string>
     <string name="snygg__rule_element__key_popup_box">Key popup box</string>
     <string name="snygg__rule_element__key_popup_element">Key popup element</string>
     <string name="snygg__rule_element__key_popup_extended_indicator">Key popup extended indicator</string>
