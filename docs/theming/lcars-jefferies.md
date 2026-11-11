@@ -111,6 +111,29 @@ plate symbol, exactly as before. Themes without a `key-plate` background keep
 the corner `key-hint`. Raise the keyboard's row height if the caps feel short.
 Code: `TextKeyButton` and `isPlateCandidate` in `TextKeyboardLayout.kt`.
 
+### Ornament layer
+
+`KeyOrnaments.kt` draws line art inside four keys' caps: the shift dial, the
+delete grille, the spacebar dot run, and the Enter corner. A theme opts in
+per key code by giving `key-ornament` a foreground. That foreground is the
+accent, and `key-ornament`'s background is the structure colour, both
+resolved through Snygg, so the art re-themes and no hex lives in Kotlin.
+
+- **Shift dial:** an empty ring when off, a half arc for one capital, and a
+  full ring with a solid core for caps lock. It replaces the shift icon, so the
+  Jefferies shift key no longer turns solid coral when pressed or in caps lock;
+  the dial carries the state instead.
+- **Delete grille:** a coral rule over a recessed grille in the top band, in
+  line with the letter plates. The cells light when pressed, and the glyph moves
+  to the lower right.
+- **Spacebar:** machinery line art with a run of eight cyan dots. It replaces
+  the language label.
+- **Enter:** an inner line with one oversized rounded corner, as in the
+  reference. The label moves to the upper right.
+
+Ornaments are static; motion is a later phase. They never change bounds or
+touch behavior.
+
 ## Remaining phases
 
 Tracked in `ROADMAP.md`. In short: stacked hint plates (a new `key-plate`

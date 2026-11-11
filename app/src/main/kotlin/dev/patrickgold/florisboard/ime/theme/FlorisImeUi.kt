@@ -49,6 +49,14 @@ enum class FlorisImeUi(val elementName: String, val resId: Int?) {
         elementName = "key-plate",
         resId = R.string.snygg__rule_element__key_plate,
     ),
+    /**
+     * Line art inside a key's cap (shift dial, delete grille, spacebar dot run, Enter corner).
+     * Opt-in per key code: foreground is the accent, background the structure colour.
+     */
+    KeyOrnament(
+        elementName = "key-ornament",
+        resId = R.string.snygg__rule_element__key_ornament,
+    ),
     KeyPopupBox(
         elementName = "key-popup-box",
         resId = R.string.snygg__rule_element__key_popup_box,

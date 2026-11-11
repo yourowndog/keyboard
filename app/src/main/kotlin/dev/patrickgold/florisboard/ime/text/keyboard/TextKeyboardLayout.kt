@@ -532,6 +532,10 @@ private fun TextKeyButton(
             }
         }
     } else {
+        val ornament = KeyOrnament.forCode(key.computedData.code)
+        val ornamentStyle = rememberSnyggThemeQuery(FlorisImeUi.KeyOrnament.elementName, attributes, selector)
+        val ornamentAccent = ornamentStyle.foreground()
+        val activeOrnament = ornament?.takeIf { ornamentAccent.isSpecified }
         SnyggBox(
             FlorisImeUi.Key.elementName,
             attributes = attributes,
@@ -540,7 +544,18 @@ private fun TextKeyButton(
                 .requiredSize(size)
                 .absoluteOffset { key.visibleBounds.topLeft.toIntOffset() },
         ) {
-            TextKeyContent(key, evaluator, attributes, selector, showCornerHint = true)
+            if (activeOrnament != null) {
+                KeyOrnamentArt(
+                    activeOrnament,
+                    KeyOrnamentPaint(
+                        accent = ornamentAccent,
+                        structure = ornamentStyle.background(),
+                        isPressed = selector == SnyggSelector.PRESSED,
+                        shiftState = evaluator.state.inputShiftState,
+                    ),
+                )
+            }
+            TextKeyContent(key, evaluator, attributes, selector, showCornerHint = true, ornament = activeOrnament)
         }
     }
     if (debugShowTouchBoundaries) {
@@ -575,7 +590,10 @@ private fun BoxScope.TextKeyContent(
     attributes: Map<String, Any>,
     selector: SnyggSelector,
     showCornerHint: Boolean,
+    ornament: KeyOrnament? = null,
 ) {
+    if (ornament?.replacesGlyph == true) return
+    val glyphAlignment = ornament?.glyphAlignment ?: Alignment.Center
     val isTelPadKey = key.computedData.type == KeyType.NUMERIC && evaluator.keyboard.mode == KeyboardMode.PHONE
     key.label?.let { label ->
         var customLabel = label
@@ -591,7 +609,7 @@ private fun BoxScope.TextKeyContent(
         SnyggText(
             modifier = Modifier
                 .wrapContentSize()
-                .align(if (isTelPadKey) BiasAlignment(-0.5f, 0f) else Alignment.Center),
+                .align(if (isTelPadKey) BiasAlignment(-0.5f, 0f) else glyphAlignment),
             text = customLabel,
         )
     }
@@ -611,7 +629,7 @@ private fun BoxScope.TextKeyContent(
             // don't render vector
         } else {
             SnyggIcon(
-                modifier = Modifier.align(Alignment.Center),
+                modifier = Modifier.align(glyphAlignment),
                 imageVector = imageVector,
                 contentDescription = null,
             )
