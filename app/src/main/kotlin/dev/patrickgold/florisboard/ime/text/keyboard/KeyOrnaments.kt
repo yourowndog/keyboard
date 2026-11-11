@@ -54,7 +54,7 @@ internal enum class KeyOrnament(
 ) {
     SHIFT_DIAL(KeyCode.SHIFT, replacesGlyph = true, glyphAlignment = Alignment.Center),
     DELETE_GRILLE(KeyCode.DELETE, replacesGlyph = false, glyphAlignment = BiasAlignment(0.55f, 0.55f)),
-    SPACE_DOT_RUN(KeyCode.SPACE, replacesGlyph = true, glyphAlignment = Alignment.Center),
+    SPACE_DOT_RUN(KeyCode.SPACE, replacesGlyph = false, glyphAlignment = BiasAlignment(0.62f, -0.62f)),
     ENTER_CORNER(KeyCode.ENTER, replacesGlyph = false, glyphAlignment = BiasAlignment(0.75f, -0.6f));
 
     companion object {
@@ -162,7 +162,7 @@ private fun DrawScope.drawDeleteGrille(paint: KeyOrnamentPaint) {
     }
 }
 
-/** Machinery line art with a run of eight indicator dots. Static here; motion comes later. */
+/** Machinery line art with a run of eight indicator dots; the language label sits top right. */
 private fun DrawScope.drawSpaceDotRun(paint: KeyOrnamentPaint) {
     val w = size.width
     val h = size.height
@@ -180,10 +180,10 @@ private fun DrawScope.drawSpaceDotRun(paint: KeyOrnamentPaint) {
         lineTo(w * 0.04f, h * 0.86f)
     }
     drawPath(slab, structure, style = Stroke(line))
-    // Posts on the right.
+    // Posts on the right, kept to the lower half so the language label sits above them.
     val postW = w * 0.035f
-    drawRect(structure, Offset(w * 0.86f, h * 0.16f), Size(postW, h * 0.68f))
-    drawRect(structure, Offset(w * 0.86f + postW * 1.6f, h * 0.16f), Size(postW, h * 0.68f))
+    drawRect(structure, Offset(w * 0.86f, h * 0.50f), Size(postW, h * 0.36f))
+    drawRect(structure, Offset(w * 0.86f + postW * 1.6f, h * 0.50f), Size(postW, h * 0.36f))
     // Dot run inside the slab.
     val r = min(h * 0.08f, w * 0.012f)
     val alpha = if (paint.isPressed) 1f else 0.6f
