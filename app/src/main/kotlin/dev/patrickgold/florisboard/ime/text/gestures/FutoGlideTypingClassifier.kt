@@ -82,6 +82,31 @@ class FutoGlideTypingClassifier(private val context: Context) : GlideTypingClass
 
         /** Alphabet order for the layout arrays; must match the built-in trie's alphabet. */
         private const val LETTERS = "abcdefghijklmnopqrstuvwxyz"
+
+        /**
+         * Maximum number of gesture points accepted for recognition. Longer traces are trimmed
+         * to this limit before entering the native beam search, preventing heap exhaustion in
+         * the allocator (b/1790392060). Normal gestures rarely exceed 200 points at typical
+         * touch-sampling rates.
+         */
+        internal const val MAX_RECOGNITION_POINTS = 2048
+
+        /**
+         * Validates that normalized gesture arrays contain only finite values.
+         * A NaN or Infinity in any coordinate would propagate through the encoder model
+         * and cause the beam search hypothesis vector to grow uncontrollably, exhausting
+         * the native allocator (b/1790392060).
+         *
+         * @return true when every element across all three arrays is finite (not NaN or infinite)
+         *         and the arrays have the same length.
+         */
+        internal fun isValidGestureData(x: FloatArray, y: FloatArray, t: FloatArray): Boolean {
+            if (x.size != y.size || x.size != t.size) return false
+            for (i in x.indices) {
+                if (!x[i].isFinite() || !y[i].isFinite() || !t[i].isFinite()) return false
+            }
+            return true
+        }
     }
 
     private val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
@@ -91,10 +116,12 @@ class FutoGlideTypingClassifier(private val context: Context) : GlideTypingClass
     private var vocabTrie: VocabTrie? = null
     private var loadFailed = false
     private var loading = false
+    private var layoutGeneration = 0L
 
     private var keyX: FloatArray? = null
     private var keyY: FloatArray? = null
     private var layoutApplied = false
+    private var applyingLayout = false
 
     private val ptsX = ArrayList<Float>(256)
     private val ptsY = ArrayList<Float>(256)
@@ -146,9 +173,11 @@ class FutoGlideTypingClassifier(private val context: Context) : GlideTypingClass
      * 161k-word vocabulary into a trie, so callers simply see [ready] flip once it is up.
      */
     private fun ensureDecoderAsync() {
+        val capturedGeneration: Long
         synchronized(lock) {
             if (decoder != null || loadFailed || loading) return
             loading = true
+            capturedGeneration = layoutGeneration
         }
         scope.launch {
             try {
@@ -180,7 +209,7 @@ class FutoGlideTypingClassifier(private val context: Context) : GlideTypingClass
                     "engine ready: assets ${tAssets - t0} ms, vocab ${tVocab - tAssets} ms, " +
                         "models ${tEngine - tVocab} ms, decoder=${engine.hasDecoder()} lm=${engine.hasLm()}",
                 )
-                applyLayout()
+                applyLayout(capturedGeneration)
             } catch (t: Throwable) {
                 Log.e(TAG, "engine load FAILED - glide typing disabled", t)
                 synchronized(lock) {
@@ -197,25 +226,40 @@ class FutoGlideTypingClassifier(private val context: Context) : GlideTypingClass
      * The trie goes across as a borrowed native pointer, so [vocabTrie] has to outlive every
      * recognition that uses it; it is released only in [close], after the decoder.
      */
-    private fun applyLayout() {
-        val engine: SwipeDecoder
-        val trie: VocabTrie
-        val cx: FloatArray
-        val cy: FloatArray
+    private fun applyLayout(loadGeneration: Long = layoutGeneration) {
+        // Guard: no concurrent or superseded calls.
         synchronized(lock) {
-            engine = decoder ?: return
-            trie = vocabTrie ?: return
-            cx = keyX ?: return
-            cy = keyY ?: return
+            if (layoutGeneration != loadGeneration) return
+            if (applyingLayout) return
+            applyingLayout = true
         }
-        val ok = engine.setMode(
-            letters = LETTERS,
-            cx = cx,
-            cy = cy,
-            tries = longArrayOf(trie.itriePtr),
-        )
-        synchronized(lock) { layoutApplied = ok }
-        Log.d(TAG, "setMode(layout + vocabulary) -> $ok")
+        try {
+            val ok: Boolean
+            synchronized(lock) {
+                val trie = vocabTrie
+                val eng = decoder
+                val cx = keyX
+                val cy = keyY
+                if (trie == null || eng == null || cx == null || cy == null) {
+                    applyingLayout = false
+                    return
+                }
+                if (layoutGeneration != loadGeneration) {
+                    applyingLayout = false
+                    return
+                }
+                ok = eng.setMode(
+                    letters = LETTERS,
+                    cx = cx,
+                    cy = cy,
+                    tries = longArrayOf(trie.itriePtr),
+                )
+                layoutApplied = ok
+            }
+            Log.d(TAG, "setMode(layout + vocabulary) -> $ok")
+        } finally {
+            synchronized(lock) { applyingLayout = false }
+        }
     }
 
     // ---------------------------------------------------------------- geometry
@@ -241,6 +285,7 @@ class FutoGlideTypingClassifier(private val context: Context) : GlideTypingClass
             coordinateFrame = frame
             val unchanged = keyX?.contentEquals(cx) == true && keyY?.contentEquals(cy) == true
             if (unchanged && layoutApplied) return
+            layoutGeneration++
             keyX = cx
             keyY = cy
             layoutApplied = false
@@ -266,7 +311,9 @@ class FutoGlideTypingClassifier(private val context: Context) : GlideTypingClass
     // ----------------------------------------------------------------- gesture
 
     override fun addGesturePoint(position: GlideTypingGesture.Detector.Position) {
-        ptsX.add(position.x); ptsY.add(position.y); ptsT.add(position.t)
+        synchronized(lock) {
+            ptsX.add(position.x); ptsY.add(position.y); ptsT.add(position.t)
+        }
     }
 
     override fun initGestureFromPointerData(pointerData: GlideTypingGesture.Detector.PointerData) {
@@ -274,52 +321,67 @@ class FutoGlideTypingClassifier(private val context: Context) : GlideTypingClass
     }
 
     override fun clear() {
-        ptsX.clear(); ptsY.clear(); ptsT.clear()
+        synchronized(lock) {
+            ptsX.clear(); ptsY.clear(); ptsT.clear()
+        }
     }
 
     override fun getSuggestions(maxSuggestionCount: Int, gestureCompleted: Boolean): List<String> {
-        val state = synchronized(lock) {
-            val engine = if (layoutApplied) decoder else null
-            val frame = coordinateFrame
-            if (engine == null || frame == null) null else engine to frame
-        } ?: return emptyList()
-        val (engine, frame) = state
+        return synchronized(lock) {
+            val engine = decoder ?: return@synchronized emptyList()
+            val frame = coordinateFrame ?: return@synchronized emptyList()
+            if (!layoutApplied) return@synchronized emptyList()
 
-        val n = ptsX.size
-        if (n < 2) return emptyList()
+            val n = ptsX.size
+            if (n < 2) return@synchronized emptyList()
 
-        // Normalise into the same 0..1 letter-block space as the key centres, and pass the real
-        // event times: the models were trained on time-resampled paths, so dwelling on a key is
-        // what separates a deliberate or doubled letter from one merely passed over.
-        val x = FloatArray(n)
-        val y = FloatArray(n)
-        val t = FloatArray(n)
-        val t0 = ptsT[0]
-        for (i in 0 until n) {
-            val normalized = frame.normalize(ptsX[i], ptsY[i])
-            x[i] = normalized.x.coerceIn(0f, 1f)
-            y[i] = normalized.y.coerceIn(0f, 1f)
-            t[i] = (ptsT[i] - t0).toFloat()
-        }
+            // Cap gesture length: extremely long traces (thousands of points) can cause
+            // the native beam search to exhaust its allocator. Most normal gestures are
+            // 20-200 points; MAX_RECOGNITION_POINTS covers an entire multi-second drag at
+            // high polling rate.
+            val m = n.coerceAtMost(MAX_RECOGNITION_POINTS)
 
-        return try {
-            val started = System.currentTimeMillis()
-            val results = engine.recognize(
-                x = x,
-                y = y,
-                t = t,
-                topK = maxSuggestionCount.coerceIn(1, TOP_K),
-                beamWidth = BEAM_WIDTH,
-            )
-            Log.d(
-                TAG,
-                "recognise: $n pts in ${System.currentTimeMillis() - started} ms -> " +
-                    results.take(4).joinToString { "${it.word}(${"%.2f".format(it.score)})" },
-            )
-            results.map { it.word }
-        } catch (t: Throwable) {
-            Log.e(TAG, "recognise failed", t)
-            emptyList()
+            // Normalise into the same 0..1 letter-block space as the key centres, and pass the
+            // real event times: the models were trained on time-resampled paths, so dwelling on
+            // a key is what separates a deliberate or doubled letter from one merely passed over.
+            val x = FloatArray(m)
+            val y = FloatArray(m)
+            val t = FloatArray(m)
+            val t0 = ptsT[0]
+            for (i in 0 until m) {
+                val normalized = frame.normalize(ptsX[i], ptsY[i])
+                x[i] = normalized.x.coerceIn(0f, 1f)
+                y[i] = normalized.y.coerceIn(0f, 1f)
+                t[i] = (ptsT[i] - t0).toFloat()
+            }
+
+            // Reject input with non-finite values: a NaN or Infinity in the arrays would
+            // propagate through the encoder model and cause the beam search hypothesis vector
+            // to grow uncontrollably, exhausting the native allocator (b/1790392060).
+            if (!isValidGestureData(x, y, t)) {
+                Log.w(TAG, "recognise: non-finite value found, aborting gesture")
+                return@synchronized emptyList()
+            }
+
+            try {
+                val started = System.currentTimeMillis()
+                val results = engine.recognize(
+                    x = x,
+                    y = y,
+                    t = t,
+                    topK = maxSuggestionCount.coerceIn(1, TOP_K),
+                    beamWidth = BEAM_WIDTH,
+                )
+                Log.d(
+                    TAG,
+                    "recognise: $n pts in ${System.currentTimeMillis() - started} ms -> " +
+                        results.take(4).joinToString { "${it.word}(${"%.2f".format(it.score)})" },
+                )
+                results.map { it.word }
+            } catch (t: Throwable) {
+                Log.e(TAG, "recognise failed", t)
+                emptyList()
+            }
         }
     }
 
