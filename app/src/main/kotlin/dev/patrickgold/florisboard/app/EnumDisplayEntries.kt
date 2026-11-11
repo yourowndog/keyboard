@@ -494,6 +494,11 @@ private val ENUM_DISPLAY_ENTRIES = mapOf<Pair<KClass<*>, String>, @Composable ()
                 label = stringRes(R.string.enum__smartbar_layout__suggestions_actions_extended),
                 description = stringRes(R.string.enum__smartbar_layout__suggestions_actions_extended__description),
             )
+            entry(
+                key = SmartbarLayout.COMMAND_STRIP,
+                label = stringRes(R.string.enum__smartbar_layout__command_strip),
+                description = stringRes(R.string.enum__smartbar_layout__command_strip__description),
+            )
         }
     },
     SnyggLevel::class to DEFAULT to {

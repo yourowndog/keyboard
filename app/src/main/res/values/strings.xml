@@ -242,6 +242,8 @@
     <string name="snygg__rule_element__key_hint">Key hint</string>
     <string name="snygg__rule_element__key_plate">Key hint plate</string>
     <string name="snygg__rule_element__key_ornament">Key ornament</string>
+    <string name="snygg__rule_element__smartbar_command_rule">Smartbar command rule</string>
+    <string name="snygg__rule_element__smartbar_command_cap">Smartbar command cap</string>
     <string name="snygg__rule_element__key_popup_box">Key popup box</string>
     <string name="snygg__rule_element__key_popup_element">Key popup element</string>
     <string name="snygg__rule_element__key_popup_extended_indicator">Key popup extended indicator</string>
@@ -1121,6 +1123,12 @@
     <string name="enum__smartbar_layout__suggestions_action_shared__description" comment="Enum value description">Shared toggleable candidate and actions row, with sticky action</string>
     <string name="enum__smartbar_layout__suggestions_actions_extended" comment="Enum value label">Suggestions &amp; Actions extended</string>
     <string name="enum__smartbar_layout__suggestions_actions_extended__description" comment="Enum value description">Static candidate row and additional toggleable action row, with sticky action</string>
+    <string name="enum__smartbar_layout__command_strip" comment="Enum value label">Command strip</string>
+    <string name="enum__smartbar_layout__command_strip__description" comment="Enum value description">Wide Menu, Emoji, Language and Voice buttons; suggestions take the middle while you type</string>
+    <string name="smartbar__command__menu">Menu</string>
+    <string name="smartbar__command__emoji">Emoji</string>
+    <string name="smartbar__command__lang">Lang</string>
+    <string name="smartbar__command__voice">Voice</string>
 
     <string name="enum__snygg_level__basic" comment="Enum value label">Basic</string>
     <string name="enum__snygg_level__basic__description" comment="Enum value description">Only color properties are shown, properties and rules are translated.</string>

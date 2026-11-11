@@ -758,6 +758,23 @@ private fun SmartbarMainRow(modifier: Modifier = Modifier) {
                 }
             }
 
+            SmartbarLayout.COMMAND_STRIP -> {
+                if (uiMode == ImeUiMode.VOICE) {
+                    WhisperBar()
+                } else {
+                    val candidates by nlpManager.activeCandidatesFlow.collectAsState()
+                    SmartbarCommandStrip(
+                        isTyping = shouldShowInlineSuggestionsUi || candidates.isNotEmpty(),
+                    ) {
+                        if (shouldShowInlineSuggestionsUi) {
+                            InlineSuggestionsUi(inlineSuggestions)
+                        } else {
+                            CandidatesRow()
+                        }
+                    }
+                }
+            }
+
             SmartbarLayout.SUGGESTIONS_ACTIONS_EXTENDED -> {
                 if (!flipToggles) {
                     if (uiMode != ImeUiMode.VOICE) ExtendedActionsToggle()
