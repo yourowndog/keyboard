@@ -1,0 +1,250 @@
+{
+  "summary": {
+    "total_tests": 20,
+    "passed": 20,
+    "failed": 0,
+    "by_category": {
+      "exact_preservation": {
+        "total": 3,
+        "passed": 3,
+        "failed": 0
+      },
+      "typo_correction": {
+        "total": 4,
+        "passed": 4,
+        "failed": 0
+      },
+      "ranking": {
+        "total": 2,
+        "passed": 2,
+        "failed": 0
+      },
+      "protected_vocab": {
+        "total": 2,
+        "passed": 2,
+        "failed": 0
+      },
+      "anti_correction": {
+        "total": 2,
+        "passed": 2,
+        "failed": 0
+      },
+      "contraction": {
+        "total": 1,
+        "passed": 1,
+        "failed": 0
+      },
+      "correction_rejection": {
+        "total": 2,
+        "passed": 2,
+        "failed": 0
+      },
+      "segmentation": {
+        "total": 1,
+        "passed": 1,
+        "failed": 0
+      },
+      "contextual_bigram": {
+        "total": 2,
+        "passed": 2,
+        "failed": 0
+      },
+      "apostrophe_ranking": {
+        "total": 1,
+        "passed": 1,
+        "failed": 0
+      }
+    },
+    "corpus_stats": {
+      "dictionary_entries": 114198,
+      "bigram_entries": 24457,
+      "protected_forms": 40,
+      "anti_correction_pairs": 42,
+      "contraction_shortcuts": 34,
+      "licensed_contractions": 42
+    },
+    "timestamp": "2026-09-30T02:39:32.398068"
+  },
+  "results": [
+    {
+      "typed": "zsh",
+      "category": "exact_preservation",
+      "top": "zsh",
+      "commits": false,
+      "target_rank": 1,
+      "passed": true,
+      "fail": null
+    },
+    {
+      "typed": "the",
+      "category": "exact_preservation",
+      "top": "the",
+      "commits": false,
+      "target_rank": 1,
+      "passed": true,
+      "fail": null
+    },
+    {
+      "typed": "PS2",
+      "category": "exact_preservation",
+      "top": "PS2",
+      "commits": false,
+      "target_rank": 1,
+      "passed": true,
+      "fail": null
+    },
+    {
+      "typed": "teh",
+      "category": "typo_correction",
+      "top": "the",
+      "commits": true,
+      "target_rank": 1,
+      "passed": true,
+      "fail": null
+    },
+    {
+      "typed": "5his",
+      "category": "typo_correction",
+      "top": "this",
+      "commits": false,
+      "target_rank": 1,
+      "passed": true,
+      "fail": null
+    },
+    {
+      "typed": "sugg3stions",
+      "category": "typo_correction",
+      "top": "suggestions",
+      "commits": false,
+      "target_rank": 1,
+      "passed": true,
+      "fail": null
+    },
+    {
+      "typed": "correc5ed",
+      "category": "typo_correction",
+      "top": "corrected",
+      "commits": false,
+      "target_rank": 1,
+      "passed": true,
+      "fail": null
+    },
+    {
+      "typed": "las",
+      "category": "ranking",
+      "top": "las",
+      "commits": false,
+      "target_rank": 1,
+      "passed": true,
+      "fail": null
+    },
+    {
+      "typed": "las",
+      "category": "ranking",
+      "top": "las",
+      "commits": false,
+      "target_rank": null,
+      "passed": true,
+      "fail": null
+    },
+    {
+      "typed": "bc",
+      "category": "protected_vocab",
+      "top": "bc",
+      "commits": false,
+      "target_rank": 1,
+      "passed": true,
+      "fail": null
+    },
+    {
+      "typed": "co",
+      "category": "protected_vocab",
+      "top": "CO",
+      "commits": false,
+      "target_rank": 1,
+      "passed": true,
+      "fail": null
+    },
+    {
+      "typed": "sams",
+      "category": "anti_correction",
+      "top": "Sam's",
+      "commits": true,
+      "target_rank": 1,
+      "passed": true,
+      "fail": null
+    },
+    {
+      "typed": "id",
+      "category": "anti_correction",
+      "top": "ID",
+      "commits": true,
+      "target_rank": 1,
+      "passed": true,
+      "fail": null
+    },
+    {
+      "typed": "dont",
+      "category": "contraction",
+      "top": "don't",
+      "commits": true,
+      "target_rank": 1,
+      "passed": true,
+      "fail": null
+    },
+    {
+      "typed": "were",
+      "category": "correction_rejection",
+      "top": "were",
+      "commits": false,
+      "target_rank": 1,
+      "passed": true,
+      "fail": null
+    },
+    {
+      "typed": "its",
+      "category": "correction_rejection",
+      "top": "its",
+      "commits": false,
+      "target_rank": 1,
+      "passed": true,
+      "fail": null
+    },
+    {
+      "typed": "inthe",
+      "category": "segmentation",
+      "top": "into",
+      "commits": true,
+      "target_rank": 1,
+      "passed": true,
+      "fail": null
+    },
+    {
+      "typed": "id",
+      "category": "contextual_bigram",
+      "top": "ID",
+      "commits": true,
+      "target_rank": 1,
+      "passed": true,
+      "fail": null
+    },
+    {
+      "typed": "im",
+      "category": "contextual_bigram",
+      "top": "im",
+      "commits": false,
+      "target_rank": 1,
+      "passed": true,
+      "fail": null
+    },
+    {
+      "typed": "las",
+      "category": "apostrophe_ranking",
+      "top": "las",
+      "commits": false,
+      "target_rank": 1,
+      "passed": true,
+      "fail": null
+    }
+  ]
+}

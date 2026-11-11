@@ -902,7 +902,7 @@ class KeyboardManager(
                         key.authoredWidthUnits = layoutPackData.widthUnits.coerceAtLeast(0f)
                         if (layoutPackData.isSpacer) {
                             key.isEnabled = false
-                            key.isVisible = false
+                            key.applyVisibility(false)
                             key.isStructuralSpacer = true
                         }
                     }
