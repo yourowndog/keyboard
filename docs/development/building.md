@@ -76,3 +76,12 @@ checks pass (see `AGENTS.md`). Builds then come from a checkout of that branch
 on sisyphus. The old
 GitHub Actions workflow is not the day-to-day build mechanism.
 
+`main` is the only line of development. The Nov 11, 2026 consolidation
+merged everything worth keeping and retired the rest: each retired branch,
+Kanban worktree and uncommitted snapshot is preserved as an `archive/*` tag
+on GitHub (`git tag -l 'archive/*'`). Treat those tags as history, not as
+work to resume. Branches that still exist on GitHub with no `archive/*` tag
+were already fully merged into `main`. Sleeper's checkout tracks `origin/main`
+over HTTPS; work from a short-lived branch off `main`, not from a long-lived
+side branch.
+
