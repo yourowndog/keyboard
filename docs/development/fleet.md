@@ -41,9 +41,14 @@ Toolchain, confirmed present:
   already `JAVA_HOME`.
 - Android SDK at `~/.local/share/android-build-tools/android-sdk`, already
   `ANDROID_HOME` and `ANDROID_SDK_ROOT`.
-- adb 1.0.41 at `$ANDROID_HOME/platform-tools/adb`. It is **not on `PATH`**, so
-  the `android_devices` helper fails with `env: 'adb': No such file or
-  directory`. Call adb by its full path.
+- adb 1.0.41, symlinked to `/usr/local/bin/adb` (and `fastboot` likewise) so it
+  resolves from any environment.
+
+  `~/.bashrc` already put `$ANDROID_HOME/platform-tools` on `PATH` for both
+  interactive and `bash -c` shells, so adb was always findable from a shell.
+  What failed was the fleet `android_devices` helper, which execs without a
+  profile and so sees only the bare `/usr/local/sbin:/usr/local/bin:/usr/bin`.
+  Hence the symlink into `/usr/local/bin` rather than another `PATH` export.
 
 `local.properties` is absent and the debug build does not need it: the SDK
 comes from the environment. It is still where machine-local voice settings

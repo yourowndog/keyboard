@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__github__pull_request_read",
+      "mcp__github__list_pull_requests",
+      "mcp__Brokentooth_Operator__process_read",
+      "mcp__Brokentooth_Operator__node_status",
+      "mcp__Brokentooth_Operator__android_devices",
+      "mcp__Brokentooth_Operator__desktop_status",
+      "mcp__Brokentooth_Operator__user_service_status",
+      "mcp__Brokentooth_Operator__file_metadata",
+      "mcp__Brokentooth_Operator__list_directory",
+      "mcp__Brokentooth_Operator__read_text_file",
+      "mcp__Brokentooth_Operator__read_multiple_files",
+      "mcp__claude-code-remote__get_environment",
+      "mcp__claude-code-remote__list_repos",
+      "mcp__claude-code-remote__list_environments",
+      "mcp__claude-code-remote__get_session"
+    ]
+  }
+}
