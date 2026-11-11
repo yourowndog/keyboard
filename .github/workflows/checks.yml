@@ -1,0 +1,60 @@
+name: checks
+
+# Fast verification on GitHub-hosted runners. These are free and unlimited for
+# public repositories, so this is not subject to any usage quota.
+#
+# APK builds and device validation deliberately do NOT run here: they belong on
+# sisyphus, driven by the fleet tooling. See docs/development/fleet.md. Running
+# them here would mean either a very slow hosted build (the native module needs
+# NDK, CMake and Rust) or a self-hosted runner, and a self-hosted runner on a
+# public repository would let any fork's pull request execute code on sisyphus.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Fork pull requests get a read-only token and no secrets, because this uses
+# `pull_request` and not `pull_request_target`. Do not change that.
+permissions:
+  contents: read
+
+concurrency:
+  group: checks-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  stylesheets:
+    name: Snygg stylesheets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install jsonschema
+      - name: Validate packaged stylesheets
+        run: python3 tools/theme/validate_stylesheets.py
+
+  unit-tests:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      # testDebugUnitTest does not pull the native module's CMake/Rust build
+      # into its task graph, so no NDK, CMake or Rust toolchain is needed here.
+      # Verified with `./gradlew testDebugUnitTest --dry-run` on sisyphus.
+      - name: Run unit tests
+        run: ./gradlew --no-daemon testDebugUnitTest
+      - name: Upload test reports on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: '**/build/reports/tests/'
+          retention-days: 7

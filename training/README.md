@@ -34,8 +34,9 @@ than treating old handoff notes as configuration. `tau_sweep.py` evaluates gate
 thresholds. Keep live gating disabled until a shadow evaluation justifies the
 chosen threshold.
 
-The `sync-titan` target is retained for the historical Titan training host. It
-is not the Beksinski Android build-factory workflow.
+The `sync-titan` target is retained for the Titan training host. It is not the
+Android build workflow, which runs on sisyphus; see
+[fleet and infrastructure](../docs/development/fleet.md).
 
 ## Pipeline map
 

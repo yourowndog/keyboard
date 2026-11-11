@@ -1,12 +1,15 @@
 # Building OmniBoard
 
-> Status: Canonical for local builds; Beksinski retrieval details pending live verification  
-> Last verified: 2026-07-11  
-> Verified against: Gradle configuration, current repository remotes, and local
-> debug unit-test execution
+> Status: Canonical  
+> Last verified: 2026-11-10  
+> Verified against: Gradle configuration, a successful `assembleDebug` on
+> sisyphus at commit `844fb55`, and the installed toolchain there
 
-OmniBoard is built locally or by pushing a branch to the Beksinski build
-factory. GitHub Actions is not the active build workflow.
+OmniBoard is built locally or on **sisyphus**, the build machine. GitHub
+Actions is not the active build workflow.
+
+See [fleet and infrastructure](fleet.md) for sisyphus's toolchain paths, the
+adb quirk, and how to reach the fleet.
 
 ## Local prerequisites
 
@@ -42,29 +45,30 @@ WHISPER_MODEL=whisper-1
 
 Do not commit `local.properties`.
 
-## Beksinski factory
+## Building on sisyphus
 
-The configured Git remote is named `factory` and currently resolves to:
-
-```text
-beksinski:/home/silo/git/omniboard.git
-```
-
-The established trigger is a normal branch push, for example:
+There is **no build factory and no `factory` git remote.** The Beksinski
+droplet that hosted one was retired around May 2026; see
+[fleet and infrastructure](fleet.md#changes). Builds are not triggered by
+pushing a branch. sisyphus builds from its own checkout, so push to `origin`
+and pull there:
 
 ```bash
-git push factory dev
+cd /home/sam/projects/keyboard && git pull --ff-only origin main
 ```
 
-Do not assume only `dev` can build; older instructions say the factory detects
-the pushed branch. That behavior and the current artifact URL should be checked
-in a batched live factory validation before this section is marked completely
-verified.
+```bash
+./gradlew --no-daemon assembleDebug
+```
+
+The debug APK lands at `app/build/outputs/apk/debug/app-debug.apk`
+(about 150 MB). Start a build with the operator tooling's `process_start` on
+node `sisyphus` with `execution_class=build`; `run_command` is capped at 120
+seconds and will cut a cold build off.
 
 ## Branch policy
 
-The current checkout is `dev-latest` tracking `origin/dev`. Work should be
-committed intentionally on the selected development branch and pushed to the
-factory only when a remote build is desired. GitHub `main` and the old Actions
-workflow are not the day-to-day build mechanism.
+Work is committed on the selected development branch and merged to `origin`
+`main`. Builds then come from a checkout of that branch on sisyphus. The old
+GitHub Actions workflow is not the day-to-day build mechanism.
 

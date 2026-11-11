@@ -36,15 +36,16 @@ High-detail areas:
 - [Keyboard construction and customization](docs/keyboard/README.md)
 - [Autocorrect and neural scoring](docs/autocorrect/README.md)
 - [Snygg theming](docs/theming/README.md)
-- [Building locally or on Beksinski](docs/development/building.md)
+- [Building locally or on sisyphus](docs/development/building.md)
+- [Fleet and infrastructure](docs/development/fleet.md)
 
 Superseded handoffs and contradictory manuals have been removed after their
 durable lessons were incorporated into the canonical documentation.
 
 ## Build and test
 
-The normal workflow is a local Gradle build or a branch push to the Beksinski
-build factory. GitHub Actions is not the active build system.
+The normal workflow is a local Gradle build, or a build on sisyphus, the build
+machine. GitHub Actions is not the active build system.
 
 ```bash
 ./gradlew --no-daemon testDebugUnitTest
