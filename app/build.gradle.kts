@@ -83,6 +83,26 @@ android {
         buildConfigField("String", "OPENAI_API_KEY", "\"${getLocalOrEnv("OPENAI_API_KEY", getLocalOrEnv("WHISPER_API_KEY"))}\"")
         buildConfigField("String", "WHISPER_MODEL", "\"${getLocalOrEnv("WHISPER_MODEL", "whisper-1")}\"")
 
+        // A debug APK packages native libraries for every ABI, which is about
+        // 120 MB of the ~143 MB total. A 64-bit phone can execute exactly one
+        // of them: the other three (x86, x86_64, armeabi-v7a) are ~91 MB of
+        // payload it will never run. That matters because installs to icarion
+        // go over the tailnet, often via a relay, where 143 MB does not
+        // reliably complete.
+        //
+        // Pass -PdeviceAbi=arm64-v8a to package only what the target device
+        // needs. Omit it and every ABI is packaged exactly as before, so
+        // emulators and CI are unaffected.
+        val deviceAbi = (project.findProperty("deviceAbi") as String?)?.trim()
+        if (!deviceAbi.isNullOrEmpty()) {
+            ndk {
+                abiFilters.clear()
+                abiFilters.addAll(
+                    deviceAbi.split(",").map { it.trim() }.filter { it.isNotEmpty() }
+                )
+            }
+        }
+
         ksp {
             arg("room.schemaLocation", "$projectDir/schemas")
             arg("room.incremental", "true")
