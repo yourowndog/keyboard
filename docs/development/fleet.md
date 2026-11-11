@@ -76,12 +76,12 @@ phone's tailnet address from cluster-specs. Push from sisyphus rather than
 pulling from sleeper — see the sandbox note below.
 
 ```bash
-scp app/build/outputs/apk/debug/app-debug.apk sleeper:/tmp/omniboard.apk
+scp app/build/outputs/apk/debug/app-debug.apk sleeper:/home/sam/omniboard.apk
 ```
 
 ```bash
 ADB_SERVER_SOCKET="tcp:localhost:$((15000 + $(id -u) % 50000))" \
-  adb -s "$ICARION:5555" install -r /tmp/omniboard.apk
+  adb -s "$ICARION:5555" install -r /home/sam/omniboard.apk
 ```
 
 Transfer speed depends on the Tailscale path. When `tailscale status` shows
@@ -136,6 +136,13 @@ system.
   as a real fault on sleeper, which was wrong. Practical consequences: initiate
   scp from the other end, and do not expect to make privileged changes on
   sleeper through the operator. sisyphus's sandbox does allow `sudo`.
+
+  Operator commands on sleeper also run with a private `/tmp`, so a file
+  scp'd to `sleeper:/tmp/...` is invisible to them. Copy into `/home/sam/`
+  instead when an operator command must read it. For GitHub, sleeper's
+  `gh` is signed in, and `git -c credential.helper='!gh auth git-credential'
+  push https://github.com/yourowndog/keyboard.git ...` works where an ssh
+  remote would not.
 - `docs/history/devlog.md` still references pulling `OPENAI_API_KEY` from
   `silo@beksinski`. That is historical and correct as history, but the current
   source of that key is unrecorded.
