@@ -126,8 +126,8 @@ resolved through Snygg, so the art re-themes and no hex lives in Kotlin.
 - **Delete grille:** a coral rule over a recessed grille in the top band, in
   line with the letter plates. The cells light when pressed, and the glyph moves
   to the lower right.
-- **Spacebar:** machinery line art with a run of eight cyan dots. The language
-  label moves to the upper right, above the posts.
+- **Spacebar:** machinery line art with a run of eight cyan dots. It replaces
+  the language label.
 - **Enter:** an inner line with one oversized rounded corner, as in the
   reference. The label moves to the upper right.
 
