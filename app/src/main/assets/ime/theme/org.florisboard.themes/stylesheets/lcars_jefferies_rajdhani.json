@@ -266,7 +266,10 @@
     "background": "var(--chrome)",
     "foreground": "var(--glyph)",
     "font-family": "var(--font)",
-    "font-size": "13sp",
+    "font-size": "14sp",
+    "letter-spacing": "1sp",
+    "text-max-lines": "1",
+    "text-overflow": "clip",
     "shape": "var(--radius)",
     "margin": "1.5dp"
   },

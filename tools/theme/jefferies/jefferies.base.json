@@ -99,7 +99,7 @@
   "smartbar-extended-actions-row": { "background": "var(--void)" },
   "smartbar-shared-actions-toggle": { "background": "var(--recess)", "foreground": "var(--glyph-up)", "shape": "var(--radius)", "margin": "1.5dp" },
   "smartbar-extended-actions-toggle": { "background": "var(--recess)", "foreground": "var(--glyph-up)", "shape": "var(--radius)", "margin": "1.5dp" },
-  "smartbar-action-key": { "background": "var(--chrome)", "foreground": "var(--glyph)", "font-family": "var(--font)", "font-size": "13sp", "shape": "var(--radius)", "margin": "1.5dp" },
+  "smartbar-action-key": { "background": "var(--chrome)", "foreground": "var(--glyph)", "font-family": "var(--font)", "font-size": "14sp", "letter-spacing": "1sp", "text-max-lines": "1", "text-overflow": "clip", "shape": "var(--radius)", "margin": "1.5dp" },
   "smartbar-action-key:pressed": { "background": "var(--plate)", "foreground": "var(--glyph)" },
   "smartbar-action-key:disabled": { "background": "var(--recess)", "foreground": "var(--glyph-dim)" },
   "smartbar-action-key[code=-233]": { "background": "var(--recess)", "foreground": "var(--glyph-up)" },
