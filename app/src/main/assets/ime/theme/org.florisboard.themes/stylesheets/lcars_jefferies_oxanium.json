@@ -397,7 +397,7 @@
     "background": "var(--void)",
     "foreground": "var(--plate)",
     "font-family": "var(--font)",
-    "font-size": "16sp",
+    "font-size": "15sp",
     "shape": "var(--radius-sm)"
   },
   "smartbar-candidate-word:pressed": {
@@ -407,7 +407,7 @@
   "smartbar-candidate-word-text": {
     "foreground": "var(--plate)",
     "font-family": "var(--font)",
-    "font-size": "16sp"
+    "font-size": "15sp"
   },
   "smartbar-candidate-word-secondary-text": {
     "foreground": "var(--glyph-dim)",
