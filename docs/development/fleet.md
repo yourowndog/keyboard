@@ -1,33 +1,31 @@
 # Fleet and Infrastructure
 
-> Status: Canonical
-> Last verified: 2026-11-10
-> Verified against: live `node_status` and `run_command` against sisyphus,
-> sisyphus `~/.ssh/config`, and installed toolchain on sisyphus
+> Status: Canonical for OmniBoard's use of the fleet only
+> Last verified: 2026-11-11
+> Verified against: live `run_command` against sisyphus and sleeper, the
+> installed toolchain on sisyphus, and `~/ops/cluster-specs` on sleeper
 
-The machines OmniBoard work runs on. **Check this document's node facts against
-the live fleet before relying on them.** Stale infrastructure notes in this
-repository once cost real time — see [Changes](#changes).
+How OmniBoard work uses the fleet. **This is not the fleet's documentation.**
 
-## Nodes
+## The fleet is documented elsewhere
 
-Addresses are Tailscale IPs, from sisyphus `~/.ssh/config`. Short aliases are
-the second column of each `Host` line.
+Node inventory, addresses, roles and infrastructure history live in
+`~/ops/cluster-specs` on sleeper (git origin `/srv/shared/git/cluster-specs.git`,
+private mirror `github.com/yourowndog/cluster-specs`). Read that first:
 
-| Node | Alias | Address | Role |
-|---|---|---|---|
-| sisyphus | `sy` | 100.90.131.29 | **Build machine.** JDK 17 + Android SDK + adb. Also `sisyphus-lan` / `syl` at 10.0.0.41. |
-| sleeper | `s` | 100.66.224.88 | General workhorse. **Do not build here** — small disk, build output fills it. |
-| weakling | `w` | 100.109.145.90 | Took over the retired Beksinski droplet's duties. |
-| titan | `t` | 100.104.232.94 | |
-| pyrrhus | `p` | 100.81.181.62 | |
-| hannibal | `h` | 100.116.129.104 | |
-| tungsten | `tu` | 100.74.204.19 | |
-| icarion | `i` | 100.101.185.66 | Daily-driver Android phone. Device-validation target. |
+- `CURRENT.md` — operational truth
+- `CHANGELOG.md` — infrastructure history; record cluster changes here
+- `nodes/sisyphus.md`, `SISYPHUS-BUILD-WORKER.md` — the build host
+- `ICARION-REMOTE-ADB.md` — the phone's remote ADB setup
 
-Reach them through the Brokentooth Operator tooling (`node_status`,
+Do not copy node tables or addresses into this repository. An earlier revision
+of this file did, and it immediately drifted from the canonical source while
+publishing fleet addresses in a public repo. Keep OmniBoard-specific procedure
+here and link out for everything else.
+
+Reach the fleet through the Brokentooth Operator tooling (`node_status`,
 `run_command`, `process_start`). For builds and tests use node `sisyphus` with
-`execution_class=build`.
+`execution_class=build`; `run_command` is capped at 120 seconds.
 
 ## Building on sisyphus
 
@@ -59,52 +57,76 @@ is capped at 120 seconds.
 
 ## Installing to icarion
 
-icarion is reachable over Tailscale and accepts an adb TCP connection on 5555,
-but authorization is a physical step:
+**Install from sleeper, not sisyphus.** ADB pairing keys belong to the user and
+host that created them, and sleeper's are the ones icarion has authorized.
+sisyphus can build but reports `unauthorized` against the phone, which is not
+something to work around remotely — it would need someone to accept a
+fingerprint on the phone's screen.
+
+Arm the connection with `adbw2` on sleeper, which finds Wireless debugging over
+Tailscale and re-arms legacy TCP/IP 5555. Note it uses a per-user ADB server
+port, not the shared 5037, because the server holds only its owner's keys:
 
 ```bash
-"$ANDROID_HOME/platform-tools/adb" connect 100.101.185.66:5555
+adbw2
 ```
 
-If this reports `failed to authenticate` and `adb devices` shows the device as
-`unauthorized`, the phone is waiting for someone to accept the host's RSA
-fingerprint on its screen. That cannot be done remotely. Once accepted, install
-with `adb -s 100.101.185.66:5555 install -r <apk>`.
+Then copy the APK from the build host and install, with `$ICARION` set to the
+phone's tailnet address from cluster-specs. Push from sisyphus rather
+than pulling from sleeper: sleeper's ssh client currently fails with `Bad owner
+or permissions on /etc/ssh/ssh_config.d/20-systemd-ssh-proxy.conf`.
+
+```bash
+scp app/build/outputs/apk/debug/app-debug.apk sleeper:/tmp/omniboard.apk
+```
+
+```bash
+ADB_SERVER_SOCKET="tcp:localhost:$((15000 + $(id -u) % 50000))" \
+  adb -s "$ICARION:5555" install -r /tmp/omniboard.apk
+```
+
+Transfer speed depends on the Tailscale path. When `tailscale status` shows
+`relay "dfw"` rather than a direct connection, a ~150 MB debug APK takes tens of
+minutes; `tailscale ping` reporting several hundred milliseconds and "direct
+connection not established" is the signal. Getting the phone onto the same
+network as sleeper is far faster than waiting out a relayed push.
+
+See `ICARION-REMOTE-ADB.md` in cluster-specs for the full setup.
 
 Remember that replacing the APK does not restart a running IME process. See
 [Snygg hard-won lessons](../theming/hard-won-lessons.md#verify-the-process-not-just-the-file)
 before concluding a theme change had no effect.
 
-## Changes
+## Why this repository's build docs went stale
 
-Newest first. Record infrastructure changes here when they happen; this section
-exists because the last one was not recorded for about six months.
+Worth keeping, because the failure is easy to repeat.
 
-- **2026-11-10** — Documented the fleet for the first time. Corrected
-  `AGENTS.md`, `README.md`, `docs/development/building.md` and
-  `training/README.md`, all of which still described the Beksinski factory.
-- **~2026-06** — **beksinski retired.** The droplet is gone. Its duties moved to
-  weakling. The `factory` git remote (`beksinski:/home/silo/git/omniboard.git`)
-  and the "push a branch to build" workflow no longer exist. This was not
-  recorded at the time, and the documentation continued to describe Beksinski
-  as the build path for about five months.
+`beksinski` was decommissioned on **2026-08-03** (cluster-specs records it in
+`BEKSINSKI-DECOMMISSION-2026-08-03.md`). The fleet's own documentation was
+updated. This repository's was not: `AGENTS.md`, `README.md`,
+`docs/development/building.md` and `training/README.md` went on describing a
+`factory` git remote on a destroyed droplet for about three months, and
+`building.md` carried a confident `Last verified` stamp over it the whole time.
 
-  Dated from harvested typing on 2026-06-23 in which Sam describes wanting to
-  stop paying for the droplet and migrate the server onto a cluster node. That
-  is firmer than recollection ("like 6 months ago"), but it is the date of the
-  intent, not of confirmed decommissioning.
-- **(date unknown)** — Builds moved from sleeper to sisyphus, because build
-  output repeatedly filled sleeper's small disk and sisyphus was underused.
+Because `AGENTS.md` is the first file every agent session reads, each new
+session inherited the wrong build host and had no reason to doubt it. Meanwhile
+the global `~/AGENTS.md` on the fleet had said "Sisyphus builds" all along — the
+doctrine was never wrong, only this repository's copy of it.
+
+Two lessons, both now reflected above: infrastructure facts belong in
+cluster-specs and are linked from here, never copied; and a verification stamp
+on a document is worth nothing unless someone re-checks the claim against a live
+system.
 
 ## Needs attention
 
-- The Beksinski retirement date is inferred from harvested typing, not from a
-  decommissioning record.
-- No OmniBoard cluster-specs document was found anywhere on the fleet; this
-  file is the first. If an older one surfaces, reconcile rather than duplicate.
-- Only sisyphus and icarion have been checked live. The roles of titan,
-  pyrrhus, hannibal and tungsten are unrecorded, and weakling's inherited
-  duties are described only in general terms.
+- The adb/fastboot symlinks into `/usr/local/bin` on sisyphus are a node change
+  that has not been recorded in `~/ops/cluster-specs/CHANGELOG.md`. That repo's
+  worktree had uncommitted work in it at the time, so the entry was left for
+  someone who can commit it safely.
+- sleeper's ssh client is broken by permissions on
+  `/etc/ssh/ssh_config.d/20-systemd-ssh-proxy.conf`. Outbound scp/ssh from
+  sleeper fails until that is fixed; pushing from the far end is the workaround.
 - `docs/history/devlog.md` still references pulling `OPENAI_API_KEY` from
   `silo@beksinski`. That is historical and correct as history, but the current
   source of that key is unrecorded.
