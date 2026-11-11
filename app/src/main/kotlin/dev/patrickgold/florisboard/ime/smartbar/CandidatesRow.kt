@@ -70,6 +70,7 @@ import org.florisboard.lib.snygg.ui.SnyggIcon
 import org.florisboard.lib.snygg.ui.SnyggIconButton
 import org.florisboard.lib.snygg.ui.SnyggRow
 import org.florisboard.lib.snygg.ui.SnyggSpacer
+import org.florisboard.lib.snygg.ui.SnyggText
 
 val CandidatesRowScrollbarHeight = 2.dp
 
@@ -226,7 +227,12 @@ private fun CandidateItem(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Text(
+                // Styled by `smartbar-candidate-word-text` (or `-clip-text`), so themes can set the
+                // font. A theme without that rule renders exactly as a plain Text would.
+                SnyggText(
+                    elementName = "$elementName-text",
+                    attributes = attributes,
+                    selector = selector,
                     text = candidate.text.toString(),
                     maxLines = 1,
                     overflow = TextOverflow.Visible,

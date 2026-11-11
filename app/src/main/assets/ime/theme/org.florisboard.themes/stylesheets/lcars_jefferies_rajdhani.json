@@ -266,7 +266,10 @@
     "background": "var(--chrome)",
     "foreground": "var(--glyph)",
     "font-family": "var(--font)",
-    "font-size": "13sp",
+    "font-size": "14sp",
+    "letter-spacing": "1sp",
+    "text-max-lines": "1",
+    "text-overflow": "clip",
     "shape": "var(--radius)",
     "margin": "1.5dp"
   },
@@ -394,7 +397,7 @@
     "background": "var(--void)",
     "foreground": "var(--plate)",
     "font-family": "var(--font)",
-    "font-size": "16sp",
+    "font-size": "15sp",
     "shape": "var(--radius-sm)"
   },
   "smartbar-candidate-word:pressed": {
@@ -404,7 +407,7 @@
   "smartbar-candidate-word-text": {
     "foreground": "var(--plate)",
     "font-family": "var(--font)",
-    "font-size": "16sp"
+    "font-size": "15sp"
   },
   "smartbar-candidate-word-secondary-text": {
     "foreground": "var(--glyph-dim)",

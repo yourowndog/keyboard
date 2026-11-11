@@ -53,6 +53,17 @@ private const val RULE_WEIGHT = 0.028f
 private const val CAP_WEIGHT = 0.075f
 
 /**
+ * Weights are shares of the whole bar, so the free middle takes exactly what the commands leave.
+ * Giving it weight 1 instead made Row normalise over ~1.7 and shrank every command to about 8% of
+ * the bar, which wrapped MENU, EMOJI and VOICE onto two lines.
+ */
+private val IDLE_GAP_WEIGHT = 1f - (
+    SmartbarCommand.entries.sumOf { it.widthWeight.toDouble() }.toFloat() + 2 * RULE_WEIGHT + CAP_WEIGHT
+)
+private val TYPING_CANDIDATES_WEIGHT =
+    1f - SmartbarCommand.MENU.widthWeight - SmartbarCommand.VOICE.widthWeight - 2 * RULE_WEIGHT
+
+/**
  * The fixed MENU | EMOJI | LANG ... VOICE strip from the LCARS Jefferies reference. While the user
  * types (candidates or inline autofill present), [candidates] takes the middle and only MENU and
  * VOICE stay, so suggestions are never hidden behind commands. Voice mode is handled by the caller,
@@ -112,15 +123,18 @@ internal fun RowScope.SmartbarCommandStrip(
     }
 
     Command(SmartbarCommand.MENU)
+    // The coral and cyan rules stay in both states, so the strip keeps its frame while the
+    // candidates take the middle.
+    Rule(beside = SmartbarCommand.MENU)
     if (isTyping) {
-        Box(modifier = Modifier.weight(1f).fillMaxHeight()) {
+        Box(modifier = Modifier.weight(TYPING_CANDIDATES_WEIGHT).fillMaxHeight()) {
             candidates()
         }
+        Rule(beside = SmartbarCommand.VOICE)
     } else {
-        Rule(beside = SmartbarCommand.MENU)
         Command(SmartbarCommand.EMOJI)
         Command(SmartbarCommand.LANG)
-        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.weight(IDLE_GAP_WEIGHT))
         Cap(beside = SmartbarCommand.VOICE)
         Rule(beside = SmartbarCommand.VOICE)
     }
