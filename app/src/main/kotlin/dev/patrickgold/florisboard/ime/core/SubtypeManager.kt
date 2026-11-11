@@ -36,6 +36,17 @@ val SubtypeJsonConfig = Json {
     isLenient = false
 }
 
+internal fun addSubtypeToList(
+    subtypeList: List<Subtype>,
+    subtype: Subtype,
+    generatedId: Long,
+): List<Subtype>? {
+    if (subtypeList.any { it.equalsExcludingId(subtype) }) {
+        return null
+    }
+    return subtypeList + subtype.copy(id = generatedId)
+}
+
 /**
  * Class which acts as a high level helper for the raw implementation of subtypes in the prefs. Additionally provides
  * helper methods for the in-keyboard language switch process.
@@ -99,12 +110,12 @@ class SubtypeManager(context: Context) {
      *  that the subtype already exists.
      */
     fun addSubtype(subtype: Subtype): Boolean {
-        val subtypeToAdd = subtype.copy(id = System.currentTimeMillis())
         val subtypeList = subtypes
-        if (subtypeList.find { it.equalsExcludingId(subtype) } != null) {
-            return false
-        }
-        val newSubtypeList = subtypeList + subtypeToAdd
+        val newSubtypeList = addSubtypeToList(
+            subtypeList = subtypeList,
+            subtype = subtype,
+            generatedId = System.currentTimeMillis(),
+        ) ?: return false
         persistNewSubtypeList(newSubtypeList)
         return true
     }

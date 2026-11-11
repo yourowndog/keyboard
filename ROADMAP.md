@@ -3,6 +3,9 @@
 This file contains unfinished product work only. Implemented behavior belongs in
 the canonical documentation under `docs/`; experiments belong under `research/`.
 
+The autocorrect rebuild has its own phased plan in
+[`docs/autocorrect/roadmap.md`](docs/autocorrect/roadmap.md).
+
 ## Near-term validation and repair
 
 ### Stabilize RTK integration

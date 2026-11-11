@@ -37,9 +37,11 @@ import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowInsetsCompat
 import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
+import dev.patrickgold.florisboard.ime.keyboard.geometry.GeometryOrientation
+import dev.patrickgold.florisboard.ime.keyboard.geometry.TextKeyboardGeometryBridge
+import dev.patrickgold.florisboard.ime.keyboard.geometry.rememberGeometryPreferences
 import dev.patrickgold.florisboard.ime.smartbar.ExtendedActionsPlacement
 import dev.patrickgold.florisboard.ime.smartbar.SmartbarLayout
-import dev.patrickgold.florisboard.ime.text.keyboard.TextKeyboard
 import dev.patrickgold.florisboard.keyboardManager
 import dev.patrickgold.florisboard.lib.observeAsTransformingState
 import dev.patrickgold.florisboard.lib.util.ViewUtils
@@ -61,49 +63,53 @@ object FlorisImeSizing {
         @ReadOnlyComposable
         get() = LocalSmartbarHeight.current
 
+    /**
+     * The keyboard frame's height, taken from the same solve that places the keys.
+     *
+     * There is no frame arithmetic here any more. `TextKeyboardGeometryBridge` is asked for the
+     * intrinsic height of the very rows the layout is about to place, under the very preferences it
+     * is about to place them with, so the frame and its contents cannot disagree about how tall a
+     * utility row is or how many gaps there are.
+     */
     @Composable
     fun keyboardUiHeight(): Dp {
-        val prefs by FlorisPreferenceStore
-        val bottomRowHeightFactor by prefs.keyboard.bottomRowHeightFactor.observeAsTransformingState { it / 100f }
-        val alphaRowHeightFactor by prefs.keyboard.alphaRowHeightFactor.observeAsTransformingState { it / 100f }
-        val modRowUpperGap by prefs.keyboard.modRowUpperGap.observeAsState()
-        val modRowInnerGap by prefs.keyboard.modRowInnerGap.observeAsState()
-        val modRowLowerGap by prefs.keyboard.modRowLowerGap.observeAsState()
-        
+        val configuration = LocalConfiguration.current
         val context = LocalContext.current
         val keyboardManager by context.keyboardManager()
-        val evaluator by keyboardManager.activeEvaluator.collectAsState()
-        val lastCharactersEvaluator by keyboardManager.lastCharactersEvaluator.collectAsState()
-        val keyboard = when (evaluator.keyboard.mode) {
-            KeyboardMode.CHARACTERS,
-            KeyboardMode.NUMERIC_ADVANCED,
-            KeyboardMode.SYMBOLS,
-            KeyboardMode.SYMBOLS2 -> lastCharactersEvaluator.keyboard as TextKeyboard
-            else -> evaluator.keyboard as TextKeyboard
-        }
-        val rowCount = keyboard.rowCount.coerceAtLeast(4)
-        val bottomModCount = keyboard.bottomModRowCount
-
-        // Dynamic Frame Logic: Sum of Parts
-        // Bottom mod rows come from the keyboard's bottomModRowCount.
-        // Any rows beyond the standard (3 alpha + bottomModCount) are 'Extension' rows at the top.
-        // Both Extension and Mod rows use the bottomRowHeightFactor.
-        val topModCount = (rowCount - 3 - bottomModCount).coerceAtLeast(0)
-        val modRowsCount = bottomModCount + topModCount
-        val alphaRowsCount = (rowCount - modRowsCount).coerceAtLeast(0)
-        
-        val alphaTotal = keyboardRowBaseHeight * alphaRowsCount * alphaRowHeightFactor
-        val modTotal = keyboardRowBaseHeight * modRowsCount * bottomRowHeightFactor
-        
-        // Add Gaps (only if we have mod rows)
-        val gapTotal = if (modRowsCount > 0) {
-            (modRowUpperGap + modRowInnerGap + modRowLowerGap).dp
+        // Which rows decide this window's height is declared per mode by KeyboardFrameGroup and
+        // resolved in KeyboardManager, which is the only place able to compute the text-entry
+        // group's reference surface. No mode test survives here, and no cast: the frame reference
+        // is already a TextKeyboard.
+        val keyboard by keyboardManager.frameReferenceKeyboard.collectAsState()
+        // Everything in this function is in dp, including the geometry preferences, so the solved
+        // frame height is a dp value directly.
+        val geometryPrefs = rememberGeometryPreferences(
+            rowBaseHeight = keyboardRowBaseHeight.value.toDouble(),
+            convertLength = { it.toDouble() },
+        )
+        val orientation = if (configuration.isOrientationLandscape()) {
+            GeometryOrientation.LANDSCAPE
         } else {
-            0.dp
+            GeometryOrientation.PORTRAIT
         }
-        
-        return alphaTotal + modTotal + gapTotal
+        val solvedHeight = remember(keyboard, geometryPrefs, configuration.screenWidthDp, orientation) {
+            keyboard?.let {
+                TextKeyboardGeometryBridge.frameHeight(
+                    keyboard = it,
+                    prefs = geometryPrefs,
+                    availableWidth = configuration.screenWidthDp.toDouble(),
+                    orientation = orientation,
+                )
+            }
+        }
+        // A sentinel keyboard has no rows to measure, and before the first evaluator update there is
+        // no keyboard at all. Four canonical rows is what the loading and editing placeholders
+        // occupy, and is the height the window has always reserved for them.
+        return (solvedHeight?.toFloat() ?: (keyboardRowBaseHeight.value * FALLBACK_ROW_COUNT)).dp
     }
+
+    /** Rows reserved for a keyboard that declares none, so the window never collapses to nothing. */
+    private const val FALLBACK_ROW_COUNT = 4
 
     @Composable
     fun smartbarUiHeight(): Dp {
@@ -144,8 +150,14 @@ fun ProvideKeyboardRowBaseHeight(content: @Composable () -> Unit) {
     val resources = LocalContext.current.resources
     val configuration = LocalConfiguration.current
 
-    val heightFactorPortrait by prefs.keyboard.heightFactorPortrait.observeAsTransformingState { it.toFloat() / 100f }
-    val heightFactorLandscape by prefs.keyboard.heightFactorLandscape.observeAsTransformingState { it.toFloat() / 100f }
+    // Keyboard height is profile-scoped as of Stage 04: a six-row Coding keyboard wants a different
+    // height from prose. One-handed mode below stays global — it describes how the device is being
+    // held, not which keyboard is showing.
+    val activeProfileId by prefs.keyboard.activeProfileId.observeAsState()
+    val profile = prefs.keyboard.profile(KeyboardProfile.fromId(activeProfileId))
+
+    val heightFactorPortrait by profile.heightFactorPortrait.observeAsTransformingState { it.toFloat() / 100f }
+    val heightFactorLandscape by profile.heightFactorLandscape.observeAsTransformingState { it.toFloat() / 100f }
     val oneHandedMode by prefs.keyboard.oneHandedModeEnabled.observeAsState()
     val oneHandedModeScaleFactor by prefs.keyboard.oneHandedModeScaleFactor.observeAsTransformingState { it.toFloat() / 100f }
 

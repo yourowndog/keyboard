@@ -64,6 +64,7 @@ import dev.patrickgold.florisboard.app.settings.dictionary.UserDictionaryScreen
 import dev.patrickgold.florisboard.app.settings.dictionary.UserDictionaryType
 import dev.patrickgold.florisboard.app.settings.gestures.GesturesScreen
 import dev.patrickgold.florisboard.app.settings.keyboard.InputFeedbackScreen
+import dev.patrickgold.florisboard.app.settings.keyboard.KeyboardGeometryScreen
 import dev.patrickgold.florisboard.app.settings.keyboard.KeyboardScreen
 import dev.patrickgold.florisboard.app.settings.keyboard.KeyCustomizationScreen
 import dev.patrickgold.florisboard.app.settings.localization.LanguagePackManagerScreen
@@ -144,12 +145,12 @@ object Routes {
         object Keyboard
 
         @Serializable
-        @Deeplink("settings/layout-builder")
-        object LayoutBuilder
-
-        @Serializable
         @Deeplink("settings/keyboard/input-feedback")
         object InputFeedback
+
+        @Serializable
+        @Deeplink("settings/keyboard/geometry")
+        object KeyboardGeometry
 
         @Serializable
         @Deeplink("settings/keyboard/key-customization")
@@ -315,8 +316,8 @@ object Routes {
             }
 
             composableWithDeepLink(Settings.Keyboard::class) { KeyboardScreen() }
-            composableWithDeepLink(Settings.LayoutBuilder::class) { LayoutBuilderScreen() }
             composableWithDeepLink(Settings.InputFeedback::class) { InputFeedbackScreen() }
+            composableWithDeepLink(Settings.KeyboardGeometry::class) { KeyboardGeometryScreen() }
             composableWithDeepLink(Settings.KeyCustomization::class) { KeyCustomizationScreen() }
 
             composableWithDeepLink(Settings.Smartbar::class) { SmartbarScreen() }

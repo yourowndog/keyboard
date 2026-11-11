@@ -39,11 +39,13 @@ does not validate device-only IME, touch, Snygg, sidecar, or voice behavior.
 Relevant voice settings include:
 
 ```properties
-OPENAI_API_KEY=...
-WHISPER_MODEL=whisper-1
+WHISPER_RELAY_URL=https://weakling.tail8d8cc7.ts.net/v1/whisper/transcriptions
+WHISPER_RELAY_TOKEN=...
 ```
 
-Do not commit `local.properties`.
+The token authenticates only to the narrow relay and is expected to be
+extractable from a distributed APK. Never place an OpenAI provider credential
+in this file for an OmniBoard build. Do not commit `local.properties`.
 
 ## Building on sisyphus
 

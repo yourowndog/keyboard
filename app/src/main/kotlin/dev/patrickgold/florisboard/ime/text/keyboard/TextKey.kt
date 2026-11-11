@@ -20,7 +20,6 @@ import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.ime.keyboard.AbstractKeyData
 import dev.patrickgold.florisboard.ime.keyboard.ComputingEvaluator
 import dev.patrickgold.florisboard.ime.keyboard.Key
-import dev.patrickgold.florisboard.ime.keyboard.VerticalAlignment
 import dev.patrickgold.florisboard.ime.keyboard.KeyData
 import dev.patrickgold.florisboard.ime.keyboard.KeyboardMode
 import dev.patrickgold.florisboard.ime.keyboard.computeImageVector
@@ -56,10 +55,6 @@ class TextKey(override val data: AbstractKeyData) : Key(data) {
             computedPopups.clear()
             isEnabled = false
             isVisible = false
-
-            flayShrink = 0.0f
-            flayGrow = 0.0f
-            flayWidthFactor = 0.0f
         } else {
             computedData = computed
             computedPopups.clear()
@@ -124,90 +119,18 @@ class TextKey(override val data: AbstractKeyData) : Key(data) {
             isEnabled = evaluator.evaluateEnabled(computed)
             isVisible = true
 
-            flayShrink = when (keyboardMode) {
-                KeyboardMode.NUMERIC,
-                KeyboardMode.NUMERIC_ADVANCED,
-                KeyboardMode.PHONE,
-                KeyboardMode.PHONE2 -> 1.0f
-                else -> when (computed.code) {
-                    KeyCode.SHIFT,
-                    KeyCode.DELETE -> 1.5f
-                    KeyCode.VIEW_CHARACTERS,
-                    KeyCode.VIEW_SYMBOLS,
-                    KeyCode.VIEW_SYMBOLS2,
-                    KeyCode.ENTER -> 0.0f
-                    else -> 1.0f
-                }
-            }
-            val hasSlimSpaceRow = keyboard.bottomModRowCount >= 2
-            flayGrow = when (keyboardMode) {
-                KeyboardMode.NUMERIC,
-                KeyboardMode.PHONE,
-                KeyboardMode.PHONE2 -> 0.0f
-                KeyboardMode.NUMERIC_ADVANCED -> when (computed.type) {
-                    KeyType.NUMERIC -> 1.0f
-                    else -> 0.0f
-                }
-                else -> when (computed.code) {
-                    KeyCode.SPACE,
-                    KeyCode.CJK_SPACE -> 1.0f
-                    KeyCode.ENTER,
-                    KeyCode.TAB -> 1.0f
-                    else -> 0.0f
-                }
-            }
-            flayWidthFactor = when (keyboardMode) {
-                KeyboardMode.NUMERIC,
-                KeyboardMode.PHONE,
-                KeyboardMode.PHONE2 -> 2.68f
-                KeyboardMode.NUMERIC_ADVANCED -> when (computed.code) {
-                    44, 46 -> 1.00f
-                    KeyCode.VIEW_SYMBOLS, 61 -> 1.26f
-                    else -> 1.56f
-                }
-                else -> when (computed.code) {
-                    KeyCode.SPACE,
-                    KeyCode.CJK_SPACE -> 5.00f
-                    KeyCode.VIEW_CHARACTERS,
-                    KeyCode.VIEW_SYMBOLS2 -> 1.56f
-                    KeyCode.ENTER,
-                    KeyCode.TAB -> 1.50f
-                    KeyCode.SHIFT,
-                    KeyCode.DELETE -> 1.00f
-                    KeyCode.ESCAPE -> 1.25f
-                    KeyCode.TOGGLE_NUMBER_ROW -> 1.25f
-                    KeyCode.ARROW_LEFT,
-                    KeyCode.ARROW_RIGHT,
-                    KeyCode.ARROW_UP,
-                    KeyCode.ARROW_DOWN,
-                    KeyCode.MOVE_START_OF_LINE,
-                    KeyCode.MOVE_END_OF_LINE,
-                    KeyCode.MOVE_START_OF_PAGE,
-                    KeyCode.MOVE_END_OF_PAGE -> 0.72f
-                    KeyCode.UNDO,
-                    KeyCode.REDO -> 0.8f
-                    KeyCode.CTRL,
-                    KeyCode.TMUX_PREFIX -> 1.25f
-                    else -> 1.00f
-                }
-            }
-            // Per-key height control: spacebar gets full height even in compressed rows
-            // The factor of 1.33 compensates for the 0.75 row compression (1.0 / 0.75 ≈ 1.33)
-            flayHeightFactor = when (computed.code) {
-                KeyCode.SPACE,
-                KeyCode.CJK_SPACE -> 1.1f
-                else -> 1.0f
-            }
-            flayVerticalAlignment = when (computed.code) {
-                KeyCode.SPACE,
-                KeyCode.CJK_SPACE -> VerticalAlignment.CENTER
-                else -> VerticalAlignment.BOTTOM
-            }
-            // Inset the visible bounds of edge keys that are wider than their row peers,
-            // so they render at normal visual width while still occupying the extra layout space.
-            // 0.20f = (1.25 - 1.00) / 1.25 — the outer-edge fraction to inset as padding.
-            flayPaddingLeft = if (computed.code == KeyCode.ESCAPE) 0.20f else 0f
-            flayPaddingRight = if (computed.code == KeyCode.TOGGLE_NUMBER_ROW) 0.20f else 0f
+            // No geometry is decided here. A key's structural width is a property of the row it
+            // sits in, so it is stated once, by role, in
+            // `dev.patrickgold.florisboard.ime.keyboard.geometry.KeyboardGeometryPolicy`, and
+            // resolved when the keyboard is solved.
+            //
+            // What used to live at this point was the intrinsic exception table: the 2.68/1.56/1.26
+            // specialized widths, the 5.00 spacebar, the 0.72 arrows, the 0.8 undo/redo, the 1.25
+            // Ctrl/Tmux/Escape cells, a 1.1 spacebar height with centred alignment, and a 0.20
+            // padding trick that visually un-widened Escape and Σ. Those were compensations for
+            // controls that no longer exist. They are recorded as forensic history in
+            // `omniboard-artifacts/docs/architecture/keyboard-geometry-current-state.md`; they are
+            // not defaults, and nothing reads them.
         }
     }
 

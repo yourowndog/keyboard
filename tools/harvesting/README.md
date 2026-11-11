@@ -94,3 +94,16 @@ The active ONNX scorer workflow lives in `training/`. It reads the canonical
 raw Markdown and JSONL paths. `make -C training pull` creates an exact inbox
 snapshot; it no longer overwrites the canonical corpus directly.
 
+For a non-destructive v3/v4 canonicalization pass:
+
+```bash
+python3 tools/harvesting/migrate_harvest_v4.py \
+  data/harvest/raw/usage_harvest.jsonl \
+  data/harvest/derived/word_slots.v4.jsonl
+```
+
+This writes word slots plus a separate `.sessions.jsonl` language-context file.
+It preserves provenance and missing-feature semantics, deduplicates dual-written
+rows by `slot`, and checks that every historical v3 `WORD_COMMITTED` row is
+either represented or replaced by its native v4 counterpart. It never rewrites
+the input.

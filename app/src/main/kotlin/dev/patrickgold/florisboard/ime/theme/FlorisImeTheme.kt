@@ -52,9 +52,18 @@ fun FlorisImeTheme(content: @Composable () -> Unit) {
     val prefs by FlorisPreferenceStore
     val accentColor by prefs.theme.accentColor.observeAsState()
 
+    val windowBackgroundOpacity by prefs.theme.windowBackgroundOpacity.observeAsState()
+
     val activeThemeInfo by themeManager.activeThemeInfo.collectAsState()
     val activeConfig = remember(activeThemeInfo) { activeThemeInfo.config }
-    val activeStyle = remember(activeThemeInfo) { activeThemeInfo.stylesheet }
+    // The opacity preference is applied here, before the stylesheet is compiled, so that every
+    // reader of `window.background` sees one colour: the Compose box that paints it, the surface
+    // view that paints it when a background image is present, and the navigation-icon luminance
+    // check in `SystemUiIme`. It scales the authored value and never replaces it, and at 100 it
+    // returns the same stylesheet instance so nothing downstream recomposes.
+    val activeStyle = remember(activeThemeInfo, windowBackgroundOpacity) {
+        activeThemeInfo.stylesheet.withWindowBackgroundOpacity(windowBackgroundOpacity)
+    }
 
     val assetResolver = remember(activeThemeInfo) {
         FlorisAssetResolver(context, activeThemeInfo)

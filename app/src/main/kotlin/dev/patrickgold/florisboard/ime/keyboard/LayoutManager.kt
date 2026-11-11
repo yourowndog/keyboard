@@ -58,11 +58,24 @@ private data class LTN(
     val name: ExtensionComponentName,
 )
 
+/** Classifies an inserted layout while its source type is still available. */
+internal fun LayoutType.extensionSemanticRole(): SemanticRowRole = when (this) {
+    LayoutType.NUMERIC_ROW -> SemanticRowRole.NUMBER_ROW
+    else -> SemanticRowRole.EXTENSION
+}
+
 data class CachedLayout(
     val type: LayoutType,
     val name: ExtensionComponentName,
     val meta: LayoutArrangementComponent,
     val arrangement: LayoutArrangement,
+)
+
+/** Provenance for the row at [sourceRowIndex] of this layout's own arrangement. */
+internal fun CachedLayout.provenanceOfRow(sourceRowIndex: Int) = RowProvenance.Bundled(
+    layoutType = type,
+    component = name,
+    sourceRowIndex = sourceRowIndex,
 )
 
 private data class CachedPopupMapping(
@@ -292,7 +305,7 @@ class LayoutManager(context: Context) {
         val mainLayout = mainLayoutResult.onFailure {
             flogWarning { "$keyboardMode - main - $it" }
         }.getOrNull()
-        val modRowsHidden = !prefs.keyboard.modRowsVisible.get()
+        val modRowsHidden = !prefs.keyboard.activeProfilePrefs().modRowsVisible.get()
         val modifierToLoad = if (mainLayout?.meta?.modifier != null) {
             val layoutType = when (mainLayout.type) {
                 LayoutType.SYMBOLS -> {
@@ -325,12 +338,21 @@ class LayoutManager(context: Context) {
         )
 
         val computedArrangement: ArrayList<Array<TextKey>> = arrayListOf()
+        // Roles are recorded here, while this function still knows each row's source layout and its
+        // splice history. Rows must be added to `semanticRows` in the same order they are appended
+        // to `computedArrangement`, so the two stay parallel.
+        val semanticRows = NormalizedRowsBuilder()
+        val mainRowRole = keyboardMode.mainRowRole()
 
         for (extLayout in extensionLayouts) {
             if (extLayout != null) {
-                for (row in extLayout.arrangement) {
+                // The optional digit row is a first-class geometry region. Other inserted rows
+                // (currently the developer row) retain the generic extension policy.
+                val extensionRole = extLayout.type.extensionSemanticRole()
+                for ((extRowI, row) in extLayout.arrangement.withIndex()) {
                     val rowArray = Array(row.size) { TextKey(row[it]) }
                     computedArrangement.add(rowArray)
+                    semanticRows.add(extensionRole, extLayout.provenanceOfRow(extRowI))
                 }
             }
         }
@@ -343,6 +365,7 @@ class LayoutManager(context: Context) {
                 if (mainRowI + 1 < mainLayout.arrangement.size) {
                     val rowArray = Array(mainRow.size) { TextKey(mainRow[it]) }
                     computedArrangement.add(rowArray)
+                    semanticRows.add(mainRowRole, mainLayout.provenanceOfRow(mainRowI))
                 } else {
                     // merge main and mod here
                     val rowArray = arrayListOf<TextKey>()
@@ -356,6 +379,16 @@ class LayoutManager(context: Context) {
                     }
                     val temp = Array(rowArray.size) { rowArray[it] }
                     computedArrangement.add(temp)
+                    // The last main row spliced into the modifier's first row is the primary action
+                    // row. It is identified by the splice, not by carrying Space and not by the
+                    // modifier asset living in a directory named `mod`.
+                    semanticRows.add(
+                        SemanticRowRole.PRIMARY_ACTION,
+                        RowProvenance.Merged(
+                            main = mainLayout.provenanceOfRow(mainRowI),
+                            modifier = if (firstModRow != null) modifierLayout.provenanceOfRow(0) else null,
+                        ),
+                    )
                 }
             }
             for (modRowI in 1 until modifierLayout.arrangement.size) {
@@ -373,39 +406,51 @@ class LayoutManager(context: Context) {
                 }
                 val rowArray = Array(modRow.size) { TextKey(modRow[it]).apply { isAlpha = false } }
                 computedArrangement.add(rowArray)
+                // Only rows that actually survived the visibility filter are recorded, so hiding
+                // utility rows removes utility rows and nothing else.
+                semanticRows.add(SemanticRowRole.CODING_UTILITY, modifierLayout.provenanceOfRow(modRowI))
                 visibleExtraModRows++
             }
         } else if (mainLayout != null && modifierLayout == null) {
-            for (mainRow in mainLayout.arrangement) {
+            for ((mainRowI, mainRow) in mainLayout.arrangement.withIndex()) {
                 val rowArray = Array(mainRow.size) { TextKey(mainRow[it]).apply { isAlpha = true } }
                 computedArrangement.add(rowArray)
+                semanticRows.add(mainRowRole, mainLayout.provenanceOfRow(mainRowI))
             }
         } else if (mainLayout == null && modifierLayout != null) {
-            for (modRow in modifierLayout.arrangement) {
+            for ((modRowI, modRow) in modifierLayout.arrangement.withIndex()) {
                 val rowArray = Array(modRow.size) { TextKey(modRow[it]).apply { isAlpha = false } }
                 computedArrangement.add(rowArray)
+                semanticRows.add(SemanticRowRole.CODING_UTILITY, modifierLayout.provenanceOfRow(modRowI))
             }
         }
 
         // Add hints to keys
         if (keyboardMode == KeyboardMode.CHARACTERS && computedArrangement.isNotEmpty()) {
-            val symbolsComputedArrangement = computeKeyboardAsync(KeyboardMode.SYMBOLS, subtype).await().arrangement
-            // number row hint always happens on first row
-            if (prefs.keyboard.hintedNumberRowEnabled.get() && !prefs.keyboard.devRow.get() && symbolsComputedArrangement.isNotEmpty()) {
-                val row = computedArrangement[0]
-                val symbolRow = symbolsComputedArrangement[0]
-                addRowHints(row, symbolRow, KeyType.NUMERIC)
+            val symbolsKeyboard = computeKeyboardAsync(KeyboardMode.SYMBOLS, subtype).await()
+            val symbolsArrangement = symbolsKeyboard.arrangement
+            // Which symbol row feeds which letter row is decided by role, not by row index. See
+            // `HintRowPairing` for why the index arithmetic this replaces was wrong; the case that
+            // reaches Sam is the Coding profile, whose modifier layout has one more row than the
+            // symbol layer's and so slid every hint up by one.
+            val pairing = HintRowPairing.of(semanticRows.roles, symbolsKeyboard.semanticRows.map { it.role })
+            val numberHint = pairing.numberHint
+            if (numberHint != null &&
+                prefs.keyboard.hintedNumberRowEnabled.get() &&
+                !prefs.keyboard.activeProfilePrefs().devRow.get()
+            ) {
+                addRowHints(
+                    computedArrangement[numberHint.target],
+                    symbolsArrangement[numberHint.source],
+                    KeyType.NUMERIC,
+                )
             }
-            // all other symbols are added bottom-aligned
-            val rOffset = computedArrangement.size - symbolsComputedArrangement.size
-            for ((r, row) in computedArrangement.withIndex()) {
-                if (r < rOffset) {
-                    continue
-                }
-                val symbolRow = symbolsComputedArrangement.getOrNull(r - rOffset)
-                if (symbolRow != null) {
-                    addRowHints(row, symbolRow, KeyType.CHARACTER)
-                }
+            for (pair in pairing.symbolHints) {
+                addRowHints(
+                    computedArrangement[pair.target],
+                    symbolsArrangement[pair.source],
+                    KeyType.CHARACTER,
+                )
             }
         }
 
@@ -422,7 +467,12 @@ class LayoutManager(context: Context) {
             extendedPopupMappingDefault = extendedPopupsDefault.await().onFailure {
                 flogWarning(LogTopic.LAYOUT_MANAGER) { it.toString() }
             }.getOrNull()?.mapping,
+            // Deprecated compatibility projection. Left exactly as it was: it counts the modifier
+            // asset's rows (including the one consumed by the splice), which is not the number of
+            // coding utility rows in `semantics`. Deriving it from the semantic rows would move
+            // pixels, so it stays until the geometry authorities read roles directly.
             bottomModRowCount = bottomModRows,
+            semantics = semanticRows.build(),
         )
     }
 
@@ -464,7 +514,10 @@ class LayoutManager(context: Context) {
         val extendedPopups = loadPopupMappingAsync(subtype)
 
         val computedArrangement: ArrayList<Array<TextKey>> = arrayListOf()
-        for (row in pack.rows) {
+        // Packs carry no role metadata yet, so roles are decoded explicitly and every inferred one
+        // is flagged as such. Nothing here silently defaults a pack to "all alpha, two mod rows".
+        val semanticRows = NormalizedRowsBuilder()
+        for ((packRowI, row) in pack.rows.withIndex()) {
             if (!row.enabled) {
                 continue
             }
@@ -475,6 +528,22 @@ class LayoutManager(context: Context) {
             }
             if (rowKeys.isNotEmpty()) {
                 computedArrangement.add(rowKeys)
+                val (role, roleSource) = LayoutPackRowSemantics.resolve(row.id)
+                if (roleSource == PackRoleSource.COMPATIBILITY_FALLBACK) {
+                    flogWarning(LogTopic.LAYOUT_MANAGER) {
+                        "layout pack '${pack.id}' row '${row.id}' declares no semantic role; " +
+                            "falling back to $role for compatibility"
+                    }
+                }
+                semanticRows.add(
+                    role = role,
+                    provenance = RowProvenance.Pack(
+                        packId = pack.id,
+                        rowId = row.id,
+                        sourceRowIndex = packRowI,
+                        roleSource = roleSource,
+                    ),
+                )
             }
         }
 
@@ -507,6 +576,11 @@ class LayoutManager(context: Context) {
             extendedPopupMappingDefault = extendedPopupsDefault.await().onFailure {
                 flogWarning(LogTopic.LAYOUT_MANAGER) { it.toString() }
             }.getOrNull()?.mapping,
+            // Deprecated compatibility projection, stated explicitly rather than inherited. The
+            // value is the constructor default this path has always silently picked up; changing
+            // it would move pixels, which is out of scope here.
+            bottomModRowCount = 2,
+            semantics = semanticRows.build(),
         )
     }
 
@@ -526,18 +600,31 @@ class LayoutManager(context: Context) {
 
         when (keyboardMode) {
             KeyboardMode.CHARACTERS -> {
-                if (prefs.keyboard.numberRow.get()) {
+                if (prefs.keyboard.activeProfilePrefs().numberRow.get()) {
                     extensions.add(LTN(LayoutType.NUMERIC_ROW, subtype.layoutMap.numericRow))
                 }
-                if (prefs.keyboard.devRow.get()) {
+                if (prefs.keyboard.activeProfilePrefs().devRow.get()) {
                     extensions.add(LTN(LayoutType.NUMERIC_ROW, extCoreLayout("dev_row")))
                 }
                 main = LTN(LayoutType.CHARACTERS, subtype.layoutMap.characters)
                 modifier = LTN(LayoutType.CHARACTERS_MOD, extCoreLayout("default"))
             }
             KeyboardMode.EDITING -> {
-                // Layout for this mode is defined in custom layout xml file.
-                return@async TextKeyboard(arrayOf(), keyboardMode, null, null)
+                // Layout for this mode is defined in a custom layout xml file.
+                // The Editing keyboard renders from a custom XML layout, so it has no arrangement
+                // and no semantic rows. `bottomModRowCount` keeps its historic default only
+                // because the field is still part of the deprecated compatibility projection —
+                // no geometry authority reads it. `FlorisImeSizing` sizes every mode through the
+                // solver now, and an empty arrangement means it never reaches this keyboard at
+                // all. `semantics` records what this really is.
+                return@async TextKeyboard(
+                    arrangement = arrayOf(),
+                    mode = keyboardMode,
+                    extendedPopupMapping = null,
+                    extendedPopupMappingDefault = null,
+                    bottomModRowCount = 2,
+                    semantics = KeyboardSemantics.Sentinel(SentinelKind.EDITING),
+                )
             }
             KeyboardMode.NUMERIC -> {
                 main = LTN(LayoutType.NUMERIC, subtype.layoutMap.numeric)
@@ -552,7 +639,7 @@ class LayoutManager(context: Context) {
                 main = LTN(LayoutType.PHONE2, subtype.layoutMap.phone2)
             }
             KeyboardMode.SYMBOLS -> {
-                if (prefs.keyboard.numberRow.get()) {
+                if (prefs.keyboard.activeProfilePrefs().numberRow.get()) {
                     extensions.add(LTN(LayoutType.NUMERIC_ROW, subtype.layoutMap.numericRow))
                 }
                 main = LTN(LayoutType.SYMBOLS, subtype.layoutMap.symbols)

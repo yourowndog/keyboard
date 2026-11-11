@@ -25,7 +25,10 @@ import androidx.compose.ui.platform.LocalContext
 import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.LocalNavController
 import dev.patrickgold.florisboard.app.Routes
+import dev.patrickgold.florisboard.app.enumDisplayEntriesOf
+import dev.patrickgold.florisboard.app.settings.localization.LanguagePackManagerScreenAction
 import dev.patrickgold.florisboard.extensionManager
+import dev.patrickgold.florisboard.ime.core.DisplayLanguageNamesIn
 import dev.patrickgold.florisboard.ime.dictionary.DictionaryManager
 import dev.patrickgold.florisboard.ime.dictionary.FlorisUserDictionaryDatabase
 import dev.patrickgold.florisboard.ime.smartbar.quickaction.QuickActionArrangement
@@ -33,6 +36,7 @@ import dev.patrickgold.florisboard.lib.compose.FlorisConfirmDeleteDialog
 import dev.patrickgold.florisboard.lib.compose.FlorisScreen
 import dev.patrickgold.florisboard.lib.util.launchAppSelfUninstall
 import dev.patrickgold.jetpref.datastore.model.observeAsState
+import dev.patrickgold.jetpref.datastore.ui.ListPreference
 import dev.patrickgold.jetpref.datastore.ui.Preference
 import dev.patrickgold.jetpref.datastore.ui.PreferenceGroup
 import dev.patrickgold.jetpref.datastore.ui.SwitchPreference
@@ -66,6 +70,27 @@ fun DevtoolsScreen() = FlorisScreen {
             title = stringRes(R.string.devtools__enabled__label),
             summary = stringRes(R.string.devtools__enabled__summary),
         )
+
+        PreferenceGroup(title = stringRes(R.string.devtools__group_localization__title)) {
+            ListPreference(
+                prefs.localization.displayLanguageNamesIn,
+                title = stringRes(R.string.settings__localization__display_language_names_in__label),
+                entries = enumDisplayEntriesOf(DisplayLanguageNamesIn::class),
+            )
+            SwitchPreference(
+                prefs.localization.displayKeyboardLabelsInSubtypeLanguage,
+                title = stringRes(R.string.settings__localization__display_keyboard_labels_in_subtype_language),
+            )
+            Preference(
+                title = stringRes(R.string.settings__localization__language_pack_title),
+                summary = stringRes(R.string.settings__localization__language_pack_summary),
+                onClick = {
+                    navController.navigate(
+                        Routes.Settings.LanguagePackManager(LanguagePackManagerScreenAction.MANAGE)
+                    )
+                },
+            )
+        }
 
         PreferenceGroup(title = stringRes(R.string.devtools__title)) {
             Preference(

@@ -31,6 +31,50 @@ app/src/main/assets/ime/keyboard/
     layouts/
 ```
 
+## Layout selection settings
+
+> Last verified: 2026-08-05 against `LocalizationScreen.kt`,
+> `SubtypeEditorScreen.kt`, `SubtypeManager.kt`, `Routes.kt`, and
+> `DevtoolsScreen.kt`.
+
+Settings opens **Layouts** directly onto the subtype list. A subtype binds its
+language to the character, symbol, numeric, phone, popup, currency, composer,
+punctuation, and NLP components used by the keyboard.
+
+When no subtype is persisted, the runtime uses `Subtype.DEFAULT`. The list
+shows that effective subtype as **Default** instead of reporting an empty
+configuration. It is a presentation entry only: it is not inserted into
+`subtypesFlow` or serialized until the user edits and saves it. Saving follows
+the normal add path, assigns a real subtype id, and preserves the rest of the
+configured list. The implicit entry cannot be deleted.
+
+Every subtype editor also exposes a permanent **Factory default** recovery
+card. Loading it fills the editor with the exact `Subtype.DEFAULT` bindings but
+does not save immediately. When editing a configured subtype, the recovery
+preserves that subtype's id, so the normal Save action repairs the existing
+entry in place instead of appending another subtype.
+
+The persisted `qwerty_wide_full` compatibility id resolves explicitly to the
+shipped `qwerty_wide.json` arrangement and `qwerty_wide_mod` modifier. The
+explicit arrangement path prevents that selectable compatibility entry from
+falling through to a nonexistent `characters/qwerty_wide_full.json` file.
+
+The repair was validated on a physical `SM_S938U` on 2026-08-05 with the
+in-place debug upgrade `0.5.0-debug+65dae525`. OmniBoard remained the selected
+IME, and both existing subtype records survived the upgrade with the
+`qwerty_wide_full` binding intact.
+
+Configured subtypes remain in persisted order. Each row shows the character,
+primary-symbol, secondary-symbol, and currency-set binding. Numeric and phone
+families remain in the editor because adding all eight slots would turn the
+compact list summary into another crowded editor.
+
+The display-language selector, subtype-language key-label switch, and language
+pack manager are still backed by their original preferences and route, but are
+available from Devtools rather than the primary Layouts screen. Layout Builder
+is likewise routed only from Devtools. Its `LayoutPack`, repository, validation,
+and application/runtime constructor wiring remain intact.
+
 ## Row families
 
 - `characters/`: main character rows.

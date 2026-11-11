@@ -7,6 +7,8 @@ operations, not part of the routine harvest snapshot workflow.
 - `rescale_bigrams.py` applies nonlinear frequency scaling.
 - `clean_bigram_spam.py` removes a fixed set of SMS tokens and development
   jargon patterns.
+- `cull_dictionary_poison.py` audits and purges deadweight, mechanical possessive,
+  and acute-revert poison entries using multi-signal linguistic and harvest evidence.
 
 Run them only from the repository root, review the asset diff, and execute the
 autocorrect tests afterward. They are intentionally separated from

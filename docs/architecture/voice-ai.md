@@ -1,21 +1,101 @@
 # Voice and AI Integrations
 
 > Status: Canonical  
-> Last verified: 2026-07-11  
-> Verified against: `KeyboardManager.kt`, `WhisperClient.kt`, `GemmaClient.kt`,
-> `SmolLMClient.kt`, application initialization, assets, and dependencies
+> Last verified: 2026-08-25
+> Verified against: `FlorisImeService.kt`, `KeyboardManager.kt`, `VoiceManager.kt`,
+> `VoiceTranscriptionInputLayout.kt`, `Recorder.kt`, `VoiceDatabase.kt`,
+> `VoiceWavRecovery.kt`, `WhisperClient.kt`, `GemmaClient.kt`, `SmolLMClient.kt`,
+> application initialization, assets, and dependencies
 
 OmniBoard currently has three distinct AI-related mechanisms. They must not be
 described as one architecture.
 
-## Whisper voice transcription
+## Voice transcription
 
-The voice key starts/stops recording through `KeyboardManager`. On completion,
-`WhisperClient` sends the audio file to OpenAI's audio transcription endpoint,
-using the configured model and API key, then commits successful text through the
-editor path. Voice sessions are marked separately for harvesting.
+The voice key starts/stops recording through `KeyboardManager`. In the voice
+smartbar, the cloud icon opens a persisted provider selector: **OpenAI Cloud**,
+**Titan Local**, or **Weakling Local**. `WhisperClient` sends that constrained
+selection, the WAV, and the `verbose_json` word/segment request to the
+authenticated Brokentooth relay on weakling; the APK contains only its
+endpoint-scoped relay credential.
 
-This is active cloud functionality.
+OpenAI Cloud remains the fallback and receives the allowlisted request fields.
+Titan Local is forwarded over Tailscale to the private CrisperWhisper adapter
+on Titan. The adapter runs `transcribe_dual()` and returns OpenAI-compatible
+`verbose_json`: clean intended text and its `words`/`segments`, plus
+`verbatim_text` and `verbatim_words` extensions. The keyboard stores both
+transcripts and writes the full response to the Schema 2 sidecar, so filler
+words and their timestamps survive in the corpus. The persisted Cleaned versus
+Verbatim preference controls foreground auto-insertion. Either version can be
+copied or explicitly inserted from Voice Inbox.
+
+Weakling Local is forwarded to `weakling-whisper.service`, a loopback-bound
+faster-whisper (`large-v3-turbo-ct2`) adapter on the relay host itself. It is
+the always-on utility path: it runs on CPU, so it answers without competing for
+Titan's GPU, but it produces no verbatim transcript. Its `verbose_json` carries
+the clean text with real `words`/`segments` and confidence fields, and no
+`verbatim_text`. Takes transcribed this way therefore fall back to the cleaned
+text when the Verbatim preference is active, and their sidecars record a clean
+transcript only, so they do not contribute verbatim labels to the corpus.
+
+Each WAV receives a `VoiceTake` row in the local Room `voice_takes.db` as soon
+as capture starts. The row progresses through Recording, Saved, Transcribing,
+Ready, or Failed independently of the Compose view. Automatic pending recovery
+retains the provider selected for the original failed take and runs sequentially
+so recovery cannot fan out into many simultaneous Titan requests. A manual
+Voice Inbox Retry instead uses the provider currently selected in the voice UI,
+which makes an explicit switch from a creditless or unavailable provider useful.
+
+A single take's transcription is bounded by a watchdog. `WhisperClient` already
+caps each HTTP call (connect 10 s / read 180 s / call 240 s), but a take can hold
+the transcription mutex across several chunked calls plus their rate-limit retry
+delays, so a relay that is merely slow or rate-limited could stall the whole voice
+pipeline for tens of minutes. `KeyboardManager` fails the take after a 10-minute
+wall-clock cap on that mutex, marks it Failed (recoverable from Voice Inbox), and
+lets the queue move on. The automatic pending drain likewise skips a take that
+cannot be transcribed by either its pinned provider or the currently-selected
+provider on that pass; the take stays pending for the next drain trigger instead
+of holding the takes queued behind it hostage.
+
+Voice capture is owned by the application-scoped `KeyboardManager`, not by a
+Compose view. A non-finishing input-view restart can therefore reattach to the
+same recording/transcription state after rotation. If the input session,
+window, or IME service actually goes away, the lifecycle callback synchronously
+finalizes the WAV before teardown and registers it in the durable pending
+transcription queue before any network request. That background result is saved
+to Voice Inbox and never inserted into a later, unrelated editor. The recorder
+also refuses a second `start()` while live, so a UI-state mismatch cannot
+replace the active file or writer-thread handles.
+
+On startup, existing Schema 2 sidecars are imported into Voice Inbox and
+untranscribed WAVs in `Recordings/Whisper_Vault` are queued for Titan. A WAV
+whose recorder placeholder header is still all zeroes can be repaired from its
+intact PCM length; recovery rewrites only the first 44 bytes and refuses unknown
+nonzero headers. The phone downscales a WAV to mono PCM16/16 kHz and sends it as
+one request whenever it fits the relay's safe 25 MiB envelope (about 13.6
+minutes). Only a still-larger prepared WAV is divided into phone-side
+macrochunks at quiet PCM windows.
+
+For Titan Local, the private adapter normalizes each received recording and
+splits it server-side at quiet boundaries into at-most-20-second inference
+chunks with a small acoustic-context overlap. It transcribes those chunks
+sequentially under one model lock, removes overlap-only words, restores absolute
+timestamps, and returns one merged response. Weakling maintains independent
+Titan and paid-cloud rate budgets and includes `Retry-After` on a 429;
+`WhisperClient` honors that delay with bounded retries. If phone-side
+macrochunking was necessary, its timestamps are also shifted back to the source
+timeline and every underlying response remains in the Schema 2 sidecar.
+
+The Titan adapter treats a CUDA illegal-memory-access as process-fatal. It
+flushes a `503`, exits nonzero, and lets the system service's
+`Restart=on-failure` policy create a clean CUDA context; otherwise the process
+would remain alive while every later request failed. Its tracked source is
+`/opt/brokentooth-relay/crisperwhisper_service.py` on weakling and its deployed
+copy is the same path on Titan.
+
+Successful takes enter the existing Titan archive queue. Phone audio is
+retained until Titan returns the matching checksum and the existing 24-hour
+grace period expires; Voice Inbox does not manually delete recordings.
 
 ## ONNX autocorrect scorer
 
@@ -46,4 +126,3 @@ so this is not part of live candidate ranking.
 Older documents describe an on-device Gemma `.task` file and MediaPipe GenAI.
 The current application dependency set does not contain that integration and
 the referenced bridge class is absent. Preserve it only as architecture history.
-

@@ -18,13 +18,17 @@ package org.florisboard.lib.snygg.ui
 
 import android.graphics.Canvas
 import android.graphics.PixelFormat
+import android.graphics.PorterDuff
 import android.graphics.drawable.Animatable
 import android.util.Log
+import android.view.SurfaceHolder
 import android.view.SurfaceView
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -125,6 +129,12 @@ fun SnyggSurfaceView(
 
         if (showSurfaceView) {
             var surfaceView by remember { mutableStateOf<SurfaceView?>(null) }
+            // Bumped by the holder callback on every `surfaceCreated` and `surfaceChanged`, and used
+            // as a redraw key. Surface *size* is deliberately not the key: two resizes that land back
+            // on the same dimensions are still two freshly allocated buffers, and each one needs a
+            // frame posted into it or it shows whatever the graphics allocator left there. Changing
+            // the bottom offset resizes this surface, which is the reported glitch.
+            var surfaceGeneration by remember { mutableIntStateOf(0) }
             AndroidView(
                 modifier = modifier,
                 factory = { context ->
@@ -140,7 +150,22 @@ fun SnyggSurfaceView(
                 update = { surfaceView = it },
             )
             surfaceView?.let { surfaceView ->
-                LaunchedEffect(surfaceView, backgroundColor, loadedImage, contentScale) {
+                DisposableEffect(surfaceView) {
+                    val callback = object : SurfaceHolder.Callback {
+                        override fun surfaceCreated(holder: SurfaceHolder) {
+                            surfaceGeneration++
+                        }
+
+                        override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
+                            surfaceGeneration++
+                        }
+
+                        override fun surfaceDestroyed(holder: SurfaceHolder) = Unit
+                    }
+                    surfaceView.holder.addCallback(callback)
+                    onDispose { surfaceView.holder.removeCallback(callback) }
+                }
+                LaunchedEffect(surfaceView, surfaceGeneration, backgroundColor, loadedImage, contentScale) {
                     val image = loadedImage
                     if (image is DrawableImage && image.drawable is Animatable) {
                         // Slow path, need animation
@@ -156,8 +181,19 @@ fun SnyggSurfaceView(
                             animatedDrawable.stop()
                         }
                     } else {
-                        // Fast path, render once and be done with it
-                        surfaceView.drawToSurface(backgroundColor, loadedImage, contentScale)
+                        // Fast path: render once, but do not treat an invalid surface as a reason to
+                        // stop. `surfaceCreated` is the normal wake-up and re-runs this effect; the
+                        // retry covers the gap between the view existing and its surface being ready,
+                        // which is exactly when a first frame would otherwise be dropped for good.
+                        var attempt = 0
+                        while (isActive && !surfaceView.drawToSurface(backgroundColor, loadedImage, contentScale)) {
+                            attempt++
+                            if (attempt >= INVALID_SURFACE_RETRIES) {
+                                Log.w("SnyggSurfaceView", "giving up after $attempt invalid-surface attempts")
+                                break
+                            }
+                            delay(INVALID_SURFACE_RETRY_DELAY_MS)
+                        }
                     }
                 }
             }
@@ -165,20 +201,38 @@ fun SnyggSurfaceView(
     }
 }
 
+/** How many times a dropped frame is retried before the surface is written off. */
+private const val INVALID_SURFACE_RETRIES = 5
+
+/** How long to wait between retries. Five of these is well under one perceptible pause. */
+private const val INVALID_SURFACE_RETRY_DELAY_MS = 16L
+
+/**
+ * Posts one frame of [color] and [image] to this view's surface.
+ *
+ * @return `true` if a frame was posted, `false` if the surface was not valid and the caller should
+ *   try again. Returning the outcome rather than swallowing it is what lets the caller retry; the
+ *   previous version logged a warning and left the surface holding whatever it already had.
+ */
 private fun SurfaceView.drawToSurface(
     color: Color,
     image: Image?,
     contentScale: ContentScale,
-) {
+): Boolean {
     Log.d("SnyggSurfaceView", "drawToSurface(color=$color, image=$image)")
     val surface = holder.surface
     if (!surface.isValid) {
         Log.w("SnyggSurfaceView", "drawToSurface: surface.isValid=false, may indicate state issue")
-        return
+        return false
     }
     val canvas = surface.lockCanvas(null)
     try {
-        canvas.drawColor(color.toArgb())
+        // SRC, not the default SRC_OVER. `lockCanvas(null)` hands back one of the swap chain's
+        // buffers, which still holds an earlier frame; compositing onto that is invisible for an
+        // opaque colour and wrong for a translucent one, where each redraw would blend on top of the
+        // last and creep towards opaque. SRC replaces the buffer, so the posted frame is exactly the
+        // colour the theme asked for, alpha included.
+        canvas.drawColor(color.toArgb(), PorterDuff.Mode.SRC)
         when (image) {
             is BitmapImage -> image.bitmap.drawToSurface(canvas, contentScale)
             is DrawableImage -> image.drawToSurface(canvas, contentScale)
@@ -186,6 +240,7 @@ private fun SurfaceView.drawToSurface(
     } finally {
         surface.unlockCanvasAndPost(canvas)
     }
+    return true
 }
 
 private fun Bitmap.drawToSurface(canvas: Canvas, contentScale: ContentScale) {

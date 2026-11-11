@@ -18,6 +18,7 @@ package dev.patrickgold.florisboard.ime.text.gestures
 
 import android.content.Context
 import android.util.Log
+import dev.patrickgold.florisboard.ime.keyboard.geometry.SpatialCoordinateFrame
 import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -136,18 +137,18 @@ class PrecomputedGestureCache(private val context: Context) {
     }
     
     /**
-     * Get precomputed gestures for a word, scaled to keyboard dimensions.
+     * Get precomputed gestures for a word, mapped into the live alpha-key frame.
      * Returns null if word not found in precomputed cache.
      * 
      * @param word The word to get gestures for
-     * @param keyboardWidth Width to scale gestures to
-     * @param keyboardHeight Height to scale gestures to
+     * The cache stores alpha-relative 0..1 coordinates. Translation matters as much as scaling:
+     * a number/extension row moves the alpha block below local y=0 even though its shape is
+     * unchanged.
      * @return List of scaled gestures, or null if not precomputed
      */
     fun getScaledGestures(
         word: String,
-        keyboardWidth: Float,
-        keyboardHeight: Float
+        frame: SpatialCoordinateFrame,
     ): List<StatisticalGlideTypingClassifier.Gesture>? {
         val normalizedGestures = gestureCache[word] ?: return null
         
@@ -161,8 +162,8 @@ class PrecomputedGestureCache(private val context: Context) {
                 val normalizedX = normalized[i]
                 val normalizedY = normalized[i + 1]
                 
-                val scaledX = normalizedX * keyboardWidth
-                val scaledY = normalizedY * keyboardHeight
+                val scaledX = frame.boardLeft + normalizedX * frame.alphaW
+                val scaledY = frame.boardTop + normalizedY * frame.alphaH
                 
                 gesture.addPoint(scaledX, scaledY)
                 i += 2

@@ -2,7 +2,7 @@
   "$": "ime.extension.keyboard",
   "meta": {
     "id": "org.florisboard.layouts",
-    "version": "0.1.7",
+    "version": "0.1.8",
     "title": "Default layouts",
     "description": "Default layouts which are always available.",
     "maintainers": [
@@ -464,7 +464,7 @@
       },
       {
         "id": "qwerty_wide",
-        "label": "QWERTY Wide",
+        "label": "QWERTY Coding",
         "authors": [
           "Sam/Codex"
         ],
@@ -473,7 +473,7 @@
       },
       {
         "id": "qwerty_wide_swipe",
-        "label": "QWERTY Wide Swipe",
+        "label": "QWERTY Coding (Swipe)",
         "authors": [
           "Sam/Codex"
         ],
@@ -669,12 +669,13 @@
       },
       {
         "id": "qwerty_wide_full",
-        "label": "QWERTY Wide (Full)",
+        "label": "QWERTY Coding (Full)",
         "authors": [
           "Sam/Codex"
         ],
         "direction": "ltr",
-        "modifier": null
+        "modifier": "org.florisboard.layouts:qwerty_wide_mod",
+        "arrangementFile": "layouts/characters/qwerty_wide.json"
       }
     ],
     "charactersMod": [
@@ -696,7 +697,7 @@
       },
       {
         "id": "qwerty_wide_default",
-        "label": "QWERTY Wide default character modifier layout",
+        "label": "QWERTY Coding default character modifier layout",
         "authors": [
           "Sam/Codex"
         ],
@@ -704,7 +705,7 @@
       },
       {
         "id": "qwerty_wide_mod",
-        "label": "QWERTY Wide 5-Row Mod",
+        "label": "QWERTY Coding 5-Row Mod",
         "authors": [
           "Sam/Codex"
         ],
@@ -712,7 +713,7 @@
       },
       {
         "id": "qwerty_wide_swipe_mod",
-        "label": "QWERTY Wide Swipe Mod",
+        "label": "QWERTY Coding Swipe Mod",
         "authors": [
           "Sam/Codex"
         ],

@@ -8,8 +8,12 @@ import kotlin.math.ln
 import kotlin.math.max
 import dev.patrickgold.florisboard.ime.nlp.shared.BigramTable
 import dev.patrickgold.florisboard.ime.nlp.shared.CasingUtils
+import dev.patrickgold.florisboard.ime.nlp.shared.CandidateProvenance
 import dev.patrickgold.florisboard.ime.nlp.shared.CandidateScorer
+import dev.patrickgold.florisboard.ime.nlp.shared.ContractionRules
 import dev.patrickgold.florisboard.ime.nlp.shared.DictionaryRepository
+import dev.patrickgold.florisboard.ime.nlp.shared.FallbackCandidate
+import dev.patrickgold.florisboard.ime.nlp.shared.FallbackEngineMode
 
 object SymSpellManager {
     @Volatile private var isReady = false
@@ -33,11 +37,19 @@ object SymSpellManager {
 
     // Prefix index for fast autocomplete - maps prefix (1-3 chars) to words starting with it
     private var prefixIndex: Map<String, List<Pair<String, Long>>> = emptyMap()
+
+    /**
+     * Cap for 1- and 2-character prefix buckets only. At that depth the user has
+     * given almost no evidence, so frequency order is all there is and a deep
+     * bucket is wasted memory. Deeper buckets are kept whole — see buildPrefixIndex.
+     */
+    private const val SHALLOW_PREFIX_BUCKET_CAP = 300
     private var appContextRef: Context? = null
 
     // Config
     private const val DICT_ASSET_PATH = "ime/dict/unified_dictionary.tsv"
     private const val BIGRAM_ASSET_PATH = "ime/dict/final_mobile_bigrams.tsv"
+    private const val CULLED_SCORE = Double.MAX_VALUE
     // User overrides to Ensure these specific words/frequencies are respected
     private val USER_OVERRIDES = listOf(
         "kiry" to Double.MAX_VALUE,
@@ -58,39 +70,6 @@ object SymSpellManager {
         "idk" to Double.MAX_VALUE,     // Abbreviation "I don't know"
         "wtf" to Double.MAX_VALUE,     // Common abbrev
     )
-    // Prefer common contractions before running SymSpell so "im" maps to "I'm" instead of "pm".
-    private val CONTRACTION_SHORTCUTS = mapOf(
-        // "im" removed — now in PERSONAL_VOCAB (never corrected)
-        "i'm" to "I'm",
-        "ive" to "I've",
-        // "id" removed - now handled by context-aware logic in CandidateScorer
-        "ill" to "I'll",
-        "dont" to "don't",
-        "cant" to "can't",
-        "wont" to "won't",
-        "isnt" to "isn't",
-        "arent" to "aren't",
-        "doesnt" to "doesn't",
-        "didnt" to "didn't",
-        "wasnt" to "wasn't",
-        "werent" to "weren't",
-        "youre" to "you're",
-        "theyre" to "they're",
-        // "were" to "we're", // Removed: handled by CasingUtils.resolveContextualContraction
-        "lets" to "let's",
-        "thats" to "that's",
-        "whos" to "who's",
-        "whats" to "what's",
-        "wheres" to "where's",
-        "theres" to "there's",
-        // "well" to "we'll", // Removed: handled by CasingUtils.resolveContextualContraction
-        "hell" to "he'll",
-        "shell" to "she'll",
-        // "its" removed - now handled by CasingUtils.resolveContextualContraction
-        "ac" to "AC",      // air conditioning
-        "itd" to "it'd",   // sloppy it'd typing
-    )
-
     private val BLACKLIST = setOf("wont", "hows", "cant", "dont", "isnt", "arent", "didnt", "couldnt", "wouldnt", "shouldnt", "wasnt", "werent", "hasnt", "havent", "hadnt")
 
     // Bigram data now provided by shared BigramTable singleton
@@ -189,7 +168,15 @@ object SymSpellManager {
         userWordsCache = words
     }
 
-    fun suggest(input: String, previousWord: String? = null): List<String> {
+    /**
+     * SymSpell-only fallback retrieval used when the primary ngram/neural engine
+     * is unavailable. Returns structured [FallbackCandidate]s that retain each
+     * candidate's true provenance, real edit distance, contraction license, and
+     * engine mode, instead of collapsing everything to a bare string. The Gate
+     * decision is made downstream by [FallbackCorrection]; this method only
+     * establishes truthful retrieval evidence.
+     */
+    fun suggest(input: String, previousWord: String? = null): List<FallbackCandidate> {
          android.util.Log.d("SymSpell_Debug", "suggest() called: input='$input', prev='$previousWord'")
 
          if (!isReady) {
@@ -198,18 +185,37 @@ object SymSpellManager {
          }
          if (input.length == 1) {
              // Keep exactly what the user typed (single chars are never corrected here).
+             // No correction evidence exists — represent it as a verbatim candidate.
              android.util.Log.d("SymSpell_Debug", "Single char input, returning as-is: '$input'")
-             return listOf(input)
+             return listOf(literalCandidate(input))
          }
 
         val normalized = input.lowercase()
         val upperCount = input.count { it.isUpperCase() }
         val suggestions = DictionaryRepository.findWithinTwoEdits(normalized)
+            .filterNot { candidate -> PersonalPreferences.isAntiCorrection(input, candidate.term) }
         android.util.Log.d("SymSpell_Debug", "Dictionary lookup returned ${suggestions.size} raw candidates")
         val prev = previousWord?.lowercase()
         val ignoreManager = dev.patrickgold.florisboard.ime.dictionary.DictionaryManager.default()
 
-        val contractionTop = CONTRACTION_SHORTCUTS[normalized]?.let { applyCasingPattern(input, it) }
+        // The contraction shortcut is a CONTRACTION_RULE candidate, not an edit.
+        // Attach the exact static license only when ContractionRules can issue one;
+        // shortcuts without a licensed form (e.g. wheres) stay unlicensed rather
+        // than borrowing fabricated edit-distance authority.
+        val contractionRaw = ContractionRules.LEGACY_FALLBACK_SHORTCUTS[normalized]
+        val contractionTop = contractionRaw
+            ?.let { raw ->
+                val cased = applyCasingPattern(input, raw)
+                if (PersonalPreferences.isAntiCorrection(input, cased)) return@let null
+                FallbackCandidate(
+                    rawCandidate = raw,
+                    casedCandidate = cased,
+                    provenance = CandidateProvenance.CONTRACTION_RULE,
+                    editDistance = null,
+                    engineMode = FallbackEngineMode.SYMSPELL_ONLY,
+                    contractionLicense = ContractionRules.resolveStatic(normalized)?.license,
+                )
+            }
         val mapped = suggestions
             .sortedBy { candidate ->
                 val term = candidate.term
@@ -217,15 +223,15 @@ object SymSpellManager {
 
                 // CULLING: Filter out 2-letter words not in whitelist
                 if (lowerTerm.length == 2 && !TWO_LETTER_WHITELIST.contains(lowerTerm)) {
-                    return@sortedBy CandidateScorer.CULLED_SCORE
+                    return@sortedBy CULLED_SCORE
                 }
 
                 // Filter by ignore list and blacklist
                 if (ignoreManager.isUserIgnored(input, term)) {
-                    return@sortedBy CandidateScorer.CULLED_SCORE
+                    return@sortedBy CULLED_SCORE
                 }
                 if (BLACKLIST.contains(lowerTerm)) {
-                    return@sortedBy CandidateScorer.CULLED_SCORE
+                    return@sortedBy CULLED_SCORE
                 }
 
                 // Use unified scorer
@@ -238,7 +244,7 @@ object SymSpellManager {
                     isInUserDict = isUserWord,
                     frequency = candidate.frequency
                 )
-                if (score >= CandidateScorer.CULLED_SCORE - 0.1) {
+                if (score >= CULLED_SCORE - 0.1) {
                     android.util.Log.d("SymSpell_Debug", "CULLED: '$lowerTerm' (score=$score)")
                 }
                 score
@@ -250,7 +256,14 @@ object SymSpellManager {
                     android.util.Log.d("SymSpell_Debug", "Filtered uppercase: '$term'")
                     null
                 } else {
-                    applyCasingPattern(input, term)
+                    // Genuine edit-distance correction: retain the real distance.
+                    FallbackCandidate(
+                        rawCandidate = term,
+                        casedCandidate = applyCasingPattern(input, term),
+                        provenance = CandidateProvenance.EDIT_DISTANCE,
+                        editDistance = candidate.distance,
+                        engineMode = FallbackEngineMode.SYMSPELL_ONLY,
+                    )
                 }
             }
         android.util.Log.d("SymSpell_Debug", "After filtering: ${mapped.size} candidates")
@@ -258,8 +271,8 @@ object SymSpellManager {
             if (contractionTop != null) {
                 add(contractionTop)
                 if (mapped.isNotEmpty()) {
-                    // If the top mapped suggestion is the same as contraction, skip it
-                    if (mapped.first() != contractionTop) {
+                    // If the top mapped suggestion is the same word as the contraction, skip it
+                    if (mapped.first().casedCandidate != contractionTop.casedCandidate) {
                         addAll(mapped)
                     } else {
                         addAll(mapped.drop(1))
@@ -270,10 +283,27 @@ object SymSpellManager {
             }
         }
 
-        val finalResult = if (withContraction.isNotEmpty()) withContraction else listOf(input)
-        android.util.Log.d("SymSpell_Debug", "suggest() returning ${finalResult.size} suggestions: $finalResult")
+        val finalResult = if (withContraction.isNotEmpty()) withContraction else listOf(literalCandidate(input))
+        android.util.Log.d(
+            "SymSpell_Debug",
+            "suggest() returning ${finalResult.size} suggestions: ${finalResult.map { it.casedCandidate }}",
+        )
         return finalResult
     }
+
+    /**
+     * A verbatim candidate: the fallback engine had no correction to offer, so it
+     * returns the typed word unchanged. Carries no correction provenance — the
+     * Gate treats it as non-committable, which is truthful rather than a fabricated
+     * edit.
+     */
+    private fun literalCandidate(input: String) = FallbackCandidate(
+        rawCandidate = input,
+        casedCandidate = input,
+        provenance = CandidateProvenance.LEGACY_FALLBACK,
+        editDistance = null,
+        engineMode = FallbackEngineMode.SYMSPELL_ONLY,
+    )
 
     data class RawCandidate(val term: String, val distance: Double)
 
@@ -353,9 +383,19 @@ object SymSpellManager {
                 }
             }
 
-            // Sort each prefix's words by frequency (descending) and limit to top 100
-            prefixIndex = indexMap.mapValues { (_, words) ->
-                words.sortedByDescending { it.second }.take(100)
+            // Sort each prefix's words by frequency (descending).
+            //
+            // Only the 1- and 2-character buckets are capped. Capping the
+            // 3-character buckets (which this used to do, at 100) silently broke
+            // completion: the bucket is chosen by the first 3 characters but
+            // filtered by everything the user typed, so a word cut from the
+            // 3-char bucket could never be recovered by typing more of it.
+            // Measured over the shipped dictionary, that cap left completion
+            // stuck near 67% no matter how much of a word was typed; without it,
+            // six typed characters reach 93% and seven reach 98%.
+            prefixIndex = indexMap.mapValues { (prefix, words) ->
+                val sorted = words.sortedByDescending { it.second }
+                if (prefix.length <= 2) sorted.take(SHALLOW_PREFIX_BUCKET_CAP) else sorted
             }
 
             android.util.Log.i("SymSpellManager", "Built prefix index: ${prefixIndex.size} prefixes")

@@ -130,7 +130,15 @@ data class SubtypeLayoutMap(
 
         private val CHARACTERS_DEFAULT =          extCoreLayout("qwerty_wide")
         private val SYMBOLS_DEFAULT =             extCoreLayout("western_wide")
-        private val SYMBOLS2_DEFAULT =            extCoreLayout("western_wide")
+        // Not "western_wide". The Symbols and Characters defaults were widened together in
+        // 27323ebe, and this one was widened with them — but `symbols2` has no `western_wide`
+        // component and never has. An unresolvable main layout does not fail loudly: `mergeLayouts`
+        // falls through to its modifier-only branch, so `=\<` rendered `symbols2Mod/default.json`
+        // alone — two rows of navigation keys and a blank placeholder, with no symbols on it at all.
+        // `western` is the component that exists, and the value this held from 2021 until then.
+        // A wide Symbols2 arrangement would have to be authored before this can point at one; see
+        // `LayoutAssetDiagnosticTest`.
+        private val SYMBOLS2_DEFAULT =            extCoreLayout("western")
         private val NUMERIC_DEFAULT =             extCoreLayout("western_arabic")
         private val NUMERIC_ADVANCED_DEFAULT =    extCoreLayout("western_arabic")
         private val NUMERIC_ROW_DEFAULT =         extCoreLayout("western_arabic")

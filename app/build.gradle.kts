@@ -79,9 +79,21 @@ android {
         buildConfigField("String", "BUILD_COMMIT_HASH", "\"${getGitCommitHash()}\"")
         buildConfigField("String", "FLADDONS_API_VERSION", "\"v~draft2\"")
         buildConfigField("String", "FLADDONS_STORE_URL", "\"beta.addons.florisboard.org\"")
-        // Fallback to WHISPER_API_KEY if OPENAI_API_KEY is missing
-        buildConfigField("String", "OPENAI_API_KEY", "\"${getLocalOrEnv("OPENAI_API_KEY", getLocalOrEnv("WHISPER_API_KEY"))}\"")
-        buildConfigField("String", "WHISPER_MODEL", "\"${getLocalOrEnv("WHISPER_MODEL", "whisper-1")}\"")
+        buildConfigField(
+            "String",
+            "WHISPER_RELAY_URL",
+            "\"${getLocalOrEnv("WHISPER_RELAY_URL", "https://weakling.tail8d8cc7.ts.net/v1/whisper/transcriptions")}\"",
+        )
+        buildConfigField("String", "WHISPER_RELAY_TOKEN", "\"${getLocalOrEnv("WHISPER_RELAY_TOKEN")}\"")
+
+        // Corpus archive on Titan. Talks straight to the machine over Tailscale rather than
+        // through the relay: the relay's job is holding a paid API key, and there is no key here.
+        buildConfigField(
+            "String",
+            "ARCHIVE_URL",
+            "\"${getLocalOrEnv("ARCHIVE_URL", "http://100.104.232.94:8790/v1/archive")}\"",
+        )
+        buildConfigField("String", "ARCHIVE_TOKEN", "\"${getLocalOrEnv("ARCHIVE_TOKEN")}\"")
 
         // A debug APK packages native libraries for every ABI, which is about
         // 120 MB of the ~143 MB total. A 64-bit phone can execute exactly one
@@ -146,6 +158,14 @@ android {
 
             isDebuggable = true
             isJniDebuggable = false
+
+            // Debug builds only ever land on one arm64 phone, over a wireless ADB link that
+            // drops on long transfers. The other three ABIs are ~86 MB of native libs that
+            // device can never execute; excluding them roughly halves the APK. Release builds
+            // are untouched and still ship every ABI.
+            ndk {
+                abiFilters += listOf("arm64-v8a")
+            }
 
             resValue("mipmap", "floris_app_icon", "@mipmap/omni_icon")
             resValue("mipmap", "floris_app_icon_round", "@mipmap/omni_icon")
@@ -240,6 +260,11 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.runtime)
     implementation("com.microsoft.onnxruntime:onnxruntime-android:1.26.0")
+    // FUTO's swipe engine, built from gitlab.futo.org/keyboard/swipe-library. The AAR
+    // statically links its own ExecuTorch (v1.2.0), so the separate org.pytorch
+    // executorch-android artifact is no longer needed -- and keeping both would put two
+    // different ExecuTorch runtimes in one process.
+    implementation(files("libs/futo-swipe-release.aar"))
 
     implementation(libs.cache4k)
     implementation(libs.kotlin.reflect)

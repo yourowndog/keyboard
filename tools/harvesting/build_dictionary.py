@@ -101,13 +101,20 @@ def load_aosp(path: Path):
     """word(lower) -> (surface, f)"""
     base = {}
     f_max = 1
-    word_re = re.compile(r"^\s*word=([^,]+),f=(\d+)")
+    word_re = re.compile(r"^\s*word=([^,]+),f=(\d+)(.*)")
+    flag_re = re.compile(r"flags=([^,]*)")
     with open(path, encoding="utf-8") as fh:
         for line in fh:
             m = word_re.match(line)
             if not m:
                 continue
-            surface, f = m.group(1), int(m.group(2))
+            surface, f, rest = m.group(1), int(m.group(2)), m.group(3)
+            if "not_a_word=true" in rest:
+                continue
+            flags_m = flag_re.search(rest)
+            flags = flags_m.group(1) if flags_m else ""
+            if f == 0 and flags == "abbreviation":
+                continue
             if " " in surface or len(surface) > MAX_TOKEN_LEN:
                 continue
             key = surface.lower()
@@ -189,9 +196,20 @@ def main():
 
     base, f_max = load_aosp(AOSP_COMBINED)
     
-    # Filter AOSP base to exclude typos, quarantine, and protected-only forms
-    base = {low: (surf, f) for low, (surf, f) in base.items()
-            if low not in typo_mappings and low not in quarantine and not (low in protected_exact_forms and low not in approved_vocabulary)}
+    try:
+        import wordfreq
+        has_wordfreq = True
+    except ImportError:
+        has_wordfreq = False
+
+    # Filter AOSP base to exclude typos, quarantine, protected-only forms, and zero-frequency deadweight
+    base = {
+        low: (surf, f) for low, (surf, f) in base.items()
+        if low not in typo_mappings and low not in quarantine
+        and not (low in protected_exact_forms and low not in approved_vocabulary)
+        and (not has_wordfreq or low in approved_vocabulary or wordfreq.zipf_frequency(low, "en") > 0.0)
+        and not (has_wordfreq and low.endswith("'s") and wordfreq.zipf_frequency(low, "en") < 1.5 and low not in approved_vocabulary)
+    }
 
     voice, typing, surfaces, insisted, new_words, reverted, bigrams, phrases, kept, dropped = mine_corpus(HARVEST)
     total = voice + typing

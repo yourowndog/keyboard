@@ -1,5 +1,5 @@
 /*
- * HarvestJsonl - Structured Usage Harvesting (v3)
+ * HarvestJsonl - Structured Usage Harvesting (v3 + v4)
  *
  * Machine-readable companion to HarvestManager's markdown log. One JSON object
  * per line, append-only. Designed so every event is a usable training label at
@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicLong
 
 object HarvestJsonl {
     private const val FILENAME = "usage_harvest.jsonl"
-    private const val VERSION = 3
+    private const val LEGACY_VERSION = 3
 
     private var file: File? = null
     private val nextId = AtomicLong(1)
@@ -80,27 +80,52 @@ object HarvestJsonl {
      * Null field values are omitted from the output.
      */
     fun event(type: String, app: AppContext?, fields: List<Pair<String, Any?>>): Long {
-        val f = file ?: return -1L
-        if (app?.isPassword == true) return -1L
-        val id = nextId.getAndIncrement()
-        val ts = tsFormat.format(Date())
-        val sess = synchronized(this) {
-            val pkg = app?.packageName
-            if (pkg != null && pkg != sessionApp) {
-                sessionApp = pkg
-                sessionId = randomSessionId()
-            }
-            sessionId
+        return record(LEGACY_VERSION, type, app, fields)
+    }
+
+    /** Append one schema-v4 word slot without relabelling any legacy event rows. */
+    fun wordSlot(
+        app: AppContext,
+        openedAt: String,
+        session: String,
+        fields: List<Pair<String, Any?>>,
+    ): Long {
+        return record(4, "WORD_SLOT", app, fields, openedAt, session, includeLegacyContext = false)
+    }
+
+    /** Stable process session used by both a slot id and the emitted v4 record. */
+    fun sessionFor(app: AppContext?): String = synchronized(this) {
+        val pkg = app?.packageName
+        if (pkg != null && pkg != sessionApp) {
+            sessionApp = pkg
+            sessionId = randomSessionId()
         }
+        sessionId
+    }
+
+    private fun record(
+        version: Int,
+        type: String,
+        app: AppContext?,
+        fields: List<Pair<String, Any?>>,
+        timestamp: String? = null,
+        explicitSession: String? = null,
+        includeLegacyContext: Boolean = true,
+    ): Long {
+        val f = file ?: return -1L
+        if (app?.isHarvestBlocked == true) return -1L
+        val id = nextId.getAndIncrement()
+        val ts = timestamp ?: formatTimestamp(Date())
+        val sess = explicitSession ?: sessionFor(app)
         writer.execute {
             try {
                 val sb = StringBuilder(256)
-                sb.append("{\"v\":").append(VERSION)
+                sb.append("{\"v\":").append(version)
                 sb.append(",\"id\":").append(id)
                 sb.append(",\"ts\":").append(jsonString(ts))
                 sb.append(",\"sess\":").append(jsonString(sess))
                 sb.append(",\"type\":").append(jsonString(type))
-                if (app != null) {
+                if (includeLegacyContext && app != null) {
                     sb.append(",\"app\":").append(jsonString(app.packageName))
                     sb.append(",\"field\":").append(app.fieldId)
                     sb.append(",\"inputType\":").append(jsonString(app.inputVariation))
@@ -117,6 +142,10 @@ object HarvestJsonl {
             }
         }
         return id
+    }
+
+    fun formatTimestamp(date: Date = Date()): String = synchronized(tsFormat) {
+        tsFormat.format(date)
     }
 
     /** Remember the last auto-applied correction so a revert can reference it. */
@@ -162,6 +191,9 @@ object HarvestJsonl {
         is Float -> jsonValue(v.toDouble())
         is Pair<*, *> -> "[" + jsonValue(v.first) + "," + jsonValue(v.second) + "]"
         is List<*> -> v.joinToString(",", "[", "]") { jsonValue(it) }
+        is Map<*, *> -> v.entries.joinToString(",", "{", "}") { (key, value) ->
+            jsonString(key.toString()) + ":" + jsonValue(value)
+        }
         else -> jsonString(v.toString())
     }
 

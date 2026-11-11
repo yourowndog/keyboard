@@ -1,7 +1,11 @@
 # Repository Organization
 
 > Status: Canonical  
-> Last verified: 2026-07-11
+> Last verified: 2026-07-15
+
+This doc owns **directory ownership**. For end-to-end **data flow** — every pipeline, script,
+its purpose, inputs, and where output goes — see the companion canonical map:
+[`data-and-scripts-map.md`](./data-and-scripts-map.md).
 
 The repository root is reserved for project entry points, Gradle configuration,
 and first-class source/data areas. IDE, build, and agent-local directories may
