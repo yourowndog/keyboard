@@ -33,6 +33,18 @@ enum class FlorisImeUi(val elementName: String, val resId: Int?) {
         resId = R.string.snygg__rule_element__keyboard_chassis,
     ),
 
+    /** LCARS outer (primary) rail band, drawn from the analytic chassis model. */
+    LcarChassisRailPrimary(
+        elementName = "keyboard-chassis-rail-primary",
+        resId = R.string.snygg__rule_element__keyboard_chassis_rail_primary,
+    ),
+
+    /** LCARS inner (secondary) rail band. */
+    LcarChassisRailSecondary(
+        elementName = "keyboard-chassis-rail-secondary",
+        resId = R.string.snygg__rule_element__keyboard_chassis_rail_secondary,
+    ),
+
     Key(
         elementName = "key",
         resId = R.string.snygg__rule_element__key,

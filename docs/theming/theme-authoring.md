@@ -50,6 +50,41 @@ Generate packages into an ignored artifact directory. Retain editable source,
 not every numbered `.flex` build. Promote an accepted design into built-in
 assets deliberately.
 
+### Native LCARS palette editor
+
+The configuration surface is Settings → Theme → Manage theme extensions → Edit
+the writable extension → Edit its theme component. Built-in extensions are
+read-only (their Edit button is disabled); use an imported/custom extension.
+Keep `lcars` in the theme component ID for the analytic-renderer opt-in.
+
+In the component editor, add/edit these rules and their **Background** property:
+
+- **Keyboard chassis** (`keyboard-chassis`): deck color and alpha.
+- **Keyboard chassis primary rail** (`keyboard-chassis-rail-primary`): outer rail color and alpha.
+- **Keyboard chassis secondary rail** (`keyboard-chassis-rail-secondary`): inner rail color and alpha.
+
+Alpha is part of the color value, not a separate `opacity` property. Apply the
+property dialog, close the component editor, then **Save** in the parent
+extension editor. Save serializes the stylesheet into the `.flex` archive;
+the extension file observer refreshes the index and invalidates the active
+theme cache. Select the saved component as the day/night theme as appropriate.
+Editor preview alone is not proof that the active IME has loaded the save.
+
+The active generic `SnyggSpec` registers Background for every element rule.
+The commented-out legacy `FlorisImeUiSpec.kt` is not the registration source.
+`LcarsPaletteRoundTripTest` exercises property availability and edited alpha
+through serialization, reloading, compilation, and theme queries.
+
+In the t_c93d5123 candidate (automated verification only; operator acceptance
+pending), code reserves structural space around Smartbar and paints the deck
+once; keys retain a full-width backing. Rail thicknesses, bend/shoulder geometry,
+and clipping are code-owned, not palette-editor sliders. Image backgrounds,
+Smartbar-off, missing semantic rail colors, expanded app-overlay actions, and insufficient content width use
+the classic renderer. The `window` background still controls what is visible
+outside the shaped chassis: a transparent deck/rail color does not override an
+opaque window underneath it. Test save/reload and alpha on the actual candidate
+APK before treating this path as accepted daily-driver behavior.
+
 ## Built-in promotion
 
 When promoting a theme:
