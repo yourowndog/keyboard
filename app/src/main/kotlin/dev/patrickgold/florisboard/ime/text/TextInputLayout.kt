@@ -26,7 +26,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.LayoutDirection
@@ -37,7 +39,11 @@ import dev.patrickgold.florisboard.ime.smartbar.InlineSuggestionsStyleCache
 import dev.patrickgold.florisboard.ime.smartbar.Smartbar
 import dev.patrickgold.florisboard.ime.smartbar.quickaction.QuickActionsOverflowPanel
 import dev.patrickgold.florisboard.ime.text.keyboard.TextKeyboardLayout
+import dev.patrickgold.florisboard.ime.theme.FlorisImeTheme
 import dev.patrickgold.florisboard.ime.theme.FlorisImeUi
+import dev.patrickgold.florisboard.ime.theme.lcars.LcarsChassisGeometry
+import dev.patrickgold.florisboard.ime.theme.lcars.drawLcarsChassis
+import dev.patrickgold.florisboard.ime.theme.lcars.rememberLcarsChassisThemeColors
 import dev.patrickgold.florisboard.keyboardManager
 import dev.patrickgold.jetpref.datastore.model.observeAsState
 import org.florisboard.lib.snygg.ui.SnyggBox
@@ -57,6 +63,16 @@ fun TextInputLayout(
 
     InlineSuggestionsStyleCache()
 
+    val density = LocalDensity.current
+    // Gate the LCARS analytic chassis behind the active theme id so standard
+    // (non-LCARS) themes render exactly as before.
+    val isLcarTheme = FlorisImeTheme.config.id.contains("lcars", ignoreCase = true)
+    val chassisColors = if (isLcarTheme) {
+        rememberLcarsChassisThemeColors(
+            attributes = mapOf(FlorisImeUi.Attr.Mode to state.keyboardMode.toString()),
+        )
+    } else null
+
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
         SnyggBox(
             elementName = FlorisImeUi.KeyboardChassis.elementName,
@@ -66,29 +82,54 @@ fun TextInputLayout(
                 .wrapContentHeight(),
             supportsBackgroundImage = true,
         ) {
-            Column(
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .wrapContentHeight(),
-            ) {
-                Smartbar()
-                if (state.isActionsOverflowVisible) {
-                    QuickActionsOverflowPanel()
-                } else {
-                    Box {
-                        val incognitoDisplayMode by prefs.keyboard.incognitoDisplayMode.observeAsState()
-                        val showIncognitoIcon = evaluator.state.isIncognitoMode &&
-                            incognitoDisplayMode == IncognitoDisplayMode.DISPLAY_BEHIND_KEYBOARD
-                        if (showIncognitoIcon) {
-                            SnyggIcon(
-                                FlorisImeUi.IncognitoModeIndicator.elementName,
-                                modifier = Modifier
-                                    .matchParentSize()
-                                    .align(Alignment.Center),
-                                painter = painterResource(R.drawable.ic_incognito),
-                            )
+                    .wrapContentHeight()
+                    .then(
+                        if (isLcarTheme && chassisColors != null) {
+                            Modifier.drawBehind {
+                                val geometry = LcarsChassisGeometry(
+                                    viewportWidth = size.width / density.density,
+                                    viewportHeight = size.height / density.density,
+                                )
+                                drawLcarsChassis(
+                                    geometry = geometry,
+                                    primaryColor = chassisColors.primaryRail,
+                                    secondaryColor = chassisColors.secondaryRail,
+                                    deckColor = chassisColors.deck,
+                                    snapChannelsToPixels = true,
+                                )
+                            }
+                        } else {
+                            Modifier
                         }
-                        TextKeyboardLayout(evaluator = evaluator)
+                    ),
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight(),
+                ) {
+                    Smartbar()
+                    if (state.isActionsOverflowVisible) {
+                        QuickActionsOverflowPanel()
+                    } else {
+                        Box {
+                            val incognitoDisplayMode by prefs.keyboard.incognitoDisplayMode.observeAsState()
+                            val showIncognitoIcon = evaluator.state.isIncognitoMode &&
+                                incognitoDisplayMode == IncognitoDisplayMode.DISPLAY_BEHIND_KEYBOARD
+                            if (showIncognitoIcon) {
+                                SnyggIcon(
+                                    FlorisImeUi.IncognitoModeIndicator.elementName,
+                                    modifier = Modifier
+                                        .matchParentSize()
+                                        .align(Alignment.Center),
+                                    painter = painterResource(R.drawable.ic_incognito),
+                                )
+                            }
+                            TextKeyboardLayout(evaluator = evaluator)
+                        }
                     }
                 }
             }

@@ -82,7 +82,7 @@ android {
         buildConfigField(
             "String",
             "WHISPER_RELAY_URL",
-            "\"${getLocalOrEnv("WHISPER_RELAY_URL", "https://weakling.tail8d8cc7.ts.net/v1/whisper/transcriptions")}\"",
+            "\"${getLocalOrEnv("WHISPER_RELAY_URL", "https://weakling.chronicle-procyon.ts.net/v1/whisper/transcriptions")}\"",
         )
         buildConfigField("String", "WHISPER_RELAY_TOKEN", "\"${getLocalOrEnv("WHISPER_RELAY_TOKEN")}\"")
 

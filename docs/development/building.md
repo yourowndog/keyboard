@@ -36,7 +36,7 @@ does not validate device-only IME, touch, Snygg, sidecar, or voice behavior.
 Relevant voice settings include:
 
 ```properties
-WHISPER_RELAY_URL=https://weakling.tail8d8cc7.ts.net/v1/whisper/transcriptions
+WHISPER_RELAY_URL=https://weakling.chronicle-procyon.ts.net/v1/whisper/transcriptions
 WHISPER_RELAY_TOKEN=...
 ```
 

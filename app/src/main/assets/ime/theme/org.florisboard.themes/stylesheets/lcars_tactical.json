@@ -29,6 +29,15 @@
     "foreground": "var(--tac-amber-text)",
     "clip": "no"
   },
+  "keyboard-chassis": {
+    "background": "var(--void-prime)"
+  },
+  "keyboard-chassis-rail-primary": {
+    "background": "var(--tac-red-neon)"
+  },
+  "keyboard-chassis-rail-secondary": {
+    "background": "var(--tac-amber-gold)"
+  },
   "key": {
     "background": "var(--tac-red-dark)",
     "foreground": "var(--tac-red-alert)",
