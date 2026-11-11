@@ -92,6 +92,11 @@ Registered as `lcars_jefferies` (Chakra Petch), `_oxanium`, `_saira`,
 `_rajdhani` in the `org.florisboard.themes` extension, so the typeface can be
 judged on device by switching themes rather than by rebuilding.
 
+**Device verdict, 2026-11-11:** Sam approved the first two, Chakra Petch
+(`lcars_jefferies`) and Oxanium (`lcars_jefferies_oxanium`). Saira Condensed and
+Rajdhani were not approved. The choice between the two approved faces is still
+open.
+
 ## Remaining phases
 
 Tracked in `ROADMAP.md`. In short: stacked hint plates (a new `key-plate`
