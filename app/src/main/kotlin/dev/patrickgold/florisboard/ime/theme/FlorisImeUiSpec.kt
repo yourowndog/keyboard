@@ -89,6 +89,10 @@ fun SnyggPropertySetSpecDeclBuilder.shape() {
 }
 
 object FlorisImeUiSpec : SnyggSpecDecl({
+    element(FlorisImeUi.KeyboardChassis) {
+        background()
+    }
+
     element(FlorisImeUi.Keyboard) {
         background()
     }
