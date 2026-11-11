@@ -76,7 +76,7 @@ sleep 2
 $ADB shell input keyevent KEYCODE_SEARCH || true
 shot 01-idle 3
 $ADB shell input text hel
-shot 02-typing
+shot 02-typing 3
 
 # Crops for review: the whole keyboard, and the smartbar alone at full resolution.
 TOP=$(kb_top); TOP=${TOP:-1800}

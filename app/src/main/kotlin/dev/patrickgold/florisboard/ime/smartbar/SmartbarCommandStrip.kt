@@ -60,7 +60,8 @@ private const val CAP_WEIGHT = 0.075f
 private val IDLE_GAP_WEIGHT = 1f - (
     SmartbarCommand.entries.sumOf { it.widthWeight.toDouble() }.toFloat() + 2 * RULE_WEIGHT + CAP_WEIGHT
 )
-private val TYPING_CANDIDATES_WEIGHT = 1f - SmartbarCommand.MENU.widthWeight - SmartbarCommand.VOICE.widthWeight
+private val TYPING_CANDIDATES_WEIGHT =
+    1f - SmartbarCommand.MENU.widthWeight - SmartbarCommand.VOICE.widthWeight - 2 * RULE_WEIGHT
 
 /**
  * The fixed MENU | EMOJI | LANG ... VOICE strip from the LCARS Jefferies reference. While the user
@@ -122,12 +123,15 @@ internal fun RowScope.SmartbarCommandStrip(
     }
 
     Command(SmartbarCommand.MENU)
+    // The coral and cyan rules stay in both states, so the strip keeps its frame while the
+    // candidates take the middle.
+    Rule(beside = SmartbarCommand.MENU)
     if (isTyping) {
         Box(modifier = Modifier.weight(TYPING_CANDIDATES_WEIGHT).fillMaxHeight()) {
             candidates()
         }
+        Rule(beside = SmartbarCommand.VOICE)
     } else {
-        Rule(beside = SmartbarCommand.MENU)
         Command(SmartbarCommand.EMOJI)
         Command(SmartbarCommand.LANG)
         Spacer(modifier = Modifier.weight(IDLE_GAP_WEIGHT))

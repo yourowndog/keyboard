@@ -31,7 +31,8 @@ Focus on: $FOCUS.
 Report, most severe first, at most 8 concrete defects. For each give: what you see, where (file and
 element), why it breaks the rubric or the reference, and a specific fix (sizes in dp/sp, alignment,
 colour role). Do not praise. If something is genuinely fine, say nothing about it.
+Use only the Read tool to look at the images; do not run commands or write files. Answer in text.
 End with one line: VERDICT: PASS or VERDICT: FAIL, PASS only if nothing would bother a careful user."
 
 cd "$ROUND"
-timeout 600 claude -p "$prompt" --allowedTools Read </dev/null | tee "$ROUND/critique.md"
+timeout 600 claude -p "$prompt" --allowedTools Read --disallowedTools Bash Write Edit </dev/null | tee "$ROUND/critique.md"
