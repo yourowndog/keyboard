@@ -14,6 +14,12 @@ REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 REF="$REPO/docs/theming/reference/design-reference-01.png"
 RUBRIC="$REPO/tools/visual/rubric.md"
 
+# Headless Claude Code may only read inside its working directory without a prompt, so the
+# reference and rubric are copied next to the shots.
+cp "$REF" "$ROUND/reference.png"
+cp "$RUBRIC" "$ROUND/rubric.md"
+REF="$ROUND/reference.png"
+RUBRIC="$ROUND/rubric.md"
 shots=$(ls "$ROUND"/*.keyboard.png "$ROUND"/*.smartbar.png 2>/dev/null | tr '\n' ' ')
 [[ -n $shots ]] || { echo "no crops in $ROUND; run capture.sh first" >&2; exit 2; }
 
@@ -28,4 +34,4 @@ colour role). Do not praise. If something is genuinely fine, say nothing about i
 End with one line: VERDICT: PASS or VERDICT: FAIL, PASS only if nothing would bother a careful user."
 
 cd "$ROUND"
-claude -p "$prompt" --allowedTools Read | tee "$ROUND/critique.md"
+timeout 600 claude -p "$prompt" --allowedTools Read </dev/null | tee "$ROUND/critique.md"
