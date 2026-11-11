@@ -21,6 +21,8 @@ current behavior from plans, experiments, and history.
 
 ## Start here
 
+- [Roadmap](roadmap.md): unfinished product work, the keyboard/voice-lab seam,
+  and sequencing.
 - [System map](architecture/system-map.md): modules, runtime entry points, and
   subsystem ownership.
 - [Keyboard construction](keyboard/README.md): layouts, keys, geometry, popups,
@@ -36,6 +38,9 @@ current behavior from plans, experiments, and history.
   changes.
 - [Agent reorientation](development/agent-reorientation.md): entering the
   cleaned repository or recovering interrupted work safely.
+- [Upstream Backport & Modernization Radar](development/upstream-backport-radar.md): comprehensive technical plan for backporting non-floating upstream features, bug fixes, state flow optimizations, and Snygg theming capabilities.
+- [Swipe synthesis & training architecture](swipe-data-and-pipeline-architecture.md): lossless FUTO raw data foundation, dataset boundaries, target vocabulary, and pipeline quarantine.
+- [Historical refactor docs](file:///home/sam/projects/keyboard/docs/archive/autocorrect-refactor-2026/README.md): Completed autocorrect refactor (July 2026) planning and checkpoints.
 
 ## Truth hierarchy
 

@@ -1,9 +1,33 @@
 package dev.patrickgold.florisboard.ime.nlp.shared
 
+import java.io.BufferedReader
+import java.io.File
+import java.io.Reader
+import java.io.StringReader
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class DictionaryRepositoryTest {
+    private class CloseTrackingReader(delegate: Reader) : BufferedReader(delegate) {
+        var wasClosed = false
+            private set
+
+        override fun close() {
+            try {
+                super.close()
+            } finally {
+                wasClosed = true
+            }
+        }
+    }
+
+    private fun packagedDictionary(): File = sequenceOf(
+        File("src/main/assets/ime/dict/unified_dictionary.tsv"),
+        File("app/src/main/assets/ime/dict/unified_dictionary.tsv"),
+    ).firstOrNull { it.exists() }
+        ?: error("packaged dictionary not found from ${File(".").absolutePath}")
+
     @Test
     fun `distance handles exact matches`() {
         assertEquals(0.0, DictionaryRepository.distance("cat", "cat"))
@@ -39,5 +63,21 @@ class DictionaryRepositoryTest {
         assertEquals(1.0, DictionaryRepository.distance("a", "ab"))
         assertEquals(2.0, DictionaryRepository.distance("a", "abc"))
         assertEquals(1.0, DictionaryRepository.distance("ab", "ba"))
+    }
+
+    @Test
+    fun `load owns supplied readers and lookup diagnostics are JVM safe`() {
+        val loadingReader = CloseTrackingReader(packagedDictionary().reader())
+        DictionaryRepository.loadFromReader(loadingReader)
+        assertTrue(loadingReader.wasClosed)
+
+        val alreadyLoadedReader = CloseTrackingReader(StringReader("ignored\t1\n"))
+        DictionaryRepository.loadFromReader(alreadyLoadedReader)
+        assertTrue(alreadyLoadedReader.wasClosed)
+
+        // Every 32-call window hits the sampled diagnostic branch once.
+        repeat(32) {
+            DictionaryRepository.findWithinTwoEdits("teh")
+        }
     }
 }

@@ -122,7 +122,7 @@
     <string name="settings__home__ime_not_selected" comment="Warning message shown in Home fragment when OmniBoard is not selected as the default keyboard">OmniBoard is not selected as the default input method. Click here to resolve this issue.</string>
     <string name="settings__home__uninstall">Uninstall App</string>
 
-    <string name="settings__localization__title" comment="Title of languages and Layout screen">Languages &amp; Layouts</string>
+    <string name="settings__localization__title" comment="Title of the layout selection screen">Layouts</string>
     <string name="settings__localization__display_language_names_in__label" comment="Label of Display language names in preference">Display language names in</string>
     <string name="settings__localization__display_keyboard_labels_in_subtype_language" comment="Label of Display keyboard labels in subtype language preference">Display keyboard labels in subtype language</string>
     <string name="settings__localization__group_subtypes__label" comment="Label of subtypes group">Subtypes</string>
@@ -147,7 +147,11 @@
     <string name="settings__localization__subtype_search_locale_placeholder" comment="Subtype search language placeholder">Search for a language</string>
     <string name="settings__localization__subtype_search_locale_not_found" comment="Subtype search language not found">Could not find a language matching \"{search_term}\".</string>
     <string name="settings__localization__subtype_select_placeholder" comment="Subtype dialog select value placeholder (&amp;#8210; is a hyphen character)">&#8210; select &#8210;</string>
-    <string name="settings__localization__subtype_summary" comment="Subtype summary">{characters_name} / {symbols_name} / {currency_set_name}</string>
+    <string name="settings__localization__subtype_summary" comment="Subtype summary">{characters_name} / {symbols_name} + {symbols2_name} / {currency_set_name}</string>
+    <string name="settings__localization__subtype_implicit_default_title" comment="Title for the active fallback subtype when no subtype has been configured">{subtype_name} (Default)</string>
+    <string name="settings__localization__subtype_factory_default_title" comment="Title for the permanent factory-default recovery card in the subtype editor">Factory default</string>
+    <string name="settings__localization__subtype_factory_default_summary" comment="Summary for restoring the subtype editor to the values shipped with OmniBoard">Load the English (US) QWERTY Wide settings shipped with OmniBoard. Nothing changes until you save.</string>
+    <string name="settings__localization__subtype_factory_default_action" comment="Button label for loading the shipped subtype values into the editor">Load factory default</string>
     <string name="settings__localization__suggested_subtype_presets" comment="Suggested presets title">Suggested subtype presets</string>
     <string name="settings__localization__suggested_subtype_presets_none_found" comment="Suggested presets none found">No suggested presets available. Use below button to view all subtype presets.</string>
     <string name="settings__localization__subtype_presets" comment="Subtype presets dialog title">Subtype presets</string>
@@ -168,6 +172,12 @@
     <string name="pref__theme__night" comment="Label of the night group (night means dark theme)">Night theme</string>
     <string name="pref__theme__theme_accent_color__label" comment="Label of accent color preference in Theme">
         Accent color (Material You themes)
+    </string>
+    <string name="pref__theme__window_background_opacity__label" comment="Label of the keyboard background opacity preference in Theme">
+        Keyboard background opacity
+    </string>
+    <string name="pref__theme__window_background_opacity__summary" comment="Summary of the keyboard background opacity preference, explaining that it is visual only">
+        {v}% — how solid the plate behind the keys is. Lower values let the app show through. Keys and popups keep their own colours, and typing is unaffected.
     </string>
     <string name="settings__theme_manager__title_manage" comment="Title of the theme manager screen for managing installed and custom themes">Manage installed themes</string>
     <string name="pref__theme__source_assets" comment="Label for the theme source field">OmniBoard App Assets</string>
@@ -226,6 +236,7 @@
 
     <string name="snygg__rule_element__root">Root</string>
     <string name="snygg__rule_element__window">Window</string>
+    <string name="snygg__rule_element__keyboard_chassis">Keyboard chassis</string>
 
     <string name="snygg__rule_element__key">Key</string>
     <string name="snygg__rule_element__key_hint">Key hint</string>
@@ -424,6 +435,10 @@
     <string name="pref__input_feedback__any_feat_gesture_moving_swipe__summary" comment="Preference summary">e.g. cursor control swipe</string>
 
     <string name="settings__keyboard__title" comment="Title of Keyboard preferences screen">Keyboard</string>
+    <string name="pref__keyboard__active_profile__label" comment="Preference title">Keyboard profile</string>
+    <string name="pref__keyboard__active_profile__summary_single" comment="Preference summary, shown while only one profile can be chosen. Placeholder v is the profile name.">{v} — the settings on this screen apply to this profile</string>
+    <string name="keyboard_profile__text__label" comment="Name of the prose-oriented keyboard profile">Text</string>
+    <string name="keyboard_profile__coding__label" comment="Name of the code-oriented keyboard profile">Coding</string>
     <string name="pref__keyboard__number_row__label" comment="Preference title">Number row</string>
     <string name="pref__keyboard__number_row__summary" comment="Preference summary">Show a number row above the character layout</string>
     <string name="pref__keyboard__hinted_number_row_mode__label" comment="Preference title">Hinted number row</string>
@@ -435,12 +450,37 @@
     <string name="pref__keyboard__capitalization_behavior__label" comment="Preference title">Capitalization behavior</string>
     <string name="pref__keyboard__font_size_multiplier__label" comment="Preference title">Font size multiplier</string>
     <string name="pref__keyboard__group_layout__label" comment="Preference group title">Layout</string>
+    <string name="pref__keyboard__group_rows_and_keys__label" comment="Preference group title">Rows and keys</string>
+    <string name="pref__keyboard__group_display__label" comment="Preference group title">Display and behavior</string>
+    <string name="pref__keyboard__group_customization__label" comment="Preference group title">Customization</string>
+    <string name="settings__keyboard_geometry__title" comment="Title of keyboard geometry screen">Size, rows and spacing</string>
+    <string name="settings__keyboard_geometry__summary" comment="Preference summary">Keyboard dimensions, row-specific sizing, gaps and positioning</string>
+    <string name="pref__keyboard__group_overall_size__label" comment="Preference group title">Overall sizing</string>
+    <string name="pref__keyboard__group_letter_rows__label" comment="Preference group title">Letter rows</string>
+    <string name="pref__keyboard__group_number_row__label" comment="Preference group title">Number row</string>
+    <string name="pref__keyboard__group_space_row__label" comment="Preference group title">Space row</string>
+    <string name="pref__keyboard__group_utility_rows__label" comment="Preference group title">Utility rows</string>
+    <string name="pref__keyboard__group_positioning__label" comment="Preference group title">Position and modes</string>
     <string name="pref__keyboard__one_handed_mode__label" comment="Preference title">One-handed mode</string>
     <string name="pref__keyboard__one_handed_mode_scale_factor__label" comment="Preference title">One-handed mode keyboard width</string>
     <string name="pref__keyboard__landscape_input_ui_mode__label" comment="Preference value">Landscape fullscreen input</string>
     <string name="pref__keyboard__height_factor__label" comment="Preference title">Keyboard height</string>
     <string name="pref__keyboard__key_spacing__label" comment="Preference title">Key spacing</string>
-    <string name="pref__keyboard__bottom_row_height__label" comment="Preference title">Bottom row height</string>
+    <string name="pref__keyboard__alpha_key_width__label" comment="Preference title">Letter key width</string>
+    <string name="pref__keyboard__mod_key_width__label" comment="Preference title">Utility key width</string>
+    <string name="pref__keyboard__bottom_row_height__label" comment="Preference title">Utility row height</string>
+    <string name="pref__keyboard__number_row_height_independent__label" comment="Preference title">Independent number row height</string>
+    <string name="pref__keyboard__number_row_height_independent__summary" comment="Preference summary">When off, the number row follows the utility row height</string>
+    <string name="pref__keyboard__number_row_height__label" comment="Preference title">Number row height</string>
+    <string name="pref__keyboard__primary_action_row_height_independent__label" comment="Preference title">Independent space row height</string>
+    <string name="pref__keyboard__primary_action_row_height_independent__summary" comment="Preference summary">When off, the space row follows the alpha row height</string>
+    <string name="pref__keyboard__primary_action_row_height__label" comment="Preference title">Space row height</string>
+    <string name="pref__keyboard__primary_action_row_inset__label" comment="Preference title">Space row side inset</string>
+    <string name="pref__keyboard__primary_action_key_spacing_independent__label" comment="Preference title">Independent space row spacing</string>
+    <string name="pref__keyboard__primary_action_key_spacing_independent__summary" comment="Preference summary">When off, the space row follows the keyboard key spacing</string>
+    <string name="pref__keyboard__primary_action_key_spacing__label" comment="Preference title">Space row key spacing</string>
+    <string name="pref__keyboard__primary_action_row_gap_above__label" comment="Preference title">Gap above space row</string>
+    <string name="pref__keyboard__primary_action_row_gap_below__label" comment="Preference title">Gap below space row</string>
     <string name="pref__keyboard__alpha_row_height__label" comment="Preference title">Alpha row height</string>
     <string name="pref__keyboard__mod_row_upper_gap__label" comment="Preference title">Gap above mod rows</string>
     <string name="pref__keyboard__mod_row_inner_gap__label" comment="Preference title">Gap between mod rows</string>
@@ -458,6 +498,10 @@
     <string name="pref__keyboard__key_customization__padding_bottom" comment="Slider label">Bottom: {v} dp</string>
     <string name="pref__keyboard__key_customization__padding_left" comment="Slider label">Left: {v} dp</string>
     <string name="pref__keyboard__key_customization__padding_right" comment="Slider label">Right: {v} dp</string>
+    <string name="pref__keyboard__key_customization__restore__title" comment="Preference group title">Defaults</string>
+    <string name="pref__keyboard__key_customization__restore__summary" comment="Preference summary">Removes every per-key size and padding override. No other keyboard setting is changed.</string>
+    <string name="pref__keyboard__key_customization__restore__action" comment="Button label">Restore per-key defaults</string>
+    <string name="pref__keyboard__key_customization__restore__confirm" comment="Dialog message">All per-key size and padding overrides will be removed. Row heights, spacing, layout and every other keyboard setting stay as they are.</string>
     <string name="pref__keyboard__group_keypress__label" comment="Preference group title">Key press</string>
     <string name="pref__keyboard__popup_enabled__label" comment="Preference title">Popup Visibility</string>
     <string name="pref__keyboard__popup_enabled__summary" comment="Preference summary">Show popup when you press a key</string>
@@ -753,6 +797,7 @@
 
     <!-- Devtools strings -->
     <string name="devtools__title" comment="Title of Devtools screen. Translators: treat this string as 'Developer tools' for translation, except a similar short term is available for your language.">Devtools</string>
+    <string name="devtools__group_localization__title" comment="Title of localization controls moved out of the primary settings flow">Localization controls</string>
     <string name="devtools__enabled__label" comment="Label of Enable developer tools in Devtools">Enable developer tools</string>
     <string name="devtools__enabled__summary" comment="Summary of Enable developer tools in Devtools">Tools specifically designed for debugging and troubleshooting</string>
     <string name="devtools__show_primary_clip__label" comment="Label of Show primary clip in Devtools">Show primary clip</string>

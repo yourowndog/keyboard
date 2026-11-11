@@ -51,10 +51,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -134,6 +130,7 @@ import org.florisboard.lib.snygg.ui.SnyggRow
 import org.florisboard.lib.snygg.ui.SnyggSurfaceView
 import org.florisboard.lib.snygg.ui.SnyggText
 import org.florisboard.lib.snygg.ui.rememberSnyggThemeQuery
+import org.florisboard.lib.snygg.ui.uriOrNull
 
 
 /**
@@ -351,6 +348,13 @@ class FlorisImeService : LifecycleInputMethodService() {
     }
 
     override fun onDestroy() {
+        if (dev.patrickgold.florisboard.ime.voice.VoiceCaptureLifecyclePolicy
+                .finalizeOnServiceDestroyed(activeState.isRecording)
+        ) {
+            keyboardManager.finalizeVoiceCaptureForLifecycle()
+        } else if (activeState.isTranscribing) {
+            keyboardManager.detachVoiceTranscriptionForLifecycle()
+        }
         dev.patrickgold.florisboard.ime.nlp.HarvestManager.flushSession()
         super.onDestroy()
         unregisterReceiver(wallpaperChangeReceiver)
@@ -375,11 +379,12 @@ class FlorisImeService : LifecycleInputMethodService() {
         if (info == null) return
         val editorInfo = FlorisEditorInfo.wrap(info)
         activeState.batchEdit {
-            // If the keyboard was manually minimized, keep it minimized on focus change.
-            if (!activeState.isKeyboardMinimized) {
-                if (activeState.imeUiMode != ImeUiMode.CLIPBOARD || prefs.clipboard.historyHideOnNextTextField.get()) {
-                    activeState.imeUiMode = ImeUiMode.TEXT
-                }
+            val preserveVoiceUi = dev.patrickgold.florisboard.ime.voice.VoiceCaptureLifecyclePolicy
+                .preserveVoiceUi(activeState.isRecording, activeState.isTranscribing)
+            if (!preserveVoiceUi &&
+                (activeState.imeUiMode != ImeUiMode.CLIPBOARD || prefs.clipboard.historyHideOnNextTextField.get())
+            ) {
+                activeState.imeUiMode = ImeUiMode.TEXT
             }
             activeState.isSelectionMode = editorInfo.initialSelection.isSelectionMode
             editorInstance.handleStartInputView(editorInfo, isRestart = restarting)
@@ -415,6 +420,13 @@ class FlorisImeService : LifecycleInputMethodService() {
 
     override fun onFinishInputView(finishingInput: Boolean) {
         flogInfo { "finishing=$finishingInput" }
+        if (dev.patrickgold.florisboard.ime.voice.VoiceCaptureLifecyclePolicy
+                .finalizeOnFinishInputView(finishingInput, activeState.isRecording)
+        ) {
+            keyboardManager.finalizeVoiceCaptureForLifecycle()
+        } else if (finishingInput && activeState.isTranscribing) {
+            keyboardManager.detachVoiceTranscriptionForLifecycle()
+        }
         super.onFinishInputView(finishingInput)
         editorInstance.handleFinishInputView()
     }
@@ -440,6 +452,13 @@ class FlorisImeService : LifecycleInputMethodService() {
     }
 
     override fun onWindowHidden() {
+        if (isWindowShown && dev.patrickgold.florisboard.ime.voice.VoiceCaptureLifecyclePolicy
+                .finalizeOnWindowHidden(activeState.isRecording)
+        ) {
+            keyboardManager.finalizeVoiceCaptureForLifecycle()
+        } else if (isWindowShown && activeState.isTranscribing) {
+            keyboardManager.detachVoiceTranscriptionForLifecycle()
+        }
         super.onWindowHidden()
         if (!isWindowShown) {
             flogWarning(LogTopic.IMS_EVENTS) { "Ignoring (is already hidden)" }
@@ -449,7 +468,9 @@ class FlorisImeService : LifecycleInputMethodService() {
         }
         isWindowShown = false
         activeState.batchEdit {
-            activeState.imeUiMode = ImeUiMode.TEXT
+            if (!keyboardManager.hasActiveVoiceSession()) {
+                activeState.imeUiMode = ImeUiMode.TEXT
+            }
             activeState.isActionsOverflowVisible = false
             activeState.isActionsEditorVisible = false
         }
@@ -637,6 +658,15 @@ class FlorisImeService : LifecycleInputMethodService() {
         LaunchedEffect(layoutDirection) {
             keyboardManager.activeState.layoutDirection = layoutDirection
         }
+        // The separate RGBA surface below exists to put a background *image* underneath
+        // inline-autofill chips. When the theme has no image there is nothing to put underneath
+        // anything, and the surface is pure cost: it punches a hole through the Compose background
+        // and then has to post a frame into every buffer it is handed. A resize hands it a new
+        // buffer, which is where the bottom-offset flash came from. With no image the Compose
+        // background paints the window colour on its own, alpha included, and there is no second
+        // surface to keep in step.
+        val windowStyle = rememberSnyggThemeQuery(FlorisImeUi.Window.elementName, attributes)
+        val hasBackgroundImage = windowStyle.backgroundImage.uriOrNull() != null
         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
             SnyggBox(
                 elementName = FlorisImeUi.Window.elementName,
@@ -654,7 +684,7 @@ class FlorisImeService : LifecycleInputMethodService() {
                 // The SurfaceView is used to render the background image under inline-autofill chips. These are only
                 // available on Android >=11, and SurfaceView causes trouble on Android 8/9, thus we render the image
                 // in the SurfaceView for Android >=11, and in the Compose View Tree for Android <=10.
-                if (AndroidVersion.ATLEAST_API30_R) {
+                if (AndroidVersion.ATLEAST_API30_R && hasBackgroundImage) {
                     SnyggSurfaceView(
                         elementName = FlorisImeUi.Window.elementName,
                         attributes = attributes,
@@ -694,33 +724,11 @@ class FlorisImeService : LifecycleInputMethodService() {
                                 .weight(keyboardWeight)
                                 .wrapContentHeight(),
                         ) {
-                            if (state.isKeyboardMinimized) {
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(40.dp)
-                                        .padding(end = 8.dp, bottom = 4.dp),
-                                    contentAlignment = Alignment.CenterEnd,
-                                ) {
-                                    IconButton(
-                                        onClick = {
-                                            keyboardManager.activeState.isKeyboardMinimized = false
-                                        },
-                                        modifier = Modifier.size(36.dp),
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Filled.KeyboardArrowUp,
-                                            contentDescription = "Show keyboard",
-                                        )
-                                    }
-                                }
-                            } else {
-                                when (state.imeUiMode) {
-                                    ImeUiMode.TEXT, ImeUiMode.VOICE -> TextInputLayout()
-                                    ImeUiMode.MEDIA -> MediaInputLayout()
-                                    ImeUiMode.CLIPBOARD -> ClipboardInputLayout()
-                                    ImeUiMode.VOICE_HISTORY -> dev.patrickgold.florisboard.ime.voice.VoiceTranscriptionInputLayout()
-                                }
+                            when (state.imeUiMode) {
+                                ImeUiMode.TEXT, ImeUiMode.VOICE -> TextInputLayout()
+                                ImeUiMode.MEDIA -> MediaInputLayout()
+                                ImeUiMode.CLIPBOARD -> ClipboardInputLayout()
+                                ImeUiMode.VOICE_HISTORY -> dev.patrickgold.florisboard.ime.voice.VoiceTranscriptionInputLayout()
                             }
                         }
                     }

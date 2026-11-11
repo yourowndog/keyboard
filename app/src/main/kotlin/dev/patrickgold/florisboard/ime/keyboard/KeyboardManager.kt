@@ -22,6 +22,7 @@ import dev.patrickgold.florisboard.app.layoutbuilder.LayoutPack
 import dev.patrickgold.florisboard.app.layoutbuilder.LayoutPackRepository
 import dev.patrickgold.florisboard.app.layoutbuilder.LayoutValidation
 import dev.patrickgold.florisboard.audio.Recorder
+import dev.patrickgold.florisboard.audio.WavTools
 import dev.patrickgold.florisboard.net.WhisperClient
 import org.florisboard.lib.android.showShortToast
 import org.florisboard.lib.android.showLongToast
@@ -47,6 +48,8 @@ import dev.patrickgold.florisboard.ime.core.Subtype
 import dev.patrickgold.florisboard.ime.core.SubtypePreset
 import dev.patrickgold.florisboard.ime.editor.EditorContent
 import dev.patrickgold.florisboard.ime.editor.FlorisEditorInfo
+import dev.patrickgold.florisboard.ime.keyboard.geometry.KeyboardFrameGroup
+import dev.patrickgold.florisboard.ime.keyboard.geometry.frameGroup
 import dev.patrickgold.florisboard.ime.editor.ImeOptions
 import dev.patrickgold.florisboard.ime.editor.InputAttributes
 import dev.patrickgold.florisboard.ime.editor.OperationUnit
@@ -57,6 +60,7 @@ import dev.patrickgold.florisboard.ime.input.InputShiftState
 import dev.patrickgold.florisboard.ime.nlp.ClipboardSuggestionCandidate
 import dev.patrickgold.florisboard.ime.nlp.PunctuationRule
 import dev.patrickgold.florisboard.ime.nlp.SuggestionCandidate
+import dev.patrickgold.florisboard.ime.nlp.HarvestRoute
 import dev.patrickgold.florisboard.ime.onehanded.OneHandedMode
 import dev.patrickgold.florisboard.ime.popup.PopupMappingComponent
 import dev.patrickgold.florisboard.ime.text.composing.Composer
@@ -65,7 +69,10 @@ import dev.patrickgold.florisboard.ime.text.key.KeyCode
 import dev.patrickgold.florisboard.ime.text.key.KeyType
 import dev.patrickgold.florisboard.ime.text.key.UtilityKeyAction
 import dev.patrickgold.florisboard.ime.text.keyboard.TextKeyData
+import dev.patrickgold.florisboard.ime.text.keyboard.TextKeyboard
 import dev.patrickgold.florisboard.ime.text.keyboard.TextKeyboardCache
+import dev.patrickgold.florisboard.ime.voice.VoiceManager
+import dev.patrickgold.florisboard.ime.voice.VoiceTake
 import dev.patrickgold.florisboard.lib.devtools.LogTopic
 import dev.patrickgold.florisboard.lib.devtools.flogError
 import dev.patrickgold.florisboard.lib.devtools.flogWarning
@@ -87,8 +94,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.florisboard.lib.android.AndroidKeyguardManager
@@ -102,6 +111,16 @@ import java.util.concurrent.atomic.AtomicInteger
 
 
 private val DoubleSpacePeriodMatcher = """([^.!?‽\s]\s)""".toRegex()
+
+/**
+ * Watchdog bounding how long a single take may hold the voice transcription mutex. WhisperClient
+ * already caps each HTTP call (connect 10s / read 180s / call 240s), but a take is free to hold
+ * [transcriptionMutex] across many chunked calls plus their 429 retry delays — up to ~20 minutes of
+ * bare Retry-After delay per chunk — so a slowly-stalled relay can starve every other take and every
+ * manual retry that serialize on the mutex. Failing the take at this cap is deliberate: it stays
+ * recoverable from Voice Inbox, and the drain can move past it instead of blocking the whole queue.
+ */
+private val TranscriptionWatchdogMillis = 10L * 60 * 1000
 
 internal fun shouldClearTmuxPrefixVisualState(isActive: Boolean, nextKeyCode: Int): Boolean {
     return isActive && nextKeyCode != KeyCode.TMUX_PREFIX
@@ -133,12 +152,33 @@ class KeyboardManager(
 
 
 
-    private var isRecording = false
     private var recorder: Recorder? = null
+    private val voiceCaptureLock = Any()
     private var lastAudioFile: File? = null
+    private var activeCaptureProvider = VoiceManager.TranscriptionProvider.OPENAI_CLOUD
+    private val archiveQueue by lazy {
+        dev.patrickgold.florisboard.ime.voice.ArchiveQueue(appContext)
+    }
     private val _whisperAmplitude = MutableStateFlow(0f)
     val whisperAmplitude = _whisperAmplitude.asStateFlow()
     private var amplitudePollingJob: Job? = null
+    private val transcriptionMutex = Mutex()
+    @Volatile private var foregroundTranscriptionFile: String? = null
+    private var pendingDrainJob: Job? = null
+    private var archiveDrainJob: Job? = null
+
+    private data class VoiceTranscriptionOutcome(
+        val cleanedText: String,
+        val verbatimText: String?,
+    )
+
+    init {
+        pendingDrainJob = scope.launch(Dispatchers.IO) {
+            val voiceManager = appContext.voiceManager().value
+            voiceManager.initializeDurableStateAndRecover()
+            drainPendingSequentially()
+        }
+    }
 
     private fun loadInitialLayout(): LayoutPack {
         // Return a blank layout pack to force the KeyboardManager to use the
@@ -174,20 +214,62 @@ class KeyboardManager(
     }
 
     private fun startVoiceCapture(context: Context) {
-        if (recorder == null) {
-            recorder = Recorder(context)
-        }
-        recorder?.start()
-        activeState.batchEdit {
-            it.isRecording = true
-            it.isTranscribing = false
-            it.isPaused = false
+        synchronized(voiceCaptureLock) {
+            // Lifecycle teardown used to reset imeUiMode without clearing this flag. A second
+            // mic press then replaced Recorder's live file/thread handles and orphaned the take.
+            if (activeState.isRecording) {
+                activeState.imeUiMode = ImeUiMode.VOICE
+                return
+            }
+            val captureRecorder = recorder ?: Recorder(context).also { recorder = it }
+            val startedFile = runCatching { captureRecorder.start() }.getOrElse {
+                activeState.batchEdit {
+                    it.isRecording = false
+                    it.isPaused = false
+                    it.imeUiMode = ImeUiMode.TEXT
+                }
+                scope.launch {
+                    appContext.showLongToast("Voice recording could not start; no active take was replaced")
+                }
+                return
+            }
+            val voiceManager = appContext.voiceManager().value
+            activeCaptureProvider = voiceManager.transcriptionProvider.value
+            runCatching { voiceManager.recordCaptureStarted(startedFile, activeCaptureProvider) }
+            activeState.batchEdit {
+                it.isRecording = true
+                it.isTranscribing = false
+                it.isPaused = false
+                it.imeUiMode = ImeUiMode.VOICE
+            }
         }
         amplitudePollingJob?.cancel()
         amplitudePollingJob = scope.launch(Dispatchers.Default) {
+            var warnedNearLimit = false
             while (isActive && activeState.isRecording) {
                 val amp = recorder?.maxAmplitude() ?: 0
                 _whisperAmplitude.value = (amp.toFloat() / 32768f).coerceIn(0f, 1f)
+
+                // The transcription API caps uploads at 25 MiB. Rather than let a long capture
+                // fail after the fact — which would cost the transcript entirely — warn, then
+                // stop and transcribe what we have. The audio is safe either way; the transcript
+                // is the part that would be lost.
+                val captured = recorder?.capturedMs() ?: 0L
+                if (!warnedNearLimit && captured >= WavTools.MAX_CAPTURE_MS - 90_000L) {
+                    warnedNearLimit = true
+                    scope.launch {
+                        appContext.showLongToast("Voice: about 90 seconds left before the transcription limit")
+                    }
+                }
+                if (captured >= WavTools.MAX_CAPTURE_MS) {
+                    scope.launch {
+                        appContext.showLongToast(
+                            "Voice: reached the ${WavTools.MAX_CAPTURE_MS / 60_000} minute limit — transcribing now"
+                        )
+                        stopVoiceCapture(appContext)
+                    }
+                    break
+                }
                 delay(50)
             }
             _whisperAmplitude.value = 0f
@@ -211,20 +293,42 @@ class KeyboardManager(
         stopVoiceCapture(appContext)
     }
 
-    private fun stopVoiceCapture(context: Context) {
-        val audioFile = try {
-            recorder?.stop()
-        } catch (e: Exception) {
-            null
+    fun hasActiveVoiceSession(): Boolean =
+        activeState.isRecording || activeState.isTranscribing
+
+    /** Finalizes a take before its input connection/window/service disappears. */
+    fun finalizeVoiceCaptureForLifecycle() {
+        if (!activeState.isRecording) return
+        stopVoiceCapture(appContext, deliverToEditor = false)
+    }
+
+    /** A completed foreground request may keep running, but it no longer owns an editor. */
+    fun detachVoiceTranscriptionForLifecycle() {
+        foregroundTranscriptionFile = null
+        activeState.isTranscribing = false
+    }
+
+    private fun stopVoiceCapture(context: Context, deliverToEditor: Boolean = true) {
+        val stopped = synchronized(voiceCaptureLock) {
+            if (!activeState.isRecording) return
+            val stoppedFile = try {
+                recorder?.stop()?.let { file -> Triple(file, recorder?.lastCapture, activeCaptureProvider) }
+            } catch (e: Exception) {
+                null
+            }
+            amplitudePollingJob?.cancel()
+            activeState.batchEdit {
+                it.isRecording = false
+                it.isPaused = false
+            }
+            stoppedFile
         }
-        amplitudePollingJob?.cancel()
-        activeState.batchEdit {
-            it.isRecording = false
-            it.isPaused = false
-        }
-        if (audioFile != null) {
+        if (stopped != null) {
+            val (audioFile, capture, provider) = stopped
             lastAudioFile = audioFile
-            performTranscription(audioFile)
+            val voiceManager = appContext.voiceManager().value
+            runCatching { voiceManager.recordCaptureSaved(audioFile, capture) }
+            performTranscription(audioFile, provider, capture, deliverToEditor)
         } else {
             activeState.imeUiMode = ImeUiMode.TEXT
         }
@@ -233,17 +337,16 @@ class KeyboardManager(
     fun retryTranscription() {
         val file = lastAudioFile
         if (file != null && !activeState.isRecording && !activeState.isTranscribing) {
-            performTranscription(file)
+            performTranscription(file, deliverToEditor = true)
         }
     }
 
     fun cancelVoiceInput() {
         amplitudePollingJob?.cancel()
-        try {
-            if (activeState.isRecording) {
-                recorder?.stop()
-            }
-        } catch (e: Exception) { }
+        foregroundTranscriptionFile = null
+        if (activeState.isRecording) {
+            stopVoiceCapture(appContext, deliverToEditor = false)
+        }
         activeState.batchEdit {
             it.isRecording = false
             it.isTranscribing = false
@@ -252,59 +355,241 @@ class KeyboardManager(
         }
     }
 
-    private fun performTranscription(audioFile: File) {
-        activeState.isTranscribing = true
-        val voiceManager = appContext.voiceManager().value
-        scope.launch {
-            val result = WhisperClient.transcribe(audioFile)
-            result.onSuccess { transcription ->
-                // Fix "Kiri" -> "Kiry" misspellings from Whisper
-                val fixed = transcription.replace(Regex("\\bKiri(s|'s)?\\b", RegexOption.IGNORE_CASE)) { m ->
-                    val suffix = m.groupValues[1]
-                    val match = m.value
-                    val base = when {
-                        match.startsWith("KIRI") -> "KIRY"
-                        match.startsWith("Kiri") -> "Kiry"
-                        else -> "kiry"
-                    }
-                    base + suffix
-                }
-                // Tag this as voice input for harvest analysis
-                dev.patrickgold.florisboard.ime.nlp.HarvestManager.setSessionSource("VOICE")
-                editorInstance.commitText(fixed)
-                voiceManager.addTranscription(fixed)
-                voiceManager.removePending(audioFile.absolutePath)
-                dev.patrickgold.florisboard.ime.nlp.HarvestManager.flushSession()
-                dev.patrickgold.florisboard.ime.nlp.HarvestManager.setSessionSource("TYPING")
+    /**
+     * Corrects known mis-hearings before the text reaches the editor.
+     *
+     * Applied to the committed text only. The engine's own output is preserved separately in
+     * the sidecar, because a corpus label that has been silently edited is not a record of what
+     * was said, and there is no way to reconstruct the original once it is overwritten.
+     */
+    private fun applyDictionaryFixups(text: String): String =
+        text.replace(Regex("\\bKiri(s|'s)?\\b", RegexOption.IGNORE_CASE)) { m ->
+            val suffix = m.groupValues[1]
+            val match = m.value
+            val base = when {
+                match.startsWith("KIRI") -> "KIRY"
+                match.startsWith("Kiri") -> "Kiry"
+                else -> "kiry"
+            }
+            base + suffix
+        }
 
+    /**
+     * Writes the metadata file that travels with the audio.
+     *
+     * Everything here is either unrecoverable after the fact (which microphone path the device
+     * granted, whether AGC actually turned off, the engine's word timings and confidence) or
+     * expensive to regenerate (a second paid transcription). Returns null if the write failed.
+     */
+    private fun writeSidecar(
+        audioFile: File,
+        rawText: String,
+        displayText: String,
+        verbatimText: String?,
+        provider: String,
+        model: String,
+        engineResponse: org.json.JSONObject,
+        capture: Recorder.CaptureMetadata?,
+    ): File? {
+        val metaFile = File(audioFile.parentFile, "${audioFile.nameWithoutExtension}.json")
+        return try {
+            val capturedEpochMs = audioFile.nameWithoutExtension
+                .substringAfter("whisper_", "")
+                .toLongOrNull()
+            val json = org.json.JSONObject().apply {
+                put("schema", 2)
+                put("audio", audioFile.name)
+                put("bytes", audioFile.length())
+                put("captured_epoch_ms", capturedEpochMs ?: org.json.JSONObject.NULL)
+                // The archive shards by the day the words were spoken, which is the device's
+                // idea of the date, not the server's.
+                put(
+                    "captured_utc_offset_minutes",
+                    java.util.TimeZone.getDefault().getOffset(System.currentTimeMillis()) / 60_000,
+                )
+                put("transcript_raw", rawText)
+                put("transcript_display", displayText)
+                put("transcript_verbatim", verbatimText ?: org.json.JSONObject.NULL)
+                put("transcribed", rawText.isNotEmpty())
+                put("capture", capture?.toJson() ?: org.json.JSONObject.NULL)
+                put("engine", org.json.JSONObject().apply {
+                    put("provider", provider)
+                    put("model", model)
+                    put("via", "brokentooth-relay")
+                    put("response", engineResponse)
+                })
+                put("written_at", System.currentTimeMillis())
+            }
+            metaFile.writeText(json.toString(2))
+            metaFile
+        } catch (e: Exception) {
+            // Previously swallowed. A lost sidecar means audio with no transcript attached and
+            // no signal that anything went wrong, which is the one failure a corpus cannot
+            // absorb — so it is now visible.
+            scope.launch {
+                appContext.showLongToast("Voice: metadata write failed (${e.message?.take(60)})")
+            }
+            null
+        }
+    }
+
+    private fun performTranscription(
+        audioFile: File,
+        provider: VoiceManager.TranscriptionProvider =
+            appContext.voiceManager().value.transcriptionProvider.value,
+        capture: Recorder.CaptureMetadata? = null,
+        deliverToEditor: Boolean,
+    ) {
+        val voiceManager = appContext.voiceManager().value
+        // Register the file durably before the network request. If the IME/service/process goes
+        // away during transcription, retryAllPending() can still recover this already-finalized WAV.
+        voiceManager.addPending(audioFile, provider)
+        if (deliverToEditor) {
+            foregroundTranscriptionFile = audioFile.absolutePath
+            activeState.isTranscribing = true
+        }
+        scope.launch {
+            val outcome = transcribeTake(audioFile, provider, capture)
+            val stillOwnsEditor = deliverToEditor &&
+                foregroundTranscriptionFile == audioFile.absolutePath &&
+                activeState.isTranscribing
+            if (outcome != null && stillOwnsEditor) {
+                val text = voiceManager.outputMode.value.select(
+                    outcome.cleanedText,
+                    outcome.verbatimText,
+                )
+                if (text.isNotBlank()) {
+                    dev.patrickgold.florisboard.ime.nlp.HarvestManager.setSessionSource("VOICE")
+                    dev.patrickgold.florisboard.ime.nlp.HarvestManager.beginVoice(
+                        audioRef = audioFile.nameWithoutExtension,
+                        transcriptKind = voiceManager.outputMode.value.name,
+                    )
+                    try {
+                        editorInstance.commitTextFromRoute(text, HarvestRoute.VOICE)
+                        dev.patrickgold.florisboard.ime.nlp.HarvestManager.flushSession()
+                    } finally {
+                        dev.patrickgold.florisboard.ime.nlp.HarvestManager.endVoice()
+                        dev.patrickgold.florisboard.ime.nlp.HarvestManager.setSessionSource("TYPING")
+                    }
+                }
+                foregroundTranscriptionFile = null
                 activeState.batchEdit {
                     it.isTranscribing = false
                     it.imeUiMode = ImeUiMode.TEXT
                 }
-            }.onFailure {
+            } else if (outcome == null && stillOwnsEditor) {
+                foregroundTranscriptionFile = null
                 activeState.isTranscribing = false
-                // Queue for later retry
-                voiceManager.addPending(audioFile)
-                // Keep in VOICE mode so user can retry
-                scope.launch {
-                    appContext.showShortToast("Transcription failed — saved for retry")
-                }
+                appContext.showShortToast("Transcription failed — saved in Voice Inbox")
             }
         }
     }
 
-    fun retryAllPending() {
+    private suspend fun transcribeTake(
+        audioFile: File,
+        provider: VoiceManager.TranscriptionProvider,
+        capture: Recorder.CaptureMetadata?,
+    ): VoiceTranscriptionOutcome? = transcriptionMutex.withLock {
         val voiceManager = appContext.voiceManager().value
-        val pending = voiceManager.getPendingFiles()
-        if (pending.isEmpty() || activeState.isTranscribing) return
-        // Retry the first pending item
-        val first = pending.first()
-        val file = File(first.filePath)
-        if (file.exists()) {
-            lastAudioFile = file
-            performTranscription(file)
+        voiceManager.markTranscribing(audioFile, provider)
+        val transcribeResult = withTimeoutOrNull(TranscriptionWatchdogMillis) {
+            WhisperClient.transcribe(audioFile, provider)
+        }
+        val transcription = if (transcribeResult == null) {
+            // The relay stalled for the whole watchdog window while holding the mutex. Mark the
+            // take failed so the drain can skip it; it remains recoverable from Voice Inbox.
+            voiceManager.markFailed(audioFile, provider, "Transcription timed out after ${TranscriptionWatchdogMillis / 1000}s")
+            return@withLock null
         } else {
-            voiceManager.removePending(first.filePath)
+            transcribeResult.getOrElse { error ->
+                voiceManager.markFailed(audioFile, provider, error.message ?: error.javaClass.simpleName)
+                return@withLock null
+            }
+        }
+        val rawText = transcription.text
+        val cleanedText = applyDictionaryFixups(rawText)
+        voiceManager.markReady(
+            file = audioFile,
+            provider = transcription.provider,
+            cleaned = cleanedText,
+            verbatim = transcription.verbatimText,
+            raw = rawText,
+            durationMs = capture?.durationMs,
+        )
+        val sidecar = writeSidecar(
+            audioFile, rawText, cleanedText, transcription.verbatimText,
+            transcription.provider, transcription.model, transcription.raw, capture,
+        )
+        if (sidecar == null) {
+            voiceManager.markFailed(audioFile, provider, "Metadata file could not be written")
+            return@withLock null
+        }
+        if (runCatching { archiveQueue.enqueue(audioFile, sidecar) }.isFailure) {
+            voiceManager.markFailed(audioFile, provider, "Titan archive queue rejected the recording")
+            return@withLock null
+        }
+        voiceManager.removePending(audioFile.absolutePath)
+        // The corpus archive lives on Titan and is reached directly, not through the relay. It is a
+        // durability concern, never part of delivering text, so it must not sit on the path that
+        // returns the transcript. Draining it inline meant an unreachable Titan charged the editor
+        // one connect timeout per queued capture — a three-second transcription surfaced over a
+        // minute later — even when the take itself was transcribed by OpenAI.
+        requestArchiveDrain()
+        VoiceTranscriptionOutcome(cleanedText, transcription.verbatimText)
+    }
+
+    fun retryVoiceTake(take: VoiceTake) {
+        val audioFile = take.audioPath?.let(::File) ?: return
+        if (!audioFile.exists()) return
+        // A manual retry is an explicit user action and follows the provider currently shown in
+        // the voice UI. Automatic pending recovery remains pinned to the take's saved provider.
+        val provider = appContext.voiceManager().value.transcriptionProvider.value
+        performTranscription(audioFile, provider, deliverToEditor = false)
+    }
+
+    private suspend fun drainPendingSequentially() {
+        val voiceManager = appContext.voiceManager().value
+        // A take that fails for both its pinned provider and the currently-selected provider is
+        // "stuck" for this pass. Leave it pending (it is not lost — it is retried on the next drain
+        // trigger or startup) but move on to the remaining takes, so one unreachable or hung take
+        // cannot hold the queue behind it hostage. Each take is attempted at most once per pass.
+        val attemptedThisPass = mutableSetOf<String>()
+        while (true) {
+            val pending = voiceManager.getPendingFiles().firstOrNull { it.filePath !in attemptedThisPass } ?: return
+            attemptedThisPass.add(pending.filePath)
+            val audioFile = File(pending.filePath)
+            if (!audioFile.exists()) {
+                voiceManager.markFailed(audioFile, pending.provider, "Audio file is no longer available")
+                voiceManager.removePending(pending.filePath)
+                continue
+            }
+            if (transcribeTake(audioFile, pending.provider, capture = null) != null) continue
+            // The pinned provider records the routing choice made when the take was captured, but a
+            // node that has since gone offline must not strand the queue. A capture pinned to an
+            // unreachable Titan is otherwise replayed on every keyboard start, ahead of everything
+            // queued behind it, and no amount of changing the picker reaches it. Fall back to the
+            // provider the user currently has selected before treating the take as stuck this pass.
+            val current = voiceManager.transcriptionProvider.value
+            if (current != pending.provider) {
+                transcribeTake(audioFile, current, capture = null)
+            }
+        }
+    }
+
+    /**
+     * Drains the corpus archive off the transcription path. The queue serialises itself, so the
+     * only thing to prevent here is stacking one waiting job per take while Titan is unreachable.
+     */
+    private fun requestArchiveDrain() {
+        if (archiveDrainJob?.isActive == true) return
+        archiveDrainJob = scope.launch(Dispatchers.IO) { runCatching { archiveQueue.drain() } }
+    }
+
+    fun retryAllPending() {
+        if (pendingDrainJob?.isActive == true) return
+        pendingDrainJob = scope.launch(Dispatchers.IO) {
+            appContext.voiceManager().value.initializeDurableStateAndRecover()
+            drainPendingSequentially()
         }
     }
 
@@ -319,8 +604,24 @@ class KeyboardManager(
     val activeEvaluator get() = _activeEvaluator.asStateFlow()
     private val _activeSmartbarEvaluator = MutableStateFlow<ComputingEvaluator>(DefaultComputingEvaluator)
     val activeSmartbarEvaluator get() = _activeSmartbarEvaluator.asStateFlow()
-    private val _lastCharactersEvaluator = MutableStateFlow<ComputingEvaluator>(DefaultComputingEvaluator)
-    val lastCharactersEvaluator get() = _lastCharactersEvaluator.asStateFlow()
+    /**
+     * The keyboard whose rows decide the window height for the surface being drawn.
+     *
+     * For a [KeyboardFrameGroup.OWN_ROWS] mode this is the active keyboard itself. For the
+     * [KeyboardFrameGroup.TEXT_ENTRY] group it is the Characters keyboard for the *current* subtype
+     * and profile, so tapping `?123` does not resize the window under a moving thumb.
+     *
+     * This replaces a `lastCharactersEvaluator` that held whichever Characters keyboard had most
+     * recently been computed. That was wrong in three reachable ways: it was a four-row placeholder
+     * until the user had visited Characters at least once, it kept the previous language's row count
+     * after a subtype switch made from the Symbols layer, and it kept the previous row count after
+     * the number, developer or utility rows were toggled from anywhere but Characters. The value
+     * here is derived from what Characters *is* right now rather than from where the user has been.
+     *
+     * Null only before the first evaluator update, when there is no keyboard of any kind yet.
+     */
+    private val _frameReferenceKeyboard = MutableStateFlow<TextKeyboard?>(null)
+    val frameReferenceKeyboard get() = _frameReferenceKeyboard.asStateFlow()
 
     val inputEventDispatcher = InputEventDispatcher.new(
         repeatableKeyCodes = intArrayOf(
@@ -342,21 +643,38 @@ class KeyboardManager(
                     keyboardCache.clear()
                 }
             }
-            prefs.keyboard.numberRow.asFlow().collectLatestIn(scope) {
-                updateActiveEvaluators {
-                    keyboardCache.clear(KeyboardMode.CHARACTERS)
-                }
+            // Row visibility became profile-scoped in Stage 04, so the cache must also be dropped
+            // when the active profile changes and not only when a row inside it is toggled —
+            // otherwise switching profiles would keep serving the previous profile's arrangement.
+            //
+            // Both profiles are observed rather than re-subscribing to whichever is active. The
+            // action is an idempotent cache clear, so a write to the inactive profile costs one
+            // wasted invalidation from the settings screen, which is cheaper than a flatMapLatest
+            // that has to tear down and rebuild subscriptions on every profile switch.
+            val rowVisibilityFlows = KeyboardProfile.entries.flatMap { profile ->
+                val profilePrefs = prefs.keyboard.profile(profile)
+                listOf(
+                    profilePrefs.numberRow.asFlow(),
+                    profilePrefs.devRow.asFlow(),
+                    profilePrefs.modRowsVisible.asFlow(),
+                )
             }
-            prefs.keyboard.devRow.asFlow().collectLatestIn(scope) {
-                updateActiveEvaluators {
-                    keyboardCache.clear(KeyboardMode.CHARACTERS)
+            merge(prefs.keyboard.activeProfileId.asFlow(), *rowVisibilityFlows.toTypedArray())
+                .collectIn(scope) {
+                    updateActiveEvaluators {
+                        // Every mode, not just Characters. `modRowsVisible` is read in `mergeLayouts`
+                        // and applies to whatever mode is being merged, `numberRow` is read by the
+                        // SYMBOLS branch as well as the CHARACTERS one, and SYMBOLS2 carries a modifier
+                        // layout of its own. Clearing only Characters left `?123` showing a keyboard
+                        // with the row the user had just toggled away.
+                        //
+                        // A declared list of affected modes would drift back into that bug the next time
+                        // someone reads a preference from a new mode branch. A full clear cannot: the
+                        // cost is one lazy recompute of whichever mode is asked for next, and
+                        // `updateActiveEvaluators` only recomputes the active one.
+                        keyboardCache.clear()
+                    }
                 }
-            }
-            prefs.keyboard.modRowsVisible.asFlow().collectLatestIn(scope) {
-                updateActiveEvaluators {
-                    keyboardCache.clear(KeyboardMode.CHARACTERS)
-                }
-            }
             prefs.keyboard.hintedNumberRowEnabled.asFlow().collectLatestIn(scope) {
                 updateActiveEvaluators()
             }
@@ -396,6 +714,51 @@ class KeyboardManager(
         }
     }
 
+    /**
+     * Computes the Characters keyboard for [subtype], preferring the active layout pack.
+     *
+     * Extracted in Stage 05 because two callers need it: the surface being drawn, and the frame
+     * reference for the rest of the text-entry group. Returns the keyboard and whether it came from
+     * a layout pack, which the caller needs in order to honour authored key widths.
+     */
+    private suspend fun computeCharactersKeyboard(
+        subtype: Subtype,
+        editorInfo: FlorisEditorInfo,
+        state: KeyboardState,
+    ): Pair<TextKeyboard, Boolean> {
+        val mode = KeyboardMode.CHARACTERS
+        val pack = layoutFlow.value
+        val layoutPackResult = runCatching {
+            layoutManager.computeKeyboardFromLayoutPack(
+                pack,
+                mode,
+                subtype,
+                editorInfo,
+                state,
+            )
+        }
+        val layoutPackKeyboard = layoutPackResult.getOrNull()
+        if (layoutPackKeyboard != null && layoutPackKeyboard.arrangement.isNotEmpty()) {
+            return layoutPackKeyboard to true
+        }
+        val error = layoutPackResult.exceptionOrNull()
+        if (error != null) {
+            flogWarning(LogTopic.LAYOUT_MANAGER) {
+                "Falling back to extension layout for characters: ${error.message}"
+            }
+        } else {
+            flogWarning(LogTopic.LAYOUT_MANAGER) {
+                "Layout pack produced an empty arrangement, falling back to extension layout"
+            }
+        }
+        return keyboardCache.getOrElseAsync(mode, subtype) {
+            layoutManager.computeKeyboardAsync(
+                keyboardMode = mode,
+                subtype = subtype,
+            ).await()
+        } to false
+    }
+
     private fun updateActiveEvaluators(action: () -> Unit = { }) = scope.launch {
         activeEvaluatorGuard.withLock {
             action()
@@ -409,37 +772,7 @@ class KeyboardManager(
                 state.inputShiftState = InputShiftState.UNSHIFTED
             }
             val (computedKeyboard, usesLayoutPack) = if (mode == KeyboardMode.CHARACTERS) {
-                val pack = layoutFlow.value
-                val layoutPackResult = runCatching {
-                    layoutManager.computeKeyboardFromLayoutPack(
-                        pack,
-                        mode,
-                        subtype,
-                        editorInfo,
-                        state,
-                    )
-                }
-                val layoutPackKeyboard = layoutPackResult.getOrNull()
-                if (layoutPackKeyboard != null && layoutPackKeyboard.arrangement.isNotEmpty()) {
-                    layoutPackKeyboard to true
-                } else {
-                    val error = layoutPackResult.exceptionOrNull()
-                    if (error != null) {
-                        flogWarning(LogTopic.LAYOUT_MANAGER) {
-                            "Falling back to extension layout for characters: ${error.message}"
-                        }
-                    } else {
-                        flogWarning(LogTopic.LAYOUT_MANAGER) {
-                            "Layout pack produced an empty arrangement, falling back to extension layout"
-                        }
-                    }
-                    keyboardCache.getOrElseAsync(mode, subtype) {
-                        layoutManager.computeKeyboardAsync(
-                            keyboardMode = mode,
-                            subtype = subtype,
-                        ).await()
-                    } to false
-                }
+                computeCharactersKeyboard(subtype, editorInfo, state)
             } else {
                 keyboardCache.getOrElseAsync(mode, subtype) {
                     layoutManager.computeKeyboardAsync(
@@ -460,13 +793,14 @@ class KeyboardManager(
                 if (usesLayoutPack) {
                     val layoutPackData = key.data as? LayoutPackKeyData
                     if (layoutPackData != null) {
-                        val width = layoutPackData.widthUnits.coerceAtLeast(0f)
-                        key.flayWidthFactor = width
-                        key.flayGrow = width
-                        key.flayShrink = width
+                        // An authored unit is preserved exactly. The geometry policy supplies a
+                        // canonical width only where the pack author did not state one, so a pack's
+                        // deliberate asymmetry survives normalization.
+                        key.authoredWidthUnits = layoutPackData.widthUnits.coerceAtLeast(0f)
                         if (layoutPackData.isSpacer) {
                             key.isEnabled = false
                             key.isVisible = false
+                            key.isStructuralSpacer = true
                         }
                     }
                 }
@@ -474,8 +808,16 @@ class KeyboardManager(
             }
             _activeEvaluator.value = computingEvaluator
             _activeSmartbarEvaluator.value = computingEvaluator.asSmartbarQuickActionsEvaluator()
-            if (computedKeyboard.mode == KeyboardMode.CHARACTERS) {
-                _lastCharactersEvaluator.value = computingEvaluator
+            // The frame reference is recomputed rather than remembered. Only its row structure is
+            // read, so the keys are deliberately not computed for labels or drawables — that work is
+            // for the surface actually being drawn.
+            _frameReferenceKeyboard.value = when (computedKeyboard.mode.frameGroup()) {
+                KeyboardFrameGroup.OWN_ROWS -> computedKeyboard
+                KeyboardFrameGroup.TEXT_ENTRY -> if (computedKeyboard.mode == KeyboardMode.CHARACTERS) {
+                    computedKeyboard
+                } else {
+                    computeCharactersKeyboard(subtype, editorInfo, state).first
+                }
             }
         }
     }
@@ -553,13 +895,24 @@ class KeyboardManager(
         }
     }
 
-    fun commitCandidate(candidate: SuggestionCandidate) {
+    fun commitCandidate(
+        candidate: SuggestionCandidate,
+        harvestRoute: String = HarvestRoute.AUTO_APPLIED,
+    ) {
         scope.launch {
             candidate.sourceProvider?.notifySuggestionAccepted(subtypeManager.activeSubtype, candidate)
         }
         when (candidate) {
             is ClipboardSuggestionCandidate -> editorInstance.commitClipboardItem(candidate.clipboardItem)
-            else -> editorInstance.commitCompletion(candidate)
+            else -> editorInstance.commitCompletion(
+                candidate,
+                harvestRoute = harvestRoute,
+                barIndex = if (harvestRoute == HarvestRoute.BAR_PICK) {
+                    nlpManager.activeCandidates.indexOf(candidate).takeIf { it >= 0 }
+                } else {
+                    null
+                },
+            )
         }
     }
 
@@ -896,12 +1249,15 @@ class KeyboardManager(
      * enabled by the user.
      */
     fun handleSpaceLongPress() {
-        android.util.Log.i("FlorisBoard_Debug", "Space long press detected! Current modRowsVisible: ${prefs.keyboard.modRowsVisible.get()}")
+        val modRowsVisible = prefs.keyboard.activeProfilePrefs().modRowsVisible
+        android.util.Log.i("FlorisBoard_Debug", "Space long press detected! Current modRowsVisible: ${modRowsVisible.get()}")
         scope.launch {
-            prefs.keyboard.modRowsVisible.let { it.set(!it.get()) }
-            android.util.Log.i("FlorisBoard_Debug", "New modRowsVisible: ${prefs.keyboard.modRowsVisible.get()}")
+            modRowsVisible.let { it.set(!it.get()) }
+            android.util.Log.i("FlorisBoard_Debug", "New modRowsVisible: ${modRowsVisible.get()}")
             updateActiveEvaluators {
-                keyboardCache.clear(KeyboardMode.CHARACTERS)
+                // Full clear for the same reason as the row-visibility subscription above: the
+                // modifier rows this toggles are merged into Symbols and Symbols2 too.
+                keyboardCache.clear()
             }
         }
     }
@@ -1099,11 +1455,8 @@ class KeyboardManager(
             KeyCode.ENTER -> handleEnter()
             KeyCode.FORWARD_DELETE -> handleForwardDelete(OperationUnit.CHARACTERS)
             KeyCode.FORWARD_DELETE_WORD -> handleForwardDelete(OperationUnit.WORDS)
-            KeyCode.IME_SHOW_UI -> {
-                activeState.isKeyboardMinimized = false
-                FlorisImeService.showUi()
-            }
-            KeyCode.IME_HIDE_UI -> activeState.isKeyboardMinimized = true
+            KeyCode.IME_SHOW_UI -> FlorisImeService.showUi()
+            KeyCode.IME_HIDE_UI -> FlorisImeService.hideUi()
             KeyCode.TMUX_PREFIX -> {
                 activeState.isTmuxPrefixActive =
                     editorInstance.sendDownUpKeyEvent(KeyEvent.KEYCODE_B, KeyEvent.META_CTRL_ON)
@@ -1200,10 +1553,10 @@ class KeyboardManager(
                 prefs.smartbar.enabled.let { it.set(!it.get()) }
             }
             KeyCode.TOGGLE_NUMBER_ROW -> scope.launch {
-                prefs.keyboard.numberRow.let { it.set(!it.get()) }
+                prefs.keyboard.activeProfilePrefs().numberRow.let { it.set(!it.get()) }
             }
             KeyCode.TOGGLE_DEV_ROW -> scope.launch {
-                prefs.keyboard.devRow.let { it.set(!it.get()) }
+                prefs.keyboard.activeProfilePrefs().devRow.let { it.set(!it.get()) }
             }
             KeyCode.TOGGLE_ACTIONS_OVERFLOW -> {
                 activeState.isActionsOverflowVisible = !activeState.isActionsOverflowVisible

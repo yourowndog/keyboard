@@ -17,23 +17,9 @@ object PersonalPreferences {
      * 
      * Added when a correction is rejected 5+ times in harvest analysis.
      */
-    /**
-     * Personal vocabulary: words Sam types intentionally that should NEVER be corrected.
-     * Checked case-insensitively — one lowercase entry covers all capitalizations.
-     * Add abbreviations, slang, and shorthand here instead of anti-corrections.
-     */
+    /** Built-in protection plus additive forms loaded from protected_forms.txt. */
     @Volatile
-    var PERSONAL_VOCAB = setOf(
-        // Abbreviations
-        "bc", "rn", "tf", "lmk", "ppl", "msg", "thx", "sry", "btw",
-        "imo", "idk", "omg", "wtf", "smh", "ngl", "tbh", "fr", "wdym",
-        "bday", "pls", "llms", "cs", "gen", "config", "ai",
-        // Slang / informal
-        // NOTE: "im" must NOT go here — it suppresses the im -> I'm contraction
-        // fast-path, and the word then auto-corrects to "Important" downstream.
-        "ya", "def", "tho", "nah", "ugh", "oof", "bruh", "cuz",
-        "g", "i",
-    )
+    var PERSONAL_VOCAB = ProtectedVocabulary.BUILT_IN_FORMS
 
     fun init(context: android.content.Context) {
         try {
@@ -84,9 +70,9 @@ object PersonalPreferences {
         "ir" to listOf("iron"),
         "Congrats" to listOf("Contrast"),
         "domething" to listOf("something"),
-        // "were" -> we're and "its" -> it's removed: handled context-aware by
-        // CasingUtils.resolveContextualContraction (blanket blocks were duct tape
-        // against the old blind shortcut map).
+        // "were" -> we're and "its" -> it's are intentionally absent. Left
+        // context cannot safely disambiguate them, so valid-word immunity keeps
+        // the literal text while the normal suggestion path remains available.
         "Kaylyn" to listOf("Kayla"),
         "ton" to listOf("top", "to"),
         "Quora" to listOf("Quota"),

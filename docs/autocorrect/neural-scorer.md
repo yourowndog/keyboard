@@ -1,9 +1,10 @@
 # Neural Autocorrect Scorer
 
 > Status: Canonical  
-> Last verified: 2026-07-11  
-> Verified against: `NeuralScorer.kt`, `LatinLanguageProvider.kt`, preference
-> defaults, packaged ONNX model, tests, and `training/feature_spec.md`
+> Last verified: 2026-07-13
+> Verified against: `NeuralScorer.kt`, `LatinLanguageProvider.kt`,
+> `CorrectionDecision.kt`, preference defaults, packaged ONNX model, tests,
+> and `training/feature_spec.md`
 
 ## Current authority
 
@@ -11,6 +12,13 @@ The neural model is a candidate decision gate, not the primary displayed
 ranker. The heuristic engine still determines suggestion order. When live
 neural scoring is enabled, the heuristic top correction may auto-commit only if
 the neural decision fires and names that same candidate.
+
+That authority applies when the normal ranked path supplies evaluated neural
+evidence. Casing and licensed-contraction shortcuts run before the model's
+candidate set and carry named bypass reasons; the engine-unavailable fallback
+does the same. High-confidence segmentation is unsupported by the current model
+and becomes suggestion-only while live gating is enabled. `CorrectionDecision`
+keeps these states distinct from an evaluated approval or rejection.
 
 This distinction is essential when debugging:
 
@@ -69,12 +77,20 @@ The provider then requires agreement between the neural top candidate and the
 heuristic candidate being considered for automatic commit. Personal protection
 and correction-eligibility checks still apply.
 
+`CorrectionDecision` forwards evaluated verdicts unchanged. Disabled or
+unavailable scoring supplies explicit `Disabled` evidence, while deterministic
+shortcuts and fallback use `Bypassed(reason)`; neither is represented as a model
+approval. An `UnsupportedCandidate` produces a veto rather than silently
+escaping a live Gate.
+
 ## Lifecycle
 
 The ONNX model is loaded from application assets during provider preload. The
 session owns native resources and is closed when the provider is destroyed.
 Inference failures return no neural decision rather than crashing the typing
-path.
+path. The normal path consequently records neural evidence as unavailable and
+preserves its existing fail-open behavior; engine and fallback diagnostics are
+separate from model lifecycle diagnostics.
 
 ## Validation requirements
 
@@ -87,4 +103,3 @@ Before replacing the packaged model:
 5. Calibrate the runtime threshold.
 6. Test memory use and repeated session lifecycle.
 7. Enable live gating only after shadow evidence is acceptable.
-

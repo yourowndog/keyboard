@@ -1,12 +1,21 @@
 #!/usr/bin/env python3
 """
-Investigate FUTO coordinate system to understand the normalization.
+Investigate FUTO coordinate system to understand normalization and canvas ranges.
 """
 
+import sys
+from pathlib import Path
 import pyarrow.parquet as pq
 import numpy as np
 
-parquet_path = 'futo_swipes.parquet'
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+DEFAULT_PARQUET = REPO_ROOT / "data" / "swipe" / "raw" / "futo" / "swipe-1" / "train" / "0.parquet"
+
+parquet_path = sys.argv[1] if len(sys.argv) > 1 else (
+    "futo_swipes.parquet" if Path("futo_swipes.parquet").exists() else str(DEFAULT_PARQUET)
+)
+
+print(f"Reading from: {parquet_path}")
 parquet_file = pq.ParquetFile(parquet_path)
 
 # Get first row group
@@ -21,62 +30,27 @@ for _, row in df.iterrows():
         print(f"Number of points: {len(row['data'])}")
         print("\nRaw point data (first 5 points):")
         for i, point in enumerate(row['data'][:5]):
-            print(f"  Point {i}: x={point['x']:.2f}, y={point['y']:.2f}, t={point['t']}")
+            print(f"  Point {i}: x={point['x']:.4f}, y={point['y']:.4f}, t={point['t']}")
         
         # Calculate ranges
         x_vals = [p['x'] for p in row['data']]
         y_vals = [p['y'] for p in row['data']]
         print(f"\nRaw coordinate ranges:")
-        print(f"  X: {min(x_vals):.2f} to {max(x_vals):.2f} (range: {max(x_vals)-min(x_vals):.2f})")
-        print(f"  Y: {min(y_vals):.2f} to {max(y_vals):.2f} (range: {max(y_vals)-min(y_vals):.2f})")
-        
-        print(f"\nIf we normalize by canvas:")
-        print(f"  X_norm range: {(max(x_vals)-min(x_vals))/row['canvas_width']:.6f}")
-        print(f"  Y_norm range: {(max(y_vals)-min(y_vals))/row['canvas_height']:.6f}")
-        
-        print("\n" + "="*60)
-        print("INTERPRETATION:")
-        print("="*60)
-        print(f"The raw X coordinates go from {min(x_vals):.2f} to {max(x_vals):.2f}")
-        print(f"The canvas width is {row['canvas_width']}")
-        print(f"So the swipe is only using {(max(x_vals)-min(x_vals))/row['canvas_width']*100:.2f}% of the canvas width")
+        print(f"  X: {min(x_vals):.4f} to {max(x_vals):.4f} (range: {max(x_vals)-min(x_vals):.4f})")
+        print(f"  Y: {min(y_vals):.4f} to {max(y_vals):.4f} (range: {max(y_vals)-min(y_vals):.4f})")
         break
 
 # Now check multiple samples
-print("\n\n" + "="*60)
-print("CHECKING RAW COORDINATE SCALE ACROSS MULTIPLE SAMPLES")
+print("\n" + "="*60)
+print("CHECKING COORDINATE SCALE ACROSS MULTIPLE SAMPLES")
 print("="*60)
 
 sample_count = 0
-x_ranges = []
-y_ranges = []
-x_maxes = []
-canvas_widths = []
-
 for _, row in df.iterrows():
-    if sample_count >= 20:
+    if sample_count >= 10:
         break
     
     x_vals = [p['x'] for p in row['data']]
     y_vals = [p['y'] for p in row['data']]
-    
-    x_ranges.append(max(x_vals) - min(x_vals))
-    y_ranges.append(max(y_vals) - min(y_vals))
-    x_maxes.append(max(x_vals))
-    canvas_widths.append(row['canvas_width'])
+    print(f"[{row['word']}] Canvas: {row['canvas_width']}x{row['canvas_height']}, X: [{min(x_vals):.3f}, {max(x_vals):.3f}], Y: [{min(y_vals):.3f}, {max(y_vals):.3f}], Points: {len(row['data'])}")
     sample_count += 1
-
-print(f"\nAcross {sample_count} samples:")
-print(f"  Raw X ranges: {np.mean(x_ranges):.2f} (min: {np.min(x_ranges):.2f}, max: {np.max(x_ranges):.2f})")
-print(f"  Raw Y ranges: {np.mean(y_ranges):.2f} (min: {np.min(y_ranges):.2f}, max: {np.max(y_ranges):.2f})")
-print(f"  Max X values seen: {np.max(x_maxes):.2f}")
-print(f"  Canvas widths: {np.mean(canvas_widths):.2f} (min: {np.min(canvas_widths):.2f}, max: {np.max(canvas_widths):.2f})")
-
-print("\n")
-print("="*60)
-print("CONCLUSION")
-print("="*60)
-print("The raw X,Y coordinates appear to be in PIXELS, not normalized.")
-print("We should NOT divide by canvas_width/height if we want 0-1 normalization")
-print("based on keyboard position. Instead, we need to understand what coordinate")
-print("system FUTO is using.")

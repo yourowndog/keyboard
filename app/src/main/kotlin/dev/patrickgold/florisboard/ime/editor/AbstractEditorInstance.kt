@@ -220,12 +220,136 @@ abstract class AbstractEditorInstance(context: Context) {
     }
 
     protected open fun reset() {
+        rawResetBuffers()
         activeInfo = FlorisEditorInfo.Unspecified
         activeCursorCapsMode = InputAttributes.CapsMode.NONE
         activeContent = EditorContent.Unspecified
         runBlocking { expectedContentQueue.clear() }
         _lastCommitPosition.reset()
         autoCorrectUndoState = null
+    }
+
+    // ---------------------------------------------------------------------------------------
+    // Raw-editor (terminal) autocorrect
+    //
+    // Terminals -- Termux above all -- report inputType=NULL, so isRichInputEditor is false and
+    // setComposingRegion is never called. The correction pipeline is fed by the composing region,
+    // so it never sees a word: in 63 days of harvest, 120,141 commits in Termux produced zero
+    // corrections, and 275 of the 424 surviving instances of common typos happened there.
+    //
+    // We cannot use a composing region here -- terminals do not handle composing text, which is
+    // why they report NULL in the first place. Instead we keep our own word and line buffers,
+    // drive the suggestion pipeline from them, and apply a correction with an explicit
+    // deleteSurroundingText + commitText. This mirrors the raw-editor glide fix in
+    // TextKeyboardLayout: terminals accept committed text fine, only composing is off-limits.
+    //
+    // Line-shape suppression is the safety mechanism. A shell command must never be rewritten,
+    // so correction is refused on any line carrying shell syntax, on the first word of a line
+    // (the command name), and on any token that is not purely alphabetic.
+    // ---------------------------------------------------------------------------------------
+
+    private val rawWord = StringBuilder()
+    private val rawLine = StringBuilder()
+
+    protected fun rawResetBuffers() {
+        rawWord.setLength(0)
+        rawLine.setLength(0)
+    }
+
+    /** Overridden by [EditorInstance] to consult the user preference. Off by default. */
+    protected open fun rawAutoCorrectEnabled(): Boolean = false
+
+    private val rawShellChars = "/\\|&;<>$`*~=%{}[]()'\"".toSet()
+
+    /**
+     * True only when the current line is ordinary prose. Any hint of shell syntax, a leading
+     * flag or path, or a line still on its first word disqualifies it.
+     */
+    private fun rawLineIsCorrectable(): Boolean {
+        val line = rawLine.toString()
+        if (line.isBlank()) return false
+        // Still typing the first word of the line: that is the command name.
+        if (line.trimStart().none { it == ' ' }) return false
+        if (line.any { it in rawShellChars }) return false
+        if (Regex("""(^|\s)-{1,2}\S""").containsMatchIn(line)) return false
+        if (Regex("""(^|\s)\.{1,2}\S""").containsMatchIn(line)) return false
+        if (Regex("""\d""").containsMatchIn(line)) return false
+        return true
+    }
+
+    private fun rawWordIsCorrectable(): Boolean {
+        val word = rawWord.toString()
+        return word.length >= 2 && word.all { it.isLetter() }
+    }
+
+    /** Feed the suggestion pipeline from our own buffers, since there is no composing region. */
+    private fun rawSuggest() {
+        if (rawWord.isEmpty()) {
+            nlpManager.clearSuggestions()
+            return
+        }
+        val line = rawLine.toString()
+        val composing = EditorRange(line.length - rawWord.length, line.length)
+        nlpManager.suggest(
+            subtypeManager.activeSubtype,
+            EditorContent(
+                text = line,
+                offset = 0,
+                localSelection = EditorRange.cursor(line.length),
+                localComposing = composing,
+                localCurrentWord = composing,
+            ),
+        )
+    }
+
+    private fun rawCommitText(ic: InputConnection, text: String) {
+        if (!rawAutoCorrectEnabled()) {
+            ic.commitText(text, 1)
+            return
+        }
+        val isWordSeparator = text.length == 1 && (text == " " || text == "\n" || ".,;:!?".contains(text))
+        if (!isWordSeparator) {
+            ic.commitText(text, 1)
+            if (text.length == 1 && text[0].isLetter()) {
+                rawWord.append(text)
+            } else {
+                rawWord.setLength(0)
+            }
+            rawLine.append(text)
+            rawSuggest()
+            return
+        }
+
+        val typed = rawWord.toString()
+        val corrected = if (rawWordIsCorrectable() && rawLineIsCorrectable()) {
+            nlpManager.getAutoCommitCandidate()?.text?.toString()
+        } else {
+            null
+        }
+        if (corrected != null && corrected != typed) {
+            ic.deleteSurroundingText(typed.length, 0)
+            ic.commitText(corrected + text, 1)
+            autoCorrectUndoState = AutoCorrectUndoState(
+                correctedText = corrected,
+                originalText = typed,
+            )
+            rawLine.setLength(max(0, rawLine.length - typed.length))
+            rawLine.append(corrected)
+        } else {
+            ic.commitText(text, 1)
+        }
+        rawLine.append(text)
+        if (text == "\n") rawLine.setLength(0)
+        rawWord.setLength(0)
+        nlpManager.clearSuggestions()
+    }
+
+    /** Keep the raw buffers in step with a backspace. Called from [EditorInstance.deleteBackwards]. */
+    protected fun rawHandleBackspace() {
+        if (!activeInfo.isRawInputEditor) return
+        if (rawWord.isNotEmpty()) rawWord.setLength(rawWord.length - 1)
+        if (rawLine.isNotEmpty()) rawLine.setLength(rawLine.length - 1)
+        rawSuggest()
     }
 
     private suspend fun generateContent(
@@ -397,7 +521,7 @@ abstract class AbstractEditorInstance(context: Context) {
         
         if (activeInfo.isRawInputEditor) {
             ic.finishComposingText()
-            ic.commitText(text, 1)
+            rawCommitText(ic, text)
         } else runBlocking {
             // Check if we're committing a word separator AND there's a composing word to autocorrect
             val composingText = content.composingText

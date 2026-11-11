@@ -1,9 +1,10 @@
 # Heuristic Candidate Scoring
 
 > Status: Canonical  
-> Last verified: 2026-07-11  
+> Last verified: 2026-07-14
 > Verified against: `CandidateScorer.kt`, `SuggestionEngine.kt`,
-> `KeyboardLayout`, bigram tables, and personal preferences
+> `ContextualEvidence.kt`, `ContractionRules.kt`, `CommitPolicy.kt`,
+> `CorrectionDecision.kt`, `KeyboardLayout`, and bigram tables
 
 The heuristic scorer assigns a penalty; lower is better. The suggestion engine
 converts the penalty to confidence by negating it and sorts descending.
@@ -16,35 +17,76 @@ The score begins with edit distance, then combines:
 - low-cost adjacent transpositions
 - length-difference cost
 - previous-word bigram reward or missing-hit penalty
-- apostrophe/contraction rewards
+- apostrophe/contraction rewards for forms licensed by `ContractionRules`
 - exact-input reward
 - user-dictionary reward
 - log-frequency reward
 - grammar and bigram-block penalties
 - selected context-specific ambiguity rules
 
-The exact constants live in `CandidateScorer.kt`; link to them rather than
-copying values into multiple documents. Changing a constant affects displayed
-ranking, auto-commit eligibility indirectly, swipe word scoring, and the
-candidate set seen by later logic.
+The exact constants live in `CandidateScorer.kt` and `ContextualEvidence.kt`;
+link to them rather than copying values into multiple documents. Changing a
+constant affects displayed ranking, auto-commit eligibility indirectly, swipe
+word scoring, and the candidate set seen by later logic.
+
+An apostrophe by itself is not contraction evidence. The exact-letter and
+close-typo apostrophe bonuses apply only when the candidate's lowercase form is
+in `ContractionRules.LICENSED_FORMS`; unlicensed possessives such as `La's` and
+`function's` keep their ordinary edit, spatial, context, and frequency scores.
+The close-typo bonus retains its spatial and minimum-frequency requirements even
+for licensed forms.
 
 ## Physical model
 
-`KeyboardLayout.keyDistance()` uses fixed staggered QWERTY coordinates and caps
-far distances. This is a typing-error model, not the current rendered geometry.
-Changing visual key positions or using a non-QWERTY layout does not automatically
-retrain or update these coordinates.
+`KeyboardLayout.keyDistance()` uses fixed staggered number-row and QWERTY letter
+coordinates and caps far distances. This is a typing-error model, not the
+current rendered geometry. Changing visual key positions or using a non-QWERTY
+layout does not automatically retrain or update these coordinates.
 
 Unknown characters receive the far-key fallback. Insertions/deletions are
 primarily represented through edit distance and length cost rather than a
 physical coordinate.
 
-## Vetoes and penalties
+Number-row coordinates let a word-shaped substitution such as `5his` → `this`
+carry meaningful spatial evidence. They do not by themselves authorize a
+commit. `CommitPolicy` separately admits only the tightly shaped, single-digit,
+same-position adjacent-key relation described in the live pipeline and keeps
+other digit-bearing data blocked.
 
-Personal vocabulary and explicit anti-corrections can cull a candidate. Grammar
-and bigram conflicts currently add heavy penalties rather than necessarily
-deleting the candidate. This distinction matters: a penalized option may remain
-visible while a culled option cannot be selected.
+## Eligibility and penalties
+
+The Judge does not enforce personal policy. Typed→candidate anti-correction
+pairs are excluded before ranking. Protected vocabulary remains rankable, while
+`CommitPolicy` vetoes automatic replacement of the protected typed form.
+
+Grammar, bigram conflicts, and `id` ambiguity are soft numerical evidence from
+`ContextualEvidence`. They can reorder visible candidates but cannot authorize
+or forbid a commit.
+
+Contraction knowledge has two distinct consumers. The Judge consults
+`LICENSED_FORMS` before granting apostrophe bonuses; membership affects ranking
+only and never grants commit authority. The shortcut path receives an opaque
+static-rule license from `ContractionRules`, bound to the normalized typed form,
+exact raw candidate, and `CONTRACTION_RULE` provenance. `CorrectionDecision`
+revalidates the binding before it may waive valid-word immunity or missing
+edit-retrieval provenance. Provenance, an apostrophe bonus, or a license issued
+for another pair cannot authorize a commit. Ambiguous valid words such as
+`were` and `its` receive no left-context shortcut license.
+
+## Runtime boundary
+
+The heuristic scorer runs only on the n-gram-engine path. When that engine is
+unavailable, the provider logs its recovery attempt and, if recovery fails,
+logs entry into the SymSpell-only fallback and records the named
+`ENGINE_UNAVAILABLE` bypass. Casing and contraction shortcuts similarly record
+`CASING_FAST_PATH` and `LICENSED_CONTRACTION_FAST_PATH`. Normal-path disabled or
+unavailable neural scoring is the explicit `Disabled` evidence state.
+
+`CorrectionDecision` is the sole adapter that turns `Disabled` or a named
+`Bypassed` state into no low-level neural veto. It forwards `Evaluated` evidence
+unchanged, so an evaluated rejection or different top candidate remains
+authoritative. Changing shortcut neural treatment is therefore an orchestration
+and policy decision, not a scorer-constant change.
 
 ## Safe tuning workflow
 
@@ -53,7 +95,8 @@ visible while a culled option cannot be selected.
 2. Reproduce the ranking in a focused test.
 3. Identify which signal is wrong; do not compensate blindly with a larger
    unrelated constant.
-4. Check personal vetoes and contraction shortcuts before changing scoring.
+4. Check personal vetoes, contraction licensing, and shortcut orchestration
+   before changing scoring.
 5. Check whether the neural gate, rather than heuristic rank, blocked commit.
 6. Add regression examples for both desired fixes and nearby false positives.
 7. Validate with shadow/harvest evidence and actual editor commits on device.
@@ -63,4 +106,3 @@ visible while a culled option cannot be selected.
 The NLP word-scoring interface is also used by glide typing. Swipe supplies its
 own geometry/path evidence and calls word scoring with different assumptions.
 Any scorer change should be checked for tap and glide regressions.
-

@@ -17,15 +17,17 @@ def normalize_swipe(points, canvas_width, canvas_height):
     """
     if points is None or len(points) == 0:
         return []
-    
-    normalized = []
-    for point in points:
-        # Normalize to 0-1 space
-        x_norm = point['x'] / canvas_width
-        y_norm = point['y'] / canvas_height
-        normalized.append((x_norm, y_norm))
-    
-    return normalized
+
+    # FUTO stores x/y already normalized to the keyboard canvas;
+    # canvas_width/canvas_height are dp metadata (e.g. 422x170), not divisors.
+    # Dividing by them shrinks every coordinate ~400x. Detect the convention
+    # per recording so either encoding loads correctly.
+    raw = [(float(p['x']), float(p['y'])) for p in points]
+    already_normalized = max(max(abs(x), abs(y)) for x, y in raw) <= 1.5
+    if already_normalized:
+        return raw
+
+    return [(x / canvas_width, y / canvas_height) for x, y in raw]
 
 def resample_swipe(points, num_points=50):
     """

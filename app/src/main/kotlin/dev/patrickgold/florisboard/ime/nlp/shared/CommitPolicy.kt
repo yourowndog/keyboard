@@ -1,5 +1,7 @@
 package dev.patrickgold.florisboard.ime.nlp.shared
 
+import dev.patrickgold.florisboard.ime.core.KeyboardLayout
+
 /**
  * The Gate of the correction pipeline: the single authority on whether the
  * top-ranked candidate may alter the user's typed text.
@@ -20,6 +22,7 @@ object CommitPolicy {
         val topTerm: String,
     )
 
+    /** Low-level Gate input; production orchestration should use [CorrectionDecision]. */
     data class Input(
         /** Raw composing text as typed (trimmed). */
         val typed: String,
@@ -29,20 +32,38 @@ object CommitPolicy {
         val rawCandidate: String,
         /** Typed word already exists in the dictionary (Valid Word Immunity). */
         val typedIsValidWord: Boolean,
-        /** Candidate came from edit-distance retrieval; prefix-only completions never commit. */
+        /**
+         * Candidate has correction provenance. The historical name is retained
+         * here; [CorrectionDecision] derives it from explicit provenance for
+         * edits, segmentation, and the acknowledged legacy fallback.
+         */
         val isEditDistanceCandidate: Boolean,
         /** ANTI_CORRECTIONS: user has explicitly blocked typed→candidate. */
         val isBlockedCorrection: Boolean,
         /** PERSONAL_VOCAB: typed word must never be autocorrected. */
         val typedIsProtectedVocab: Boolean,
-        /** Null when the neural scorer is disabled — the gate then defers to heuristics. */
+        /**
+         * Null means no low-level neural veto. [CorrectionDecision] preserves
+         * whether that came from disabled scoring or a named bypass.
+         */
         val neuralVerdict: NeuralVerdict?,
+        /**
+         * [CorrectionDecision] verified an exact static ContractionRules license
+         * for this typed form and raw candidate (for example, dont → don't).
+         * The verified license may replace a dictionary-valid token and stands
+         * in for edit-distance provenance the shortcut path never had.
+         */
+        val isLicensedContraction: Boolean = false,
+        /** A non-null contraction license was supplied but failed exact validation. */
+        val hasInvalidContractionLicense: Boolean = false,
     )
 
     /** Everything that can veto a commit, in evaluation order. */
     enum class Blocker {
         /** Candidate is byte-identical to the typed text — nothing to commit. */
         NO_CHANGE,
+        /** Supplied contraction-license evidence is incoherent or belongs elsewhere. */
+        INVALID_CONTRACTION_LICENSE,
         /** Typed word is valid, and the candidate is a different word (not a casing fix). */
         VALID_WORD_IMMUNITY,
         /** Neural gate is live and either declined to fire or backs a different candidate. */
@@ -75,13 +96,42 @@ object CommitPolicy {
 
         return buildList {
             if (!isChange) add(Blocker.NO_CHANGE)
-            if (input.typedIsValidWord && !isCasingFix) add(Blocker.VALID_WORD_IMMUNITY)
+            if (input.hasInvalidContractionLicense) add(Blocker.INVALID_CONTRACTION_LICENSE)
+            if (input.typedIsValidWord && !isCasingFix && !input.isLicensedContraction) {
+                add(Blocker.VALID_WORD_IMMUNITY)
+            }
             if (!neuralAllows) add(Blocker.NEURAL_VETO)
             if (input.isBlockedCorrection) add(Blocker.ANTI_CORRECTION)
             if (input.typedIsProtectedVocab) add(Blocker.PROTECTED_VOCAB)
-            if (isChange && input.typed.any { it.isDigit() }) add(Blocker.NUMERIC_TOKEN)
+            if (isChange && input.typed.any { it.isDigit() } &&
+                !isNumberRowSlip(input.typed, input.rawCandidate)
+            ) add(Blocker.NUMERIC_TOKEN)
             if (input.typed.length < 2 && !isCasingFix) add(Blocker.TOO_SHORT)
-            if (!input.isEditDistanceCandidate && !isCasingFix) add(Blocker.NOT_A_CORRECTION)
+            if (!input.isEditDistanceCandidate && !isCasingFix && !input.isLicensedContraction) {
+                add(Blocker.NOT_A_CORRECTION)
+            }
         }
+    }
+
+    /**
+     * A single number-row fat-finger inside an otherwise alphabetic word
+     * (sugg3stions → suggestions, 5his → this) is a typo, not an identifier.
+     * Everything else containing a digit (742, PS2, v2, 3.14, H2O, hashes)
+     * stays data. The typed token's shape and its relation to the candidate
+     * are derived here from the strings themselves: exactly one digit, at
+     * least 3 chars, candidate purely alphabetic and same length, differing
+     * only at the digit position, and the replacement letter must sit
+     * adjacent to that digit on the keyboard.
+     */
+    private fun isNumberRowSlip(typed: String, candidate: String): Boolean {
+        if (typed.length < 3 || typed.length != candidate.length) return false
+        if (typed.count { it.isDigit() } != 1) return false
+        if (!candidate.all { it.isLetter() }) return false
+        val digitIdx = typed.indexOfFirst { it.isDigit() }
+        for (i in typed.indices) {
+            if (i == digitIdx) continue
+            if (!typed[i].equals(candidate[i], ignoreCase = true)) return false
+        }
+        return KeyboardLayout.isAdjacent(typed[digitIdx], candidate[digitIdx])
     }
 }

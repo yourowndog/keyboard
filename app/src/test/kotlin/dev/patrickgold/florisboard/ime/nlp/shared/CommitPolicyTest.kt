@@ -88,6 +88,53 @@ class CommitPolicyTest {
         assertTrue(CommitPolicy.shouldCommit(input))
     }
 
+    // A single number-row fat-finger with an adjacent-letter candidate is a
+    // typo (5his -> this); the digit veto must not swallow it.
+    @Test
+    fun numberRowSlipCommits() {
+        val input = baseInput().copy(typed = "5his", casedCandidate = "this", rawCandidate = "this")
+        assertTrue(CommitPolicy.shouldCommit(input))
+    }
+
+    // The same word-shaped token is still blocked when the candidate letter
+    // is nowhere near the digit on the keyboard (no fat-finger evidence).
+    @Test
+    fun digitWithoutAdjacencyEvidenceStaysBlocked() {
+        val input = baseInput().copy(typed = "5his", casedCandidate = "whis", rawCandidate = "whis")
+        assertTrue(Blocker.NUMERIC_TOKEN in CommitPolicy.blockers(input))
+    }
+
+    // A verified static ContractionRules license overrides valid-word immunity (dont -> don't)
+    // and stands in for edit-distance provenance the contraction path lacks.
+    @Test
+    fun licensedContractionCommitsDespiteTypedBeingValidWord() {
+        val input = baseInput().copy(
+            typed = "dont",
+            casedCandidate = "don't",
+            rawCandidate = "don't",
+            typedIsValidWord = true,
+            isEditDistanceCandidate = false,
+            isLicensedContraction = true,
+        )
+        assertTrue(CommitPolicy.shouldCommit(input))
+    }
+
+    // Without the license the same evidence stays blocked on both clauses.
+    @Test
+    fun unlicensedValidWordReplacementStaysBlocked() {
+        val input = baseInput().copy(
+            typed = "were",
+            casedCandidate = "we're",
+            rawCandidate = "we're",
+            typedIsValidWord = true,
+            isEditDistanceCandidate = false,
+        )
+        assertEquals(
+            listOf(Blocker.VALID_WORD_IMMUNITY, Blocker.NOT_A_CORRECTION),
+            CommitPolicy.blockers(input),
+        )
+    }
+
     // Prefix-only completions are predictions, not corrections (iOS/Gboard behavior).
     @Test
     fun prefixCompletionNeverCommits() {
@@ -122,6 +169,15 @@ class CommitPolicyTest {
             neuralVerdict = CommitPolicy.NeuralVerdict(shouldFire = true, topTerm = "The"),
         )
         assertTrue(CommitPolicy.shouldCommit(input))
+    }
+
+    @Test
+    fun invalidContractionLicenseEvidenceAlwaysBlocks() {
+        val input = baseInput().copy(hasInvalidContractionLicense = true)
+        assertEquals(
+            listOf(Blocker.INVALID_CONTRACTION_LICENSE),
+            CommitPolicy.blockers(input),
+        )
     }
 
     @Test

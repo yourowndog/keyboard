@@ -52,6 +52,31 @@ class CommitPolicyRegressionTest {
                 expectedBlockers = listOf(CommitPolicy.Blocker.NUMERIC_TOKEN),
             ),
             Fixture(
+                name = "number-row slip at word start commits: 5his -> this",
+                input = input("5his", "this"),
+                expectedBlockers = emptyList(),
+            ),
+            Fixture(
+                name = "number-row slip inside a word commits: sugg3stions -> suggestions",
+                input = input("sugg3stions", "suggestions"),
+                expectedBlockers = emptyList(),
+            ),
+            Fixture(
+                name = "number-row slip inside a word commits: correc5ed -> corrected",
+                input = input("correc5ed", "corrected"),
+                expectedBlockers = emptyList(),
+            ),
+            Fixture(
+                name = "digit far from replacement letter stays data: PS2 -> psa",
+                input = input("PS2", "psa"),
+                expectedBlockers = listOf(CommitPolicy.Blocker.NUMERIC_TOKEN),
+            ),
+            Fixture(
+                name = "chemical-style identifier stays data: H2O -> hao",
+                input = input("H2O", "hao"),
+                expectedBlockers = listOf(CommitPolicy.Blocker.NUMERIC_TOKEN),
+            ),
+            Fixture(
                 name = "protected shell vocabulary: zsh must not become ssh",
                 input = input("zsh", "ssh", typedIsProtectedVocab = true),
                 expectedBlockers = listOf(CommitPolicy.Blocker.PROTECTED_VOCAB),

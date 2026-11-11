@@ -33,6 +33,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -65,11 +66,23 @@ import dev.patrickgold.florisboard.ime.editor.OperationUnit
 import dev.patrickgold.florisboard.ime.input.InputEventDispatcher
 import dev.patrickgold.florisboard.ime.keyboard.ComputingEvaluator
 import dev.patrickgold.florisboard.ime.keyboard.FlorisImeSizing
+import dev.patrickgold.florisboard.ime.keyboard.KeyCustomizationManager
 import dev.patrickgold.florisboard.ime.keyboard.KeyboardMode
+import dev.patrickgold.florisboard.ime.keyboard.KeyboardProfile
 import dev.patrickgold.florisboard.ime.keyboard.SpaceBarMode
+import dev.patrickgold.florisboard.ime.keyboard.geometry.FramePolicy
+import dev.patrickgold.florisboard.ime.keyboard.geometry.GeometryOrientation
+import dev.patrickgold.florisboard.ime.keyboard.geometry.LayoutFingerprint
+import dev.patrickgold.florisboard.ime.keyboard.geometry.OneHandedGeometry
+import dev.patrickgold.florisboard.ime.keyboard.geometry.SpatialCoordinateFrame
+import dev.patrickgold.florisboard.ime.keyboard.geometry.TextKeyboardGeometryBridge
+import dev.patrickgold.florisboard.ime.keyboard.geometry.rememberGeometryPreferences
+import dev.patrickgold.florisboard.ime.onehanded.OneHandedMode
 import dev.patrickgold.florisboard.ime.popup.ExceptionsForKeyCodes
 import dev.patrickgold.florisboard.ime.popup.PopupUiController
 import dev.patrickgold.florisboard.ime.popup.rememberPopupUiController
+import dev.patrickgold.florisboard.ime.nlp.HarvestManager
+import dev.patrickgold.florisboard.ime.nlp.HarvestTouch
 import dev.patrickgold.florisboard.ime.text.gestures.GlideTypingGesture
 import dev.patrickgold.florisboard.ime.text.gestures.SwipeAction
 import dev.patrickgold.florisboard.ime.text.gestures.SwipeGesture
@@ -84,6 +97,7 @@ import dev.patrickgold.florisboard.lib.Pointer
 import dev.patrickgold.florisboard.lib.PointerMap
 import dev.patrickgold.florisboard.lib.devtools.LogTopic
 import dev.patrickgold.florisboard.lib.devtools.flogDebug
+import dev.patrickgold.florisboard.lib.devtools.flogError
 import dev.patrickgold.florisboard.lib.observeAsTransformingState
 import dev.patrickgold.florisboard.lib.toIntOffset
 import dev.patrickgold.jetpref.datastore.model.observeAsState
@@ -129,10 +143,17 @@ fun TextKeyboardLayout(
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
     val glideTypingManager by context.glideTypingManager()
+    val oneHandedMode by prefs.keyboard.oneHandedMode.observeAsState()
+    val oneHandedModeEnabled by prefs.keyboard.oneHandedModeEnabled.observeAsState()
+    val oneHandedModeScaleFactor by prefs.keyboard.oneHandedModeScaleFactor.observeAsState()
 
     val keyboard = evaluator.keyboard as TextKeyboard
     val glideEnabledInternal by prefs.glide.enabled.observeAsState()
-    val glideEnabled = glideEnabledInternal && evaluator.editorInfo.isRichInputEditor &&
+    // Raw input editors are deliberately included. A terminal -- Termux above all -- reports
+    // inputType=NULL, which isRichInputEditor reads as "not a real text field", and gliding was
+    // switched off there entirely. Terminals do accept committed text; the check only ever bought
+    // us a dead zone where swiping did nothing. Password fields stay excluded.
+    val glideEnabled = glideEnabledInternal &&
         evaluator.state.keyVariation != KeyVariation.PASSWORD
     val glideShowTrail by prefs.glide.showTrail.observeAsState()
     val glideTrailColorPref by prefs.glide.trailColor.observeAsState()
@@ -143,10 +164,6 @@ fun TextKeyboardLayout(
 
     val controller = remember { TextKeyboardLayoutController(context) }.also {
         it.keyboard = keyboard
-        if (glideEnabled && !isPreview && keyboard.mode == KeyboardMode.CHARACTERS) {
-            val keys = keyboard.keys().asSequence().toList()
-            glideTypingManager.setLayout(keys)
-        }
     }
     val touchEventChannel = remember { Channel<MotionEvent>(64) }
 
@@ -236,127 +253,128 @@ fun TextKeyboardLayout(
     ) {
         val keyboardWidth = constraints.maxWidth.toFloat()
         val keyboardHeight = constraints.maxHeight.toFloat()
-        val keyMarginH by prefs.keyboard.keySpacingHorizontal.observeAsTransformingState { it.dp.toPx() }
-        val keyMarginV by prefs.keyboard.keySpacingVertical.observeAsTransformingState { it.dp.toPx() }
-        val alphaKeyWidthFactor by prefs.keyboard.alphaKeyWidth.observeAsTransformingState { it / 100f }
-        val modKeyWidthFactor by prefs.keyboard.modKeyWidth.observeAsTransformingState { it / 100f }
-        val alphaMarginH by prefs.keyboard.alphaSpacingHorizontal.observeAsTransformingState { it.dp.toPx() }
-        val alphaMarginV by prefs.keyboard.alphaSpacingVertical.observeAsTransformingState { it.dp.toPx() }
-        val modMarginH by prefs.keyboard.modSpacingHorizontal.observeAsTransformingState { it.dp.toPx() }
-        val modMarginV by prefs.keyboard.modSpacingVertical.observeAsTransformingState { it.dp.toPx() }
-        val bottomRowHeightFactor by prefs.keyboard.bottomRowHeightFactor.observeAsTransformingState { it / 100f }
-        val alphaRowHeightFactor by prefs.keyboard.alphaRowHeightFactor.observeAsTransformingState { it / 100f }
-        val modRowUpperGap by prefs.keyboard.modRowUpperGap.observeAsTransformingState { it.dp.toPx() }
-        val modRowInnerGap by prefs.keyboard.modRowInnerGap.observeAsTransformingState { it.dp.toPx() }
-        val modRowLowerGap by prefs.keyboard.modRowLowerGap.observeAsTransformingState { it.dp.toPx() }
-        val keyCustomizationsJson by prefs.keyboard.keyCustomizations.observeAsState()
-        val keyboardRowBaseHeight = FlorisImeSizing.keyboardRowBaseHeight
-
-        val desiredKey = remember(
-            keyboard, keyboardWidth, keyboardHeight, keyMarginH, keyMarginV,
-            alphaKeyWidthFactor, modKeyWidthFactor, alphaMarginH, alphaMarginV, modMarginH, modMarginV,
-            keyboardRowBaseHeight, bottomRowHeightFactor, alphaRowHeightFactor, modRowUpperGap,
-            modRowInnerGap, modRowLowerGap, keyCustomizationsJson, evaluator
-        ) {
-            TextKey(data = TextKeyData.UNSPECIFIED).also { desiredKey ->
-                desiredKey.touchBounds.apply {
-                    width = keyboardWidth / 10f
-                    height = when (keyboard.mode) {
-                        KeyboardMode.CHARACTERS,
-                        KeyboardMode.NUMERIC_ADVANCED,
-                        KeyboardMode.SYMBOLS,
-                        KeyboardMode.SYMBOLS2 -> {
-                            (keyboardHeight / keyboard.rowCount)
-                                .coerceAtMost(keyboardRowBaseHeight.toPx() * 1.12f)
-                        }
-                        else -> keyboardRowBaseHeight.toPx()
-                    }
-                }
-                desiredKey.visibleBounds.applyFrom(desiredKey.touchBounds).deflateBy(keyMarginH, keyMarginV)
-                
-                // Calculate total gap height to subtract from layout height
-                // This ensures keys are sized based on content height, not including the gaps
-                val rowCount = keyboard.rowCount
-                val totalGaps = if (rowCount >= 2) {
-                    modRowUpperGap + modRowInnerGap + modRowLowerGap
+        val activeProfileId by prefs.keyboard.activeProfileId.observeAsState()
+        val keyCustomizationsJson by prefs.keyboard
+            .profile(KeyboardProfile.fromId(activeProfileId))
+            .keyCustomizations.observeAsState()
+        val rowBaseHeight = FlorisImeSizing.keyboardRowBaseHeight
+        val geometryPrefs = rememberGeometryPreferences(
+            rowBaseHeight = rowBaseHeight.toPx().toDouble(),
+            convertLength = { it.dp.toPx().toDouble() },
+        )
+        val geometryOrientation = if (configuration.isOrientationLandscape()) {
+            GeometryOrientation.LANDSCAPE
+        } else {
+            GeometryOrientation.PORTRAIT
+        }
+        val oneHandedGeometry = if (oneHandedModeEnabled && geometryOrientation == GeometryOrientation.PORTRAIT) {
+            val scaleFactor = oneHandedModeScaleFactor / 100f
+            OneHandedGeometry(
+                side = oneHandedMode.name,
+                scaleFactor = scaleFactor,
+                offsetPx = if (oneHandedMode == OneHandedMode.END && scaleFactor > 0f) {
+                    keyboardWidth * (1f - scaleFactor) / scaleFactor
                 } else {
                     0f
-                }
-                
-                keyboard.layout(
-                    keyboardWidth, keyboardHeight - totalGaps, desiredKey, true,
-                    bottomRowHeightFactor, alphaRowHeightFactor, alphaKeyWidthFactor,
-                    modKeyWidthFactor,
-                    alphaMarginH, alphaMarginV, modMarginH, modMarginV
+                },
+            )
+        } else {
+            null
+        }
+
+        // The whole geometry of this keyboard, solved once and written onto its keys.
+        //
+        // Every input the placement depends on is a key of this `remember`, and nothing else is: a
+        // preference change produces a different `geometryPrefs` value and recomputes exactly once,
+        // and a change geometry does not depend on recomputes nothing. There is no post-layout
+        // structural mutation after this block — what the solver decided is what the keys carry.
+        val desiredKey = remember(
+            keyboard, keyboardWidth, keyboardHeight, geometryPrefs, geometryOrientation,
+            keyCustomizationsJson,
+        ) {
+            val reference = TextKey(data = TextKeyData.UNSPECIFIED)
+            val result = TextKeyboardGeometryBridge.solve(
+                keyboard = keyboard,
+                prefs = geometryPrefs,
+                availableWidth = keyboardWidth.toDouble(),
+                // The frame height was already decided by FlorisImeSizing. For a mode in the
+                // OWN_ROWS frame group it was measured from this very keyboard, so the solve below
+                // reproduces it. For the TEXT_ENTRY group it was measured from the group's
+                // reference surface — the Characters keyboard — and this keyboard is a different
+                // shape that has to fit inside it. That is the point of the group: Symbols keeps
+                // the window Characters established rather than resizing it under a moving thumb.
+                // Either way the height is an input here, never re-derived.
+                framePolicy = FramePolicy.FitToHeight(keyboardHeight.toDouble()),
+                orientation = geometryOrientation,
+            )
+            for (diagnostic in result.diagnostics) {
+                flogError(LogTopic.TEXT_KEYBOARD_VIEW) { "geometry: $diagnostic" }
+            }
+            val geometry = when (result) {
+                is TextKeyboardGeometryBridge.Result.Solved -> result.geometry
+                is TextKeyboardGeometryBridge.Result.Fallback -> result.geometry
+                // Unsatisfiable even at the canonical baseline: nothing is written, so the keys keep
+                // whatever coherent bounds they last had rather than being left half-placed.
+                is TextKeyboardGeometryBridge.Result.Unavailable -> null
+            }
+            if (geometry != null) {
+                TextKeyboardGeometryBridge.applyTo(
+                    keyboard = keyboard,
+                    geometry = geometry,
+                    extendTouchBoundariesDownwards = true,
                 )
-                
-                // Apply per-key customizations from prefs
-                val customizations = dev.patrickgold.florisboard.ime.keyboard.KeyCustomizationManager.parseFromJson(keyCustomizationsJson)
+                TextKeyboardGeometryBridge.referenceCell(geometry, reference.visibleBounds)
+                reference.touchBounds.applyFrom(reference.visibleBounds)
+
+                // Per-key customizations are presentation only: they reshape the keycap a user has
+                // explicitly resized, and never the structural allocation or the touch bounds, so a
+                // customized key cannot open a dead strip or steal a neighbour's touches.
+                val customizations = KeyCustomizationManager.parseFromJson(keyCustomizationsJson)
                 for (key in keyboard.keys()) {
-                    val custom = customizations[(key as? TextKey)?.computedData?.code]
-                    if (custom != null) {
-                        // Apply height factor by scaling visible bounds
-                        if (custom.heightFactor != 1.0f) {
-                            val currentHeight = key.visibleBounds.height
-                            val newHeight = currentHeight * custom.heightFactor
-                            val heightDelta = newHeight - currentHeight
-                            key.visibleBounds.top -= heightDelta / 2
-                            key.visibleBounds.bottom += heightDelta / 2
-                        }
-                        
-                        // Apply width factor by scaling visible bounds
-                        if (custom.widthFactor != 1.0f) {
-                            val currentWidth = key.visibleBounds.width
-                            val newWidth = currentWidth * custom.widthFactor
-                            val widthDelta = newWidth - currentWidth
-                            key.visibleBounds.left -= widthDelta / 2
-                            key.visibleBounds.right += widthDelta / 2
-                        }
-                        
-                        // Apply padding to visible bounds (convert dp to px)
-                        key.visibleBounds.apply {
-                            top += custom.paddingTop.dp.toPx()
-                            bottom -= custom.paddingBottom.dp.toPx()
-                            left += custom.paddingLeft.dp.toPx()
-                            right -= custom.paddingRight.dp.toPx()
-                        }
+                    val custom = customizations[key.computedData.code] ?: continue
+                    if (custom.heightFactor != 1.0f) {
+                        val delta = key.visibleBounds.height * (custom.heightFactor - 1.0f)
+                        key.visibleBounds.top -= delta / 2
+                        key.visibleBounds.bottom += delta / 2
+                    }
+                    if (custom.widthFactor != 1.0f) {
+                        val delta = key.visibleBounds.width * (custom.widthFactor - 1.0f)
+                        key.visibleBounds.left -= delta / 2
+                        key.visibleBounds.right += delta / 2
+                    }
+                    key.visibleBounds.apply {
+                        top += custom.paddingTop.dp.toPx()
+                        bottom -= custom.paddingBottom.dp.toPx()
+                        left += custom.paddingLeft.dp.toPx()
+                        right -= custom.paddingRight.dp.toPx()
                     }
                 }
-                // Apply mod row gaps (upper/inner/lower)
-                if (rowCount >= 2) {
-                    for ((rowIndex, row) in keyboard.arrangement.withIndex()) {
-                        // Upper mod row (N-2)
-                        // Only affected by upperGap (shifting down)
-                        if (rowIndex == rowCount - 2) {
-                            if (modRowUpperGap > 0) {
-                                for (key in row) {
-                                    key.visibleBounds.top += modRowUpperGap
-                                    key.visibleBounds.bottom += modRowUpperGap
-                                    key.touchBounds.top += modRowUpperGap
-                                    key.touchBounds.bottom += modRowUpperGap
-                                }
-                            }
-                        }
-                        // Lower mod row (N-1)
-                        // Affected by upperGap + innerGap (shifting down)
-                        // AND lowerGap (extending down into bezel)
-                        if (rowIndex == rowCount - 1) {
-                            val totalTopShift = modRowUpperGap + modRowInnerGap
-                            for (key in row) {
-                                if (totalTopShift > 0) {
-                                    key.visibleBounds.top += totalTopShift
-                                    key.visibleBounds.bottom += totalTopShift
-                                    key.touchBounds.top += totalTopShift
-                                    key.touchBounds.bottom += totalTopShift
-                                }
-                                if (modRowLowerGap > 0) {
-                                    // Only extend touch bounds into the lower gap/bezel
-                                    // Visible bounds remain at their content size to create a visual gap
-                                    key.touchBounds.bottom += modRowLowerGap
-                                }
-                            }
-                        }
-                    }
+            }
+            reference
+        }
+
+        // Bounds are mutable and are stamped inside the geometry block above. Configure glide in
+        // a post-commit side effect so it cannot observe the previous composition's rectangles (or
+        // the all-zero construction defaults on first composition). This also runs after each
+        // committed geometry-preference change; classifiers reject an unchanged spatial frame by
+        // its geometry signature.
+        SideEffect {
+            if (glideEnabled && !isPreview && keyboard.mode == KeyboardMode.CHARACTERS) {
+                glideTypingManager.setLayout(keyboard.keys().asSequence().toList())
+            }
+            if (!isPreview && keyboard.mode == KeyboardMode.CHARACTERS) {
+                SpatialCoordinateFrame.from(keyboard.keys().asSequence().asIterable())?.let { frame ->
+                    controller.spatialFrame = frame
+                    HarvestManager.updateLayout(
+                        LayoutFingerprint.create(
+                            keyboard = keyboard,
+                            preferences = geometryPrefs,
+                            frame = frame,
+                            densityDpi = configuration.densityDpi,
+                            orientation = geometryOrientation,
+                            oneHanded = oneHandedGeometry,
+                        ),
+                    )
                 }
             }
         }
@@ -437,8 +455,10 @@ private fun TextKeyButton(
     debugShowTouchBoundaries: Boolean,
 ) = with(LocalDensity.current) {
     val prefs by FlorisPreferenceStore
-    val numberRowEnabled by prefs.keyboard.numberRow.observeAsState()
-    val devRowEnabled by prefs.keyboard.devRow.observeAsState()
+    val activeProfileId by prefs.keyboard.activeProfileId.observeAsState()
+    val profile = prefs.keyboard.profile(KeyboardProfile.fromId(activeProfileId))
+    val numberRowEnabled by profile.numberRow.observeAsState()
+    val devRowEnabled by profile.devRow.observeAsState()
     val attributes = mapOf(
         FlorisImeUi.Attr.Code to key.computedData.code,
         FlorisImeUi.Attr.Mode to evaluator.keyboard.mode.toString(),
@@ -547,6 +567,7 @@ private class TextKeyboardLayoutController(
     private var initSelectionStart: Int = 0
     private var initSelectionEnd: Int = 0
     var isGliding by mutableStateOf(false)
+    var spatialFrame: SpatialCoordinateFrame? = null
 
     val glideTypingDetector = GlideTypingGesture.Detector(context)
     val glideDataForDrawing = mutableStateListOf<Pair<GlideTypingGesture.Detector.Position, Long>>()
@@ -557,7 +578,9 @@ private class TextKeyboardLayoutController(
     lateinit var keyboard: TextKeyboard
     var size = Size.Zero
 
-    val isGlideEnabled: Boolean get() = prefs.glide.enabled.get() && editorInstance.activeInfo.isRichInputEditor &&
+    // Must stay in step with `glideEnabled` above: this one gates touch dispatch, that one gates
+    // layout registration and the trail. If they disagree, gliding half-works.
+    val isGlideEnabled: Boolean get() = prefs.glide.enabled.get() &&
         keyboardManager.activeState.keyVariation != KeyVariation.PASSWORD
 
     fun onTouchEventInternal(event: MotionEvent) {
@@ -705,6 +728,7 @@ private class TextKeyboardLayoutController(
         flogDebug(LogTopic.TEXT_KEYBOARD_VIEW) { "pointer=$pointer" }
 
         val key = keyboard.getKeyForPos(event.getX(pointer.index), event.getY(pointer.index))
+        pointer.downTimeMs = event.eventTime
         if (key != null && key.isEnabled) {
             key.computedDataOnDown = key.computedData
             pointer.pressedKeyInfo = inputEventDispatcher.sendDown(
@@ -799,9 +823,63 @@ private class TextKeyboardLayoutController(
         val initialKey = pointer.initialKey
         val activeKey = pointer.activeKey
         if (initialKey != null && activeKey != null) {
+            val popupSuitable = popupUiController.isSuitableForPopups(activeKey)
+            val popupData = if (popupSuitable) {
+                popupUiController.getActiveKeyData(activeKey)
+            } else {
+                null
+            }
+            val producedData = popupData ?: activeKey.computedData
+            val code = producedData.code
+            val keyCode = activeKey.computedData.code
+            val keyName = when (keyCode) {
+                KeyCode.DELETE -> "BKSP"
+                KeyCode.DELETE_WORD -> "BKSP_WORD"
+                KeyCode.SHIFT -> "SHIFT"
+                KeyCode.SPACE, KeyCode.CJK_SPACE -> "SPACE"
+                KeyCode.ENTER -> "ENTER"
+                else -> if (keyCode in KeyCode.Spec.CHARACTERS) {
+                    String(Character.toChars(keyCode))
+                } else {
+                    activeKey.computedData.label.ifEmpty { keyCode.toString() }
+                }
+            }
+            val willProduce = !pointer.hasTriggeredGestureMove && (!popupSuitable || popupData != null)
+            val character = when {
+                !willProduce -> null
+                code == KeyCode.SPACE || code == KeyCode.CJK_SPACE -> " "
+                code in KeyCode.Spec.CHARACTERS && code != KeyCode.ENTER -> String(Character.toChars(code))
+                else -> null
+            }
+            val x = event.getX(pointer.index)
+            val y = event.getY(pointer.index)
+            val isAlphaKey = keyCode in 'a'.code..'z'.code || keyCode in 'A'.code..'Z'.code
+            val spatial = if (isAlphaKey) {
+                spatialFrame?.resolveTouch(x, y) { _, _ -> activeKey }
+            } else {
+                null
+            }
+            HarvestManager.recordTouch(
+                HarvestTouch(
+                    character = character,
+                    key = keyName,
+                    xn = spatial?.xn,
+                    yn = spatial?.yn,
+                    dx = spatial?.dx,
+                    dy = spatial?.dy,
+                    px = (event.rawX + x - event.x).toInt(),
+                    py = (event.rawY + y - event.y).toInt(),
+                    durationMs = (event.eventTime - pointer.downTimeMs).coerceAtLeast(0L),
+                    source = when {
+                        popupData != null && popupData != activeKey.computedData -> "POPUP"
+                        pointer.hasTriggeredLongPress -> "LONGPRESS"
+                        else -> "TAP"
+                    },
+                ),
+            )
             activeKey.isPressed = false
-            if (popupUiController.isSuitableForPopups(activeKey)) {
-                val retData = popupUiController.getActiveKeyData(activeKey)
+            if (popupSuitable) {
+                val retData = popupData
                 if (retData != null && !pointer.hasTriggeredGestureMove) {
                     if (retData == activeKey.computedData) {
                         if (activeKey.computedData != activeKey.computedDataOnDown) {
@@ -1150,6 +1228,7 @@ private class TextKeyboardLayoutController(
         var hasTriggeredLongPress: Boolean = false
         var hasTriggeredMassSelection: Boolean = false
         var pressedKeyInfo: InputEventDispatcher.PressedKeyInfo? = null
+        var downTimeMs: Long = 0L
 
         override fun reset() {
             super.reset()
@@ -1159,6 +1238,7 @@ private class TextKeyboardLayoutController(
             hasTriggeredLongPress = false
             hasTriggeredMassSelection = false
             pressedKeyInfo = null
+            downTimeMs = 0L
         }
 
         override fun toString(): String {

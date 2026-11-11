@@ -33,8 +33,15 @@ import dev.patrickgold.florisboard.ime.nlp.SuggestionCandidate
 import dev.patrickgold.florisboard.ime.nlp.SuggestionProvider
 import dev.patrickgold.florisboard.ime.nlp.WordSuggestionCandidate
 import dev.patrickgold.florisboard.ime.nlp.shared.BigramTable
-import dev.patrickgold.florisboard.ime.nlp.shared.CandidateScorer
+import dev.patrickgold.florisboard.ime.nlp.shared.CandidateProvenance
+import dev.patrickgold.florisboard.ime.nlp.shared.CommitCandidateEvidence
 import dev.patrickgold.florisboard.ime.nlp.shared.CommitPolicy
+import dev.patrickgold.florisboard.ime.nlp.shared.CommitRequestEvidence
+import dev.patrickgold.florisboard.ime.nlp.shared.CorrectionDecision
+import dev.patrickgold.florisboard.ime.nlp.shared.FallbackCorrection
+import dev.patrickgold.florisboard.ime.nlp.shared.NeuralEvidence
+import dev.patrickgold.florisboard.ime.nlp.shared.ShortcutCorrection
+import dev.patrickgold.florisboard.ime.nlp.shared.TypedLexicalStatus
 import dev.patrickgold.florisboard.ime.nlp.shared.WordSegmentation
 import dev.patrickgold.florisboard.lib.devtools.flogDebug
 import kotlinx.coroutines.Dispatchers
@@ -45,6 +52,11 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         // Default user ID used for all subtypes, unless otherwise specified.
         // See `ime/core/Subtype.kt` Line 210 and 211 for the default usage
         const val ProviderId = "org.florisboard.nlp.providers.latin"
+
+        /** Logcat tag answering "which engine path ran?" for live diagnosis. */
+        private const val AUTOCORRECT_PATH_TAG = "AutocorrectPath"
+
+        private const val ENGINE_RECOVERY_COOLDOWN_MS = 30_000L
     }
 
     private val appContext by context.appContext()
@@ -53,6 +65,14 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
 
     private var ngramEngine: dev.patrickgold.florisboard.ime.nlp.NgramSuggestionEngine? = null
     private var neuralScorer: NeuralScorer? = null
+
+    /**
+     * Rate limit for re-attempting the engine load from suggest() after a
+     * failed init. A session whose preload threw (install churn, memory
+     * pressure) would otherwise stay silently in the SymSpell-only fallback
+     * until the next subtype switch or app restart.
+     */
+    private var lastEngineRecoveryAttemptMs = 0L
 
     /**
      * Last neural shadow decision + ngram top pick, exposed for NlpManager to persist
@@ -64,6 +84,7 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         val prevWord: String?,
         val ngramTop: String?,
         val decision: NeuralScorer.Decision,
+        val policyBlockers: List<String>,
     )
     @Volatile var lastNeuralSnapshot: NeuralSnapshot? = null
         private set
@@ -103,9 +124,7 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
 
         // SymSpell handles all suggestions/corrections - legacy dictionary code removed
 
-        // Initialize Ngram Engine for Ranking
-        // Note: Only loads unigrams here. Bigrams are provided by the shared BigramTable singleton
-        // which is loaded once in SymSpellManager.init()
+        // Only unigrams are retained by the engine; bigrams stay in BigramTable.
         // preload() fires on every subtype switch; both loads below are subtype-independent,
         // so load once and keep. Reloading here previously leaked the replaced ONNX session
         // and re-parsed the full unified dictionary each time.
@@ -190,45 +209,32 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
             return emptyList()
         }
 
-        // Special case: lone "i" -> "I" (SymSpell doesn't return "i" as candidate)
-        if (currentWordRaw.equals("i", ignoreCase = true)) {
+        // Shortcut resolution and evidence assembly are pure and shared with the
+        // asset-backed pipeline tests. Personal vetoes remain real Gate inputs.
+        val shortcutIsProtected = dev.patrickgold.florisboard.ime.nlp.PersonalPreferences
+            .isProtectedFromAutocorrect(currentWordRaw)
+        val shortcut = ShortcutCorrection.resolve(
+            typed = currentWordRaw,
+            isSentenceStart = dev.patrickgold.florisboard.ime.nlp.shared.CasingUtils
+                .isAtSentenceStart(textBeforeCurrentWord),
+            typedLexicalStatus = lexicalStatus(SymSpellManager.hasWord(currentWordRaw)),
+            typedIsProtectedVocab = shortcutIsProtected,
+            isBlockedCorrection = { candidate ->
+                dev.patrickgold.florisboard.ime.nlp.PersonalPreferences
+                    .isAntiCorrection(currentWordRaw, candidate)
+            },
+        )
+        val shouldReturnShortcut = shortcut != null &&
+            (shortcut.provenance == CandidateProvenance.CASING_RULE ||
+                (!shortcutIsProtected && !shortcut.isBlockedCorrection))
+        if (shortcut != null && shouldReturnShortcut) {
             return listOf(
                 WordSuggestionCandidate(
-                    text = "I",
+                    text = shortcut.casedCandidate,
                     secondaryText = null,
-                    isEligibleForAutoCommit = true,
-                    sourceProvider = this
-                )
-            )
-        }
-        
-        // Fast-path for contractions: dont -> don't, etc.
-        // Context-dependent words (were/we're, its/it's) resolve against the previous
-        // word; everything else comes from the plain shortcut map.
-        // PersonalPreferences wins over the shortcut map: words Sam types intentionally
-        // (PERSONAL_VOCAB) and corrections he has explicitly blocked (ANTI_CORRECTIONS)
-        // must never blind-fire from here.
-        val contractionResult = dev.patrickgold.florisboard.ime.nlp.shared.CasingUtils.resolveContextualContraction(currentWordRaw, previousWord)
-            ?: dev.patrickgold.florisboard.ime.nlp.shared.CasingUtils.CONTRACTION_SHORTCUTS[currentWordRaw.lowercase()]
-        if (contractionResult != null &&
-            !dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isProtectedFromAutocorrect(currentWordRaw) &&
-            !dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isAntiCorrection(currentWordRaw, contractionResult)
-        ) {
-            // Match the typed casing so "WERE" becomes "WE'RE", and capitalize at sentence
-            // start even when the typed word is lowercase (auto-caps missed or was defeated):
-            // the regular pipeline gets this from applyPredictedCasing, which this fast-path skips.
-            val casedContraction = dev.patrickgold.florisboard.ime.nlp.shared.CasingUtils.matchCasingPattern(currentWordRaw, contractionResult)
-            return listOf(
-                WordSuggestionCandidate(
-                    text = if (dev.patrickgold.florisboard.ime.nlp.shared.CasingUtils.isAtSentenceStart(textBeforeCurrentWord)) {
-                        casedContraction.replaceFirstChar { it.titlecase() }
-                    } else {
-                        casedContraction
-                    },
-                    secondaryText = null,
-                    isEligibleForAutoCommit = true,
-                    sourceProvider = this
-                )
+                    isEligibleForAutoCommit = shortcut.decision.shouldCommit,
+                    sourceProvider = this,
+                ),
             )
         }
 
@@ -242,7 +248,7 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         val segmented = WordSegmentation.findUniqueHighConfidence(
             input = currentWordRaw,
             isWord = SymSpellManager::hasWord,
-            hasBigram = { left, right -> CandidateScorer.bigramScore(left, right).hasHit },
+            hasBigram = { left, right -> BigramTable.get()?.hasHit(left, right) == true },
         )
         if (segmented != null &&
             !dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isProtectedFromAutocorrect(currentWordRaw)
@@ -257,27 +263,32 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
                 casedSegmented,
             )
             val neuralIsLive = prefs.suggestion.useNeuralScorer.get()
-            val shouldCommit = CommitPolicy.shouldCommit(CommitPolicy.Input(
+            val requestEvidence = CommitRequestEvidence(
                 typed = currentWordRaw,
-                casedCandidate = casedSegmented,
-                rawCandidate = segmented,
-                typedIsValidWord = false,
-                isEditDistanceCandidate = true,
-                isBlockedCorrection = isBlocked,
+                typedLexicalStatus = TypedLexicalStatus.NOT_KNOWN_WORD,
                 typedIsProtectedVocab = false,
                 // The model was not trained on multi-word candidates. If the Gate is live,
                 // show this candidate for tapping without bypassing its veto.
-                neuralVerdict = if (neuralIsLive) {
-                    CommitPolicy.NeuralVerdict(shouldFire = false, topTerm = segmented)
+                neuralEvidence = if (neuralIsLive) {
+                    NeuralEvidence.UnsupportedCandidate
                 } else {
-                    null
+                    NeuralEvidence.Disabled
                 },
-            ))
+            )
+            val decision = CorrectionDecision.evaluate(
+                request = requestEvidence,
+                candidate = CommitCandidateEvidence(
+                    raw = segmented,
+                    cased = casedSegmented,
+                    provenance = CandidateProvenance.SEGMENTATION,
+                    isBlockedCorrection = isBlocked,
+                ),
+            )
             return listOf(
                 WordSuggestionCandidate(
                     text = casedSegmented,
                     secondaryText = null,
-                    isEligibleForAutoCommit = shouldCommit,
+                    isEligibleForAutoCommit = decision.shouldCommit,
                     sourceProvider = this,
                 )
             )
@@ -285,8 +296,20 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
 
         val prefixCandidates = dev.patrickgold.florisboard.ime.nlp.SymSpellManager.findPrefixCandidates(
             currentWordRaw, previousWord, limit = 10
-        )
-        val editCandidates = dev.patrickgold.florisboard.ime.nlp.SymSpellManager.findCandidates(currentWordRaw)
+        ).filterNot { candidate ->
+            dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isAntiCorrection(
+                currentWordRaw,
+                candidate.term,
+            )
+        }
+        val editCandidates = dev.patrickgold.florisboard.ime.nlp.SymSpellManager
+            .findCandidates(currentWordRaw)
+            .filterNot { candidate ->
+                dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isAntiCorrection(
+                    currentWordRaw,
+                    candidate.term,
+                )
+            }
         
         // Merge and deduplicate by term. Edit candidates FIRST: prefix candidates carry
         // distance = 0 ("perfect prefix match"), so if the prefix copy of a word survives
@@ -301,6 +324,14 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         val editTerms = editCandidates.mapTo(mutableSetOf()) { it.term.lowercase() }
         
         // 2. Rank using NgramEngine (The Judge)
+        if (ngramEngine == null) {
+            val now = System.currentTimeMillis()
+            if (now - lastEngineRecoveryAttemptMs >= ENGINE_RECOVERY_COOLDOWN_MS) {
+                lastEngineRecoveryAttemptMs = now
+                android.util.Log.w(AUTOCORRECT_PATH_TAG, "ngramEngine null at suggest(); retrying engine load")
+                preload(subtype)
+            }
+        }
         val engine = ngramEngine
         if (engine != null) {
             // Map SymSpell items to (Term, Distance) pairs
@@ -319,19 +350,12 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
                 ),
                 threshold = prefs.suggestion.neuralThreshold.get(),
             )
+            val ngramTopStr = ngramRanked.firstOrNull()?.text?.toString()
             if (prefs.suggestion.neuralScorerShadow.get() && neuralDecision != null) {
-                val ngramTopStr = ngramRanked.firstOrNull()?.text?.toString()
                 logNeuralShadow(
                     typed = currentWordRaw,
                     previousWord = previousWord,
                     currentTop = ngramTopStr,
-                    decision = neuralDecision,
-                )
-                // Surface for NlpManager's privacy-safe JSONL logging
-                lastNeuralSnapshot = NeuralSnapshot(
-                    typed = currentWordRaw,
-                    prevWord = previousWord,
-                    ngramTop = ngramTopStr,
                     decision = neuralDecision,
                 )
             }
@@ -353,9 +377,24 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
                 it.text.toString().equals(currentWordRaw, ignoreCase = true) 
             }
             val liveNeuralDecision = neuralDecision.takeIf { prefs.suggestion.useNeuralScorer.get() }
+            val requestEvidence = CommitRequestEvidence(
+                typed = currentWordRaw,
+                typedLexicalStatus = lexicalStatus(isInputValidWord),
+                typedIsProtectedVocab = dev.patrickgold.florisboard.ime.nlp.PersonalPreferences
+                    .isProtectedFromAutocorrect(currentWordRaw),
+                neuralEvidence = liveNeuralDecision?.let { decision ->
+                    NeuralEvidence.Evaluated(
+                        CommitPolicy.NeuralVerdict(
+                            shouldFire = decision.shouldFire,
+                            topTerm = decision.top.term,
+                        ),
+                    )
+                } ?: NeuralEvidence.Disabled,
+            )
             val rankedSuggestions = ngramRanked
             
-            return rankedSuggestions.map { candidate ->
+            var topPolicyBlockers = emptyList<String>()
+            return rankedSuggestions.mapIndexed { index, candidate ->
                 if (candidate is WordSuggestionCandidate) {
                     // Use SymSpellManager's casing logic which handles i→I, proper nouns, sentence start
                     val casedText = SymSpellManager.applyPredictedCasing(
@@ -364,41 +403,47 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
                         textBeforeSelection = textBeforeCurrentWord
                     )
                     
-                    // The Gate: CommitPolicy is the single authority on whether this
-                    // candidate may alter the typed text. All clauses live there.
-                    val shouldCommit = CommitPolicy.shouldCommit(CommitPolicy.Input(
-                        typed = currentWordRaw,
-                        casedCandidate = casedText,
-                        rawCandidate = candidate.text.toString(),
-                        typedIsValidWord = isInputValidWord,
-                        // Prefix-only completions never auto-commit (see editTerms above).
-                        isEditDistanceCandidate = candidate.text.toString().lowercase() in editTerms,
-                        // ANTI_CORRECTIONS: corrections Sam has explicitly blocked may still be
-                        // shown as suggestions, but must never auto-commit.
-                        isBlockedCorrection = dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isAntiCorrection(currentWordRaw, casedText),
-                        // PERSONAL_VOCAB: the scorer culls these but culled candidates stay in
-                        // the ranked list, so the commit gate must enforce "never corrected" itself.
-                        typedIsProtectedVocab = dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isProtectedFromAutocorrect(currentWordRaw),
-                        neuralVerdict = liveNeuralDecision?.let { decision ->
-                            CommitPolicy.NeuralVerdict(
-                                shouldFire = decision.shouldFire,
-                                topTerm = decision.top.term,
-                            )
-                        },
-                    ))
+                    val decision = CorrectionDecision.evaluate(
+                        request = requestEvidence,
+                        candidate = CommitCandidateEvidence(
+                            raw = candidate.text.toString(),
+                            cased = casedText,
+                            provenance = if (candidate.text.toString().lowercase() in editTerms) {
+                                CandidateProvenance.EDIT_DISTANCE
+                            } else {
+                                CandidateProvenance.PREFIX_COMPLETION
+                            },
+                            // Defense in depth for candidates produced by non-general paths.
+                            isBlockedCorrection = dev.patrickgold.florisboard.ime.nlp.PersonalPreferences
+                                .isAntiCorrection(currentWordRaw, casedText),
+                        ),
+                    )
+                    if (index == 0) {
+                        topPolicyBlockers = decision.blockers.map { it.name }
+                    }
 
                     // DEBUG: Uncomment to trace commit decisions
                     // android.util.Log.d("LatinProvider", "Input: '$currentWordRaw' | Cand: '$casedText' | Blockers: ${CommitPolicy.blockers(...)}")
 
                     candidate.copy(
                         text = casedText,
-                        isEligibleForAutoCommit = shouldCommit,
+                        isEligibleForAutoCommit = decision.shouldCommit,
                         sourceProvider = this
                     )
                 } else {
                     candidate
                 }
             }.let { suggestions ->
+                if (prefs.suggestion.neuralScorerShadow.get() && neuralDecision != null) {
+                    // Surface complete counterfactual evidence for NlpManager's privacy-safe logger.
+                    lastNeuralSnapshot = NeuralSnapshot(
+                        typed = currentWordRaw,
+                        prevWord = previousWord,
+                        ngramTop = ngramTopStr,
+                        decision = neuralDecision,
+                        policyBlockers = topPolicyBlockers,
+                    )
+                }
                 // iOS/Gboard style: Always show typed word as first suggestion
                 // When user picks this, it signals they want this exact word (INSISTED)
                 val typedWordCandidate = WordSuggestionCandidate(
@@ -421,18 +466,38 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         }
 
         // Fallback to old logic if engine failed to load
-        val suggestions = dev.patrickgold.florisboard.ime.nlp.SymSpellManager.suggest(
+        android.util.Log.w(
+            AUTOCORRECT_PATH_TAG,
+            "fallback active: ngramEngine unavailable, SymSpell-only suggestions (len=${currentWordRaw.length})",
+        )
+        val fallbackCandidates = dev.patrickgold.florisboard.ime.nlp.SymSpellManager.suggest(
             input = currentWordRaw,
             previousWord = previousWord,
         )
         val upperCount = currentWordRaw.count { it.isUpperCase() }
+        val typedLexicalStatus = lexicalStatus(SymSpellManager.hasWord(currentWordRaw))
+        val typedIsProtectedVocab = dev.patrickgold.florisboard.ime.nlp.PersonalPreferences
+            .isProtectedFromAutocorrect(currentWordRaw)
 
-        return suggestions.map { word ->
+        return fallbackCandidates.map { candidate ->
+            // Route each candidate's real evidence (provenance, edit distance,
+            // contraction license, engine mode) through the shared Gate. Neural
+            // scoring is recorded as bypassed because the engine is unavailable,
+            // never fabricated as evaluated or approved.
+            val outcome = FallbackCorrection.resolve(
+                typed = currentWordRaw,
+                candidate = candidate,
+                typedLexicalStatus = typedLexicalStatus,
+                typedIsProtectedVocab = typedIsProtectedVocab,
+                isBlockedCorrection = dev.patrickgold.florisboard.ime.nlp.PersonalPreferences
+                    .isAntiCorrection(currentWordRaw, candidate.casedCandidate),
+            )
             WordSuggestionCandidate(
-                text = word,
+                text = candidate.casedCandidate,
                 secondaryText = null,
-                // Avoid auto-commit on uppercase-heavy tokens (acronyms/proper nouns)
-                isEligibleForAutoCommit = upperCount < 2,
+                // Preserve the uppercase-heavy guard while routing every other fallback
+                // decision through the same Gate as the primary engine.
+                isEligibleForAutoCommit = upperCount < 2 && outcome.decision.shouldCommit,
                 sourceProvider = this
             )
         }
@@ -475,6 +540,9 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         neuralScorer?.close()
         neuralScorer = null
     }
+
+    private fun lexicalStatus(isKnownWord: Boolean): TypedLexicalStatus =
+        if (isKnownWord) TypedLexicalStatus.KNOWN_WORD else TypedLexicalStatus.NOT_KNOWN_WORD
 
     private fun wordsBefore(text: String, max: Int): List<String> {
         if (text.isBlank()) return emptyList()

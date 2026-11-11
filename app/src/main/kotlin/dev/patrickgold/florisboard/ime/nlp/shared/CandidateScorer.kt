@@ -50,9 +50,6 @@ object CandidateScorer {
     /** Bonus for user dictionary words. Negative = better. */
     private const val USER_WORD_BONUS = -1000.0
     
-    /** Score for culled/filtered candidates. */
-    const val CULLED_SCORE = Double.MAX_VALUE
-    
     // Spatial cost constants (from existing spatialCost function)
     private const val SPATIAL_NEIGHBOR_COST = 0.5
     private const val SPATIAL_FAR_COST = 2.0
@@ -72,7 +69,7 @@ object CandidateScorer {
      * @param prevWord Previous word for bigram context (nullable, lowercase)
      * @param isInUserDict Whether candidate is in user's personal dictionary
      * @param frequency Log-frequency of candidate (0.0 if not using frequency)
-     * @return Score where lower is better. CULLED_SCORE if candidate should be filtered.
+     * @return Numerical ranking score where lower is better.
      */
     fun score(
         typed: String,
@@ -82,53 +79,11 @@ object CandidateScorer {
         isInUserDict: Boolean = false,
         frequency: Double = 0.0,
     ): Double {
-        // PERSONAL VOCAB: Never correct words Sam types intentionally as-is
-        if (dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isPersonalVocab(typed)) {
-            return CULLED_SCORE
-        }
-
-        // ANTI-CORRECTIONS: Filter out forbidden typed→candidate pairs
-        if (dev.patrickgold.florisboard.ime.nlp.PersonalPreferences.isAntiCorrection(typed, candidate)) {
-            android.util.Log.d("CandidateScorer", "ANTI-CORRECTION: $typed → $candidate")
-            return CULLED_SCORE  // Reject this candidate completely
-        }
-
-        // HYBRID CONTEXT-AWARE PENALTY: Grammar rules + bigram validation
-        var grammarPenalty = 0.0
-        var bigramBlockPenalty = 0.0
-
-        if (prevWord != null) {
-            val prevLower = prevWord.lowercase()
-            val candLower = candidate.lowercase()
-
-            // Grammatical penalty: Possessives/determiners rarely precede contractions
-            val POSSESSIVE_CONTEXTS = setOf("my", "your", "his", "her", "their", "our", "its")
-            val DETERMINERS = setOf("the", "this", "that", "these", "those", "a", "an", "some", "any", "each", "every")
-            val CONTRACTIONS = setOf("i'm", "i'd", "i'll", "i've", "we're", "we'll", "they're", "you're",
-                                      "he's", "she's", "it's", "that's", "what's", "who's", "here's", "there's")
-
-            if ((POSSESSIVE_CONTEXTS.contains(prevLower) || DETERMINERS.contains(prevLower))
-                && CONTRACTIONS.contains(candLower)) {
-                grammarPenalty = 50.0  // Heavy penalty instead of hard block
-            }
-
-            // Bigram validation: If typed word forms stronger bigram than candidate, penalize candidate
-            val bigramTable = BigramTable.get()
-            if (bigramTable != null) {
-                val typedBigramFreq = bigramTable.getFrequency(prevWord, typed)
-                val candidateBigramFreq = bigramTable.getFrequency(prevWord, candidate)
-
-                if (typedBigramFreq > 0 && typedBigramFreq >= candidateBigramFreq * 2) {
-                    bigramBlockPenalty = 20.0 // Push it down the list, but don't delete it
-                }
-            }
-        }
-
         val typedNoApos = typed.replace("'", "")
         val candidateNoApos = candidate.replace("'", "")
         
         // Start with edit distance as base penalty
-        var score = editDistance + grammarPenalty + bigramBlockPenalty
+        var score = editDistance + ContextualEvidence.rankingPenalty(typed, candidate, prevWord)
         
         // Spatial cost: penalize far keys, reward transpositions
         score += spatialCost(typed, candidate)
@@ -140,8 +95,10 @@ object CandidateScorer {
             score += BIGRAM_NO_HIT_PENALTY
         }
         
-        // Apostrophe handling
-        if (candidate.contains('\'')) {
+        // Apostrophe handling — only contraction forms licensed by
+        // ContractionRules earn contraction evidence. Unlicensed dictionary
+        // possessives (La's, function's) rank on ordinary evidence alone.
+        if (candidate.contains('\'') && candidate.lowercase() in ContractionRules.LICENSED_FORMS) {
             if (candidateNoApos == typedNoApos) {
                 // Exact letter match (im → I'm)
                 score += APOSTROPHE_EXACT_BONUS
@@ -167,21 +124,6 @@ object CandidateScorer {
         // Frequency bonus (convert from log-freq where higher=better to penalty where lower=better)
         // Scale factor keeps frequency influence reasonable relative to other factors
         score -= frequency * 0.1
-        
-        // CONTEXT-AWARE: "id" → "is" vs "I'd" depending on previous word
-        // After pronouns/determiners → prefer "is" (this is, that is, it is)
-        // At sentence start or after conjunctions → prefer "I'd" (I'd like, And I'd)
-        if (typed.lowercase() == "id" && prevWord != null) {
-            val prevLower = prevWord.lowercase()
-            val preferIsContext = setOf("this", "that", "it", "he", "she", "what", "which", "who", "there", "here")
-            val preferIdContext = setOf("and", "but", "so", "or", "because", "if", "when", "well", "yeah", "yes", "no")
-            
-            if (candidate.lowercase() == "is" && preferIsContext.contains(prevLower)) {
-                score -= 50.0  // Strong bonus for "is" in this context
-            } else if (candidate.lowercase() == "i'd" && preferIdContext.contains(prevLower)) {
-                score -= 50.0  // Strong bonus for "I'd" in this context
-            }
-        }
         
         return score
     }

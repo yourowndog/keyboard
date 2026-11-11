@@ -48,7 +48,7 @@ class GlideTypingManager(context: Context) : GlideTypingGesture.Listener {
     private val subtypeManager by context.subtypeManager()
 
     private val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
-    private var glideTypingClassifier = StatisticalGlideTypingClassifier(context)
+    private var glideTypingClassifier = FutoGlideTypingClassifier(context)
     private var lastTime = System.currentTimeMillis()
 
     override fun onGlideComplete(data: GlideTypingGesture.Detector.PointerData) {
@@ -62,7 +62,7 @@ class GlideTypingManager(context: Context) : GlideTypingGesture.Listener {
     }
 
     override fun onGlideAddPoint(point: GlideTypingGesture.Detector.Position) {
-        val normalized = GlideTypingGesture.Detector.Position(point.x, point.y)
+        val normalized = GlideTypingGesture.Detector.Position(point.x, point.y, point.t)
 
         this.glideTypingClassifier.addGesturePoint(normalized)
 

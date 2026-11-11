@@ -110,7 +110,7 @@ def main():
 
     if not path.exists():
         print(f"ERROR: {path} not found. Pull from device first:")
-        print(f"  rtk adb pull /sdcard/Documents/usage_harvest.jsonl {REPO}/data/harvest/raw/")
+        print(f"  adb pull /sdcard/Documents/usage_harvest.jsonl {REPO}/data/harvest/raw/")
         return 1
 
     events = load_shadow_events(path)
