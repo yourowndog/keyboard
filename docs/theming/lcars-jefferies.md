@@ -134,6 +134,26 @@ resolved through Snygg, so the art re-themes and no hex lives in Kotlin.
 Ornaments are static; motion is a later phase. They never change bounds or
 touch behavior.
 
+### Command strip smartbar
+
+`SmartbarLayout.COMMAND_STRIP` ("Command strip" in Smartbar settings) is the
+reference's fixed strip: `MENU | EMOJI | LANG ... VOICE`. It is a layout choice,
+not a theme setting, so pick it in Settings, Smartbar, Layout.
+
+- MENU opens the actions overflow (`TOGGLE_ACTIONS_OVERFLOW`), EMOJI the media
+  panel, LANG switches language (it becomes the normal/coding switch once those
+  layouts exist), VOICE starts voice input. Long-pressing VOICE still opens voice
+  history.
+- While there are suggestions or inline autofill, they take the middle and only
+  MENU and VOICE stay.
+- Voice mode shows the existing `WhisperBar` and `VoiceVisualizer` unchanged.
+- The buttons are ordinary quick actions drawn wide with text labels
+  (`QuickActionButton(square = false, label = ...)`), styled by
+  `smartbar-action-key[code=...]`. The coral and cyan bars and the half-stadium
+  cap are `smartbar-command-rule` and `smartbar-command-cap`, each keyed by the
+  `code` of the command they sit beside.
+- Code: `SmartbarCommandStrip.kt`.
+
 ## Remaining phases
 
 Tracked in `ROADMAP.md`. In short: stacked hint plates (a new `key-plate`

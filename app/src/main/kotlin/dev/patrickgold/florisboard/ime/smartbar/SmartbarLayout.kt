@@ -20,5 +20,7 @@ enum class SmartbarLayout {
     SUGGESTIONS_ONLY,
     ACTIONS_ONLY,
     SUGGESTIONS_ACTIONS_SHARED,
-    SUGGESTIONS_ACTIONS_EXTENDED;
+    SUGGESTIONS_ACTIONS_EXTENDED,
+    /** LCARS command strip: MENU, EMOJI, LANG and VOICE; candidates take the middle while typing. */
+    COMMAND_STRIP;
 }

@@ -280,21 +280,55 @@
   },
   "smartbar-action-key[code=-233]": {
     "background": "var(--recess)",
-    "foreground": "var(--cyan-lit)",
-    "border-width": "1dp",
-    "border-color": "var(--cyan)"
+    "foreground": "var(--glyph-up)"
+  },
+  "smartbar-action-key[code=-233]:pressed": {
+    "background": "var(--coral)",
+    "foreground": "var(--glyph)"
   },
   "smartbar-action-key[code=-227]": {
-    "background": "var(--recess)",
+    "background": "var(--void)",
     "foreground": "var(--cyan-lit)",
-    "border-width": "1dp",
+    "border-width": "1.5dp",
     "border-color": "var(--cyan)"
   },
+  "smartbar-action-key[code=-227]:pressed": {
+    "background": "var(--cyan)",
+    "foreground": "var(--glyph)"
+  },
   "smartbar-action-key[code=-212]": {
-    "background": "var(--recess)",
+    "background": "var(--void)",
     "foreground": "var(--coral)",
-    "border-width": "1dp",
+    "border-width": "1.5dp",
     "border-color": "var(--coral)"
+  },
+  "smartbar-action-key[code=-212]:pressed": {
+    "background": "var(--coral)",
+    "foreground": "var(--glyph)"
+  },
+  "smartbar-action-key[code=-242]": {
+    "background": "var(--chrome)",
+    "foreground": "var(--glyph)"
+  },
+  "smartbar-action-key[code=-242]:pressed": {
+    "background": "var(--plate)",
+    "foreground": "var(--glyph)"
+  },
+  "smartbar-command-rule": {
+    "background": "var(--recess)",
+    "shape": "var(--radius-sm)",
+    "margin": "1.5dp"
+  },
+  "smartbar-command-rule[code=-242]": {
+    "background": "var(--coral)"
+  },
+  "smartbar-command-rule[code=-233]": {
+    "background": "var(--cyan)"
+  },
+  "smartbar-command-cap": {
+    "background": "var(--chrome)",
+    "shape": "rounded-corner(50%,0%,0%,50%)",
+    "margin": "1.5dp"
   },
   "smartbar-action-key[code=-244]": {
     "background": "var(--recess)",

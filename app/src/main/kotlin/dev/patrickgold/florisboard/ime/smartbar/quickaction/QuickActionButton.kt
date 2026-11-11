@@ -60,6 +60,10 @@ fun QuickActionButton(
     evaluator: ComputingEvaluator,
     modifier: Modifier = Modifier,
     type: QuickActionBarType = QuickActionBarType.INTERACTIVE_BUTTON,
+    /** False lets the caller size the button, e.g. the wide command-strip buttons. */
+    square: Boolean = true,
+    /** A text label shown instead of the action's icon, e.g. "VOICE" on the command strip. */
+    label: String? = null,
 ) {
     val context = LocalContext.current
     // Get the inputFeedbackController through the FlorisImeService companion-object.
@@ -97,8 +101,7 @@ fun QuickActionButton(
             attributes = attributes,
             selector = selector,
             modifier = modifier,
-            clickAndSemanticsModifier = Modifier
-                .aspectRatio(1f)
+            clickAndSemanticsModifier = (if (square) Modifier.aspectRatio(1f) else Modifier)
                 .indication(interactionSource, LocalIndication.current)
                 .pointerInput(action, isEnabled) {
                     awaitEachGesture {
@@ -138,8 +141,12 @@ fun QuickActionButton(
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 // Render foreground
-                when (action) {
-                    is QuickAction.InsertKey -> {
+                when {
+                    label != null -> {
+                        SnyggText(text = label)
+                    }
+
+                    action is QuickAction.InsertKey -> {
                         val (imageVector, label) = remember(action, evaluator) {
                             evaluator.computeImageVector(action.data) to evaluator.computeLabel(action.data)
                         }
@@ -161,7 +168,7 @@ fun QuickActionButton(
                         }
                     }
 
-                    is QuickAction.InsertText -> {
+                    action is QuickAction.InsertText -> {
                         SnyggText(
                             elementName = "$elementName-text",
                             attributes = attributes,

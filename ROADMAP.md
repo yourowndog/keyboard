@@ -102,7 +102,7 @@ in Kotlin. `VoiceVisualizer` and `WhisperBar` in `Smartbar.kt` are the
 precedent. Ornaments should query their own registered elements rather than
 motivating new Snygg engine features.
 
-**Smartbar relayout.** The reference is a fixed `MENU | EMOJI | LANG | ... |
+**Smartbar relayout.** Landed as the opt-in Command strip layout; see `docs/theming/lcars-jefferies.md`. Original notes follow. The reference is a fixed `MENU | EMOJI | LANG | ... |
 VOICE` strip of wide text buttons, with candidates swapping in while typing.
 `QuickActionButton` hard-codes `Modifier.aspectRatio(1f)`, forcing every action
 key square; that constraint has to come out first.

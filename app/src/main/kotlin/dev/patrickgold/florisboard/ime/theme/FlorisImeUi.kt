@@ -279,6 +279,16 @@ enum class FlorisImeUi(val elementName: String, val resId: Int?) {
         elementName = "smartbar-action-key",
         resId = R.string.snygg__rule_element__smartbar_action_key,
     ),
+    /** Thin accent bar on the command strip, beside the command named by its `code` attribute. */
+    SmartbarCommandRule(
+        elementName = "smartbar-command-rule",
+        resId = R.string.snygg__rule_element__smartbar_command_rule,
+    ),
+    /** Half-stadium end cap on the command strip, beside the command named by its `code` attribute. */
+    SmartbarCommandCap(
+        elementName = "smartbar-command-cap",
+        resId = R.string.snygg__rule_element__smartbar_command_cap,
+    ),
 
     SmartbarActionTile(
         elementName = "smartbar-action-tile",
