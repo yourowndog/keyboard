@@ -576,10 +576,9 @@ class LayoutManager(context: Context) {
             extendedPopupMappingDefault = extendedPopupsDefault.await().onFailure {
                 flogWarning(LogTopic.LAYOUT_MANAGER) { it.toString() }
             }.getOrNull()?.mapping,
-            // Deprecated compatibility projection, stated explicitly rather than inherited. The
-            // value is the constructor default this path has always silently picked up; changing
-            // it would move pixels, which is out of scope here.
-            bottomModRowCount = 2,
+            // Layout packs have no modifier rows. The deprecated compatibility projection
+            // must not invent phantom mod rows; semantics already carry correct row roles.
+            bottomModRowCount = 0,
             semantics = semanticRows.build(),
         )
     }
