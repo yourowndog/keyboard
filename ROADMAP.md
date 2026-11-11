@@ -71,8 +71,10 @@ The stylesheet-only phase is done and awaits device validation. See
 express here. Remaining work, in order, each gated on device validation:
 
 **Pick the typeface.** Four variants ship (Chakra Petch, Oxanium, Saira
-Condensed, Rajdhani). Judge on device, then collapse to the winner per
-`tools/theme/README.md`.
+Condensed, Rajdhani). On 2026-11-11 Sam judged them on device and approved
+both Chakra Petch and Oxanium as really good. Saira Condensed and Rajdhani were
+not approved. The final pick between the two approved faces is still open;
+once it is made, collapse to the winner per `tools/theme/README.md`.
 
 **Stacked hint plates.** The signature of the reference: each letter key is a
 two-plate stack, with the symbol layer permanently visible above the cap rather

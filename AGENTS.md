@@ -37,6 +37,12 @@ were removed after their durable knowledge was extracted.
   unit tests cannot establish the result.
 - Do not push, run a build, install an APK, or rewrite harvested data unless
   the task authorizes it.
+- Merge your own pull requests. Once CI is green and any checks you ran
+  (`tools/check.sh`, a build, device validation where the change needs it)
+  pass, merge it yourself rather than leaving it for Sam. Do not merge work
+  that breaks something or that you have not verified. This covers your own
+  PRs only: never force-push, delete branches, tags or releases, or change
+  repository settings. Codex review is not a gate.
 - Keep plans in `ROADMAP.md`; keep current behavior in `docs/`.
 - Update the closest canonical document when behavior changes. Avoid creating a
   new root-level handoff as a substitute.

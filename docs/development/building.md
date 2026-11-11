@@ -71,6 +71,8 @@ seconds and will cut a cold build off.
 ## Branch policy
 
 Work is committed on the selected development branch and merged to `origin`
-`main`. Builds then come from a checkout of that branch on sisyphus. The old
+`main` through a pull request, which the agent that opened it merges once its
+checks pass (see `AGENTS.md`). Builds then come from a checkout of that branch
+on sisyphus. The old
 GitHub Actions workflow is not the day-to-day build mechanism.
 
