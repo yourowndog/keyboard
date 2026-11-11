@@ -51,8 +51,17 @@ if [[ -f $CONFIG ]]; then
     $ADB shell chmod 644 /data/local/tmp/omni-config.tar
     $ADB shell run-as $PKG tar -xf /data/local/tmp/omni-config.tar
 fi
+# Android hands the IME back to the system keyboard after a package replace, sometimes a
+# moment later, so set it until it sticks.
 $ADB shell ime enable $IME >/dev/null
-$ADB shell ime set $IME >/dev/null
+for _ in 1 2 3 4 5; do
+    $ADB shell ime set $IME >/dev/null
+    sleep 2
+    [[ "$($ADB shell settings get secure default_input_method | tr -d '\r')" == "$IME" ]] && break
+done
+[[ "$($ADB shell settings get secure default_input_method | tr -d '\r')" == "$IME" ]] ||
+    { echo "could not make OmniBoard the input method" >&2; exit 1; }
+$ADB shell am force-stop com.google.android.settings.intelligence || true
 
 shot() { sleep "${2:-1.5}"; $ADB exec-out screencap -p >"$OUT/$1.png"; echo "$OUT/$1.png"; }
 # The keyboard's top edge, from the IME window's touchable region, for cropping.
