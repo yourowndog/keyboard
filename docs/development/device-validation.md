@@ -7,6 +7,11 @@ This keeps the interactive part short while covering behavior that source
 inspection cannot prove. Record the app/editor used and any failure; do not
 tune several systems at once during this pass.
 
+For appearance-only changes (themes, smartbar layout, key art), iterate first
+on the emulator with [`tools/visual/`](../../tools/visual/README.md): it
+screenshots the keyboard on an icarion-sized emulator with Sam's settings and
+runs a critic review. Then confirm on the phone.
+
 ## Connection and baseline
 
 1. Enable wireless debugging and connect with `adb connect HOST:PORT`.

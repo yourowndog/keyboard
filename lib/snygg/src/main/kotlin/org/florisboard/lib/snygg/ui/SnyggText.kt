@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -43,6 +44,9 @@ import org.florisboard.lib.snygg.SnyggStylesheet
  * @param selector A specific SnyggSelector to query the style for.
  * @param modifier The modifier to be applied to the Text.
  * @param text The text of the element.
+ * @param maxLines Overrides the stylesheet's `text-max-lines` when not null.
+ * @param overflow Overrides the stylesheet's `text-overflow` when not null.
+ * @param textAlign Used when the stylesheet sets no `text-align`.
  *
  * @since 0.5.0-alpha01
  *
@@ -55,6 +59,9 @@ fun SnyggText(
     selector: SnyggSelector? = null,
     modifier: Modifier = Modifier,
     text: String,
+    maxLines: Int? = null,
+    overflow: TextOverflow? = null,
+    textAlign: TextAlign? = null,
 ) {
     ProvideSnyggStyle(elementName, attributes, selector) { style ->
         Text(
@@ -72,10 +79,10 @@ fun SnyggText(
             fontFamily = style.fontFamily(LocalSnyggPreloadedCustomFontFamilies.current),
             letterSpacing = style.letterSpacing(),
             lineHeight = style.lineHeight(),
-            textAlign = style.textAlign(),
+            textAlign = style.textAlign(textAlign),
             textDecoration = style.textDecorationLine(),
-            maxLines = style.textMaxLines(),
-            overflow = style.textOverflow(),
+            maxLines = maxLines ?: style.textMaxLines(),
+            overflow = overflow ?: style.textOverflow(),
         )
     }
 }
