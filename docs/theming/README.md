@@ -26,3 +26,4 @@ stylesheet.
 - [Theme authoring](theme-authoring.md)
 - [Coverage checklist](coverage-checklist.md)
 - [Hard-won lessons](hard-won-lessons.md)
+- [Theme authoring tools](tools.md)
