@@ -237,6 +237,8 @@
     <string name="snygg__rule_element__root">Root</string>
     <string name="snygg__rule_element__window">Window</string>
     <string name="snygg__rule_element__keyboard_chassis">Keyboard chassis</string>
+    <string name="snygg__rule_element__keyboard_chassis_rail_primary">Keyboard chassis primary rail</string>
+    <string name="snygg__rule_element__keyboard_chassis_rail_secondary">Keyboard chassis secondary rail</string>
 
     <string name="snygg__rule_element__key">Key</string>
     <string name="snygg__rule_element__key_hint">Key hint</string>

@@ -32,6 +32,15 @@
     "foreground": "var(--on-background)",
     "clip": "no"
   },
+  "keyboard-chassis": {
+    "background": "var(--background)"
+  },
+  "keyboard-chassis-rail-primary": {
+    "background": "var(--primary)"
+  },
+  "keyboard-chassis-rail-secondary": {
+    "background": "var(--secondary)"
+  },
   "key": {
     "background": "var(--surface)",
     "foreground": "var(--on-surface)",

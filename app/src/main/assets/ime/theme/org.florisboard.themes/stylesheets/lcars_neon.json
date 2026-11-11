@@ -41,6 +41,15 @@
     "foreground": "var(--text-primary)",
     "clip": "no"
   },
+  "keyboard-chassis": {
+    "background": "var(--void-deep)"
+  },
+  "keyboard-chassis-rail-primary": {
+    "background": "var(--cyan-neon)"
+  },
+  "keyboard-chassis-rail-secondary": {
+    "background": "var(--cyan-bright)"
+  },
   "key": {
     "background": "var(--hull-900)",
     "foreground": "var(--text-primary)",
