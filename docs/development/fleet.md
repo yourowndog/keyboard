@@ -72,9 +72,8 @@ adbw2
 ```
 
 Then copy the APK from the build host and install, with `$ICARION` set to the
-phone's tailnet address from cluster-specs. Push from sisyphus rather
-than pulling from sleeper: sleeper's ssh client currently fails with `Bad owner
-or permissions on /etc/ssh/ssh_config.d/20-systemd-ssh-proxy.conf`.
+phone's tailnet address from cluster-specs. Push from sisyphus rather than
+pulling from sleeper — see the sandbox note below.
 
 ```bash
 scp app/build/outputs/apk/debug/app-debug.apk sleeper:/tmp/omniboard.apk
@@ -124,9 +123,19 @@ system.
   that has not been recorded in `~/ops/cluster-specs/CHANGELOG.md`. That repo's
   worktree had uncommitted work in it at the time, so the entry was left for
   someone who can commit it safely.
-- sleeper's ssh client is broken by permissions on
-  `/etc/ssh/ssh_config.d/20-systemd-ssh-proxy.conf`. Outbound scp/ssh from
-  sleeper fails until that is fixed; pushing from the far end is the workaround.
+- The Brokentooth Operator sandbox differs per node, and that shapes what an
+  agent can do where. On sleeper it runs in a user namespace mapping only uid
+  1000 (`/proc/self/uid_map` is `1000 1000 1`) with `NoNewPrivs` set, so every
+  root-owned file — `/etc/passwd`, `/usr/bin/sudo`, `/etc/ssh/ssh_config.d/*` —
+  appears owned by `nobody`, `sudo` refuses to run, and **ssh refuses its own
+  system config**, failing with `Bad owner or permissions on
+  /etc/ssh/ssh_config.d/20-systemd-ssh-proxy.conf`.
+
+  That is a sandbox artifact, not a broken machine: ssh on sleeper works
+  normally outside the operator. An earlier revision of this file reported it
+  as a real fault on sleeper, which was wrong. Practical consequences: initiate
+  scp from the other end, and do not expect to make privileged changes on
+  sleeper through the operator. sisyphus's sandbox does allow `sudo`.
 - `docs/history/devlog.md` still references pulling `OPENAI_API_KEY` from
   `silo@beksinski`. That is historical and correct as history, but the current
   source of that key is unrecorded.
