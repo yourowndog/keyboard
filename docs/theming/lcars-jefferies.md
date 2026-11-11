@@ -97,6 +97,20 @@ judged on device by switching themes rather than by rebuilding.
 Rajdhani were not approved. The choice between the two approved faces is still
 open.
 
+### Stacked hint plates
+
+Letter keys in the character layout draw as a two-plate stack when the theme
+gives the `key-plate` element a background: a plate showing the key's hint
+(`TextKey.hintedLabel`, the symbol its long press types) above the cap. The
+split is 39% plate to 61% cap of the key's existing visible bounds, from the
+reference's 42px plate over a 66px cap; the gap is the two elements' margins.
+
+This is render-only. Rows are not resized and touch bounds are unchanged, so a
+tap anywhere on the plate or cap types the letter and a long press types the
+plate symbol, exactly as before. Themes without a `key-plate` background keep
+the corner `key-hint`. Raise the keyboard's row height if the caps feel short.
+Code: `TextKeyButton` and `isPlateCandidate` in `TextKeyboardLayout.kt`.
+
 ## Remaining phases
 
 Tracked in `ROADMAP.md`. In short: stacked hint plates (a new `key-plate`

@@ -23,6 +23,8 @@ import android.content.Context
 import android.view.MotionEvent
 import android.view.animation.AccelerateInterpolator
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.absoluteOffset
@@ -48,6 +50,7 @@ import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.isSpecified
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -490,54 +493,54 @@ private fun TextKeyButton(
     val size = remember(key, desiredKey) {
         key.visibleBounds.size.toDpSize()
     }
-    SnyggBox(
-        FlorisImeUi.Key.elementName,
-        attributes = attributes,
-        selector = selector,
-        modifier = Modifier
-            .requiredSize(size)
-            .absoluteOffset { key.visibleBounds.topLeft.toIntOffset() },
-    ) {
-        val isTelPadKey = key.computedData.type == KeyType.NUMERIC && evaluator.keyboard.mode == KeyboardMode.PHONE
-        key.label?.let { label ->
-            var customLabel = label
-            if (key.computedData.code == KeyCode.SPACE) {
-                val prefs by FlorisPreferenceStore
-                val spaceBarMode by prefs.keyboard.spaceBarMode.observeAsState()
-                when (spaceBarMode) {
-                    SpaceBarMode.NOTHING -> return@let
-                    SpaceBarMode.CURRENT_LANGUAGE -> {}
-                    SpaceBarMode.SPACE_BAR_KEY -> customLabel = "␣"
-                }
-            }
-            SnyggText(
-                modifier = Modifier
-                    .wrapContentSize()
-                    .align(if (isTelPadKey) BiasAlignment(-0.5f, 0f) else Alignment.Center),
-                text = customLabel,
-            )
-        }
-        key.hintedLabel?.let { hintedLabel ->
-            SnyggText(
-                elementName = FlorisImeUi.KeyHint.elementName,
+    // Stacked hint plates (LCARS Jefferies). Render-only: the key's touch bounds are untouched, so a
+    // tap anywhere on plate or cap still types the letter and a long press still types the hint.
+    val plateStyle = rememberSnyggThemeQuery(FlorisImeUi.KeyPlate.elementName, attributes, selector)
+    val isPlated = plateStyle.background().isSpecified && isPlateCandidate(key, evaluator)
+    if (isPlated) {
+        Column(
+            modifier = Modifier
+                .requiredSize(size)
+                .absoluteOffset { key.visibleBounds.topLeft.toIntOffset() },
+        ) {
+            SnyggBox(
+                FlorisImeUi.KeyPlate.elementName,
                 attributes = attributes,
                 selector = selector,
                 modifier = Modifier
-                    .wrapContentSize()
-                    .align(if (isTelPadKey) BiasAlignment(0.5f, 0f) else Alignment.TopEnd),
-                text = hintedLabel,
-            )
-        }
-        key.foregroundImageVector?.let { imageVector ->
-            if (key.computedData.code == KeyCode.ENTER && key.label != "enter") {
-                // don't render vector
-            } else {
-                SnyggIcon(
-                    modifier = Modifier.align(Alignment.Center),
-                    imageVector = imageVector,
-                    contentDescription = null,
-                )
+                    .fillMaxWidth()
+                    .weight(KEY_PLATE_WEIGHT),
+            ) {
+                key.hintedLabel?.let { hintedLabel ->
+                    SnyggText(
+                        modifier = Modifier
+                            .wrapContentSize()
+                            .align(Alignment.Center),
+                        text = hintedLabel,
+                    )
+                }
             }
+            SnyggBox(
+                FlorisImeUi.Key.elementName,
+                attributes = attributes,
+                selector = selector,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(KEY_CAP_WEIGHT),
+            ) {
+                TextKeyContent(key, evaluator, attributes, selector, showCornerHint = false)
+            }
+        }
+    } else {
+        SnyggBox(
+            FlorisImeUi.Key.elementName,
+            attributes = attributes,
+            selector = selector,
+            modifier = Modifier
+                .requiredSize(size)
+                .absoluteOffset { key.visibleBounds.topLeft.toIntOffset() },
+        ) {
+            TextKeyContent(key, evaluator, attributes, selector, showCornerHint = true)
         }
     }
     if (debugShowTouchBoundaries) {
@@ -547,6 +550,72 @@ private fun TextKeyButton(
                 .absoluteOffset { key.touchBounds.topLeft.toIntOffset() }
                 .border(Dp.Hairline, Color.Red),
         )
+    }
+}
+
+/** Plate and cap split: the reference measures a 42px plate over a 66px cap. */
+private const val KEY_PLATE_WEIGHT = 0.39f
+private const val KEY_CAP_WEIGHT = 1f - KEY_PLATE_WEIGHT
+
+/**
+ * Which keys carry a hint plate when the theme opts in: letter keys of the character layout. Mod-row
+ * keys are excluded the same way [LayoutManager.addRowHints] excludes them, and a letter with no hint
+ * still gets an empty plate so every column in a letter row reads as one stacked object.
+ */
+private fun isPlateCandidate(key: TextKey, evaluator: ComputingEvaluator): Boolean {
+    if (!key.isAlpha || evaluator.keyboard.mode != KeyboardMode.CHARACTERS) return false
+    val data = key.computedData
+    return data.type == KeyType.CHARACTER && Character.isLetter(data.code)
+}
+
+@Composable
+private fun BoxScope.TextKeyContent(
+    key: TextKey,
+    evaluator: ComputingEvaluator,
+    attributes: Map<String, Any>,
+    selector: SnyggSelector,
+    showCornerHint: Boolean,
+) {
+    val isTelPadKey = key.computedData.type == KeyType.NUMERIC && evaluator.keyboard.mode == KeyboardMode.PHONE
+    key.label?.let { label ->
+        var customLabel = label
+        if (key.computedData.code == KeyCode.SPACE) {
+            val prefs by FlorisPreferenceStore
+            val spaceBarMode by prefs.keyboard.spaceBarMode.observeAsState()
+            when (spaceBarMode) {
+                SpaceBarMode.NOTHING -> return@let
+                SpaceBarMode.CURRENT_LANGUAGE -> {}
+                SpaceBarMode.SPACE_BAR_KEY -> customLabel = "␣"
+            }
+        }
+        SnyggText(
+            modifier = Modifier
+                .wrapContentSize()
+                .align(if (isTelPadKey) BiasAlignment(-0.5f, 0f) else Alignment.Center),
+            text = customLabel,
+        )
+    }
+    if (showCornerHint) key.hintedLabel?.let { hintedLabel ->
+        SnyggText(
+            elementName = FlorisImeUi.KeyHint.elementName,
+            attributes = attributes,
+            selector = selector,
+            modifier = Modifier
+                .wrapContentSize()
+                .align(if (isTelPadKey) BiasAlignment(0.5f, 0f) else Alignment.TopEnd),
+            text = hintedLabel,
+        )
+    }
+    key.foregroundImageVector?.let { imageVector ->
+        if (key.computedData.code == KeyCode.ENTER && key.label != "enter") {
+            // don't render vector
+        } else {
+            SnyggIcon(
+                modifier = Modifier.align(Alignment.Center),
+                imageVector = imageVector,
+                contentDescription = null,
+            )
+        }
     }
 }
 

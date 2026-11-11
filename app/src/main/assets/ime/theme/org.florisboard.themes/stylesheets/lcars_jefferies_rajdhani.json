@@ -8,6 +8,7 @@
   "@defines": {
     "--void": "#000000",
     "--plate": "#9EA4BA",
+    "--plate-lit": "#DCE0EC",
     "--cap": "#6E748C",
     "--chrome": "#52586E",
     "--recess": "#303749",
@@ -52,6 +53,20 @@
     "font-family": "var(--font)",
     "font-size": "11sp",
     "font-weight": "normal"
+  },
+  "key-plate": {
+    "background": "var(--plate)",
+    "foreground": "var(--glyph)",
+    "font-family": "var(--font)",
+    "font-size": "12sp",
+    "font-weight": "normal",
+    "shape": "var(--radius)",
+    "margin": "1.5dp",
+    "shadow-elevation": "0dp"
+  },
+  "key-plate:pressed": {
+    "background": "var(--plate-lit)",
+    "foreground": "var(--glyph)"
   },
   "key[code=-7]": {
     "background": "var(--chrome)",
