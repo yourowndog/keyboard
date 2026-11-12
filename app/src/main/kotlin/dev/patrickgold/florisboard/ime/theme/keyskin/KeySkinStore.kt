@@ -24,6 +24,7 @@ import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.graphics.NinePatch
 import android.graphics.Paint
+import android.graphics.Rect
 import android.graphics.RectF
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -38,6 +39,7 @@ import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.jetpref.datastore.model.observeAsState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlin.math.roundToInt
 
 /**
  * One decoded slot texture. Compiled nine-patches (the `npTc` chunk Android's resource compiler
@@ -58,7 +60,8 @@ class KeySkinTexture(private val bitmap: Bitmap, chunk: ByteArray?, private val 
             val scale = targetDpi.toFloat() / densityDpi
             canvas.save()
             canvas.scale(scale, scale)
-            patch.draw(canvas, RectF(0f, 0f, width / scale, height / scale), paint)
+            // NinePatch takes a Paint only with an integer Rect; a sub-pixel loss at most.
+            patch.draw(canvas, Rect(0, 0, (width / scale).roundToInt(), (height / scale).roundToInt()), paint)
             canvas.restore()
         } else {
             canvas.drawBitmap(bitmap, null, RectF(0f, 0f, width, height), paint)
