@@ -86,6 +86,14 @@ class InputFeedbackController private constructor(private val ims: InputMethodSe
         if (prefs.inputFeedback.hapticFeatGestureMovingSwipe.get()) performHapticFeedback(data, 0.05)
     }
 
+    /**
+     * A firmer detent when a delete swipe fills the spacebar's dot gauge, on top of the light per-step
+     * ticks of [gestureMovingSwipe]. Follows the same moving-swipe haptic preference.
+     */
+    fun deleteSwipeGaugeFull(data: KeyData = TextKeyData.DELETE) {
+        if (prefs.inputFeedback.hapticFeatGestureMovingSwipe.get()) performHapticFeedback(data, 1.0)
+    }
+
     private fun systemPref(id: String): Boolean {
         if (contentResolver == null) return false
         return Settings.System.getInt(contentResolver, id, 0) != 0

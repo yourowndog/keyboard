@@ -134,7 +134,13 @@ resolved through Snygg, so the art re-themes and no hex lives in Kotlin.
   line with the letter plates. The cells light when pressed, and the glyph moves
   to the lower right.
 - **Spacebar:** machinery line art with a run of eight cyan dots. It replaces
-  the language label.
+  the language label. During a precise delete swipe (swipe left from delete)
+  the run becomes a deletion gauge: dots light in the delete key's ornament
+  accent (coral) from the right end toward the left, one per character (or
+  word) selected, and past eight the bar and slab light too. Each step keeps
+  the existing moving-swipe tick; filling the run adds one firmer detent.
+  `DeleteSwipeReadout` carries the level from the touch controller to the
+  spacebar, and it resets when the delete pointer lifts or cancels.
 - **Enter:** an inner line with one oversized rounded corner, as in the
   reference. The label moves to the upper right.
 

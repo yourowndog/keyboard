@@ -19,6 +19,9 @@ package dev.patrickgold.florisboard.ime.text.keyboard
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
@@ -70,7 +73,26 @@ internal data class KeyOrnamentPaint(
     val structure: Color,
     val isPressed: Boolean,
     val shiftState: InputShiftState,
+    /** How far a delete swipe has reached, in units of [deleteSwipeLitDots]. Spacebar only. */
+    val deleteSwipeLevel: Int = 0,
+    /** The colour a delete swipe lights the spacebar dots in: the delete key's own accent. */
+    val deleteAccent: Color = Color.Unspecified,
 )
+
+/** Number of indicator dots in the spacebar run. */
+internal const val SPACE_DOT_COUNT = 8
+
+/**
+ * Live readout of a delete swipe, shared from the touch controller to the spacebar ornament. The level
+ * is how many characters (or words) the swipe currently has selected for deletion; 0 means no delete
+ * swipe is in progress. Only the spacebar reads it, so only the spacebar recomposes as it changes.
+ */
+internal object DeleteSwipeReadout {
+    var level by mutableIntStateOf(0)
+}
+
+/** How many spacebar dots a delete swipe of [level] lights, filling the run at [SPACE_DOT_COUNT]. */
+internal fun deleteSwipeLitDots(level: Int): Int = level.coerceIn(0, SPACE_DOT_COUNT)
 
 @Composable
 internal fun BoxScope.KeyOrnamentArt(ornament: KeyOrnament, paint: KeyOrnamentPaint) {
@@ -162,11 +184,20 @@ private fun DrawScope.drawDeleteGrille(paint: KeyOrnamentPaint) {
     }
 }
 
-/** Machinery line art with a run of eight indicator dots. Static here; motion comes later. */
+/**
+ * Machinery line art with a run of eight indicator dots. While a delete swipe is in progress the run
+ * becomes a deletion gauge: dots light in the delete key's accent from the right end toward the left,
+ * following the finger, one per character selected. Past a full run the bar and slab light as well.
+ */
 private fun DrawScope.drawSpaceDotRun(paint: KeyOrnamentPaint) {
     val w = size.width
     val h = size.height
-    val structure = paint.structure.structureOr(paint.accent.copy(alpha = 0.3f))
+    val idleStructure = paint.structure.structureOr(paint.accent.copy(alpha = 0.3f))
+    val deleteAccent = paint.deleteAccent.structureOr(paint.accent)
+    val litDots = deleteSwipeLitDots(paint.deleteSwipeLevel)
+    val isSwiping = litDots > 0
+    val isOverflow = paint.deleteSwipeLevel > SPACE_DOT_COUNT
+    val structure = if (isOverflow) deleteAccent.copy(alpha = 0.55f) else idleStructure
     val line = 1.dp.toPx()
     // Upper bar.
     drawRect(structure, Offset(w * 0.04f, h * 0.20f), Size(w * 0.62f, h * 0.14f))
@@ -182,13 +213,25 @@ private fun DrawScope.drawSpaceDotRun(paint: KeyOrnamentPaint) {
     drawPath(slab, structure, style = Stroke(line))
     // Posts on the right.
     val postW = w * 0.035f
-    drawRect(structure, Offset(w * 0.86f, h * 0.16f), Size(postW, h * 0.68f))
-    drawRect(structure, Offset(w * 0.86f + postW * 1.6f, h * 0.16f), Size(postW, h * 0.68f))
+    drawRect(idleStructure, Offset(w * 0.86f, h * 0.16f), Size(postW, h * 0.68f))
+    drawRect(idleStructure, Offset(w * 0.86f + postW * 1.6f, h * 0.16f), Size(postW, h * 0.68f))
     // Dot run inside the slab.
     val r = min(h * 0.08f, w * 0.012f)
-    val alpha = if (paint.isPressed) 1f else 0.6f
-    for (i in 0 until 8) {
-        drawCircle(paint.accent.copy(alpha = alpha), r, Offset(w * 0.10f + i * r * 3.2f, h * 0.68f))
+    val idleAlpha = if (paint.isPressed) 1f else 0.6f
+    for (i in 0 until SPACE_DOT_COUNT) {
+        val center = Offset(w * 0.10f + i * r * 3.2f, h * 0.68f)
+        if (!isSwiping) {
+            drawCircle(paint.accent.copy(alpha = idleAlpha), r, center)
+            continue
+        }
+        // Light from the right end: the last `litDots` dots are on.
+        val isLit = i >= SPACE_DOT_COUNT - litDots
+        if (isLit) {
+            drawCircle(deleteAccent.copy(alpha = 0.28f), r * 2.1f, center)
+            drawCircle(deleteAccent, r * 1.15f, center)
+        } else {
+            drawCircle(deleteAccent.copy(alpha = 0.18f), r, center)
+        }
     }
 }
 
