@@ -21,6 +21,8 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -47,6 +49,9 @@ import org.florisboard.lib.snygg.SnyggStylesheet
  * @param propagateMinConstraints Whether the incoming min constraints should be passed to content.
  * @param supportsBackgroundImage controls if this Box supports background images.
  * @param backgroundImageDescription The content description of the background image.
+ * @param backgroundOverride when non-null, drawn in place of the style's shadow, border, background
+ *  and background image. Margin and padding still apply. Used by key skins, whose texture *is* the
+ *  key surface, so the theme's own fill must not show around or through it.
  * @param allowClip If clipping should be allowed on this box.
  * @param content The content of the Box
  *
@@ -66,12 +71,14 @@ fun SnyggBox(
     supportsBackgroundImage: Boolean = false,
     backgroundImageDescription: String? = null,
     allowClip: Boolean = true,
+    backgroundOverride: (DrawScope.() -> Unit)? = null,
     content: @Composable BoxScope.() -> Unit,
 ) {
     ProvideSnyggStyle(elementName, attributes, selector) { style ->
         val assetResolver = LocalSnyggAssetResolver.current
         val context = LocalContext.current
         val imagePath = when {
+            backgroundOverride != null -> null
             supportsBackgroundImage -> {
                 style.backgroundImage.uriOrNull()?.let { imageUri ->
                     assetResolver.resolveAbsolutePath(imageUri).getOrNull()
@@ -79,12 +86,18 @@ fun SnyggBox(
             }
             else -> null
         }
-        Box(
-            modifier = modifier
-                .snyggMargin(style)
+        val surface = if (backgroundOverride != null) {
+            Modifier.drawBehind(backgroundOverride)
+        } else {
+            Modifier
                 .snyggShadow(style)
                 .snyggBorder(style)
                 .snyggBackground(style, allowClip = allowClip)
+        }
+        Box(
+            modifier = modifier
+                .snyggMargin(style)
+                .then(surface)
                 .then(clickAndSemanticsModifier)
                 .snyggPadding(style),
             contentAlignment = contentAlignment,

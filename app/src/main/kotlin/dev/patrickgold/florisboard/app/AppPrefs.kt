@@ -1082,6 +1082,16 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "theme__backdrop_animate",
             default = true,
         )
+
+        /**
+         * The key skin: textures that replace the theme's key surfaces, one per key slot. Stored
+         * as a [dev.patrickgold.florisboard.ime.theme.keyskin.KeySkinId] string and read back
+         * through `KeySkinId.parse`. Blank, the default, leaves the theme's keys untouched.
+         */
+        val keySkinId = string(
+            key = "theme__key_skin_id",
+            default = "",
+        )
     }
 
     override fun migrate(entry: PreferenceMigrationEntry): PreferenceMigrationEntry {
