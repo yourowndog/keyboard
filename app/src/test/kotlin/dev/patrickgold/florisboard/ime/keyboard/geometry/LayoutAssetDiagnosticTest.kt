@@ -133,34 +133,11 @@ class LayoutAssetDiagnosticTest {
         }
     }
 
-    /**
-     * There is still no wide Symbols2 arrangement, which is why the default points at `western`.
-     *
-     * The Coding profile's Characters and Symbols layers are both five columns wider than stock, and
-     * Symbols2 is not, so `=\<` is a narrower keyboard stretched into the shared text-entry frame.
-     * That is a content gap rather than a code defect — closing it means authoring an arrangement and
-     * deciding what belongs on it — so it is pinned rather than papered over.
-     */
-    @KNOWN_DEFECT(
-        "The Coding profile has no wide Symbols2 layer. `=\\<` falls back to the stock `western` " +
-            "arrangement and is stretched to fill the frame the wide Characters layer establishes.",
-    )
+    @EXPECTED_FIX("the Coding profile's Symbols2 page is a wide arrangement of its own")
     @Test
-    fun `symbols2 still has no wide component`() {
-        assertTrue(
-            !File(layoutDir("symbols2"), "western_wide.json").exists(),
-            "symbols2/western_wide.json now exists — declare it in extension.json, point " +
-                "SYMBOLS2_DEFAULT at it, and remove this diagnostic",
-        )
-
-        // The sibling families do have wide components, which is why the default was plausible.
-        for (family in listOf("characters", "symbols")) {
-            assertTrue(
-                File(layoutDir(family), "western_wide.json").exists() ||
-                    File(layoutDir(family), "qwerty_wide.json").exists(),
-                "$family is expected to carry a wide component",
-            )
-        }
+    fun `symbols2 has a wide component for the coding symbol pages`() {
+        assertTrue(File(layoutDir("symbols2"), "western_wide.json").isFile)
+        assertTrue(File(layoutDir("symbols2Mod"), "western_wide_mod.json").isFile)
     }
 
     @COMPATIBILITY("The Symbols2 components that do exist remain available.")
@@ -168,7 +145,10 @@ class LayoutAssetDiagnosticTest {
     fun `symbols2 provides its existing components`() {
         val names = layoutDir("symbols2").listFiles()?.map { it.name }?.toSet().orEmpty()
 
-        assertTrue(names.containsAll(setOf("western.json", "western_samsung.json")), "found: $names")
+        assertTrue(
+            names.containsAll(setOf("western.json", "western_samsung.json", "western_wide.json", "western_text.json")),
+            "found: $names",
+        )
     }
 
     // -- Dead QWERTY row ------------------------------------------------------------------------

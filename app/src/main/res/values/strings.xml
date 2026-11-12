@@ -79,6 +79,8 @@
     <string name="quick_action__ime_ui_mode_media__tooltip">Open emoji panel</string>
     <string name="quick_action__language_switch" comment="Please mind the limited available space for the quick action strings">Switch language</string>
     <string name="quick_action__language_switch__tooltip">Perform language switch</string>
+    <string name="quick_action__toggle_keyboard_profile" comment="Please mind the limited available space for the quick action strings">Text / Code</string>
+    <string name="quick_action__toggle_keyboard_profile__tooltip">Switch between the Text and Coding keyboards. Hold to switch language</string>
     <string name="quick_action__settings" comment="Please mind the limited available space for the quick action strings">Settings</string>
     <string name="quick_action__settings__tooltip">Open settings</string>
     <string name="quick_action__undo" comment="Please mind the limited available space for the quick action strings">Undo</string>
@@ -440,7 +442,7 @@
 
     <string name="settings__keyboard__title" comment="Title of Keyboard preferences screen">Keyboard</string>
     <string name="pref__keyboard__active_profile__label" comment="Preference title">Keyboard profile</string>
-    <string name="pref__keyboard__active_profile__summary_single" comment="Preference summary, shown while only one profile can be chosen. Placeholder v is the profile name.">{v} — the settings on this screen apply to this profile</string>
+    <string name="pref__keyboard__active_profile__summary_single" comment="Preference summary. Placeholder v is the active profile name.">{v} — the settings on this screen apply to this profile. Tap to switch.</string>
     <string name="keyboard_profile__text__label" comment="Name of the prose-oriented keyboard profile">Text</string>
     <string name="keyboard_profile__coding__label" comment="Name of the code-oriented keyboard profile">Coding</string>
     <string name="pref__keyboard__number_row__label" comment="Preference title">Number row</string>
@@ -1124,10 +1126,11 @@
     <string name="enum__smartbar_layout__suggestions_actions_extended" comment="Enum value label">Suggestions &amp; Actions extended</string>
     <string name="enum__smartbar_layout__suggestions_actions_extended__description" comment="Enum value description">Static candidate row and additional toggleable action row, with sticky action</string>
     <string name="enum__smartbar_layout__command_strip" comment="Enum value label">Command strip</string>
-    <string name="enum__smartbar_layout__command_strip__description" comment="Enum value description">Wide Menu, Emoji, Language and Voice buttons; suggestions take the middle while you type</string>
+    <string name="enum__smartbar_layout__command_strip__description" comment="Enum value description">Wide Menu, Emoji, Text/Code and Voice buttons; suggestions take the middle while you type</string>
     <string name="smartbar__command__menu">Menu</string>
     <string name="smartbar__command__emoji">Emoji</string>
-    <string name="smartbar__command__lang">Lang</string>
+    <string name="smartbar__command__text" comment="Command strip key while the Text profile is active; tapping it switches to Coding">Text</string>
+    <string name="smartbar__command__code" comment="Command strip key while the Coding profile is active; tapping it switches to Text">Code</string>
     <string name="smartbar__command__voice">Voice</string>
 
     <string name="enum__snygg_level__basic" comment="Enum value label">Basic</string>

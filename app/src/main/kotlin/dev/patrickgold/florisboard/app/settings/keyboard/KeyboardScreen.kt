@@ -58,6 +58,9 @@ fun KeyboardScreen() = FlorisScreen {
                     R.string.pref__keyboard__active_profile__summary_single,
                     "v" to stringRes(activeProfile.labelRes),
                 ),
+                // Same switch as the command strip's TEXT/CODE key, so the settings below can be
+                // tuned for either profile without opening the keyboard first.
+                onClick = { prefs.keyboard.activeProfileId.set(activeProfile.toggled().id) },
             )
             SwitchPreference(
                 profile.numberRow,

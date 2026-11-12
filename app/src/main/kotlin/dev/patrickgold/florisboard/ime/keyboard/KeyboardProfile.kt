@@ -32,9 +32,8 @@ import dev.patrickgold.florisboard.R
  */
 enum class KeyboardProfile(val id: String, @StringRes val labelRes: Int) {
     /**
-     * Prose. Reserved and not yet selectable — the runtime layout arrives in Stage 08, and
-     * [isSelectable] stays false until it does so nothing can route to a keyboard that has no
-     * assets behind it.
+     * Prose: the conventional four-row board from the LCARS Jefferies mockup, with its own letter
+     * and symbol layouts (see [ProfileLayouts]). Reached from the command strip's TEXT/CODE key.
      */
     TEXT("text", R.string.keyboard_profile__text__label),
 
@@ -44,9 +43,15 @@ enum class KeyboardProfile(val id: String, @StringRes val labelRes: Int) {
      */
     CODING("coding", R.string.keyboard_profile__coding__label);
 
-    /** Whether a user may currently choose this profile. See [TEXT]. */
+    /** Whether a user may currently choose this profile. Both have layouts behind them now. */
     val isSelectable: Boolean
-        get() = this == CODING
+        get() = true
+
+    /** The other profile: what the command strip's TEXT/CODE key switches to. */
+    fun toggled(): KeyboardProfile = when (this) {
+        TEXT -> CODING
+        CODING -> TEXT
+    }
 
     companion object {
         /**
@@ -60,8 +65,8 @@ enum class KeyboardProfile(val id: String, @StringRes val labelRes: Int) {
          * by a newer version all resolve to [Default] rather than throwing — a corrupt preference
          * must not be able to stop the keyboard from coming up.
          *
-         * A profile that exists but is not yet selectable also resolves to [Default]; that is what
-         * keeps a stale `text` id from selecting a runtime that Stage 08 has not built yet.
+         * A profile that exists but is not selectable also resolves to [Default], so a profile can
+         * be declared ahead of its layouts without anything routing to it.
          */
         fun fromId(id: String?): KeyboardProfile {
             val match = entries.find { it.id == id } ?: return Default

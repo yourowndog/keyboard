@@ -676,6 +676,15 @@
         "direction": "ltr",
         "modifier": "org.florisboard.layouts:qwerty_wide_mod",
         "arrangementFile": "layouts/characters/qwerty_wide.json"
+      },
+      {
+        "id": "qwerty_text",
+        "label": "QWERTY Text",
+        "authors": [
+          "Sam/Claude"
+        ],
+        "direction": "ltr",
+        "modifier": "org.florisboard.layouts:qwerty_text_mod"
       }
     ],
     "charactersMod": [
@@ -716,6 +725,14 @@
         "label": "QWERTY Coding Swipe Mod",
         "authors": [
           "Sam/Codex"
+        ],
+        "direction": "ltr"
+      },
+      {
+        "id": "qwerty_text_mod",
+        "label": "QWERTY Text bottom row",
+        "authors": [
+          "Sam/Claude"
         ],
         "direction": "ltr"
       },
@@ -1136,6 +1153,15 @@
         ],
         "direction": "ltr",
         "modifier": "org.florisboard.layouts:western_wide_mod"
+      },
+      {
+        "id": "western_text",
+        "label": "Western Text",
+        "authors": [
+          "Sam/Claude"
+        ],
+        "direction": "ltr",
+        "modifier": "org.florisboard.layouts:western_text_mod"
       }
     ],
     "symbolsMod": [
@@ -1176,6 +1202,14 @@
         "label": "Western Wide Mod (5-Row)",
         "authors": [
           "Sam/Codex"
+        ],
+        "direction": "ltr"
+      },
+      {
+        "id": "western_text_mod",
+        "label": "Western Text bottom row",
+        "authors": [
+          "Sam/Claude"
         ],
         "direction": "ltr"
       }
@@ -1229,6 +1263,24 @@
           "nettnikl"
         ],
         "direction": "ltr"
+      },
+      {
+        "id": "western_text",
+        "label": "Western Text (more symbols)",
+        "authors": [
+          "Sam/Claude"
+        ],
+        "direction": "ltr",
+        "modifier": "org.florisboard.layouts:western_text_mod"
+      },
+      {
+        "id": "western_wide",
+        "label": "Western Wide (more symbols)",
+        "authors": [
+          "Sam/Claude"
+        ],
+        "direction": "ltr",
+        "modifier": "org.florisboard.layouts:western_wide_mod"
       }
     ],
     "symbols2Mod": [
@@ -1245,6 +1297,22 @@
         "label": "CJK",
         "authors": [
           "waelwindows"
+        ],
+        "direction": "ltr"
+      },
+      {
+        "id": "western_text_mod",
+        "label": "Western Text bottom row",
+        "authors": [
+          "Sam/Claude"
+        ],
+        "direction": "ltr"
+      },
+      {
+        "id": "western_wide_mod",
+        "label": "Western Wide bottom rows",
+        "authors": [
+          "Sam/Claude"
         ],
         "direction": "ltr"
       }

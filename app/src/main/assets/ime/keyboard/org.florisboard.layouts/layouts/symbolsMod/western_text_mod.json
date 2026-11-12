@@ -1,0 +1,7 @@
+[
+  [
+    {"code": -201, "label": "ABC", "type": "system_gui"},
+    {"code": 0, "type": "placeholder"},
+    {"code": 10, "label": "enter", "groupId": 3, "type": "enter_editing"}
+  ]
+]

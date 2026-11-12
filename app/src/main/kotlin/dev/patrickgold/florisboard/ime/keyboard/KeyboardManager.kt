@@ -1661,6 +1661,12 @@ class KeyboardManager(
             KeyCode.TOGGLE_DEV_ROW -> scope.launch {
                 prefs.keyboard.activeProfilePrefs().devRow.let { it.set(!it.get()) }
             }
+            KeyCode.TOGGLE_KEYBOARD_PROFILE -> {
+                // Land on letters: a symbol page from one profile has no meaning in the other.
+                // The keyboard cache is dropped by the activeProfileId observer in init.
+                activeState.keyboardMode = KeyboardMode.CHARACTERS
+                prefs.keyboard.activeProfileId.set(prefs.keyboard.activeProfile().toggled().id)
+            }
             KeyCode.TOGGLE_ACTIONS_OVERFLOW -> {
                 activeState.isActionsOverflowVisible = !activeState.isActionsOverflowVisible
             }
@@ -1707,11 +1713,19 @@ class KeyboardManager(
                     else -> when (data.type) {
                         KeyType.CHARACTER, KeyType.NUMERIC ->{
                             val text = data.asString(isForDisplay = false)
-                            val isNumber = text.isNotEmpty() && text.all { it.isDigit() }
-                            if (!UCharacter.isUAlphabetic(UCharacter.codePointAt(text, 0)) && !isNumber) {
+                            if (isOperatorText(data, text)) {
+                                // A coding operator such as `!=` or `::` is typed as one unit.
+                                // commitChar would judge it by its first character and eat the
+                                // space before `!=` as if it were a `!`.
                                 nlpManager.getAutoCommitCandidate()?.let { commitCandidate(it) }
+                                editorInstance.commitText(text)
+                            } else {
+                                val isNumber = text.isNotEmpty() && text.all { it.isDigit() }
+                                if (!UCharacter.isUAlphabetic(UCharacter.codePointAt(text, 0)) && !isNumber) {
+                                    nlpManager.getAutoCommitCandidate()?.let { commitCandidate(it) }
+                                }
+                                editorInstance.commitChar(text)
                             }
-                            editorInstance.commitChar(text)
                         }
                         else -> {
                             flogError(LogTopic.KEY_EVENTS) { "Received unknown key: $data" }
@@ -1727,6 +1741,11 @@ class KeyboardManager(
             activeState.isCtrlPressed = false
         }
     }
+
+    /** A multi-character key that is not a letter cluster: the coding symbol layer's operators. */
+    private fun isOperatorText(data: KeyData, text: String): Boolean =
+        data.code == KeyCode.MULTIPLE_CODE_POINTS && text.length > 1 &&
+            text.none { Character.isLetterOrDigit(it) }
 
     override fun onInputKeyCancel(data: KeyData) {
         when (data.code) {

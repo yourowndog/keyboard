@@ -62,55 +62,47 @@ class PersistenceMigrationFixtureTest {
     }
 
     /**
-     * The Symbols2 default names a component that exists again.
+     * The Symbols2 default is the wide page behind the atom key's `#+=`.
      *
-     * It was `western_wide`, widened alongside the Characters and Symbols defaults in 27323ebe, but
-     * `symbols2` has never had a `western_wide` component — so `=\\<` rendered its modifier layout
-     * alone, with no symbols on it. `LayoutAssetDiagnosticTest` now checks every default against
-     * `extension.json` and the asset tree; this pins the specific value.
+     * It was `western_wide` before `symbols2` had that component, so `=\\<` rendered its modifier
+     * layout alone; it then fell back to `western`. The component exists now. `LayoutAssetDiagnosticTest`
+     * checks every default against `extension.json` and the asset tree; this pins the specific value.
      */
-    @EXPECTED_FIX("the Symbols2 default resolves to the `western` component that exists")
+    @EXPECTED_FIX("the Symbols2 default resolves to the `western_wide` component that now exists")
     @Test
     fun `subtype symbols2 default names a component that exists`() {
         val symbols2 = Subtype.DEFAULT.layoutMap[LayoutType.SYMBOLS2]
 
         assertNotNull(symbols2)
-        assertEquals("western", symbols2.componentId)
+        assertEquals("western_wide", symbols2.componentId)
     }
 
     /**
-     * Correcting the default does not repair a subtype that was already written to disk.
+     * A subtype saved while the default was `western` keeps it.
      *
-     * `SubtypeManager` encodes with `encodeDefaults = true`, so every subtype saved while the broken
-     * default was in force carries `"symbols2":"org.florisboard.layouts:western_wide"` as an
-     * explicit field. Decoding honours it, and a constructor default cannot override a value that is
-     * present in the payload.
-     *
-     * That is the difference between the fallback `Subtype.DEFAULT` — repaired by the change above —
-     * and an install where the user has added a subtype through the settings screen, which is not.
-     * Repairing those needs a migration that rewrites unresolvable component names, which is not
-     * written; the device checkpoint is where this gets established for Sam's install.
+     * `SubtypeManager` encodes with `encodeDefaults = true`, so every subtype carries its Symbols2
+     * component explicitly, and a constructor default cannot override a value present in the
+     * payload. Subtypes saved before the stopgap (Sam's) name `western_wide` and resolve again now
+     * that it exists; ones saved during it keep the stock page until edited.
      */
     @MIGRATION_FIXTURE(
-        "A persisted subtype naming the unresolvable Symbols2 component still decodes to that " +
-            "component. The corrected default applies to new and fallback subtypes only.",
+        "A persisted subtype keeps the Symbols2 component it was saved with; the default only " +
+            "applies to new and fallback subtypes.",
     )
     @Test
     fun `a persisted subtype keeps the symbols2 component it was saved with`() {
-        // The production encoder, not the lenient one above: `encodeDefaults = true` is exactly
-        // what writes the field out and so exactly what makes the stale value stick.
         val encoded = SubtypeJsonConfig.encodeToString(Subtype.serializer(), Subtype.DEFAULT)
-        val stale = encoded.replace(
-            """"symbols2":"org.florisboard.layouts:western"""",
+        val older = encoded.replace(
             """"symbols2":"org.florisboard.layouts:western_wide"""",
+            """"symbols2":"org.florisboard.layouts:western"""",
         )
-        assertTrue(stale != encoded, "the persisted form no longer spells symbols2 out; update this fixture")
+        assertTrue(older != encoded, "the persisted form no longer spells symbols2 out; update this fixture")
 
-        val decoded = SubtypeJsonConfig.decodeFromString(Subtype.serializer(), stale)
+        val decoded = SubtypeJsonConfig.decodeFromString(Subtype.serializer(), older)
         assertEquals(
-            "western_wide",
+            "western",
             assertNotNull(decoded.layoutMap[LayoutType.SYMBOLS2]).componentId,
-            "a persisted subtype should keep what it was saved with, defect and all",
+            "a persisted subtype should keep what it was saved with",
         )
     }
 

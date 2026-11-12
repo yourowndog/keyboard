@@ -1,0 +1,19 @@
+[
+  [
+    {"code": -201, "label": "ABC", "type": "system_gui"},
+    {"code": 0, "type": "placeholder"},
+    {"code": 10, "label": "enter", "groupId": 3, "type": "enter_editing"}
+  ],
+  [
+    {"$": "navigation", "code": -15, "label": "⎋"},
+    {"$": "text_key", "code": -35},
+    {"$": "text_key", "code": -31},
+    {"$": "text_key", "code": -33},
+    {"$": "text_key", "code": -27, "label": "«"},
+    {"$": "navigation", "code": -23},
+    {"$": "text_key", "code": -28, "label": "»"},
+    {"$": "navigation", "code": -21},
+    {"$": "navigation", "code": -24},
+    {"$": "navigation", "code": -22}
+  ]
+]
