@@ -1,6 +1,6 @@
 # LCARS assets: plan and rules
 
-> Status: Roadmap with live stubs (backdrops work; sounds, skins and fonts are entry points only)
+> Status: Roadmap with live stubs (backdrops and key skins work; sounds and fonts are entry points only)
 > Last verified: 2026-11-12
 
 Sam owns licences for a set of LCARS and Star Trek material: UI sounds, fonts,
@@ -98,15 +98,23 @@ inside a personal build exactly like a backdrop (add the pack to
 `private-picks.txt` under `sounds/lcars-1/`). Clips need the 70-200 ms lead
 silence trimmed and loudness normalised first, as in the pack's `audition/`.
 
-### 3. Key skins (entry points from PR #74)
+### 3. Key skins (working first pass)
 
-Now: `KeyRole` selectors and `background-image` on key, cap and plate; see
-[key skins](key-skins.md). A skin is a theme extension imported on the device.
+Now: Settings → Theme → Key skin, a one-tap gallery of skin packs and swatches
+(see [key skins](key-skins.md)). The Sci-Fi Keyboard's own textures are the
+first source: `tools/assets/prepare-scifi-keyskins.py` (run on sleeper) copies
+each theme's 12 slot textures out of the installed APK, using the theme tables
+decoded from its `classes.dex` (resource numbers are not aligned across slots,
+so guessing by number gives wrong sets). Output is
+`extracted/scifi-keyboard/prepared/keyskins/` (20 packs + 40 swatches, 3 MB),
+staged as `private-assets/keyskins/`.
 
-Next: Snygg needs a nine-patch or slice property before wide keys can share a
-texture. The 385 PNG UI pieces in the trek app are the likely source for
-elbows, pills and end caps; they would ship inside a private skin extension,
-not the APK.
+Next:
+- Device validation of pack 04 (LCARS control panel) and 02/03 (labelled pills)
+  with the Text and Code profiles.
+- Label colour per pack, so light textures get dark labels.
+- Draw the `popup` slot behind key popups.
+- Original LCARS packs drawn in code or from the trek app's 385 UI pieces.
 
 ### 4. Fonts
 
