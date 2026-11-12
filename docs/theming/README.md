@@ -30,6 +30,11 @@ stylesheet.
   verified account of what Snygg can and cannot express for it.
 - [Key skins](key-skins.md): textures per key slot over a fixed layout that
   always draws its own labels.
+- [Keyboard backdrops](backdrops.md): a user-chosen image or loop behind the
+  key field, independent of the theme.
+- [LCARS assets](lcars-assets.md): how Sam's licensed LCARS material reaches
+  personal builds through the gitignored `private-assets/` folder, and the plan
+  per asset kind.
 - [Design references](reference/README.md): source imagery and measurements.
 
 ## Packaging

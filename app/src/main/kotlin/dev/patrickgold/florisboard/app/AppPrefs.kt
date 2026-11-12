@@ -1061,6 +1061,27 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "theme__window_background_opacity",
             default = 100,
         )
+
+        /**
+         * The backdrop drawn behind the key field, independent of the theme. Stored as a
+         * [dev.patrickgold.florisboard.ime.theme.backdrop.BackdropId] string and always read back
+         * through `BackdropId.parse`, so a missing file or unknown id falls back to no backdrop.
+         * Blank, the default, draws nothing and leaves the theme exactly as it was.
+         */
+        val backdropId = string(
+            key = "theme__backdrop_id",
+            default = "",
+        )
+        /** How strongly the backdrop shows over the theme's chassis colour, 0-100. */
+        val backdropOpacity = int(
+            key = "theme__backdrop_opacity",
+            default = 60,
+        )
+        /** Play animated GIF/WebP backdrops instead of showing their first frame. */
+        val backdropAnimate = boolean(
+            key = "theme__backdrop_animate",
+            default = true,
+        )
     }
 
     override fun migrate(entry: PreferenceMigrationEntry): PreferenceMigrationEntry {

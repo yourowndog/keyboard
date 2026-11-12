@@ -1,0 +1,13 @@
+# Licensed LCARS/Trek files packed into local builds through the gitignored
+# private-assets/ folder. Only these *names* are committed; the files are not.
+# Format: <path under the asset pack>  <path under private-assets/>
+# Source pack: Sam's catalogue (sleeper ~/documents/lcars-trek-assets, CATALOGUE.md).
+# See docs/theming/lcars-assets.md before adding lines.
+
+# Keyboard backdrops (shown through the gutters between keys). Wide loops first.
+extracted/Animated_GIFs/numbers_dots2_1248x238.gif            backdrops/lcars-number-dots.gif
+extracted/Animated_GIFs/Enterprise_Sheild_Status_1920x714.gif backdrops/lcars-shield-status.gif
+extracted/Animated_GIFs/Relay_Station_subspace_1920x746.gif   backdrops/lcars-subspace-relay.gif
+extracted/Animated_GIFs/scan_1255x286.gif                     backdrops/lcars-scan.gif
+extracted/Animated_GIFs/subspace_scan_1068x654.gif            backdrops/lcars-subspace-scan.gif
+extracted/Animated_GIFs/holodeck_1252x636.gif                 backdrops/lcars-holodeck.gif

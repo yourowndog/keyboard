@@ -114,6 +114,16 @@ layer exists.
 top row is the safe one), symbol rows hold-only or behind a modifier chord.
 Only after the render-only plates have been in daily use.
 
+### LCARS assets and backdrops
+
+Selectable keyboard backdrops landed as a first pass (built-in scenes, imports,
+animated GIFs, private-asset files); see `docs/theming/backdrops.md`. The plan
+for the rest of Sam's licensed LCARS material (sounds, skins, fonts, voice
+lines), and the rule that it reaches builds only through the gitignored
+`private-assets/` folder, is in `docs/theming/lcars-assets.md`. Next: validate
+an animated backdrop on icarion, then a thumbnail gallery picker, then SoundPool
+playback for the sound pack.
+
 ### Bezel and the missing keyboard surface
 
 The reference has a `#0C1014` bezel around a black key field. There is no

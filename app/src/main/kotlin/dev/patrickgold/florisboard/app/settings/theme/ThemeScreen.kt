@@ -17,6 +17,25 @@
 package dev.patrickgold.florisboard.app.settings.theme
 
 import androidx.compose.material.icons.Icons
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.material.icons.filled.AddPhotoAlternate
+import androidx.compose.material.icons.filled.Animation
+import androidx.compose.material.icons.filled.Wallpaper
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import dev.patrickgold.florisboard.app.FlorisPreferenceModel
+import dev.patrickgold.florisboard.ime.theme.backdrop.BackdropStore
+import dev.patrickgold.jetpref.datastore.ui.PreferenceGroup
+import dev.patrickgold.jetpref.datastore.ui.PreferenceUiScope
+import dev.patrickgold.jetpref.datastore.ui.SwitchPreference
+import dev.patrickgold.jetpref.datastore.ui.listPrefEntries
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.florisboard.lib.android.showLongToastSync
 import androidx.compose.material.icons.filled.Brightness2
 import androidx.compose.material.icons.filled.BrightnessAuto
 import androidx.compose.material.icons.filled.ColorLens
@@ -136,6 +155,71 @@ fun ThemeScreen() = FlorisScreen {
             stepIncrement = 5,
         )
 
+        KeyboardBackdropGroup()
+
         AddonManagementReferenceBox(type = ExtensionListScreenType.EXT_THEME)
+    }
+}
+
+/**
+ * Backdrop picker: what shows through the gutters between keys. See docs/theming/backdrops.md.
+ * Choosing applies at once, like the reference keyboard's one-tap galleries.
+ */
+@OptIn(ExperimentalJetPrefDatastoreUi::class)
+@Composable
+private fun PreferenceUiScope<FlorisPreferenceModel>.KeyboardBackdropGroup() {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val store = remember(context) { BackdropStore(context) }
+    // Bumped after an import so the list picks up the new file.
+    var generation by remember { mutableIntStateOf(0) }
+    val options = remember(generation) { store.options() }
+    val importImage = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        if (uri == null) return@rememberLauncherForActivityResult
+        scope.launch {
+            withContext(Dispatchers.IO) { store.import(uri) }
+                .onSuccess { id ->
+                    prefs.theme.backdropId.set(id.storedValue)
+                    generation++
+                    context.showLongToastSync(R.string.pref__theme__backdrop__import_success)
+                }
+                .onFailure { error ->
+                    context.showLongToastSync("${error.message}")
+                }
+        }
+    }
+
+    PreferenceGroup(title = stringRes(R.string.pref__theme__backdrop__group)) {
+        ListPreference(
+            prefs.theme.backdropId,
+            icon = Icons.Default.Wallpaper,
+            title = stringRes(R.string.pref__theme__backdrop__label),
+            entries = listPrefEntries {
+                options.forEach { option -> entry(option.id.storedValue, option.label) }
+            },
+        )
+        Preference(
+            icon = Icons.Default.AddPhotoAlternate,
+            title = stringRes(R.string.pref__theme__backdrop__import),
+            summary = stringRes(R.string.pref__theme__backdrop__import_summary),
+            onClick = { importImage.launch("image/*") },
+        )
+        DialogSliderPreference(
+            prefs.theme.backdropOpacity,
+            icon = Icons.Default.Opacity,
+            title = stringRes(R.string.pref__theme__backdrop__opacity),
+            valueLabel = { stringRes(R.string.unit__percent__symbol, "v" to it) },
+            min = 0,
+            max = 100,
+            stepIncrement = 5,
+            enabledIf = { prefs.theme.backdropId isNotEqualTo "" },
+        )
+        SwitchPreference(
+            prefs.theme.backdropAnimate,
+            icon = Icons.Default.Animation,
+            title = stringRes(R.string.pref__theme__backdrop__animate),
+            summary = stringRes(R.string.pref__theme__backdrop__animate_summary),
+            enabledIf = { prefs.theme.backdropId isNotEqualTo "" },
+        )
     }
 }

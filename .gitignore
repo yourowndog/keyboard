@@ -103,3 +103,6 @@ __pycache__/
 .serena/
 .claude/settings.local.json
 .ccb/
+
+# Licensed personal assets packed into local builds only (docs/theming/lcars-assets.md)
+/private-assets/
