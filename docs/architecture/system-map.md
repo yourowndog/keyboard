@@ -67,6 +67,7 @@ NlpManager
 | Feedback collection | `ime/nlp/HarvestManager.kt`, `HarvestJsonl.kt` | editor commit/revert hooks |
 | Glide typing | `ime/text/gestures/GlideTypingManager.kt` and classifiers | keyboard geometry and NLP word scoring |
 | Voice transcription | `ime/keyboard/KeyboardManager.kt`, `net/WhisperClient.kt` | recorder and smartbar voice UI |
+| Key and feature sounds | `ime/sound/`, `ime/input/InputFeedbackController.kt` | [sound](sound.md); packs are a stub |
 | Explicit local-LLM actions | `ime/nlp/GemmaClient.kt` | `AI_GENERATE` dispatch and persona asset |
 | Clipboard | `ime/clipboard` | Room databases and themed clipboard UI |
 | Emoji/media | `ime/media` | emoji assets and themed media UI |

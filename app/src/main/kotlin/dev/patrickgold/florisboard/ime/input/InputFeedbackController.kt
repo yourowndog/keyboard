@@ -23,7 +23,9 @@ import android.view.HapticFeedbackConstants
 import androidx.compose.runtime.staticCompositionLocalOf
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.ime.keyboard.KeyData
-import dev.patrickgold.florisboard.ime.text.key.KeyCode
+import dev.patrickgold.florisboard.ime.sound.SoundEngine
+import dev.patrickgold.florisboard.ime.sound.SoundEvent
+import dev.patrickgold.florisboard.ime.sound.SystemSoundEngine
 import dev.patrickgold.florisboard.ime.text.keyboard.TextKeyData
 import org.florisboard.lib.android.AndroidVersion
 import org.florisboard.lib.android.systemServiceOrNull
@@ -49,6 +51,13 @@ class InputFeedbackController private constructor(private val ims: InputMethodSe
     private val prefs by FlorisPreferenceStore
 
     private val audioManager = ims.systemServiceOrNull(AudioManager::class)
+
+    /**
+     * Where sounds go once the checks in [performAudioFeedback] pass. Today the system key clicks;
+     * a [dev.patrickgold.florisboard.ime.sound.SoundPackEngine] wrapping this one is the planned
+     * replacement once pack selection exists.
+     */
+    private val soundEngine: SoundEngine? = audioManager?.let { SystemSoundEngine(it) }
     private val vibrator = ims.systemVibratorOrNull()
     private val contentResolver = ims.contentResolver
     private val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
@@ -62,27 +71,31 @@ class InputFeedbackController private constructor(private val ims: InputMethodSe
     }
 
     fun keyPress(data: KeyData = TextKeyData.UNSPECIFIED) {
-        if (prefs.inputFeedback.audioFeatKeyPress.get()) performAudioFeedback(data, 1.0)
+        if (prefs.inputFeedback.audioFeatKeyPress.get()) performAudioFeedback(SoundEvent.forKey(data), 1.0)
         if (prefs.inputFeedback.hapticFeatKeyPress.get()) performHapticFeedback(data, 1.0)
     }
 
     fun keyLongPress(data: KeyData = TextKeyData.UNSPECIFIED) {
-        if (prefs.inputFeedback.audioFeatKeyLongPress.get()) performAudioFeedback(data, 0.7)
+        if (prefs.inputFeedback.audioFeatKeyLongPress.get()) performAudioFeedback(SoundEvent.forKey(data), 0.7)
         if (prefs.inputFeedback.hapticFeatKeyLongPress.get()) performHapticFeedback(data, 0.4)
     }
 
     fun keyRepeatedAction(data: KeyData = TextKeyData.UNSPECIFIED) {
-        if (prefs.inputFeedback.audioFeatKeyRepeatedAction.get()) performAudioFeedback(data, 0.4)
+        if (prefs.inputFeedback.audioFeatKeyRepeatedAction.get()) {
+            performAudioFeedback(SoundEvent.forKey(data, repeated = true), 0.4)
+        }
         if (prefs.inputFeedback.hapticFeatKeyRepeatedAction.get()) performHapticFeedback(data, 0.05)
     }
 
     fun gestureSwipe(data: KeyData = TextKeyData.UNSPECIFIED) {
-        if (prefs.inputFeedback.audioFeatGestureSwipe.get()) performAudioFeedback(data, 0.7)
+        if (prefs.inputFeedback.audioFeatGestureSwipe.get()) performAudioFeedback(SoundEvent.forKey(data), 0.7)
         if (prefs.inputFeedback.hapticFeatGestureSwipe.get()) performHapticFeedback(data, 0.4)
     }
 
     fun gestureMovingSwipe(data: KeyData = TextKeyData.UNSPECIFIED) {
-        if (prefs.inputFeedback.audioFeatGestureMovingSwipe.get()) performAudioFeedback(data, 0.4)
+        if (prefs.inputFeedback.audioFeatGestureMovingSwipe.get()) {
+            performAudioFeedback(SoundEvent.forKey(data), 0.4)
+        }
         if (prefs.inputFeedback.hapticFeatGestureMovingSwipe.get()) performHapticFeedback(data, 0.05)
     }
 
@@ -94,28 +107,32 @@ class InputFeedbackController private constructor(private val ims: InputMethodSe
         if (prefs.inputFeedback.hapticFeatGestureMovingSwipe.get()) performHapticFeedback(data, 1.0)
     }
 
+    /**
+     * Sound for something other than a key press: a suggestion picked, autocorrect applied, a popup
+     * opened, voice input stopped, an action refused. The entry point for feature sounds; call it
+     * from the feature that owns the moment. With the system engine these stay silent (see
+     * [SystemSoundEngine]), so wiring a call site changes nothing until a sound pack is active.
+     */
+    fun soundEvent(event: SoundEvent, factor: Double = 1.0) {
+        if (prefs.inputFeedback.audioFeatKeyPress.get()) performAudioFeedback(event, factor)
+    }
+
     private fun systemPref(id: String): Boolean {
         if (contentResolver == null) return false
         return Settings.System.getInt(contentResolver, id, 0) != 0
     }
 
-    private fun performAudioFeedback(data: KeyData, factor: Double) {
-        if (audioManager == null) return
+    private fun performAudioFeedback(event: SoundEvent, factor: Double) {
+        val engine = soundEngine ?: return
         if (!prefs.inputFeedback.audioEnabled.get()) return
         if (prefs.inputFeedback.audioActivationMode.get() ==
             InputFeedbackActivationMode.RESPECT_SYSTEM_SETTINGS && !systemAudioEnabled) return
 
         scope.launch {
             val volume = (prefs.inputFeedback.audioVolume.get() * factor) / 100.0
-            val effect = when (data.code) {
-                KeyCode.DELETE -> AudioManager.FX_KEYPRESS_DELETE
-                KeyCode.ENTER -> AudioManager.FX_KEYPRESS_RETURN
-                KeyCode.SPACE -> AudioManager.FX_KEYPRESS_SPACEBAR
-                else -> AudioManager.FX_KEYPRESS_STANDARD
-            }
             if (volume in 0.01..1.00) {
-                flogDebug { "Perform audio with volume=$volume and effect=$effect" }
-                audioManager.playSoundEffect(effect, volume.toFloat())
+                flogDebug { "Perform audio with volume=$volume and event=$event" }
+                engine.play(event, volume.toFloat())
             }
         }
     }
