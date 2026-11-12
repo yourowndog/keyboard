@@ -27,6 +27,9 @@ import dev.patrickgold.florisboard.ime.text.key.KeyCode
  * the five named actions readable at a glance.
  */
 internal object CtrlReveal {
+    /** Opacity of a plate with no named chord while Ctrl is latched. */
+    const val BLANK_PLATE_ALPHA = 0.28f
+
     private val labels = mapOf(
         'a'.code to "ALL",
         'c'.code to "COPY",
