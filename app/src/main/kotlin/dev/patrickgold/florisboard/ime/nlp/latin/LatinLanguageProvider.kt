@@ -42,6 +42,7 @@ import dev.patrickgold.florisboard.ime.nlp.shared.FallbackCorrection
 import dev.patrickgold.florisboard.ime.nlp.shared.NeuralEvidence
 import dev.patrickgold.florisboard.ime.nlp.shared.ShortcutCorrection
 import dev.patrickgold.florisboard.ime.nlp.shared.TypedLexicalStatus
+import dev.patrickgold.florisboard.ime.nlp.shared.PersonalLexicon
 import dev.patrickgold.florisboard.ime.nlp.shared.WordSegmentation
 import dev.patrickgold.florisboard.lib.devtools.flogDebug
 import kotlinx.coroutines.Dispatchers
@@ -217,7 +218,7 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
             typed = currentWordRaw,
             isSentenceStart = dev.patrickgold.florisboard.ime.nlp.shared.CasingUtils
                 .isAtSentenceStart(textBeforeCurrentWord),
-            typedLexicalStatus = lexicalStatus(SymSpellManager.hasWord(currentWordRaw)),
+            typedLexicalStatus = lexicalStatus(isKnownWord(currentWordRaw)),
             typedIsProtectedVocab = shortcutIsProtected,
             isBlockedCorrection = { candidate ->
                 dev.patrickgold.florisboard.ime.nlp.PersonalPreferences
@@ -247,7 +248,7 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         // evidence to alter typed text.
         val segmented = WordSegmentation.findUniqueHighConfidence(
             input = currentWordRaw,
-            isWord = SymSpellManager::hasWord,
+            isWord = ::isKnownWord,
             hasBigram = { left, right -> BigramTable.get()?.hasHit(left, right) == true },
         )
         if (segmented != null &&
@@ -374,8 +375,8 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
             // If it is, we should be VERY conservative about auto-correcting it to something else 
             // (e.g., don't change "baby" -> "Babylon").
             val isInputValidWord = ngramRanked.any {
-                it.text.toString().equals(currentWordRaw, ignoreCase = true) 
-            }
+                it.text.toString().equals(currentWordRaw, ignoreCase = true)
+            } || PersonalLexicon.isKnown(currentWordRaw)
             val liveNeuralDecision = neuralDecision.takeIf { prefs.suggestion.useNeuralScorer.get() }
             val requestEvidence = CommitRequestEvidence(
                 typed = currentWordRaw,
@@ -475,7 +476,7 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
             previousWord = previousWord,
         )
         val upperCount = currentWordRaw.count { it.isUpperCase() }
-        val typedLexicalStatus = lexicalStatus(SymSpellManager.hasWord(currentWordRaw))
+        val typedLexicalStatus = lexicalStatus(isKnownWord(currentWordRaw))
         val typedIsProtectedVocab = dev.patrickgold.florisboard.ime.nlp.PersonalPreferences
             .isProtectedFromAutocorrect(currentWordRaw)
 
@@ -540,6 +541,13 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         neuralScorer?.close()
         neuralScorer = null
     }
+
+    /**
+     * A word is known when the packaged dictionary has it or this person has made it theirs
+     * (see [PersonalLexicon]); either way valid-word immunity protects it.
+     */
+    private fun isKnownWord(word: String): Boolean =
+        SymSpellManager.hasWord(word) || PersonalLexicon.isKnown(word)
 
     private fun lexicalStatus(isKnownWord: Boolean): TypedLexicalStatus =
         if (isKnownWord) TypedLexicalStatus.KNOWN_WORD else TypedLexicalStatus.NOT_KNOWN_WORD

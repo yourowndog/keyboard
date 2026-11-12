@@ -108,6 +108,8 @@ object PersonalPreferences {
         val lowercaseCandidate = candidate.lowercase()
         
         return ANTI_CORRECTIONS[typed]?.contains(candidate) == true ||
-                ANTI_CORRECTIONS[lowercaseTyped]?.contains(lowercaseCandidate) == true
+                ANTI_CORRECTIONS[lowercaseTyped]?.contains(lowercaseCandidate) == true ||
+                // Corrections this person has undone on device are refused like built-in pairs.
+                dev.patrickgold.florisboard.ime.nlp.shared.PersonalLexicon.isRejected(typed, candidate)
     }
 }
