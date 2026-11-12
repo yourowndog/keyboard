@@ -536,6 +536,17 @@ private fun TextKeyButton(
         val ornamentStyle = rememberSnyggThemeQuery(FlorisImeUi.KeyOrnament.elementName, attributes, selector)
         val ornamentAccent = ornamentStyle.foreground()
         val activeOrnament = ornament?.takeIf { ornamentAccent.isSpecified }
+        // The spacebar's delete-swipe gauge borrows the delete key's ornament accent.
+        val deleteAccent = if (activeOrnament == KeyOrnament.SPACE_DOT_RUN) {
+            rememberSnyggThemeQuery(
+                FlorisImeUi.KeyOrnament.elementName,
+                attributes + (FlorisImeUi.Attr.Code to KeyCode.DELETE),
+                SnyggSelector.NONE,
+            ).foreground()
+        } else {
+            Color.Unspecified
+        }
+        val deleteSwipeLevel = if (activeOrnament == KeyOrnament.SPACE_DOT_RUN) DeleteSwipeReadout.level else 0
         SnyggBox(
             FlorisImeUi.Key.elementName,
             attributes = attributes,
@@ -552,6 +563,8 @@ private fun TextKeyButton(
                         structure = ornamentStyle.background(),
                         isPressed = selector == SnyggSelector.PRESSED,
                         shiftState = evaluator.state.inputShiftState,
+                        deleteSwipeLevel = deleteSwipeLevel,
+                        deleteAccent = deleteAccent,
                     ),
                 )
             }
@@ -903,6 +916,7 @@ private class TextKeyboardLayoutController(
 
     private fun onTouchUpInternal(event: MotionEvent, pointer: TouchPointer) {
         flogDebug(LogTopic.TEXT_KEYBOARD_VIEW) { "pointer=$pointer" }
+        if (pointer.initialKey?.computedData?.code == KeyCode.DELETE) DeleteSwipeReadout.level = 0
         pointer.pressedKeyInfo?.cancelJobs()
         pointer.pressedKeyInfo = null
 
@@ -1006,6 +1020,7 @@ private class TextKeyboardLayoutController(
 
     private fun onTouchCancelInternal(event: MotionEvent, pointer: TouchPointer) {
         flogDebug(LogTopic.TEXT_KEYBOARD_VIEW) { "pointer=$pointer" }
+        DeleteSwipeReadout.level = 0
         pointer.pressedKeyInfo?.cancelJobs()
         pointer.pressedKeyInfo = null
 
@@ -1083,6 +1098,7 @@ private class TextKeyboardLayoutController(
                         inputFeedbackController?.gestureMovingSwipe(TextKeyData.DELETE)
                     }
                     val activeSelection = editorInstance.activeContent.selection
+                    updateDeleteSwipeReadout(if (activeSelection.isValid) -event.absUnitCountX - 1 else 0)
                     if (activeSelection.isValid) {
                         if (!inputEventDispatcher.isPressed(KeyCode.SHIFT)) {
                             // Backward select
@@ -1107,6 +1123,7 @@ private class TextKeyboardLayoutController(
                         inputFeedbackController?.gestureMovingSwipe(TextKeyData.DELETE)
                     }
                     val activeSelection = editorInstance.activeContent.selection
+                    updateDeleteSwipeReadout(if (activeSelection.isValid) -event.absUnitCountX / 2 - 1 else 0)
                     if (activeSelection.isValid) {
                         if (!inputEventDispatcher.isPressed(KeyCode.SHIFT)) {
                             // Backward select
@@ -1138,6 +1155,20 @@ private class TextKeyboardLayoutController(
                     false
                 }
             }
+        }
+    }
+
+    /**
+     * Feeds the spacebar's delete gauge with how many units the swipe has selected, mirroring the
+     * `n` passed to `setSelectionSurrounding`. A firmer haptic marks the gauge filling.
+     */
+    private fun updateDeleteSwipeReadout(selectedUnits: Int) {
+        val level = selectedUnits.coerceAtLeast(0)
+        val previous = DeleteSwipeReadout.level
+        if (level == previous) return
+        DeleteSwipeReadout.level = level
+        if (previous < SPACE_DOT_COUNT && level >= SPACE_DOT_COUNT) {
+            inputFeedbackController?.deleteSwipeGaugeFull()
         }
     }
 

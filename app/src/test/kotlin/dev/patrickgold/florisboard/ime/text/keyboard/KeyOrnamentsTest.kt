@@ -23,4 +23,14 @@ class KeyOrnamentsTest {
         assertEquals(0.5f, shiftDialFill(InputShiftState.SHIFTED_AUTOMATIC))
         assertEquals(1f, shiftDialFill(InputShiftState.CAPS_LOCK))
     }
+
+    @Test
+    fun `delete swipe lights one dot per unit and fills the run`() {
+        assertEquals(0, deleteSwipeLitDots(-3))
+        assertEquals(0, deleteSwipeLitDots(0))
+        assertEquals(1, deleteSwipeLitDots(1))
+        assertEquals(5, deleteSwipeLitDots(5))
+        assertEquals(SPACE_DOT_COUNT, deleteSwipeLitDots(SPACE_DOT_COUNT))
+        assertEquals(SPACE_DOT_COUNT, deleteSwipeLitDots(40))
+    }
 }
