@@ -12,7 +12,7 @@ FlorisBoard names, so old links still land on the right panel:
 
 | Panel | Route (deep link) | Holds |
 | --- | --- | --- |
-| Look | `Settings.Theme` (`settings/theme`) | day/night theme, accent, keyboard opacity, backdrop, key label size, popups, incognito indicator |
+| Look | `Settings.Theme` (`settings/theme`) | day/night theme, accent, keyboard opacity, backdrop, key skin, key label size, popups, incognito indicator |
 | Sound & touch | `Settings.InputFeedback` (`settings/keyboard/input-feedback`) | long-press delay, key sounds, vibration |
 | Layout | `Settings.Keyboard` (`settings/keyboard`) | profile, rows, space bar; links to size and spacing, per-key tuning, languages |
 | Command strip | `Settings.Smartbar` (`settings/smartbar`) | strip on/off, suggestion display, phrase row |
@@ -71,7 +71,8 @@ no display name falls back to its key label instead of "!! invalid !!".
 
 ## Not done yet
 
-Galleries for theme, key skin, font and sound pack (sound needs SoundPool
+Galleries for theme, font and sound pack (key skins already have one, see
+[key skins](key-skins.md)) (sound needs SoundPool
 playback, see [LCARS assets](lcars-assets.md)), inline sliders instead of
 slider dialogs, changed-from-default markers, and per-band customisation of
 MENU.
