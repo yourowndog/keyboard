@@ -1665,7 +1665,9 @@ class KeyboardManager(
                 // Land on letters: a symbol page from one profile has no meaning in the other.
                 // The keyboard cache is dropped by the activeProfileId observer in init.
                 activeState.keyboardMode = KeyboardMode.CHARACTERS
-                prefs.keyboard.activeProfileId.set(prefs.keyboard.activeProfile().toggled().id)
+                scope.launch {
+                    prefs.keyboard.activeProfileId.set(prefs.keyboard.activeProfile().toggled().id)
+                }
             }
             KeyCode.TOGGLE_ACTIONS_OVERFLOW -> {
                 activeState.isActionsOverflowVisible = !activeState.isActionsOverflowVisible
