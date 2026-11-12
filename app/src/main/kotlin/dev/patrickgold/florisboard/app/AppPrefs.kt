@@ -586,6 +586,13 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
          * additive; un-scoping it needs a second migration, so the split errs narrow.
          */
         inner class Profile(profileId: String) {
+            /**
+             * The Text profile is the LCARS Jefferies mockup's board, so its geometry defaults are the
+             * reference's proportions measured with `tools/visual/measure.py`: keys about 1.74 times
+             * as tall as they are wide and a black band between rows about 0.41 of the column pitch.
+             * Coding keeps the stock defaults. Only defaults differ; a value the user sets wins.
+             */
+            private val isText = profileId == KeyboardProfile.TEXT.id
             val numberRow = boolean(
                 key = "keyboard__${profileId}__number_row",
                 default = false,
@@ -600,7 +607,7 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             )
             val heightFactorPortrait = int(
                 key = "keyboard__${profileId}__height_factor_portrait",
-                default = 80,
+                default = if (isText) 100 else 80,
             )
             val heightFactorLandscape = int(
                 key = "keyboard__${profileId}__height_factor_landscape",
@@ -616,11 +623,11 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             )
             val keySpacingVertical = float(
                 key = "keyboard__${profileId}__key_spacing_vertical",
-                default = 2.0f,
+                default = if (isText) 16.5f else 2.0f,
             )
             val keySpacingHorizontal = float(
                 key = "keyboard__${profileId}__key_spacing_horizontal",
-                default = 2.0f,
+                default = if (isText) 5.0f else 2.0f,
             )
             val bottomRowHeightFactor = int(
                 key = "keyboard__${profileId}__bottom_row_height_factor",
@@ -628,7 +635,7 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             )
             val alphaRowHeightFactor = int(
                 key = "keyboard__${profileId}__alpha_row_height_factor",
-                default = 100,
+                default = if (isText) 135 else 100,
             )
             val numberRowHeightIndependent = boolean(
                 key = "keyboard__${profileId}__number_row_height_independent",
