@@ -507,7 +507,12 @@ private fun TextKeyButton(
                     .weight(KEY_PLATE_WEIGHT),
                 supportsBackgroundImage = true,
             ) {
-                key.hintedLabel?.let { hintedLabel ->
+                val plateLabel = if (evaluator.state.isCtrlPressed) {
+                    CtrlReveal.plateLabel(key.computedData.code)
+                } else {
+                    key.hintedLabel
+                }
+                plateLabel?.let { hintedLabel ->
                     SnyggText(
                         modifier = Modifier
                             .wrapContentSize()
@@ -561,6 +566,7 @@ private fun TextKeyButton(
                         structure = ornamentStyle.background(),
                         isPressed = selector == SnyggSelector.PRESSED,
                         shiftState = evaluator.state.inputShiftState,
+                        isCtrlLatched = evaluator.state.isCtrlPressed,
                         deleteSwipeLevel = deleteSwipeLevel,
                         deleteAccent = deleteAccent,
                     ),
@@ -847,6 +853,15 @@ private class TextKeyboardLayoutController(
                             true
                         }
                         KeyCode.SHIFT -> {
+                            if (inputEventDispatcher.isUninterruptedEventSequence(key.computedData) &&
+                                CtrlReveal.shiftHoldLatchesCtrl(keyboard.keys().asSequence().map { it.computedData.code })
+                            ) {
+                                // Holding Shift turns the dial to Ctrl on a board without a Ctrl key. Returning
+                                // true blocks Shift's up, so the release cancels Shift instead of latching a capital.
+                                inputEventDispatcher.sendDownUp(TextKeyData.CTRL)
+                                inputFeedbackController?.keyLongPress(key.computedData)
+                                return@onLongPress true
+                            }
                             if (inputEventDispatcher.isUninterruptedEventSequence(key.computedData)) {
                                 inputEventDispatcher.sendDownUp(TextKeyData.CAPS_LOCK)
                                 inputFeedbackController?.keyLongPress(key.computedData)

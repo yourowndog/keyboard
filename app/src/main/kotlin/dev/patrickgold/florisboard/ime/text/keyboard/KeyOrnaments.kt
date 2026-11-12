@@ -32,6 +32,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
@@ -73,6 +74,8 @@ internal data class KeyOrnamentPaint(
     val structure: Color,
     val isPressed: Boolean,
     val shiftState: InputShiftState,
+    /** Ctrl is latched: the shift dial shows a caret instead of its core. */
+    val isCtrlLatched: Boolean = false,
     /** How far a delete swipe has reached, in units of [deleteSwipeLitDots]. Spacebar only. */
     val deleteSwipeLevel: Int = 0,
     /** The colour a delete swipe lights the spacebar dots in: the delete key's own accent. */
@@ -135,6 +138,16 @@ private fun DrawScope.drawShiftDial(paint: KeyOrnamentPaint) {
             size = Size(radius * 2f, radius * 2f),
             style = Stroke(stroke * 1.6f, cap = StrokeCap.Round),
         )
+    }
+    if (paint.isCtrlLatched) {
+        // The dial has turned to Ctrl: a caret, the terminal's own spelling of Ctrl, replaces the core.
+        val caret = Path().apply {
+            moveTo(center.x - radius * 0.5f, center.y + radius * 0.25f)
+            lineTo(center.x, center.y - radius * 0.35f)
+            lineTo(center.x + radius * 0.5f, center.y + radius * 0.25f)
+        }
+        drawPath(caret, paint.accent, style = Stroke(stroke * 1.4f, cap = StrokeCap.Round, join = StrokeJoin.Round))
+        return
     }
     val coreAlpha = when {
         paint.isPressed -> 1f
