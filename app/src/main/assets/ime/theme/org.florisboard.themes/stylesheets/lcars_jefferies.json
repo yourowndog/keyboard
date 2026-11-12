@@ -77,14 +77,12 @@
   "key-plate[ctrlstate=`active`]": {
     "background": "var(--lilac)",
     "foreground": "var(--glyph)",
-    "font-size": "10sp",
-    "letter-spacing": "0sp"
+    "font-size": "10sp"
   },
   "key-plate[ctrlstate=`locked`]": {
     "background": "var(--lilac-lit)",
     "foreground": "var(--glyph)",
-    "font-size": "10sp",
-    "letter-spacing": "0sp"
+    "font-size": "10sp"
   },
   "key-ornament[code=-11]": {
     "foreground": "var(--lilac)",

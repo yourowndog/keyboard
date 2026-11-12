@@ -50,8 +50,8 @@
   "key-hint": { "foreground": "var(--glyph)", "font-family": "var(--font)", "font-size": "11sp", "font-weight": "normal" },
   "key-plate": { "background": "var(--plate)", "foreground": "var(--glyph)", "font-family": "var(--font)", "font-size": "12sp", "font-weight": "normal", "shape": "var(--radius)", "margin": "1.5dp", "shadow-elevation": "0dp" },
   "key-plate:pressed": { "background": "var(--sunk)", "foreground": "var(--glyph-dim)" },
-  "key-plate[ctrlstate=`active`]": { "background": "var(--lilac)", "foreground": "var(--glyph)", "font-size": "10sp", "letter-spacing": "0sp" },
-  "key-plate[ctrlstate=`locked`]": { "background": "var(--lilac-lit)", "foreground": "var(--glyph)", "font-size": "10sp", "letter-spacing": "0sp" },
+  "key-plate[ctrlstate=`active`]": { "background": "var(--lilac)", "foreground": "var(--glyph)", "font-size": "10sp" },
+  "key-plate[ctrlstate=`locked`]": { "background": "var(--lilac-lit)", "foreground": "var(--glyph)", "font-size": "10sp" },
 
   "key-ornament[code=-11]": { "foreground": "var(--lilac)", "background": "var(--recess)" },
   "key-ornament[code=-11][ctrlstate=`active`]": { "foreground": "var(--glyph)", "background": "var(--recess)" },
