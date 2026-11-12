@@ -20,8 +20,11 @@ import java.util.concurrent.atomic.AtomicBoolean
  * - A word that sits one edit away from something the person types far more often is a typo
  *   they failed to fix (`thst` next to `that`), not vocabulary. It must stay correctable even
  *   though it has been committed many times, so repetition alone does not teach it.
- * - Undoing an automatic correction is the strongest signal available: the typed form is
- *   learned immediately and that exact correction pair is never offered for auto-commit again.
+ * - Undoing an automatic correction usually means the typed form was wanted: it is learned
+ *   and that exact pair is refused from then on. But the harvest also holds hundreds of
+ *   "undos" of real typos (`tbe` -> the, `snd` -> and), because a backspace straight after a
+ *   correction restores the typo while the person is fixing something else. So the same
+ *   rival test applies: an undo never protects a form sitting next to a far more used word.
  */
 class PersonalLexiconState(
     private val maxEntries: Int = DEFAULT_MAX_ENTRIES,
@@ -66,7 +69,8 @@ class PersonalLexiconState(
     @Synchronized
     fun isRejected(typed: String, candidate: String): Boolean {
         val t = normalize(typed) ?: return false
-        return rejected[t]?.contains(candidate.trim().lowercase(Locale.ROOT)) == true
+        if (rejected[t]?.contains(candidate.trim().lowercase(Locale.ROOT)) != true) return false
+        return !isTypoShaped(t)
     }
 
     /**
@@ -76,11 +80,15 @@ class PersonalLexiconState(
     @Synchronized
     fun isKnown(word: String): Boolean {
         val key = normalize(word) ?: return false
-        if (key in learned) return true
-        val n = counts[key] ?: return false
-        if (n < MIN_LEARN_COUNT) return false
+        if (key !in learned && (counts[key] ?: 0) < MIN_LEARN_COUNT) return false
+        return !isTypoShaped(key)
+    }
+
+    /** Something one edit away is used at least five times as often as [key]. */
+    private fun isTypoShaped(key: String): Boolean {
+        val n = counts[key] ?: 0
         val rival = oneEditVariants(key).maxOfOrNull { counts[it] ?: 0 } ?: 0
-        return n * RIVAL_RATIO_DENOMINATOR >= rival
+        return n * RIVAL_RATIO_DENOMINATOR < rival
     }
 
     @Synchronized

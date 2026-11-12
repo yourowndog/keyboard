@@ -97,4 +97,15 @@ class PersonalLexiconStateTest {
         assertEquals(50, lex.count("keeper"))
         assertTrue(lex.size() <= 10)
     }
+
+    // Harvest 2026-11: hundreds of "undos" restored real typos while the person was
+    // backspacing to fix something else.
+    @Test
+    fun undoOfATypoNextToACommonWordTeachesNothing() {
+        val lex = PersonalLexiconState()
+        repeat(500) { lex.recordCommit("the") }
+        lex.recordRevert("tbe", "the")
+        assertFalse(lex.isKnown("tbe"))
+        assertFalse(lex.isRejected("tbe", "the"))
+    }
 }
