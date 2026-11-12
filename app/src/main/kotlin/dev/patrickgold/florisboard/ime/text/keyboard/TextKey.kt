@@ -27,7 +27,6 @@ import dev.patrickgold.florisboard.ime.keyboard.computeLabel
 import dev.patrickgold.florisboard.ime.popup.MutablePopupSet
 import dev.patrickgold.florisboard.ime.popup.PopupMapping
 import dev.patrickgold.florisboard.ime.popup.PopupSet
-import dev.patrickgold.florisboard.ime.text.key.KeyHintConfiguration
 import dev.patrickgold.florisboard.ime.text.key.KeyCode
 import dev.patrickgold.florisboard.ime.text.key.KeyType
 import dev.patrickgold.florisboard.ime.text.key.KeyVariation
@@ -218,11 +217,10 @@ class TextKey(override val data: AbstractKeyData) : Key(data) {
             }
         } else if (!data.isSpaceKey() || data.type == KeyType.NUMERIC) {
             val prefs by FlorisPreferenceStore
-            val hintConfiguration = if (prefs.keyboard.keyHintsVisible.get()) {
-                prefs.keyboard.keyHintConfiguration()
-            } else {
-                KeyHintConfiguration.HINTS_DISABLED
-            }
+            // The hint is always computed so a theme's hint plate (LCARS Jefferies) can show it.
+            // `keyHintsVisible` only decides whether the classic corner hint is drawn; see
+            // TextKeyboardLayout. Gating the computation on it left every plate empty.
+            val hintConfiguration = prefs.keyboard.keyHintConfiguration()
             computedPopups.getPopupKeys(hintConfiguration).hint.let { hintData ->
                 if (hintData?.isSpaceKey() == false) {
                     hintedLabel = hintData.asString(isForDisplay = true)
