@@ -126,6 +126,15 @@ Signals currently include:
 - contraction/apostrophe handling
 - soft grammar, bigram-conflict, and `id` ambiguity evidence supplied by
   `ContextualEvidence`
+- where the finger landed: `ComposingTouchTrace` keeps one `TouchSample`
+  (key-unit offset from the registered key's centre) per letter of the word
+  being composed, fed from `TextKeyboardLayout`. At a substitution position the
+  spatial cost becomes the distance from the touch point to the intended key's
+  centre minus the distance to the typed key's centre, clamped to `[0.1, 2.0]`,
+  so a border tap toward the intended key is cheap and a centred tap is not.
+  The trace is dropped (plain key distance) when it does not spell the word,
+  e.g. after a paste or cursor move. This changes which candidate wins, never
+  whether one fires.
 
 `CandidateScorer` contains numerical evidence only. `ContractionRules` owns the
 shortcut tables and the set of licensed contraction forms. Large
@@ -150,6 +159,11 @@ first. The provider checks, among other things:
   alphabetic candidate, no other differing position, and a replacement letter
   adjacent to the digit in the fixed keyboard model
 - minimum input length
+- `SINGLE_LETTER_DESTINATION`: a token of two or more characters never becomes
+  a single letter (casing `i`→`I` excepted); 42% of these were undone in the
+  2026-11 harvest
+- `ACRONYM_DESTINATION`: a word with letters, not typed in capitals, never
+  becomes a different all-caps acronym (`uh`→`UHF`); 37% were undone
 - the explicit neural evidence state and, when evaluated, its authoritative
   verdict
 
@@ -161,6 +175,37 @@ single digit is not enough.
 
 The typed word is added to the suggestions when it is not already present and
 is never itself marked for auto-commit.
+
+## Field gating
+
+Password, email and URI variations never correct. Elsewhere a field that sets
+`TYPE_TEXT_FLAG_AUTO_CORRECT` gets correction even if it also sets
+`noSuggestions` (the Google search box does both); see
+`AbstractEditorInstance.autoCorrectOverridesNoSuggestions`. In the Termux raw
+path, an apostrophe between two letters is ignored by the command-line shape
+check, so `don't` no longer makes a prose line look like shell syntax.
+
+## Personal learning
+
+`PersonalLexicon` (`nlp/shared/PersonalLexicon.kt`) is the on-device memory of
+what this person types. It is consulted as vocabulary by valid-word immunity,
+the typed-word lexical status and word segmentation, and its refused pairs join
+the anti-corrections.
+
+- Every committed word is counted (not in incognito, harvest-blocked or
+  `noPersonalizedLearning` fields). Three commits make it known.
+- Undoing a correction, or picking the typed form from the bar, learns the
+  typed word at once; an undo also refuses that exact typed→candidate pair.
+- The rival test overrides both: a form that has a one-edit (Damerau)
+  neighbour committed at least five times as often is typo-shaped and is never
+  known or protected (`thst` beside `that`, `tbe` beside `the`). In the harvest
+  722 of 978 undone corrections were real typos restored by a backspace while
+  fixing something else.
+- The store is `files/personal_lexicon.tsv`, written atomically off the input
+  thread. An offline seed built by
+  `tools/harvesting/build_personal_lexicon_seed.py` and pushed to the app's
+  external files directory as `personal_lexicon_seed.tsv` is merged once and
+  renamed `.imported`. The seed is personal data and never enters the repo.
 
 ## Phrase prediction
 
