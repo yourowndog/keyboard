@@ -62,10 +62,12 @@ def measure(path, threshold):
     q_top = next((y for y in range(h) if keycap_row(y, 10)), None)
     if q_top is None:
         sys.exit(f"{path}: no row of ten keys found")
-    # Widths are read below the plate's rounded top corners, which would otherwise shave them.
+    # The widest clean scan of the plate band: rounded corners shave the top rows, and a hint
+    # glyph splits a plate into pieces further down.
     probe = keycap_row(q_top, 10)
     rough_pitch = (probe[-1][0] - probe[0][0]) / 9
-    keys = keycap_row(q_top + int(0.2 * rough_pitch), 10) or probe
+    candidates = [keycap_row(y, 10) for y in range(q_top, q_top + int(0.4 * rough_pitch))]
+    keys = max((c for c in candidates if c), key=lambda c: sum(n for _, n in c))
     pitch = (keys[-1][0] - keys[0][0]) / 9
     key_w = sum(n for _, n in keys) / 10
     q_left = keys[0][0]
