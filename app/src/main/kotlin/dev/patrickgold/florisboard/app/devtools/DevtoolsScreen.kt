@@ -54,6 +54,7 @@ class DebugOnPurposeCrashException : Exception(
 
 @Composable
 fun DevtoolsScreen() = FlorisScreen {
+    panel = ConsolePanel.SYSTEM
     title = stringRes(R.string.devtools__title)
     previewFieldVisible = true
 

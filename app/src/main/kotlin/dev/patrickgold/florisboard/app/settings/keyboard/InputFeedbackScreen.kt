@@ -35,6 +35,8 @@ import org.florisboard.lib.compose.stringRes
 @OptIn(ExperimentalJetPrefDatastoreUi::class)
 @Composable
 fun InputFeedbackScreen() = FlorisScreen {
+    panel = ConsolePanel.SOUND_TOUCH
+    dockKeyboard = true
     title = stringRes(R.string.settings__sound_touch__title)
     previewFieldVisible = true
     iconSpaceReserved = false

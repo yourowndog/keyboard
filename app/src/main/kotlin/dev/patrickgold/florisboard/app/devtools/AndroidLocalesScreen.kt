@@ -43,6 +43,7 @@ import java.util.Locale
 
 @Composable
 fun AndroidLocalesScreen() = FlorisScreen {
+    panel = ConsolePanel.SYSTEM
     title = stringRes(R.string.devtools__android_locales__title)
     scrollable = false
 

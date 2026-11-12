@@ -60,6 +60,7 @@ import org.florisboard.lib.compose.stringRes
 
 @Composable
 fun OtherScreen() = FlorisScreen {
+    panel = ConsolePanel.SYSTEM
     title = stringRes(R.string.settings__system__title)
     previewFieldVisible = false
 
@@ -67,28 +68,6 @@ fun OtherScreen() = FlorisScreen {
     val context = LocalContext.current
 
     content {
-        ListPreference(
-            prefs.other.settingsTheme,
-            icon = Icons.Default.Palette,
-            title = stringRes(R.string.pref__other__settings_theme__label),
-            entries = enumDisplayEntriesOf(AppTheme::class),
-        )
-        ColorPickerPreference(
-            pref = prefs.other.accentColor,
-            title = stringRes(R.string.pref__other__settings_accent_color__label),
-            defaultValueLabel = stringRes(R.string.action__default),
-            icon = Icons.Default.FormatColorFill,
-            defaultColors = ColorMappings.colors,
-            showAlphaSlider = false,
-            enableAdvancedLayout = false,
-            colorOverride = {
-                if (it.isMaterialYou(context)) {
-                    Color.Unspecified
-                } else {
-                    it
-                }
-            }
-        )
         ListPreference(
             prefs.other.settingsLanguage,
             icon = Icons.Default.Language,

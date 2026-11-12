@@ -40,6 +40,8 @@ import org.florisboard.lib.compose.stringRes
 @OptIn(ExperimentalJetPrefDatastoreUi::class)
 @Composable
 fun KeyboardScreen() = FlorisScreen {
+    panel = ConsolePanel.LAYOUT
+    dockKeyboard = true
     title = stringRes(R.string.settings__layout__title)
     previewFieldVisible = true
 

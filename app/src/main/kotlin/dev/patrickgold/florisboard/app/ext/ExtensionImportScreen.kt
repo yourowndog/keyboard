@@ -92,6 +92,7 @@ enum class ExtensionImportScreenType(
 
 @Composable
 fun ExtensionImportScreen(type: ExtensionImportScreenType, initUuid: String?) = FlorisScreen {
+    panel = ConsolePanel.SYSTEM
     title = stringRes(type.titleResId)
 
     val navController = LocalNavController.current

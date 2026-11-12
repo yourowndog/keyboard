@@ -32,6 +32,8 @@ stylesheet.
   always draws its own labels.
 - [Keyboard backdrops](backdrops.md): a user-chosen image or loop behind the
   key field, independent of the theme.
+- [Settings console](settings-console.md): the seven-panel settings map, the
+  LCARS console frame, the docked live keyboard and the MENU console bands.
 - [LCARS assets](lcars-assets.md): how Sam's licensed LCARS material reaches
   personal builds through the gitignored `private-assets/` folder, and the plan
   per asset kind.

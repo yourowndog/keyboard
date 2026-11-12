@@ -85,6 +85,7 @@ val MIME_TYPES = mapOf(
 
 @Composable
 fun ExtensionEditFilesScreen(workspace: CacheManager.ExtEditorWorkspace<*>) = FlorisScreen {
+    panel = ConsolePanel.SYSTEM
     title = stringRes(R.string.ext__editor__files__title)
 
     fun handleBackPress() {

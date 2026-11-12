@@ -28,6 +28,7 @@ import org.florisboard.lib.compose.stringRes
 
 @Composable
 internal fun ExtensionNotFoundScreen(id: String) = FlorisScreen {
+    panel = ConsolePanel.SYSTEM
     title = stringRes(R.string.ext__error__not_found_title)
 
     content {

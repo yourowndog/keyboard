@@ -31,6 +31,7 @@ import org.florisboard.lib.compose.stringRes
 
 @Composable
 fun ThirdPartyLicensesScreen() = FlorisScreen {
+    panel = ConsolePanel.SYSTEM
     title = stringRes(R.string.about__third_party_licenses__title)
     scrollable = false
     iconSpaceReserved = false

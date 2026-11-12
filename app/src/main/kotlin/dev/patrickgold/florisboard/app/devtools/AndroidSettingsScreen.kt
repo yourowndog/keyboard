@@ -35,6 +35,7 @@ import org.florisboard.lib.compose.stringRes
 
 @Composable
 fun AndroidSettingsScreen(name: String?) = FlorisScreen {
+    panel = ConsolePanel.SYSTEM
     title = when (name) {
         AndroidSettings.Global.groupId -> stringRes(R.string.devtools__android_settings_global__title)
         AndroidSettings.Secure.groupId -> stringRes(R.string.devtools__android_settings_secure__title)

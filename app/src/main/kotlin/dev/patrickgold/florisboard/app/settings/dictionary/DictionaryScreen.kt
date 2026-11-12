@@ -27,6 +27,7 @@ import org.florisboard.lib.compose.stringRes
 
 @Composable
 fun DictionaryScreen() = FlorisScreen {
+    panel = ConsolePanel.TYPING
     title = stringRes(R.string.settings__dictionary__title)
     previewFieldVisible = true
 

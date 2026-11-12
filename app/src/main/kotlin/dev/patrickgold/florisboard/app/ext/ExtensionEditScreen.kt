@@ -227,6 +227,7 @@ private fun EditScreen(
     workspace: CacheManager.ExtEditorWorkspace<*>,
     isCreateExt: Boolean,
 ) = FlorisScreen {
+    panel = ConsolePanel.SYSTEM
     title = stringRes(if (isCreateExt) {
         when (workspace.ext) {
             is KeyboardExtension -> R.string.ext__editor__title_create_keyboard
@@ -419,6 +420,7 @@ private fun ManageMetaDataScreen(
     workspace: CacheManager.ExtEditorWorkspace<*>,
     isCreateExt: Boolean,
 ) = FlorisScreen {
+    panel = ConsolePanel.SYSTEM
     title = stringRes(R.string.ext__editor__metadata__title)
 
     val meta = workspace.editor?.meta ?: return@FlorisScreen
@@ -564,6 +566,7 @@ private fun ManageMetaDataScreen(
 
 @Composable
 private fun ManageDependenciesScreen(workspace: CacheManager.ExtEditorWorkspace<*>) = FlorisScreen {
+    panel = ConsolePanel.SYSTEM
     title = stringRes(R.string.ext__editor__dependencies__title)
 
     val dependencyList = workspace.editor?.dependencies ?: return@FlorisScreen
@@ -611,6 +614,7 @@ private fun <T : ExtensionComponent> CreateComponentScreen(
     workspace: CacheManager.ExtEditorWorkspace<*>,
     type: KClass<T>,
 ) = FlorisScreen {
+    panel = ConsolePanel.SYSTEM
     title = stringRes(when (type) {
         ThemeExtensionComponent::class -> R.string.ext__editor__create_component__title_theme
         else -> R.string.ext__editor__create_component__title

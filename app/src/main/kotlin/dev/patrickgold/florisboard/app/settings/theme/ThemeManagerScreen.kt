@@ -55,6 +55,7 @@ enum class ThemeManagerScreenAction(val id: String) {
 
 @Composable
 fun ThemeManagerScreen(action: ThemeManagerScreenAction?) = FlorisScreen {
+    panel = ConsolePanel.LOOK
     title = stringRes(when (action) {
         ThemeManagerScreenAction.SELECT_DAY -> R.string.settings__theme_manager__title_day
         ThemeManagerScreenAction.SELECT_NIGHT -> R.string.settings__theme_manager__title_night

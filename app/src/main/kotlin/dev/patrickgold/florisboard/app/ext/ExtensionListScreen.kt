@@ -89,6 +89,7 @@ enum class ExtensionListScreenType(
 
 @Composable
 fun ExtensionListScreen(type: ExtensionListScreenType, showUpdate: Boolean) = FlorisScreen {
+    panel = ConsolePanel.SYSTEM
     title = stringRes(type.titleResId)
     previewFieldVisible = false
     scrollable = false

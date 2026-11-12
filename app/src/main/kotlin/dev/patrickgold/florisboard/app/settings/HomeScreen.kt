@@ -44,8 +44,25 @@ import dev.patrickgold.florisboard.app.Routes
 import dev.patrickgold.florisboard.lib.compose.FlorisScreen
 import dev.patrickgold.florisboard.lib.util.InputMethodUtils
 import dev.patrickgold.jetpref.datastore.ui.Preference
-import org.florisboard.lib.compose.FlorisErrorCard
-import org.florisboard.lib.compose.FlorisWarningCard
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.draw.clip
+import dev.patrickgold.florisboard.app.FlorisPreferenceStore
+import dev.patrickgold.florisboard.app.console.ConsoleReadout
+import dev.patrickgold.florisboard.app.console.ConsoleStatus
+import dev.patrickgold.florisboard.app.console.ConsoleTile
+import dev.patrickgold.florisboard.app.console.Lcars
+import dev.patrickgold.florisboard.ime.keyboard.KeyboardProfile
+import dev.patrickgold.florisboard.themeManager
+import dev.patrickgold.jetpref.datastore.model.observeAsState
+import kotlinx.coroutines.launch
 import org.florisboard.lib.compose.stringRes
 
 /**
@@ -55,6 +72,7 @@ import org.florisboard.lib.compose.stringRes
  */
 @Composable
 fun HomeScreen() = FlorisScreen {
+    panel = ConsolePanel.HOME
     title = stringRes(R.string.settings__home__title)
     navigationIconVisible = false
     previewFieldVisible = true
@@ -66,20 +84,29 @@ fun HomeScreen() = FlorisScreen {
         val isFlorisBoardEnabled by InputMethodUtils.observeIsFlorisboardEnabled(foregroundOnly = true)
         val isFlorisBoardSelected by InputMethodUtils.observeIsFlorisboardSelected(foregroundOnly = true)
         if (!isFlorisBoardEnabled) {
-            FlorisErrorCard(
-                modifier = Modifier.padding(8.dp),
-                showIcon = false,
+            ConsoleStatus(
                 text = stringRes(R.string.settings__home__ime_not_enabled),
+                color = Lcars.Coral,
                 onClick = { InputMethodUtils.showImeEnablerActivity(context) },
+                modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 4.dp, bottom = 8.dp),
             )
         } else if (!isFlorisBoardSelected) {
-            FlorisWarningCard(
-                modifier = Modifier.padding(8.dp),
-                showIcon = false,
+            ConsoleStatus(
                 text = stringRes(R.string.settings__home__ime_not_selected),
+                color = Lcars.Amber,
                 onClick = { InputMethodUtils.showImePicker(context) },
+                modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 4.dp, bottom = 8.dp),
+            )
+        } else {
+            ConsoleStatus(
+                text = stringRes(R.string.settings__home__ime_online),
+                color = Lcars.Teal,
+                onClick = null,
+                modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 4.dp, bottom = 8.dp),
             )
         }
+
+        HomeProfileAndReadouts()
 
         var query by rememberSaveable { mutableStateOf("") }
         OutlinedTextField(
@@ -109,48 +136,134 @@ fun HomeScreen() = FlorisScreen {
                 )
             }
         } else {
-            Preference(
-                icon = Icons.Outlined.Palette,
-                title = stringRes(R.string.settings__look__title),
+            HomePanels(onOpen = { navController.navigate(it) })
+        }
+    }
+}
+
+private val TileGap = 8.dp
+
+@Composable
+private fun HomePanels(onOpen: (Any) -> Unit) {
+    Column(
+        modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 8.dp, bottom = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(TileGap),
+    ) {
+        Row(horizontalArrangement = Arrangement.spacedBy(TileGap)) {
+            ConsoleTile(
+                label = stringRes(R.string.settings__look__title),
                 summary = stringRes(R.string.settings__look__summary),
-                onClick = { navController.navigate(Routes.Settings.Theme) },
+                color = ConsolePanel.LOOK.color, code = "01", tall = true,
+                onClick = { onOpen(Routes.Settings.Theme) },
+                modifier = Modifier.weight(1f),
             )
-            Preference(
-                icon = Icons.Default.TouchApp,
-                title = stringRes(R.string.settings__sound_touch__title),
-                summary = stringRes(R.string.settings__sound_touch__summary),
-                onClick = { navController.navigate(Routes.Settings.InputFeedback) },
-            )
-            Preference(
-                icon = Icons.Outlined.Keyboard,
-                title = stringRes(R.string.settings__layout__title),
+            ConsoleTile(
+                label = stringRes(R.string.settings__layout__title),
                 summary = stringRes(R.string.settings__layout__summary),
-                onClick = { navController.navigate(Routes.Settings.Keyboard) },
-            )
-            Preference(
-                icon = Icons.Default.SmartButton,
-                title = stringRes(R.string.settings__smartbar__title),
-                summary = stringRes(R.string.settings__command_strip__summary),
-                onClick = { navController.navigate(Routes.Settings.Smartbar) },
-            )
-            Preference(
-                icon = Icons.Default.Spellcheck,
-                title = stringRes(R.string.settings__typing__title),
-                summary = stringRes(R.string.settings__typing__summary),
-                onClick = { navController.navigate(Routes.Settings.Typing) },
-            )
-            Preference(
-                icon = Icons.Default.Gesture,
-                title = stringRes(R.string.settings__gestures__title),
-                summary = stringRes(R.string.settings__gestures__summary),
-                onClick = { navController.navigate(Routes.Settings.Gestures) },
-            )
-            Preference(
-                icon = Icons.Outlined.Settings,
-                title = stringRes(R.string.settings__system__title),
-                summary = stringRes(R.string.settings__system__summary),
-                onClick = { navController.navigate(Routes.Settings.Other) },
+                color = ConsolePanel.LAYOUT.color, code = "02", tall = true,
+                onClick = { onOpen(Routes.Settings.Keyboard) },
+                modifier = Modifier.weight(1f),
             )
         }
+        Row(horizontalArrangement = Arrangement.spacedBy(TileGap)) {
+            ConsoleTile(
+                label = stringRes(R.string.settings__sound_touch__title),
+                summary = stringRes(R.string.settings__sound_touch__summary),
+                color = ConsolePanel.SOUND_TOUCH.color, code = "03", tall = false,
+                onClick = { onOpen(Routes.Settings.InputFeedback) },
+                modifier = Modifier.weight(1f),
+            )
+            ConsoleTile(
+                label = stringRes(R.string.settings__smartbar__title),
+                summary = stringRes(R.string.settings__command_strip__summary),
+                color = ConsolePanel.COMMAND_STRIP.color, code = "04", tall = false,
+                onClick = { onOpen(Routes.Settings.Smartbar) },
+                modifier = Modifier.weight(1f),
+            )
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(TileGap)) {
+            ConsoleTile(
+                label = stringRes(R.string.settings__typing__title),
+                summary = stringRes(R.string.settings__typing__summary),
+                color = ConsolePanel.TYPING.color, code = "05", tall = false,
+                onClick = { onOpen(Routes.Settings.Typing) },
+                modifier = Modifier.weight(1f),
+            )
+            ConsoleTile(
+                label = stringRes(R.string.settings__gestures__title),
+                summary = stringRes(R.string.settings__gestures__summary),
+                color = ConsolePanel.GESTURES.color, code = "06", tall = false,
+                onClick = { onOpen(Routes.Settings.Gestures) },
+                modifier = Modifier.weight(1f),
+            )
+        }
+        ConsoleTile(
+            label = stringRes(R.string.settings__system__title),
+            summary = stringRes(R.string.settings__system__summary),
+            color = ConsolePanel.SYSTEM.color, code = "07", tall = false,
+            onClick = { onOpen(Routes.Settings.Other) },
+            modifier = Modifier.fillMaxWidth(),
+        )
+    }
+}
+
+/**
+ * TEXT | CODE switch plus readouts of what the keyboard is wearing, so the home screen says what
+ * state the keyboard is in before you open anything.
+ */
+@Composable
+private fun HomeProfileAndReadouts() {
+    val prefs by FlorisPreferenceStore
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val themeManager by context.themeManager()
+    val activeProfileId by prefs.keyboard.activeProfileId.observeAsState()
+    val activeProfile = KeyboardProfile.fromId(activeProfileId)
+    val dayThemeId by prefs.theme.dayThemeId.observeAsState()
+    val nightThemeId by prefs.theme.nightThemeId.observeAsState()
+    val configs by themeManager.indexedThemeConfigs.collectAsState()
+    val backdropId by prefs.theme.backdropId.observeAsState()
+
+    Row(
+        modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        for (profile in KeyboardProfile.entries) {
+            val selected = profile == activeProfile
+            val color = ConsolePanel.LAYOUT.color
+            Text(
+                text = stringRes(profile.labelRes).uppercase(),
+                color = if (selected) Lcars.Black else color,
+                style = MaterialTheme.typography.labelLarge,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(50))
+                    .background(if (selected) color else Lcars.PanelRaised)
+                    .clickable { scope.launch { prefs.keyboard.activeProfileId.set(profile.id) } }
+                    .padding(horizontal = 18.dp, vertical = 8.dp),
+            )
+        }
+    }
+    Row(
+        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        ConsoleReadout(
+            label = stringRes(R.string.pref__theme__day),
+            value = configs.first[dayThemeId]?.label ?: dayThemeId.componentId,
+            color = Lcars.Amber,
+            modifier = Modifier.weight(1f),
+        )
+        ConsoleReadout(
+            label = stringRes(R.string.pref__theme__night),
+            value = configs.first[nightThemeId]?.label ?: nightThemeId.componentId,
+            color = Lcars.Lilac,
+            modifier = Modifier.weight(1f),
+        )
+        ConsoleReadout(
+            label = stringRes(R.string.pref__theme__backdrop__label),
+            value = if (backdropId.isBlank()) stringRes(R.string.settings__home__readout_none) else backdropId.substringAfterLast('/').substringAfter(':'),
+            color = Lcars.Sky,
+            modifier = Modifier.weight(1f),
+        )
     }
 }

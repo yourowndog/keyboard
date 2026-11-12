@@ -63,6 +63,7 @@ import java.util.Locale
 
 @Composable
 fun NlpDebugScreen() = FlorisScreen {
+    panel = ConsolePanel.SYSTEM
     title = stringRes(R.string.settings__nlp_debug__title)
     previewFieldVisible = true
 

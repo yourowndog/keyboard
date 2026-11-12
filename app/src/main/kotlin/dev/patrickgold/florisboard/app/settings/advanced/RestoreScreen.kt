@@ -87,6 +87,7 @@ object Restore {
 
 @Composable
 fun RestoreScreen() = FlorisScreen {
+    panel = ConsolePanel.SYSTEM
     title = stringRes(R.string.backup_and_restore__restore__title)
     previewFieldVisible = false
 

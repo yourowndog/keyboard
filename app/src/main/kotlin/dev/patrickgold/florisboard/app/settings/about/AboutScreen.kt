@@ -50,6 +50,7 @@ import org.florisboard.lib.compose.stringRes
 
 @Composable
 fun AboutScreen() = FlorisScreen {
+    panel = ConsolePanel.SYSTEM
     title = stringRes(R.string.about__title)
 
     val navController = LocalNavController.current

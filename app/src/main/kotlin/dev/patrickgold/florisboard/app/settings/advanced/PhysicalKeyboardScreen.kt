@@ -34,6 +34,7 @@ import org.florisboard.lib.compose.stringRes
 
 @Composable
 fun PhysicalKeyboardScreen() = FlorisScreen {
+    panel = ConsolePanel.SYSTEM
     title = stringRes(R.string.physical_keyboard__title)
 
     val context = LocalContext.current

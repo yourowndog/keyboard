@@ -84,6 +84,7 @@ enum class UserDictionaryType(val id: String) {
 
 @Composable
 fun UserDictionaryScreen(type: UserDictionaryType) = FlorisScreen {
+    panel = ConsolePanel.TYPING
     title = stringRes(when (type) {
         UserDictionaryType.FLORIS -> R.string.settings__udm__title_floris
         UserDictionaryType.SYSTEM -> R.string.settings__udm__title_system

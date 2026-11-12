@@ -52,6 +52,7 @@ import org.florisboard.lib.android.showShortToastSync
 // TODO: This screen is just a quick thrown-together thing and needs further enhancing in the UI
 @Composable
 fun ExportDebugLogScreen() = FlorisScreen {
+    panel = ConsolePanel.SYSTEM
     title = stringRes(R.string.devtools__debuglog__title)
     scrollable = false
 

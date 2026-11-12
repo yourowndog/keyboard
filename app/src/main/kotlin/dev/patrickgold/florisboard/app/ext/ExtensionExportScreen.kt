@@ -44,6 +44,7 @@ fun ExtensionExportScreen(id: String) {
 
 @Composable
 private fun ExportScreen(ext: Extension) = FlorisScreen {
+    panel = ConsolePanel.SYSTEM
     title = ext.meta.title
     scrollable = false
 

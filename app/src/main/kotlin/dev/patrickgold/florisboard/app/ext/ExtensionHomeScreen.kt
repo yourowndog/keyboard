@@ -32,6 +32,7 @@ import org.florisboard.lib.compose.stringRes
 
 @Composable
 fun ExtensionHomeScreen() = FlorisScreen {
+    panel = ConsolePanel.SYSTEM
     title = stringRes(R.string.ext__home__title)
     previewFieldVisible = false
 

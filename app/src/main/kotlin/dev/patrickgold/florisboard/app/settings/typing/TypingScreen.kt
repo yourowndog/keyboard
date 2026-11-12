@@ -51,6 +51,7 @@ import org.florisboard.lib.compose.stringRes
 @OptIn(ExperimentalJetPrefDatastoreUi::class)
 @Composable
 fun TypingScreen() = FlorisScreen {
+    panel = ConsolePanel.TYPING
     title = stringRes(R.string.settings__typing__title)
     previewFieldVisible = true
 

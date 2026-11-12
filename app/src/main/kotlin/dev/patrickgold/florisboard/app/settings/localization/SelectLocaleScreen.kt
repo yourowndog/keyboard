@@ -58,6 +58,7 @@ const val SelectLocaleScreenResultLanguageTag = "SelectLocaleScreen.languageTag"
 
 @Composable
 fun SelectLocaleScreen() = FlorisScreen {
+    panel = ConsolePanel.LAYOUT
     title = stringRes(R.string.settings__localization__subtype_select_locale)
     scrollable = false
 

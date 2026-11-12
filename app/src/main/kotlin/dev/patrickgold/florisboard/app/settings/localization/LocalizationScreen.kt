@@ -78,6 +78,7 @@ internal fun localizationSubtypeEntries(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LocalizationScreen() = FlorisScreen {
+    panel = ConsolePanel.LAYOUT
     title = stringRes(R.string.settings__localization__title)
     previewFieldVisible = true
     iconSpaceReserved = false

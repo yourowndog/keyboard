@@ -196,6 +196,7 @@ private class SubtypeEditorState(init: Subtype?) {
 
 @Composable
 fun SubtypeEditorScreen(id: Long?) = FlorisScreen {
+    panel = ConsolePanel.LAYOUT
     title = stringRes(if (id == null) {
         R.string.settings__localization__subtype_add_title
     } else {

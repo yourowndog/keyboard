@@ -143,6 +143,7 @@ fun ThemeEditorScreen(
     workspace: CacheManager.ExtEditorWorkspace<*>,
     editor: ThemeExtensionComponentEditor,
 ) = FlorisScreen {
+    panel = ConsolePanel.LOOK
     title = stringRes(R.string.ext__editor__edit_component__title_theme)
     scrollable = false
 

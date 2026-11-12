@@ -39,6 +39,8 @@ import org.florisboard.lib.compose.stringRes
 @OptIn(ExperimentalJetPrefDatastoreUi::class)
 @Composable
 fun KeyboardGeometryScreen() = FlorisScreen {
+    panel = ConsolePanel.LAYOUT
+    dockKeyboard = true
     title = stringRes(R.string.settings__keyboard_geometry__title)
     previewFieldVisible = true
 

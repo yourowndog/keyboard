@@ -21,4 +21,9 @@
     <string name="pref__sound_touch__group_keys">Timing</string>
     <string name="settings__search__hint">Search settings</string>
     <string name="settings__search__no_results">No setting matches \"{q}\"</string>
+    <string name="settings__home__ime_online">Input online</string>
+    <string name="settings__home__readout_none">None</string>
+    <string name="menu_console__band_edit">EDIT</string>
+    <string name="menu_console__band_console">CONSOLE</string>
+    <string name="menu_console__band_system">SYSTEM</string>
 </resources>

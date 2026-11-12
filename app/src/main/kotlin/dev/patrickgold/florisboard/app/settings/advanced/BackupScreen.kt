@@ -136,6 +136,7 @@ object Backup {
 
 @Composable
 fun BackupScreen() = FlorisScreen {
+    panel = ConsolePanel.SYSTEM
     title = stringRes(R.string.backup_and_restore__back_up__title)
     previewFieldVisible = false
 

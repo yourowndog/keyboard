@@ -37,6 +37,7 @@ import org.florisboard.lib.compose.stringRes
 
 @Composable
 fun ProjectLicenseScreen() = FlorisScreen {
+    panel = ConsolePanel.SYSTEM
     title = stringRes(R.string.about__project_license__title)
     scrollable = false
 
