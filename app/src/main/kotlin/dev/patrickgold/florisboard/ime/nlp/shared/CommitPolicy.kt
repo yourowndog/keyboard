@@ -125,7 +125,8 @@ object CommitPolicy {
             if (isChange && input.typed.length >= 2 && input.rawCandidate.count { it.isLetter() } == 1) {
                 add(Blocker.SINGLE_LETTER_DESTINATION)
             }
-            if (isChange && !isCasingFix && isAcronym(input.rawCandidate) && !isAcronym(input.typed)) {
+            if (isChange && !isCasingFix && input.typed.any { it.isLetter() } &&
+                isAcronym(input.rawCandidate) && !isAcronym(input.typed)) {
                 add(Blocker.ACRONYM_DESTINATION)
             }
         }
