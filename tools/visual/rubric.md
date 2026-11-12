@@ -25,3 +25,20 @@ are recorded in `docs/theming/lcars-jefferies.md`.
 - Calm and engineered, not busy. Decoration supports structure.
 - Consistent rhythm: gaps between strip elements match the gaps between keys.
 - The command strip and the key field look like one machine.
+
+## Depth and character
+
+The reference is a direction, not a template. OmniBoard should read as the
+native interface of a custom device, with layers, not a flat skin. These never
+fail a round on their own; the critic proposes them and Sam chooses.
+
+- Layering: keys sit in recessed housings or on raised plates; structure
+  (rules, brackets, grilles) sits between the black field and the caps.
+- Light: restrained highlights and shadows that agree on one light source.
+- Readouts: places where the keyboard can show real state (mode, layout,
+  modifiers, voice level) instead of decoration.
+- Function first: the keyboard doubles as a coding keyboard; flourishes that
+  expose that function beat ornaments.
+- Trajectory: a round should move toward the target without undoing earlier
+  wins. The comparison image shows what changed; changes outside the round's
+  stated scope are regressions until shown otherwise.

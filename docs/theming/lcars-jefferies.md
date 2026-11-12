@@ -149,8 +149,9 @@ not a theme setting, so pick it in Settings, Smartbar, Layout.
 - Command widths are shares of the whole bar (MENU 14%, EMOJI and LANG 15%,
   VOICE 14%); the free middle takes exactly what is left. Labels are single
   line, 14sp, tracked 1sp (`smartbar-action-key`).
-- Check visual changes here with the emulator loop in `tools/visual/` before
-  installing on the phone.
+- Check visual changes here with the emulator loop in `tools/visual/`
+  (`round.sh`) before installing on the phone; each round is compared with the
+  reference and the previous round and added to the trajectory.
 - Voice mode shows the existing `WhisperBar` and `VoiceVisualizer` unchanged.
 - The buttons are ordinary quick actions drawn wide with text labels
   (`QuickActionButton(square = false, label = ...)`), styled by
