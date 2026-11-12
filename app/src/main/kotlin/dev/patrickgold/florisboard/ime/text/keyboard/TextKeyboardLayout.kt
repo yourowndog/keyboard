@@ -613,7 +613,11 @@ private fun BoxScope.TextKeyContent(
             text = customLabel,
         )
     }
-    if (showCornerHint) key.hintedLabel?.let { hintedLabel ->
+    // Hints are always computed (plates need them); the corner hint keeps its own visibility pref.
+    // The phone pad's letter groups were never behind that pref.
+    val hintPrefs by FlorisPreferenceStore
+    val cornerHintsVisible by hintPrefs.keyboard.keyHintsVisible.observeAsState()
+    if (showCornerHint && (cornerHintsVisible || isTelPadKey)) key.hintedLabel?.let { hintedLabel ->
         SnyggText(
             elementName = FlorisImeUi.KeyHint.elementName,
             attributes = attributes,

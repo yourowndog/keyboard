@@ -109,6 +109,11 @@ This is render-only. Rows are not resized and touch bounds are unchanged, so a
 tap anywhere on the plate or cap types the letter and a long press types the
 plate symbol, exactly as before. Themes without a `key-plate` background keep
 the corner `key-hint`. Raise the keyboard's row height if the caps feel short.
+
+The hint is computed whenever symbol or number hints are enabled. The hidden
+`keyboard__key_hints_visible` pref (no settings switch, default off) only
+controls the classic corner hint. It used to gate the computation itself, which
+left every plate empty on a default install.
 Code: `TextKeyButton` and `isPlateCandidate` in `TextKeyboardLayout.kt`.
 
 ### Ornament layer
@@ -119,6 +124,8 @@ per key code by giving `key-ornament` a foreground. That foreground is the
 accent, and `key-ornament`'s background is the structure colour, both
 resolved through Snygg, so the art re-themes and no hex lives in Kotlin.
 
+- **Shift housing:** a half stadium, `rounded-corner(50%,0%,0%,50%)`: round on
+  the outer edge, straight on the inner edge facing Z, as in the reference.
 - **Shift dial:** an empty ring when off, a half arc for one capital, and a
   full ring with a solid core for caps lock. It replaces the shift icon, so the
   Jefferies shift key no longer turns solid coral when pressed or in caps lock;
@@ -151,8 +158,9 @@ not a theme setting, so pick it in Settings, Smartbar, Layout.
 - Command widths are shares of the whole bar (MENU 14%, EMOJI and TEXT/CODE 15%,
   VOICE 14%); the free middle takes exactly what is left. Labels are single
   line, 14sp, tracked 1sp (`smartbar-action-key`).
-- Check visual changes here with the emulator loop in `tools/visual/` before
-  installing on the phone.
+- Check visual changes here with the emulator loop in `tools/visual/`
+  (`round.sh`) before installing on the phone; each round is compared with the
+  reference and the previous round and added to the trajectory.
 - Voice mode shows the existing `WhisperBar` and `VoiceVisualizer` unchanged.
 - The buttons are ordinary quick actions drawn wide with text labels
   (`QuickActionButton(square = false, label = ...)`), styled by

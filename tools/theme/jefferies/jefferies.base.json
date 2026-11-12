@@ -56,7 +56,7 @@
   "key[code=-7]:pressed": { "background": "var(--coral)", "foreground": "var(--glyph)" },
   "key[code=-8]": { "background": "var(--chrome)", "foreground": "var(--glyph)" },
 
-  "key[code=-11]": { "background": "var(--recess)", "foreground": "var(--coral)", "shape": "rounded-corner(50%,50%,50%,50%)" },
+  "key[code=-11]": { "background": "var(--recess)", "foreground": "var(--coral)", "shape": "rounded-corner(50%,0%,0%,50%)" },
   "key[code=-11]:pressed": { "background": "var(--chrome)", "foreground": "var(--coral)" },
 
   "key[code=10]": { "background": "var(--cap)", "foreground": "var(--glyph)", "font-size": "14sp", "shape": "rounded-corner(5dp,5dp,22dp,5dp)" },

@@ -9,8 +9,9 @@ tune several systems at once during this pass.
 
 For appearance-only changes (themes, smartbar layout, key art), iterate first
 on the emulator with [`tools/visual/`](../../tools/visual/README.md): it
-screenshots the keyboard on an icarion-sized emulator with Sam's settings and
-runs a critic review. Then confirm on the phone.
+screenshots the keyboard on an icarion-sized emulator with Sam's settings,
+sets it beside the design reference and the previous round, keeps a history of
+rounds, and runs a critic review. Then confirm on the phone.
 
 ## Connection and baseline
 
