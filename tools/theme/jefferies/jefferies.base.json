@@ -14,6 +14,7 @@
     "--recess": "#303749",
     "--space": "#0A0D12",
     "--coral": "#FF6752",
+    "--sunk": "#171A21",
     "--cyan": "#2A7194",
     "--cyan-lit": "#58A8CC",
     "--amber": "#F0A23C",
@@ -26,7 +27,8 @@
     "--panel": "#0C1014",
     "--font": "`__FONT_FAMILY__`",
     "--radius": "rounded-corner(5dp,5dp,5dp,5dp)",
-    "--radius-sm": "rounded-corner(3dp,3dp,3dp,3dp)"
+    "--radius-sm": "rounded-corner(3dp,3dp,3dp,3dp)",
+    "--pill": "rounded-corner(50%,50%,50%,50%)"
   },
 
   "window": { "background": "var(--void)", "foreground": "var(--plate)", "font-family": "var(--font)" },
@@ -47,7 +49,7 @@
 
   "key-hint": { "foreground": "var(--glyph)", "font-family": "var(--font)", "font-size": "11sp", "font-weight": "normal" },
   "key-plate": { "background": "var(--plate)", "foreground": "var(--glyph)", "font-family": "var(--font)", "font-size": "12sp", "font-weight": "normal", "shape": "var(--radius)", "margin": "1.5dp", "shadow-elevation": "0dp" },
-  "key-plate:pressed": { "background": "var(--plate-lit)", "foreground": "var(--glyph)" },
+  "key-plate:pressed": { "background": "var(--sunk)", "foreground": "var(--glyph-dim)" },
   "key-plate[ctrlstate=`active`]": { "background": "var(--lilac)", "foreground": "var(--glyph)", "font-size": "11sp", "letter-spacing": "1sp" },
   "key-plate[ctrlstate=`locked`]": { "background": "var(--lilac-lit)", "foreground": "var(--glyph)", "font-size": "11sp", "letter-spacing": "1sp" },
 
@@ -100,10 +102,10 @@
   "key[code=-305,-306,-241,-242,-243,-244,-245]:pressed": { "background": "var(--cyan)", "foreground": "var(--plate)" },
   "key[code=-301,-221,-228,-224]": { "background": "var(--recess)", "foreground": "var(--glyph-up)", "font-size": "13sp" },
 
-  "key-popup-box": { "background": "var(--panel)", "foreground": "var(--plate)", "border-width": "1dp", "border-color": "var(--recess)", "shape": "var(--radius)", "shadow-elevation": "4dp", "shadow-color": "var(--void)" },
-  "key-popup-element": { "background": "var(--panel)", "foreground": "var(--plate)", "font-family": "var(--font)", "font-size": "19sp", "shape": "var(--radius-sm)" },
-  "key-popup-element:focus": { "background": "var(--coral)", "foreground": "var(--glyph)" },
-  "key-popup-extended-indicator": { "background": "var(--coral)", "foreground": "var(--glyph)", "shape": "var(--radius-sm)" },
+  "key-popup-box": { "background": "var(--plate)", "foreground": "var(--glyph)", "font-family": "var(--font)", "font-size": "22sp", "font-weight": "bold", "border-width": "1.5dp", "border-color": "var(--recess)", "shape": "var(--pill)", "shadow-elevation": "10dp", "shadow-color": "var(--void)" },
+  "key-popup-element": { "foreground": "var(--glyph)", "font-family": "var(--font)", "font-size": "20sp", "font-weight": "bold", "shape": "var(--pill)" },
+  "key-popup-element:focus": { "background": "var(--plate-lit)", "foreground": "var(--glyph)" },
+  "key-popup-extended-indicator": { "foreground": "var(--chrome)", "font-size": "14sp" },
 
   "smartbar": { "background": "var(--void)", "foreground": "var(--plate)" },
   "smartbar-shared-actions-row": { "background": "var(--void)" },

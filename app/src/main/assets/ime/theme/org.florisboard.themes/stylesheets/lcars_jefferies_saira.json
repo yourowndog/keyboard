@@ -14,6 +14,7 @@
     "--recess": "#303749",
     "--space": "#0A0D12",
     "--coral": "#FF6752",
+    "--sunk": "#171A21",
     "--cyan": "#2A7194",
     "--cyan-lit": "#58A8CC",
     "--amber": "#F0A23C",
@@ -26,7 +27,8 @@
     "--panel": "#0C1014",
     "--font": "`Saira Condensed`",
     "--radius": "rounded-corner(5dp,5dp,5dp,5dp)",
-    "--radius-sm": "rounded-corner(3dp,3dp,3dp,3dp)"
+    "--radius-sm": "rounded-corner(3dp,3dp,3dp,3dp)",
+    "--pill": "rounded-corner(50%,50%,50%,50%)"
   },
   "window": {
     "background": "var(--void)",
@@ -69,8 +71,8 @@
     "shadow-elevation": "0dp"
   },
   "key-plate:pressed": {
-    "background": "var(--plate-lit)",
-    "foreground": "var(--glyph)"
+    "background": "var(--sunk)",
+    "foreground": "var(--glyph-dim)"
   },
   "key-plate[ctrlstate=`active`]": {
     "background": "var(--lilac)",
@@ -254,29 +256,31 @@
     "font-size": "13sp"
   },
   "key-popup-box": {
-    "background": "var(--panel)",
-    "foreground": "var(--plate)",
-    "border-width": "1dp",
+    "background": "var(--plate)",
+    "foreground": "var(--glyph)",
+    "font-family": "var(--font)",
+    "font-size": "22sp",
+    "font-weight": "bold",
+    "border-width": "1.5dp",
     "border-color": "var(--recess)",
-    "shape": "var(--radius)",
-    "shadow-elevation": "4dp",
+    "shape": "var(--pill)",
+    "shadow-elevation": "10dp",
     "shadow-color": "var(--void)"
   },
   "key-popup-element": {
-    "background": "var(--panel)",
-    "foreground": "var(--plate)",
+    "foreground": "var(--glyph)",
     "font-family": "var(--font)",
-    "font-size": "19sp",
-    "shape": "var(--radius-sm)"
+    "font-size": "20sp",
+    "font-weight": "bold",
+    "shape": "var(--pill)"
   },
   "key-popup-element:focus": {
-    "background": "var(--coral)",
+    "background": "var(--plate-lit)",
     "foreground": "var(--glyph)"
   },
   "key-popup-extended-indicator": {
-    "background": "var(--coral)",
-    "foreground": "var(--glyph)",
-    "shape": "var(--radius-sm)"
+    "foreground": "var(--chrome)",
+    "font-size": "14sp"
   },
   "smartbar": {
     "background": "var(--void)",
