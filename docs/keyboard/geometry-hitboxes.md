@@ -182,6 +182,15 @@ through the same visible-bounds derivation as everything else — so popups move
 with the solved geometry instead of drifting from an independently guessed
 rectangle.
 
+`PopupGeometry` turns that cell into the popup shapes. The preview is a
+horizontal pill 1.7 cells wide and 0.62 cells tall (about a cap without its
+hint plate), centred 3dp above the pressed key and shifted inward at the layout
+edges. The long-press strip replaces the pill in place, with alternates 1.1 key
+widths wide. Nothing starts higher than the smartbar's top edge: the IME window
+clips anything drawn above it, which is what cut the old 2.5-key-tall preview in
+half on the top letter row. A popup that would cross that line slides down over
+its key instead.
+
 ## Robustness
 
 `GeometryPreferences.sanitized()` clamps at the preference boundary: percentages
