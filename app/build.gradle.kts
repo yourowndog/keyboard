@@ -129,7 +129,9 @@ android {
                 }
             }
                 assets {
-                    srcDirs("src/main/assets")
+                    // private-assets/ is gitignored: Sam's licensed LCARS material is packed into
+                    // local builds from there and never committed. See docs/theming/lcars-assets.md.
+                    srcDirs("src/main/assets", rootProject.file("private-assets"))
                 }
                 java {
                 }
@@ -286,6 +288,9 @@ dependencies {
     implementation(project(":lib:kotlin"))
     implementation(project(":lib:native"))
     implementation(project(":lib:snygg"))
+    // Keyboard backdrops load through Coil directly (snygg keeps its Coil dependency private).
+    implementation(libs.coil.compose)
+    implementation(libs.coil.gif)
 
     testImplementation(libs.kotlin.test.junit5)
     androidTestImplementation(libs.androidx.test.ext)

@@ -38,6 +38,7 @@ import dev.patrickgold.florisboard.ime.smartbar.Smartbar
 import dev.patrickgold.florisboard.ime.smartbar.quickaction.QuickActionsOverflowPanel
 import dev.patrickgold.florisboard.ime.text.keyboard.TextKeyboardLayout
 import dev.patrickgold.florisboard.ime.theme.FlorisImeUi
+import dev.patrickgold.florisboard.ime.theme.backdrop.KeyboardBackdrop
 import dev.patrickgold.florisboard.keyboardManager
 import dev.patrickgold.jetpref.datastore.model.observeAsState
 import org.florisboard.lib.snygg.ui.SnyggBox
@@ -76,6 +77,8 @@ fun TextInputLayout(
                     QuickActionsOverflowPanel()
                 } else {
                     Box {
+                        // Behind everything in the key field, above the chassis colour.
+                        KeyboardBackdrop(modifier = Modifier.matchParentSize())
                         val incognitoDisplayMode by prefs.keyboard.incognitoDisplayMode.observeAsState()
                         val showIncognitoIcon = evaluator.state.isIncognitoMode &&
                             incognitoDisplayMode == IncognitoDisplayMode.DISPLAY_BEHIND_KEYBOARD
