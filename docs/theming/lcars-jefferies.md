@@ -59,9 +59,10 @@ extension through `ZipUtils.unzip`, which for an asset-backed extension calls
 
 - `width`, `height`, `opacity` are not properties. Gradients have no safe value
   path. There is no animation.
-- `background-image` is honored only on `window`, and only below API 30
-  (`FlorisImeService.kt`, `supportsBackgroundImage = !ATLEAST_API30_R`), so
-  textured keycaps are unavailable on the target device.
+- `background-image` on `window` is honored only below API 30
+  (`FlorisImeService.kt`, `supportsBackgroundImage = !ATLEAST_API30_R`).
+  Keys, hint plates and `keyboard-chassis` do honor it on every API level;
+  textured keycaps are a key skin (see [key skins](key-skins.md)).
 - There is no themable surface between `window` and `key`. `FlorisImeUi.Root`
   is declared but never queried, and only `window` paints. The reference's
   `#0C1014` bezel around a black field therefore needs a new registered

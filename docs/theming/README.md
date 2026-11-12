@@ -28,6 +28,8 @@ stylesheet.
 - [Hard-won lessons](hard-won-lessons.md)
 - [LCARS Jefferies](lcars-jefferies.md): the current design target, and a
   verified account of what Snygg can and cannot express for it.
+- [Key skins](key-skins.md): textures per key slot over a fixed layout that
+  always draws its own labels.
 - [Design references](reference/README.md): source imagery and measurements.
 
 ## Packaging

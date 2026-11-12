@@ -90,6 +90,7 @@ import dev.patrickgold.florisboard.ime.text.gestures.GlideTypingGesture
 import dev.patrickgold.florisboard.ime.text.gestures.SwipeAction
 import dev.patrickgold.florisboard.ime.text.gestures.SwipeGesture
 import dev.patrickgold.florisboard.ime.text.key.KeyCode
+import dev.patrickgold.florisboard.ime.text.key.KeyRole
 import dev.patrickgold.florisboard.ime.text.key.KeyType
 import dev.patrickgold.florisboard.ime.text.key.KeyVariation
 import dev.patrickgold.florisboard.ime.theme.FlorisImeUi
@@ -474,6 +475,7 @@ private fun TextKeyButton(
         FlorisImeUi.Attr.TmuxState to if (evaluator.state.isTmuxPrefixActive) "active" else "none",
         FlorisImeUi.Attr.NumberRowState to if (numberRowEnabled) "active" else "none",
         FlorisImeUi.Attr.DevRowState to if (devRowEnabled) "active" else "none",
+        FlorisImeUi.Attr.Role to KeyRole.forKey(key.computedData).id,
     )
 
     val isToggleActive = isTextKeyToggleActive(
@@ -510,6 +512,7 @@ private fun TextKeyButton(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(KEY_PLATE_WEIGHT),
+                supportsBackgroundImage = true,
             ) {
                 key.hintedLabel?.let { hintedLabel ->
                     SnyggText(
@@ -527,6 +530,7 @@ private fun TextKeyButton(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(KEY_CAP_WEIGHT),
+                supportsBackgroundImage = true,
             ) {
                 TextKeyContent(key, evaluator, attributes, selector, showCornerHint = false)
             }
@@ -554,6 +558,7 @@ private fun TextKeyButton(
             modifier = Modifier
                 .requiredSize(size)
                 .absoluteOffset { key.visibleBounds.topLeft.toIntOffset() },
+            supportsBackgroundImage = true,
         ) {
             if (activeOrnament != null) {
                 KeyOrnamentArt(

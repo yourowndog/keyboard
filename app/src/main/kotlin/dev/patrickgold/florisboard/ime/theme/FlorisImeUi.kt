@@ -426,5 +426,7 @@ enum class FlorisImeUi(val elementName: String, val resId: Int?) {
         const val TmuxState = "tmuxstate"
         const val NumberRowState = "numberrowstate"
         const val DevRowState = "devrowstate"
+        /** The key's [dev.patrickgold.florisboard.ime.text.key.KeyRole.id]; what a key skin selects on. */
+        const val Role = "role"
     }
 }

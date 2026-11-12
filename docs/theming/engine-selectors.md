@@ -69,6 +69,9 @@ The key renderer supplies these attributes:
 - `tmuxstate`: `none` or `active`
 - `numberrowstate`: `none` or `active`
 - `devrowstate`: `none` or `active`
+- `role`: what the key is for (`alpha`, `number`, `symbol`, `space`, `delete`,
+  `enter`, `shift`, `capslock`, `modifier`, `layout`, `profile`, `voice`,
+  `clipboard`, `command`), from `KeyRole`; see [key skins](key-skins.md)
 
 Attributes are attached to every rendered key. A state attribute does not by
 itself make the key use `:focus` or `:pressed`.
