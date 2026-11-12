@@ -78,6 +78,18 @@ object CommitPolicy {
         TOO_SHORT,
         /** Prefix-only completion — a prediction, not a correction. */
         NOT_A_CORRECTION,
+        /**
+         * A word of two or more letters would collapse to one letter (`av` → `A`, `ir` → `I`).
+         * `I` and `a` sit within two edits of every short slip; in the 2026-11 harvest 42% of
+         * these were undone, against 3% for corrections overall.
+         */
+        SINGLE_LETTER_DESTINATION,
+        /**
+         * A word not typed in capitals would become a different all-caps acronym
+         * (`uh` → `UHF`, `omfg` → `IMF`, `wth` → `ETH`). 37% of these were undone and the rest
+         * were mostly wrong too (`mt` → `MTV`, `ur` → `URL`). Pure casing fixes are unaffected.
+         */
+        ACRONYM_DESTINATION,
     }
 
     fun shouldCommit(input: Input): Boolean = blockers(input).isEmpty()
@@ -110,7 +122,19 @@ object CommitPolicy {
             if (!input.isEditDistanceCandidate && !isCasingFix && !input.isLicensedContraction) {
                 add(Blocker.NOT_A_CORRECTION)
             }
+            if (isChange && input.typed.length >= 2 && input.rawCandidate.count { it.isLetter() } == 1) {
+                add(Blocker.SINGLE_LETTER_DESTINATION)
+            }
+            if (isChange && !isCasingFix && input.typed.any { it.isLetter() } &&
+                isAcronym(input.rawCandidate) && !isAcronym(input.typed)) {
+                add(Blocker.ACRONYM_DESTINATION)
+            }
         }
+    }
+
+    private fun isAcronym(text: String): Boolean {
+        val letters = text.filter { it.isLetter() }
+        return letters.length >= 2 && letters.all { it.isUpperCase() }
     }
 
     /**

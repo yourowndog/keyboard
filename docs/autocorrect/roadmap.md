@@ -288,7 +288,8 @@ before it is considered settled: ordinary prose corrects, command lines do not,
 and backspace-through-a-correction restores the original.
 
 **2.2 Field gating (D7, D8).** Hard-off deny-list by inputType; `autoCorrect` overrides
-`noSuggestions` everywhere else.
+`noSuggestions` everywhere else. **Done 2026-11-12 (PR #82)**, with the in-word
+apostrophe fix to the Termux line-shape check.
 
 ### Phase 3 — Lift the retrieval ceiling
 
@@ -444,3 +445,31 @@ Recorded so these stop consuming attention:
    were completed on 2026-09-11; expanded-row/non-medium-height device
    validation remains. See
    `docs/development/spatial-coordinate-hardening-prompt.md`.
+
+## 2026-11 harvest replay: next steps, ranked
+
+Measured on a replay bench of the 2026-11-12 harvest snapshot (LM cut at
+2026-10-15, dev/test split at 2026-10-29). PR #82 shipped on-device learning
+with the rival test, touch-aware substitution cost (self-fixed words recovered
+42.0→46.0% on test, no change in false fires), the single-letter and acronym
+destination blockers, D8 and the Termux apostrophe fix. Still open, by
+expected impact:
+
+1. **Personal frequency in ranking.** `PersonalLexicon` counts are only a
+   vocabulary gate today; blend them into the frequency term so the person's
+   own common words outrank dictionary strangers.
+2. **Learned words as correction targets.** SymSpell cannot retrieve a word it
+   does not hold, so a learned word protects itself but a typo of it is never
+   corrected to it. Add learned words to retrieval.
+3. **Self-fix capture.** In 80% of words the person fixed by hand, the intended
+   word was already in the bar. A confidence margin that commits those (with
+   touch evidence) is the largest pool left, but `AUTO_OK` labels are polluted
+   by unreverted mistakes, so tune on `SELF_FIX`/`AUTO_REV` only.
+4. **Noisy-channel decoder with a heavy-tailed touch model.** The full decoder
+   lost to the current engine on long novel words; it needs a calibrated
+   insertion/deletion model before it can replace the edit-distance penalty.
+5. **Termux first-word correction**, still suppressed by line shape.
+6. **Keylog shipping to Titan** like the voice archive, so the bench and a
+   personal model train on fresh data without manual snapshots.
+7. **Personal model.** Next-word prediction from the personal LM first, then a
+   trained reranker once 1–6 give clean labels.

@@ -55,6 +55,15 @@ abstract class AbstractEditorInstance(context: Context) {
     companion object {
         private const val NumCharsBeforeCursor: Int = 256
         private const val NumCharsAfterCursor: Int = 128
+
+        private val NEVER_CORRECT_VARIATIONS = setOf(
+            InputAttributes.Variation.PASSWORD,
+            InputAttributes.Variation.VISIBLE_PASSWORD,
+            InputAttributes.Variation.WEB_PASSWORD,
+            InputAttributes.Variation.EMAIL_ADDRESS,
+            InputAttributes.Variation.WEB_EMAIL_ADDRESS,
+            InputAttributes.Variation.URI,
+        )
         private const val NumCharsSafeMarginBeforeCursor: Int = 128
         //private const val NumCharsSafeMarginAfterCursor: Int = 0
 
@@ -261,12 +270,15 @@ abstract class AbstractEditorInstance(context: Context) {
 
     private val rawShellChars = "/\\|&;<>$`*~=%{}[]()'\"".toSet()
 
+    /** An apostrophe between letters is prose (`it's`, `don't`), not shell quoting. */
+    private val inWordApostrophe = Regex("""(?<=\p{L})['’](?=\p{L})""")
+
     /**
      * True only when the current line is ordinary prose. Any hint of shell syntax, a leading
      * flag or path, or a line still on its first word disqualifies it.
      */
     private fun rawLineIsCorrectable(): Boolean {
-        val line = rawLine.toString()
+        val line = rawLine.toString().replace(inWordApostrophe, "")
         if (line.isBlank()) return false
         // Still typing the first word of the line: that is the command name.
         if (line.trimStart().none { it == ' ' }) return false
@@ -417,7 +429,18 @@ abstract class AbstractEditorInstance(context: Context) {
     abstract fun determineComposer(composerName: ExtensionComponentName): Composer
 
     protected open fun shouldDetermineComposingRegion(editorInfo: FlorisEditorInfo): Boolean {
-        return editorInfo.isRichInputEditor && !editorInfo.inputAttributes.flagTextNoSuggestions
+        return editorInfo.isRichInputEditor &&
+            (!editorInfo.inputAttributes.flagTextNoSuggestions || autoCorrectOverridesNoSuggestions(editorInfo))
+    }
+
+    /**
+     * Some apps ask for no suggestion strip but still ask for correction (the Google search box
+     * sends `noSuggestions|autoCorrect`). Honour the correction request, except in fields where
+     * rewriting text is never acceptable.
+     */
+    protected fun autoCorrectOverridesNoSuggestions(editorInfo: FlorisEditorInfo): Boolean {
+        val attrs = editorInfo.inputAttributes
+        return attrs.flagTextAutoCorrect && attrs.variation !in NEVER_CORRECT_VARIATIONS
     }
 
     private suspend fun determineLocalComposing(

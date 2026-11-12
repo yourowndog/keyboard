@@ -47,6 +47,7 @@ import org.florisboard.lib.android.showShortToastSync
 import dev.patrickgold.florisboard.ime.nlp.HarvestManager
 import dev.patrickgold.florisboard.ime.nlp.AppContext
 import dev.patrickgold.florisboard.ime.nlp.HarvestRoute
+import dev.patrickgold.florisboard.ime.nlp.shared.PersonalLexicon
 
 class EditorInstance(context: Context) : AbstractEditorInstance(context) {
     companion object {
@@ -97,6 +98,16 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
      * Build AppContext from current EditorInfo for harvest logging.
      * Caches the result so it's only computed once per input session.
      */
+    /** On-device learning follows the same privacy boundary as the harvest, plus incognito. */
+    private fun learningAllowed(ctx: AppContext?): Boolean =
+        ctx?.isHarvestBlocked != true &&
+            !activeState.isIncognitoMode &&
+            !activeInfo.imeOptions.flagNoPersonalizedLearning
+
+    private fun learnCommitted(word: String, ctx: AppContext?) {
+        if (learningAllowed(ctx)) PersonalLexicon.recordCommit(word)
+    }
+
     private fun buildAppContext(): AppContext? {
         cachedAppContext?.let { return it }
 
@@ -233,7 +244,7 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
     override fun rawAutoCorrectEnabled(): Boolean {
         return prefs.correction.rawEditorAutoCorrect.get() &&
             activeState.keyVariation != KeyVariation.PASSWORD &&
-            !activeInfo.inputAttributes.flagTextNoSuggestions
+            (!activeInfo.inputAttributes.flagTextNoSuggestions || autoCorrectOverridesNoSuggestions(activeInfo))
     }
 
     override fun shouldDetermineComposingRegion(editorInfo: FlorisEditorInfo): Boolean {
@@ -393,6 +404,7 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
             (typed.isEmpty() || undo.originalText.equals(typed, ignoreCase = true))
         if (isFreshCorrection && undo != null) {
             lastLoggedAutoCorrect = undo
+            learnCommitted(undo.correctedText, ctx)
             HarvestManager.logAccepted(
                 typed = undo.originalText,
                 correctedTo = undo.correctedText,
@@ -415,6 +427,7 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
             return
         }
         if (typed.isEmpty()) return
+        learnCommitted(typed, ctx)
         // Log manual correction if user backspaced into committed text and retyped differently
         val original = pendingManualCorrect
         if (original != null) {
@@ -536,6 +549,7 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
             val trace = currentWordTrace.toString()
             phantomSpace.setActive(showComposingRegion = false, candidate = candidate)
             super.finalizeComposingText(textWithSpace).also {
+                learnCommitted(text, ctx)
                 if (original.isNotEmpty() && text != original) {
                     // Track the word WITHOUT the space for the undo state, so our "trailing match" logic handles the space.
                     autoCorrectUndoState = AbstractEditorInstance.AutoCorrectUndoState(text, original)
@@ -553,6 +567,7 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
                 } else if (original.isNotEmpty() && text.equals(original, ignoreCase = true)) {
                     // User explicitly picked their typed word - log as INSISTED
                     // This is a strong signal this word should be in the dictionary
+                    if (learningAllowed(ctx)) PersonalLexicon.recordInsist(original)
                     HarvestManager.logInsisted(
                         original, prevWord, ctx,
                         v4Route = harvestRoute,
@@ -982,7 +997,9 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         // At revert time the restored typed word is already committed text, so skip it
         // when deriving context — getPreviousWord() would report it as its own prev.
         val (revertPrev, revertPrev2) = getContextWords(state.originalText)
-        HarvestManager.logRejected(state.originalText, state.correctedText, revertPrev, revertPrev2, buildAppContext())
+        val revertCtx = buildAppContext()
+        if (learningAllowed(revertCtx)) PersonalLexicon.recordRevert(state.originalText, state.correctedText)
+        HarvestManager.logRejected(state.originalText, state.correctedText, revertPrev, revertPrev2, revertCtx)
         autoCorrectUndoState = null
         return true
     }

@@ -208,4 +208,46 @@ class CommitPolicyTest {
         )
         assertFalse(CommitPolicy.shouldCommit(input))
     }
+
+    // Harvest 2026-11: av -> A, ir -> I, fb -> a were undone 42% of the time.
+    @Test
+    fun multiLetterWordNeverCollapsesToASingleLetter() {
+        for ((typed, candidate) in listOf("av" to "A", "ir" to "I", "fb" to "a", "AV" to "A")) {
+            val input = baseInput().copy(typed = typed, casedCandidate = candidate, rawCandidate = candidate)
+            assertTrue(Blocker.SINGLE_LETTER_DESTINATION in CommitPolicy.blockers(input), "$typed -> $candidate")
+        }
+    }
+
+    @Test
+    fun loneIStillCapitalises() {
+        val input = baseInput().copy(typed = "i", casedCandidate = "I", rawCandidate = "I")
+        assertTrue(CommitPolicy.shouldCommit(input))
+    }
+
+    // Harvest 2026-11: uh -> UHF, omfg -> IMF, wth -> ETH, mt -> MTV.
+    @Test
+    fun lowercaseWordNeverBecomesADifferentAcronym() {
+        for ((typed, candidate) in listOf("uh" to "UHF", "omfg" to "IMF", "wth" to "ETH", "Uh" to "UHF")) {
+            val input = baseInput().copy(typed = typed, casedCandidate = candidate, rawCandidate = candidate)
+            assertTrue(Blocker.ACRONYM_DESTINATION in CommitPolicy.blockers(input), "$typed -> $candidate")
+        }
+    }
+
+    @Test
+    fun acronymCasingFixStillCommits() {
+        val input = baseInput().copy(
+            typed = "nasa",
+            casedCandidate = "NASA",
+            rawCandidate = "NASA",
+            typedIsValidWord = false,
+        )
+        assertFalse(Blocker.ACRONYM_DESTINATION in CommitPolicy.blockers(input))
+        assertTrue(CommitPolicy.shouldCommit(input))
+    }
+
+    @Test
+    fun capitalisedTypoStillCorrectsToAcronym() {
+        val input = baseInput().copy(typed = "NSAA", casedCandidate = "NASA", rawCandidate = "NASA")
+        assertFalse(Blocker.ACRONYM_DESTINATION in CommitPolicy.blockers(input))
+    }
 }
