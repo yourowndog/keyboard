@@ -84,6 +84,12 @@ class PopupUiController(
     var evaluator: ComputingEvaluator = DefaultComputingEvaluator
     var keyHintConfiguration: KeyHintConfiguration = KeyHintConfiguration.HINTS_DISABLED
 
+    /**
+     * How far above the keyboard layout's top edge a popup may draw before the IME window clips it,
+     * in pixels. The layout sets this to the smartbar height. See [PopupGeometry].
+     */
+    var headroomPx: Float = 0.0f
+
     /** Is true if the preview popup is visible to the user, else false */
     val isShowingPopup: Boolean
         get() = baseRenderInfo != null
@@ -140,7 +146,11 @@ class PopupUiController(
         if (!isSuitableForExtendedPopup(key)) return
 
         val baseBounds = baseRenderInfo?.bounds ?: boundsProvider(key)
-        val keyPopupDiffX = (key.visibleBounds.width - baseBounds.width) / 2.0f
+        // Each alternate is a little wider than the key; the strip is as tall as the preview pill
+        // and replaces it in place.
+        val elemWidth = key.visibleBounds.width * PopupGeometry.EXT_ELEMENT_WIDTH_FACTOR
+        val elemHeight = baseBounds.height
+        val keyPopupDiffX = (key.visibleBounds.width - elemWidth) / 2.0f
 
         // Anchor left if keyView is in left half of keyboardView, else anchor right
         val anchorLeft = key.visibleBounds.left < size.width / 2
@@ -183,11 +193,11 @@ class PopupUiController(
                 val availableSpace = when {
                     anchorLeft -> key.visibleBounds.left + keyPopupDiffX
                     anchorRight -> size.width -
-                        (key.visibleBounds.left + keyPopupDiffX + baseBounds.width)
+                        (key.visibleBounds.left + keyPopupDiffX + elemWidth)
                     else -> 0.0f
                 }
                 while (offset > 0) {
-                    if (availableSpace >= offset * baseBounds.width) {
+                    if (availableSpace >= offset * elemWidth) {
                         break
                     } else {
                         offset -= 1
@@ -275,20 +285,19 @@ class PopupUiController(
         }
 
         // Calculate layout params
-        val extWidth = row0count * baseBounds.width
+        val extWidth = row0count * elemWidth
         val extHeight = when {
-            row1count > 0 -> baseBounds.height * 0.4f * 2.0f
-            else -> baseBounds.height * 0.4f
+            row1count > 0 -> elemHeight * 2.0f
+            else -> elemHeight
         }
-        val x = ((key.visibleBounds.width - baseBounds.width) / 2.0f) + when {
-            anchorLeft -> -anchorOffset * baseBounds.width
-            anchorRight -> -extWidth + baseBounds.width + anchorOffset * baseBounds.width
+        val x = keyPopupDiffX + when {
+            anchorLeft -> -anchorOffset * elemWidth
+            anchorRight -> -extWidth + elemWidth + anchorOffset * elemWidth
             else -> 0.0f
         } + key.visibleBounds.left
-        val y = -baseBounds.height - when {
-            row1count > 0 -> (baseBounds.height * 0.4f).toInt()
-            else -> 0
-        } + key.visibleBounds.bottom
+        // The bottom row sits where the preview pill was; a second row stacks above it unless that
+        // would leave the visible window, in which case the strip slides down over the key.
+        val y = PopupGeometry.clampTop(bottom = baseBounds.bottom, height = extHeight, headroom = headroomPx)
         val extBounds = FlorisRect.new(
             left = x, top = y, right = x + extWidth, bottom = y + extHeight,
         )
@@ -297,6 +306,8 @@ class PopupUiController(
             elements = elements,
             baseBounds = baseBounds,
             bounds = extBounds,
+            elemWidth = elemWidth,
+            elemHeight = elemHeight,
             anchorLeft = anchorLeft,
             anchorRight = anchorRight,
             anchorOffset = anchorOffset,
@@ -322,15 +333,19 @@ class PopupUiController(
         }
 
         val extRenderInfo = extRenderInfo ?: return false
-        val baseBounds = extRenderInfo.baseBounds
-        val keyPopupDiffX = (key.visibleBounds.width - baseBounds.width) / 2.0f
+        val elemWidth = extRenderInfo.elemWidth
+        val keyPopupDiffX = (key.visibleBounds.width - elemWidth) / 2.0f
 
         val x = xEvent - key.visibleBounds.left
         val y = yEvent - key.visibleBounds.top
-        val kX = x / baseBounds.width
+        val kX = x / elemWidth
+        // Above this line (key-relative) the finger is on the upper row of a two-row strip.
+        val upperRowY = extRenderInfo.bounds.bottom - extRenderInfo.elemHeight - key.visibleBounds.top
 
-        // Check if out of boundary on y-axis
-        if (y < -baseBounds.height || y > 0.9f * baseBounds.height) {
+        // Check if out of boundary on y-axis: allow one element height of slack above the strip,
+        // and most of the key below it.
+        val topLimit = minOf(extRenderInfo.bounds.top - key.visibleBounds.top, 0.0f) - extRenderInfo.elemHeight
+        if (y < topLimit || y > 0.9f * key.visibleBounds.height) {
             return false
         }
 
@@ -338,12 +353,12 @@ class PopupUiController(
             activeElementIndex = when {
                 anchorLeft -> when {
                     // check if out of boundary on x-axis
-                    x < keyPopupDiffX - (anchorOffset + 1) * baseBounds.width ||
-                        x > (keyPopupDiffX + (row0count + 1 - anchorOffset) * baseBounds.width) -> {
+                    x < keyPopupDiffX - (anchorOffset + 1) * elemWidth ||
+                        x > (keyPopupDiffX + (row0count + 1 - anchorOffset) * elemWidth) -> {
                         return false
                     }
                     // row 1
-                    y < 0 && row1count > 0 -> when {
+                    y < upperRowY && row1count > 0 -> when {
                         kX >= row1count - anchorOffset -> row1count - 1
                         kX < -anchorOffset -> 0
                         kX < 0 -> kX.toInt() - 1 + anchorOffset
@@ -359,12 +374,12 @@ class PopupUiController(
                 }
                 anchorRight -> when {
                     // check if out of boundary on x-axis
-                    x > key.visibleBounds.width - keyPopupDiffX + (anchorOffset + 1) * baseBounds.width ||
-                        x < (key.visibleBounds.width - keyPopupDiffX - (row0count + 1 - anchorOffset) * baseBounds.width) -> {
+                    x > key.visibleBounds.width - keyPopupDiffX + (anchorOffset + 1) * elemWidth ||
+                        x < (key.visibleBounds.width - keyPopupDiffX - (row0count + 1 - anchorOffset) * elemWidth) -> {
                         return false
                     }
                     // row 1
-                    y < 0 && row1count > 0 -> when {
+                    y < upperRowY && row1count > 0 -> when {
                         kX >= anchorOffset -> row1count - 1
                         kX < -(row1count - 1 - anchorOffset) -> 0
                         kX < 0 -> row1count - 2 + kX.toInt() - anchorOffset
@@ -463,9 +478,8 @@ class PopupUiController(
             )
         }
         extRenderInfo?.let { renderInfo ->
-            val baseBounds = renderInfo.baseBounds
-            val elemWidth = baseBounds.width
-            val elemHeight = baseBounds.height * 0.4f
+            val elemWidth = renderInfo.elemWidth
+            val elemHeight = renderInfo.elemHeight
             PopupExtBox(
                 modifier = Modifier
                     .requiredSize(renderInfo.bounds.size.toDpSize())
@@ -494,6 +508,8 @@ class PopupUiController(
         val elements: List<List<Element>>,
         val baseBounds: FlorisRect,
         val bounds: FlorisRect,
+        val elemWidth: Float,
+        val elemHeight: Float,
         val anchorLeft: Boolean,
         val anchorRight: Boolean,
         val anchorOffset: Int,
