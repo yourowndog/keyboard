@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.ext
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

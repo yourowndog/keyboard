@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.settings.theme
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import androidx.compose.material.icons.Icons
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts

@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.devtools
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize

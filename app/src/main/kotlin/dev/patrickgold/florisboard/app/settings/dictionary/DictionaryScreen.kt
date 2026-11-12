@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.settings.dictionary
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import androidx.compose.runtime.Composable
 import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.LocalNavController

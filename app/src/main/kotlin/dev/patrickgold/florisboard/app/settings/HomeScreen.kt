@@ -16,6 +16,8 @@
  */
 
 package dev.patrickgold.florisboard.app.settings
+
+import dev.patrickgold.florisboard.app.console.ConsolePanel
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons

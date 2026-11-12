@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.settings.dictionary
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts

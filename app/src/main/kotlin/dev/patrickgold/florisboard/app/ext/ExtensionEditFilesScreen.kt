@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.ext
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import android.provider.OpenableColumns
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult

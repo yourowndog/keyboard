@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.devtools
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.ext
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import dev.patrickgold.florisboard.R

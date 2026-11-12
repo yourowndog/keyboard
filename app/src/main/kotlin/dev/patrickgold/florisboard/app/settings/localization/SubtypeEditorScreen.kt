@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.settings.localization
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues

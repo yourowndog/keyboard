@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.settings.keyboard
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height

@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.settings.about
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

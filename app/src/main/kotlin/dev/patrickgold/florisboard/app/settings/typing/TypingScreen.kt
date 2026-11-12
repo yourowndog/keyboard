@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.settings.typing
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.LibraryBooks

@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.settings.media
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.EmojiSymbols
 import androidx.compose.material.icons.outlined.Schedule

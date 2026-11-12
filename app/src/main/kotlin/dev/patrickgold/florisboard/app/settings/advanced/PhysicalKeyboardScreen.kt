@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.settings.advanced
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import android.content.Intent
 import android.content.res.Configuration
 import android.provider.Settings

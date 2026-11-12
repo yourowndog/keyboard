@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.ext
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Keyboard
 import androidx.compose.material.icons.filled.Language

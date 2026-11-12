@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.ext
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row

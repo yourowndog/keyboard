@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.settings.keyboard
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope

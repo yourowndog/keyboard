@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.setup
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import android.content.Context
 import android.content.Intent
 import android.os.Environment

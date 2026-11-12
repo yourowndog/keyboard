@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.settings.theme
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column

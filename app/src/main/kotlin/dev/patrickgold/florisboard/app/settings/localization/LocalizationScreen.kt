@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.settings.localization
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.material.icons.Icons

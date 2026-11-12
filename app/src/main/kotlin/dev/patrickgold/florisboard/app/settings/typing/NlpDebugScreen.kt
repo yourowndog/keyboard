@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.settings.typing
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer

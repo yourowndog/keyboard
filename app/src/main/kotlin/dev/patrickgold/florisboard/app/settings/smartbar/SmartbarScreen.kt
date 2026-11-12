@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.settings.smartbar
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import dev.patrickgold.florisboard.R
