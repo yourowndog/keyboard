@@ -116,6 +116,27 @@ controls the classic corner hint. It used to gate the computation itself, which
 left every plate empty on a default install.
 Code: `TextKeyButton` and `isPlateCandidate` in `TextKeyboardLayout.kt`.
 
+### Key proportions (Text profile)
+
+The theme can only paint inside the bounds the geometry gives it, so the
+reference's proportions come from the Text profile's geometry defaults in
+`AppPrefs.Profile`: height 100%, alpha rows 135%, key spacing 16.5dp vertical
+and 5dp horizontal. Coding keeps the stock defaults, and any value set in
+Keyboard geometry settings wins. Measured with `tools/visual/measure.py` as
+shares of the column pitch (reference / Text profile on the 1440px emulator):
+
+| | reference | Text |
+|---|---|---|
+| keycap width, gap | 0.83, 0.17 | 0.83, 0.17 |
+| plate / cap | 0.53 / 0.84 | 0.52 / 0.85 |
+| row gap | 0.41 | 0.42 |
+| row pitch | 1.86 | 1.86 |
+| key height / width | 1.74 | 1.75 |
+
+Before this the Text profile ran the stock 80% height, which made keys 1.12
+times as tall as wide with a row gap a quarter of the reference's. Spacing is
+visible gap only; touch bounds still meet, so a tap in a gap reaches a key.
+
 ### Ornament layer
 
 `KeyOrnaments.kt` draws line art inside four keys' caps: the shift dial, the
