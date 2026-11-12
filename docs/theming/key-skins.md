@@ -65,3 +65,9 @@ which is how a skin gives Ctrl-locked or caps-on its own texture.
   chosen like any other theme.
 - Mixing a skin with a separate colour theme is not supported: a skin is a
   complete theme.
+- Images only scale; they do not stretch by region. Commercial skin keyboards
+  ship every slot texture as a compiled nine-patch (fixed corners, stretchable
+  middle), so one texture fits a narrow symbol key and a wide enter key
+  without distorting its bevel. Until Snygg gains a slice property, give wide
+  slots (space, enter, the coding cluster) their own images drawn at their
+  real proportions.
