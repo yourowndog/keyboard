@@ -52,6 +52,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.isSpecified
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
@@ -92,6 +93,7 @@ import dev.patrickgold.florisboard.ime.text.gestures.SwipeAction
 import dev.patrickgold.florisboard.ime.text.gestures.SwipeGesture
 import dev.patrickgold.florisboard.ime.text.key.KeyCode
 import dev.patrickgold.florisboard.ime.text.key.KeyRole
+import dev.patrickgold.florisboard.ime.input.InputShiftState
 import dev.patrickgold.florisboard.ime.text.key.KeyType
 import dev.patrickgold.florisboard.ime.text.key.KeyVariation
 import dev.patrickgold.florisboard.ime.theme.FlorisImeUi
@@ -116,6 +118,10 @@ import org.florisboard.lib.snygg.ui.SnyggBox
 import org.florisboard.lib.snygg.ui.SnyggIcon
 import org.florisboard.lib.snygg.ui.SnyggText
 import org.florisboard.lib.snygg.ui.rememberSnyggThemeQuery
+import dev.patrickgold.florisboard.ime.theme.keyskin.KeySkin
+import dev.patrickgold.florisboard.ime.theme.keyskin.KeySkinSlot
+import dev.patrickgold.florisboard.ime.theme.keyskin.drawKeySkinTexture
+import dev.patrickgold.florisboard.ime.theme.keyskin.rememberActiveKeySkin
 import kotlin.math.abs
 import kotlin.math.sqrt
 
@@ -425,10 +431,13 @@ fun TextKeyboardLayout(
         popupUiController.keyHintConfiguration = prefs.keyboard.keyHintConfiguration()
         controller.popupUiController = popupUiController
         val debugShowTouchBoundaries by prefs.devtools.showKeyTouchBoundaries.observeAsState()
+        // Previews (theme editor thumbnails) keep the theme's own keys.
+        val keySkin = if (isPreview) null else rememberActiveKeySkin()
         for (textKey in keyboard.keys()) {
             TextKeyButton(
                 textKey, evaluator, desiredKey,
                 debugShowTouchBoundaries,
+                keySkin,
             )
         }
 
@@ -450,6 +459,7 @@ private fun TextKeyButton(
     evaluator: ComputingEvaluator,
     desiredKey: TextKey,
     debugShowTouchBoundaries: Boolean,
+    keySkin: KeySkin?,
 ) = with(LocalDensity.current) {
     val prefs by FlorisPreferenceStore
     val activeProfileId by prefs.keyboard.activeProfileId.observeAsState()
@@ -488,10 +498,31 @@ private fun TextKeyButton(
     val size = remember(key, desiredKey) {
         key.visibleBounds.size.toDpSize()
     }
+    // A key skin replaces the key surface with a texture for the key's slot. Character labels are
+    // still drawn by us; special-key textures carry their own art (docs/theming/key-skins.md).
+    val skinTexture = keySkin?.let { skin ->
+        skin.resolve(
+            KeySkinSlot.candidatesFor(
+                code = key.computedData.code,
+                role = KeyRole.forKey(key.computedData),
+                isShiftOn = evaluator.state.inputShiftState != InputShiftState.UNSHIFTED,
+                isPressed = selector == SnyggSelector.PRESSED,
+                coversSpecialKeys = skin.id.coversSpecialKeys,
+            ),
+        )
+    }
+    val suppressGlyph = skinTexture?.first?.carriesOwnGlyph == true
+    val skinBackground: (DrawScope.() -> Unit)? = skinTexture?.let { (slot, texture) ->
+        // Only the ordinary key has its own pressed texture; every other slot darkens instead.
+        val darken = selector == SnyggSelector.PRESSED && slot != KeySkinSlot.KEY_PRESSED
+        val draw: DrawScope.() -> Unit = { drawKeySkinTexture(texture, darken) }
+        draw
+    }
     // Stacked hint plates (LCARS Jefferies). Render-only: the key's touch bounds are untouched, so a
     // tap anywhere on plate or cap still types the letter and a long press still types the hint.
     val plateStyle = rememberSnyggThemeQuery(FlorisImeUi.KeyPlate.elementName, attributes, selector)
-    val isPlated = plateStyle.background().isSpecified && isPlateCandidate(key, evaluator)
+    // A skinned key is one surface, so the LCARS plate split gives way to the corner hint.
+    val isPlated = skinBackground == null && plateStyle.background().isSpecified && isPlateCandidate(key, evaluator)
     if (isPlated) {
         Column(
             modifier = Modifier
@@ -532,7 +563,8 @@ private fun TextKeyButton(
         val ornament = KeyOrnament.forCode(key.computedData.code)
         val ornamentStyle = rememberSnyggThemeQuery(FlorisImeUi.KeyOrnament.elementName, attributes, selector)
         val ornamentAccent = ornamentStyle.foreground()
-        val activeOrnament = ornament?.takeIf { ornamentAccent.isSpecified }
+        // Ornaments are drawn for the theme's own surfaces; on a texture they would clash with it.
+        val activeOrnament = ornament?.takeIf { ornamentAccent.isSpecified && skinBackground == null }
         // The spacebar's delete-swipe gauge borrows the delete key's ornament accent.
         val deleteAccent = if (activeOrnament == KeyOrnament.SPACE_DOT_RUN) {
             rememberSnyggThemeQuery(
@@ -552,6 +584,7 @@ private fun TextKeyButton(
                 .requiredSize(size)
                 .absoluteOffset { key.visibleBounds.topLeft.toIntOffset() },
             supportsBackgroundImage = true,
+            backgroundOverride = skinBackground,
         ) {
             if (activeOrnament != null) {
                 KeyOrnamentArt(
@@ -566,7 +599,10 @@ private fun TextKeyButton(
                     ),
                 )
             }
-            TextKeyContent(key, evaluator, attributes, selector, showCornerHint = true, ornament = activeOrnament)
+            TextKeyContent(
+                key, evaluator, attributes, selector,
+                showCornerHint = true, ornament = activeOrnament, suppressGlyph = suppressGlyph,
+            )
         }
     }
     if (debugShowTouchBoundaries) {
@@ -605,8 +641,9 @@ private fun BoxScope.TextKeyContent(
     selector: SnyggSelector,
     showCornerHint: Boolean,
     ornament: KeyOrnament? = null,
+    suppressGlyph: Boolean = false,
 ) {
-    if (ornament?.replacesGlyph == true) return
+    if (suppressGlyph || ornament?.replacesGlyph == true) return
     val glyphAlignment = ornament?.glyphAlignment ?: Alignment.Center
     val isTelPadKey = key.computedData.type == KeyType.NUMERIC && evaluator.keyboard.mode == KeyboardMode.PHONE
     key.label?.let { label ->

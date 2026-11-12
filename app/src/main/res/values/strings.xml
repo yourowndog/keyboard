@@ -189,6 +189,9 @@
     <string name="pref__theme__backdrop__opacity" comment="Label of the backdrop opacity slider">Backdrop strength</string>
     <string name="pref__theme__backdrop__animate" comment="Label of the switch that plays animated backdrops">Animate backdrop</string>
     <string name="pref__theme__backdrop__animate_summary" comment="Summary of the animate backdrop switch">Play animated GIF and WebP backdrops. Off shows the first frame.</string>
+    <string name="pref__theme__key_skin__group" comment="Title of the key skin group in Theme">Key skin</string>
+    <string name="pref__theme__key_skin__label" comment="Label of the key skin picker">Key texture</string>
+    <string name="pref__theme__key_skin__empty" comment="Summary when this build has no key skins">This build has no key skins. Stage a pack into private-assets/keyskins/ and rebuild.</string>
     <string name="settings__theme_manager__title_manage" comment="Title of the theme manager screen for managing installed and custom themes">Manage installed themes</string>
     <string name="pref__theme__source_assets" comment="Label for the theme source field">OmniBoard App Assets</string>
     <string name="pref__theme__source_internal" comment="Label for the theme source field">Internal Storage</string>
