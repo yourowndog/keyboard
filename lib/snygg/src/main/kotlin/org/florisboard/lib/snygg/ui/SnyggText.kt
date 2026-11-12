@@ -20,6 +20,8 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.takeOrElse
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -62,6 +64,7 @@ fun SnyggText(
     maxLines: Int? = null,
     overflow: TextOverflow? = null,
     textAlign: TextAlign? = null,
+    color: Color = Color.Unspecified,
 ) {
     ProvideSnyggStyle(elementName, attributes, selector) { style ->
         Text(
@@ -72,7 +75,7 @@ fun SnyggText(
                 .snyggBackground(style, allowClip = false)
                 .snyggPadding(style),
             text = text,
-            color = style.foreground(),
+            color = color.takeOrElse { style.foreground() },
             fontSize = style.fontSize(),
             fontStyle = style.fontStyle(),
             fontWeight = style.fontWeight(),

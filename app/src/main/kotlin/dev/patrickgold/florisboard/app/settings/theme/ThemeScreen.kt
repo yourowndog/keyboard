@@ -37,6 +37,9 @@ import androidx.compose.runtime.setValue
 import dev.patrickgold.florisboard.app.FlorisPreferenceModel
 import dev.patrickgold.florisboard.ime.theme.backdrop.BackdropId
 import dev.patrickgold.florisboard.ime.theme.backdrop.BackdropStore
+import dev.patrickgold.florisboard.ime.theme.keyskin.KeySkinId
+import dev.patrickgold.florisboard.ime.theme.keyskin.KeySkinStore
+import androidx.compose.material.icons.filled.GridView
 import dev.patrickgold.jetpref.datastore.ui.PreferenceGroup
 import dev.patrickgold.jetpref.datastore.ui.PreferenceUiScope
 import dev.patrickgold.jetpref.datastore.ui.SwitchPreference
@@ -167,6 +170,8 @@ fun ThemeScreen() = FlorisScreen {
 
         KeyboardBackdropGroup()
 
+        KeySkinGroup()
+
         PreferenceGroup(title = stringRes(R.string.pref__look__group_keys)) {
             DialogSliderPreference(
                 primaryPref = prefs.keyboard.fontSizeMultiplierPortrait,
@@ -274,5 +279,45 @@ private fun PreferenceUiScope<FlorisPreferenceModel>.KeyboardBackdropGroup() {
             summary = stringRes(R.string.pref__theme__backdrop__animate_summary),
             enabledIf = { prefs.theme.backdropId isNotEqualTo "" },
         )
+    }
+}
+
+/**
+ * Key skin picker: a texture per key slot over the theme's layout, as in the Sci-Fi Keyboard's
+ * Themes and Keys tabs. Choosing applies at once. See docs/theming/key-skins.md.
+ */
+@OptIn(ExperimentalJetPrefDatastoreUi::class)
+@Composable
+private fun PreferenceUiScope<FlorisPreferenceModel>.KeySkinGroup() {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val store = remember(context) { KeySkinStore(context.applicationContext) }
+    val options = remember { store.options() }
+    val rawId by prefs.theme.keySkinId.observeAsState()
+    val selectedId = remember(rawId) { KeySkinId.parse(rawId) }
+    var showGallery by remember { mutableStateOf(false) }
+    val hasSkins = options.size > 1
+
+    PreferenceGroup(title = stringRes(R.string.pref__theme__key_skin__group)) {
+        Preference(
+            icon = Icons.Default.GridView,
+            title = stringRes(R.string.pref__theme__key_skin__label),
+            summary = if (hasSkins) {
+                options.firstOrNull { it.id == selectedId }?.label ?: options.first().label
+            } else {
+                stringRes(R.string.pref__theme__key_skin__empty)
+            },
+            onClick = { showGallery = true },
+            enabledIf = { hasSkins },
+        )
+        if (showGallery) {
+            KeySkinGalleryDialog(
+                store = store,
+                options = options,
+                selected = selectedId,
+                onSelect = { id -> scope.launch { prefs.theme.keySkinId.set(id.storedValue) } },
+                onDismiss = { showGallery = false },
+            )
+        }
     }
 }

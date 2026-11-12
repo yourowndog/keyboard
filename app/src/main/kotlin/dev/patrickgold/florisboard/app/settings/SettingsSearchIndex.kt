@@ -50,6 +50,8 @@ object SettingsSearchIndex {
             Routes.Settings.Theme, listOf("text size", "label", "font")),
         SettingsSearchEntry(R.string.pref__keyboard__popup_enabled__label, R.string.settings__look__title,
             Routes.Settings.Theme, listOf("preview", "bubble", "highlight")),
+        SettingsSearchEntry(R.string.pref__theme__key_skin__label, R.string.settings__look__title, Routes.Settings.Theme,
+            listOf("key skin", "texture", "keycap", "sci-fi", "plate")),
         SettingsSearchEntry(R.string.ext__home__title, R.string.settings__system__title, Routes.Ext.Home,
             listOf("import", "theme extension", "addon", "plugin", "skin")),
         // Sound & touch

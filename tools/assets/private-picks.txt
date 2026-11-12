@@ -14,3 +14,8 @@ extracted/scifi-keyboard/prepared/loops/    backdrops/
 
 # The first six LCARS loops (Animated_GIFs.zip) were judged unsuitable by Sam on
 # 2026-11-12 and are no longer staged.
+
+# Key skins (Settings > Theme > Key skin). Made on sleeper from the installed Sci-Fi
+# Keyboard APK by tools/assets/prepare-scifi-keyskins.py: 20 packs (sfk-01..20, 12
+# slot textures each, compiled nine-patches) plus 40 key swatches. About 3 MB.
+extracted/scifi-keyboard/prepared/keyskins/  keyskins/
