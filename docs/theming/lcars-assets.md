@@ -58,16 +58,26 @@ do them in.
 
 ### 1. Backdrops (working first pass)
 
-Now: [backdrops](backdrops.md) are selectable with built-in code-drawn scenes,
-imports, private-asset files, a strength slider and animated GIF playback.
-Six wide LCARS loops are listed in `private-picks.txt` as starters.
+Now: [backdrops](backdrops.md) are selectable from a thumbnail gallery, with
+built-in code-drawn scenes, imports, private-asset files, a strength slider and
+animated GIF playback.
+
+The first six staged files (wide loops from `Animated_GIFs.zip`) worked
+technically but Sam judged none of them good as keyboard backgrounds
+(2026-11-12). They were replaced by the Sci-Fi Keyboard app's own galleries,
+which are drawn for a keyboard: 82 stills from `assets/backgroundblank/`
+(about 1.28:1, converted to WebP, 4 MB in all) and 44 loops from `assets/gif/`
+(33 MB). They are extracted from the APK installed on icarion into
+`extracted/scifi-keyboard/` on sleeper, prepared into
+`extracted/scifi-keyboard/prepared/{stills,loops}/`, and staged as
+`scifi_stills-NN` and `scifi_loops-NN`, which the gallery groups by collection.
 
 Next:
 - Device validation on icarion: frame cost of an animated loop under fast
   typing, battery over a day, and whether 60% strength reads well in the
   gutters of the Text and Code profiles.
-- A thumbnail gallery like the reference (static and animated tabs) replacing
-  the list picker; long-press an import to delete it.
+- Long-press an import to delete it; trim the staged set to the ones Sam
+  keeps once he has browsed them on device.
 - Crop control per backdrop (anchor top, centre, bottom), since the wide loops
   are about 2.7:1 and the key field is closer to 1.6:1.
 - Per-profile backdrop (Text calm, Code busier), and a theme-declared default.

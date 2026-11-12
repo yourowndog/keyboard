@@ -4,10 +4,13 @@
 # Source pack: Sam's catalogue (sleeper ~/documents/lcars-trek-assets, CATALOGUE.md).
 # See docs/theming/lcars-assets.md before adding lines.
 
-# Keyboard backdrops (shown through the gutters between keys). Wide loops first.
-extracted/Animated_GIFs/numbers_dots2_1248x238.gif            backdrops/lcars-number-dots.gif
-extracted/Animated_GIFs/Enterprise_Sheild_Status_1920x714.gif backdrops/lcars-shield-status.gif
-extracted/Animated_GIFs/Relay_Station_subspace_1920x746.gif   backdrops/lcars-subspace-relay.gif
-extracted/Animated_GIFs/scan_1255x286.gif                     backdrops/lcars-scan.gif
-extracted/Animated_GIFs/subspace_scan_1068x654.gif            backdrops/lcars-subspace-scan.gif
-extracted/Animated_GIFs/holodeck_1252x636.gif                 backdrops/lcars-holodeck.gif
+# Keyboard backdrops (shown through the gutters between keys).
+# Sci-Fi Keyboard galleries (Sam's installed app): the stills are already drawn
+# at the key field's ~1.28:1 shape. "prepared/" is made on sleeper by converting
+# assets/backgroundblank/*.png to WebP and copying assets/gif/*.gif; see
+# docs/theming/lcars-assets.md. A trailing slash stages the folder's contents.
+extracted/scifi-keyboard/prepared/stills/   backdrops/
+extracted/scifi-keyboard/prepared/loops/    backdrops/
+
+# The first six LCARS loops (Animated_GIFs.zip) were judged unsuitable by Sam on
+# 2026-11-12 and are no longer staged.

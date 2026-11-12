@@ -23,15 +23,16 @@ import androidx.compose.material.icons.filled.AddPhotoAlternate
 import androidx.compose.material.icons.filled.Animation
 import androidx.compose.material.icons.filled.Wallpaper
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import dev.patrickgold.florisboard.app.FlorisPreferenceModel
+import dev.patrickgold.florisboard.ime.theme.backdrop.BackdropId
 import dev.patrickgold.florisboard.ime.theme.backdrop.BackdropStore
 import dev.patrickgold.jetpref.datastore.ui.PreferenceGroup
 import dev.patrickgold.jetpref.datastore.ui.PreferenceUiScope
 import dev.patrickgold.jetpref.datastore.ui.SwitchPreference
-import dev.patrickgold.jetpref.datastore.ui.listPrefEntries
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -174,6 +175,9 @@ private fun PreferenceUiScope<FlorisPreferenceModel>.KeyboardBackdropGroup() {
     // Bumped after an import so the list picks up the new file.
     var generation by remember { mutableIntStateOf(0) }
     val options = remember(generation) { store.options() }
+    val rawBackdropId by prefs.theme.backdropId.observeAsState()
+    val selectedId = remember(rawBackdropId) { BackdropId.parse(rawBackdropId) }
+    var showGallery by remember { mutableStateOf(false) }
     val importImage = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         if (uri == null) return@rememberLauncherForActivityResult
         scope.launch {
@@ -190,14 +194,21 @@ private fun PreferenceUiScope<FlorisPreferenceModel>.KeyboardBackdropGroup() {
     }
 
     PreferenceGroup(title = stringRes(R.string.pref__theme__backdrop__group)) {
-        ListPreference(
-            prefs.theme.backdropId,
+        Preference(
             icon = Icons.Default.Wallpaper,
             title = stringRes(R.string.pref__theme__backdrop__label),
-            entries = listPrefEntries {
-                options.forEach { option -> entry(option.id.storedValue, option.label) }
-            },
+            summary = options.firstOrNull { it.id == selectedId }?.label ?: options.first().label,
+            onClick = { showGallery = true },
         )
+        if (showGallery) {
+            BackdropGalleryDialog(
+                store = store,
+                options = options,
+                selected = selectedId,
+                onSelect = { id -> scope.launch { prefs.theme.backdropId.set(id.storedValue) } },
+                onDismiss = { showGallery = false },
+            )
+        }
         Preference(
             icon = Icons.Default.AddPhotoAlternate,
             title = stringRes(R.string.pref__theme__backdrop__import),
