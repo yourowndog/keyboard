@@ -17,6 +17,10 @@
     "--sunk": "#171A21",
     "--cyan": "#2A7194",
     "--cyan-lit": "#58A8CC",
+    "--amber": "#F0A23C",
+    "--amber-lit": "#FFC978",
+    "--lilac": "#A98BE0",
+    "--lilac-lit": "#CDB8F5",
     "--glyph": "#05070C",
     "--glyph-up": "#9EA4BA",
     "--glyph-dim": "#6E748C",
@@ -70,13 +74,31 @@
     "background": "var(--sunk)",
     "foreground": "var(--glyph-dim)"
   },
+  "key-plate[ctrlstate=`active`]": {
+    "background": "var(--lilac)",
+    "foreground": "var(--glyph)",
+    "font-size": "10sp"
+  },
+  "key-plate[ctrlstate=`locked`]": {
+    "background": "var(--lilac-lit)",
+    "foreground": "var(--glyph)",
+    "font-size": "10sp"
+  },
   "key-ornament[code=-11]": {
-    "foreground": "var(--coral)",
+    "foreground": "var(--lilac)",
+    "background": "var(--recess)"
+  },
+  "key-ornament[code=-11][ctrlstate=`active`]": {
+    "foreground": "var(--glyph)",
+    "background": "var(--recess)"
+  },
+  "key-ornament[code=-11][ctrlstate=`locked`]": {
+    "foreground": "var(--glyph)",
     "background": "var(--recess)"
   },
   "key-ornament[code=-7]": {
     "foreground": "var(--coral)",
-    "background": "var(--recess)"
+    "background": "var(--space)"
   },
   "key-ornament[code=-7]:pressed": {
     "foreground": "var(--glyph)",
@@ -87,14 +109,14 @@
     "background": "var(--recess)"
   },
   "key-ornament[code=10]": {
-    "foreground": "var(--recess)"
+    "foreground": "var(--glyph)"
   },
   "key-ornament[code=10]:pressed": {
     "foreground": "var(--glyph)"
   },
   "key[code=-7]": {
-    "background": "var(--chrome)",
-    "foreground": "var(--glyph)",
+    "background": "var(--recess)",
+    "foreground": "var(--coral)",
     "font-size": "14sp"
   },
   "key[code=-7]:pressed": {
@@ -112,16 +134,24 @@
   },
   "key[code=-11]:pressed": {
     "background": "var(--chrome)",
-    "foreground": "var(--coral)"
+    "foreground": "var(--lilac)"
+  },
+  "key[code=-11][ctrlstate=`active`]": {
+    "background": "var(--lilac)",
+    "foreground": "var(--glyph)"
+  },
+  "key[code=-11][ctrlstate=`locked`]": {
+    "background": "var(--lilac-lit)",
+    "foreground": "var(--glyph)"
   },
   "key[code=10]": {
-    "background": "var(--cap)",
+    "background": "var(--amber)",
     "foreground": "var(--glyph)",
     "font-size": "14sp",
     "shape": "rounded-corner(5dp,5dp,22dp,5dp)"
   },
   "key[code=10]:pressed": {
-    "background": "var(--cyan-lit)",
+    "background": "var(--amber-lit)",
     "foreground": "var(--glyph)"
   },
   "key[code=32]": {
@@ -168,9 +198,15 @@
     "foreground": "var(--glyph)"
   },
   "key[code=-201,-202,-203,-204,-205,-206,-207]": {
-    "background": "var(--cap)",
-    "foreground": "var(--glyph)",
-    "font-size": "15sp"
+    "background": "var(--recess)",
+    "foreground": "var(--cyan-lit)",
+    "font-size": "15sp",
+    "border-width": "1dp",
+    "border-color": "var(--cyan)"
+  },
+  "key[code=-201,-202,-203,-204,-205,-206,-207]:pressed": {
+    "background": "var(--cyan)",
+    "foreground": "var(--glyph)"
   },
   "key[code=-14,-15,-131,-132,-4,-9]": {
     "background": "var(--chrome)",
@@ -183,7 +219,7 @@
     "font-size": "14sp"
   },
   "key[code=-1]:pressed": {
-    "background": "var(--coral)",
+    "background": "var(--lilac)",
     "foreground": "var(--glyph)"
   },
   "key[code=-400]": {

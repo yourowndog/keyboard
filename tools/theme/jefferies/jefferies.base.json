@@ -14,15 +14,21 @@
     "--recess": "#303749",
     "--space": "#0A0D12",
     "--coral": "#FF6752",
+    "--sunk": "#171A21",
     "--cyan": "#2A7194",
     "--cyan-lit": "#58A8CC",
+    "--amber": "#F0A23C",
+    "--amber-lit": "#FFC978",
+    "--lilac": "#A98BE0",
+    "--lilac-lit": "#CDB8F5",
     "--glyph": "#05070C",
     "--glyph-up": "#9EA4BA",
     "--glyph-dim": "#6E748C",
     "--panel": "#0C1014",
     "--font": "`__FONT_FAMILY__`",
     "--radius": "rounded-corner(5dp,5dp,5dp,5dp)",
-    "--radius-sm": "rounded-corner(3dp,3dp,3dp,3dp)"
+    "--radius-sm": "rounded-corner(3dp,3dp,3dp,3dp)",
+    "--pill": "rounded-corner(50%,50%,50%,50%)"
   },
 
   "window": { "background": "var(--void)", "foreground": "var(--plate)", "font-family": "var(--font)" },
@@ -43,24 +49,30 @@
 
   "key-hint": { "foreground": "var(--glyph)", "font-family": "var(--font)", "font-size": "11sp", "font-weight": "normal" },
   "key-plate": { "background": "var(--plate)", "foreground": "var(--glyph)", "font-family": "var(--font)", "font-size": "12sp", "font-weight": "normal", "shape": "var(--radius)", "margin": "1.5dp", "shadow-elevation": "0dp" },
-  "key-plate:pressed": { "background": "var(--plate-lit)", "foreground": "var(--glyph)" },
+  "key-plate:pressed": { "background": "var(--sunk)", "foreground": "var(--glyph-dim)" },
+  "key-plate[ctrlstate=`active`]": { "background": "var(--lilac)", "foreground": "var(--glyph)", "font-size": "10sp" },
+  "key-plate[ctrlstate=`locked`]": { "background": "var(--lilac-lit)", "foreground": "var(--glyph)", "font-size": "10sp" },
 
-  "key-ornament[code=-11]": { "foreground": "var(--coral)", "background": "var(--recess)" },
-  "key-ornament[code=-7]": { "foreground": "var(--coral)", "background": "var(--recess)" },
+  "key-ornament[code=-11]": { "foreground": "var(--lilac)", "background": "var(--recess)" },
+  "key-ornament[code=-11][ctrlstate=`active`]": { "foreground": "var(--glyph)", "background": "var(--recess)" },
+  "key-ornament[code=-11][ctrlstate=`locked`]": { "foreground": "var(--glyph)", "background": "var(--recess)" },
+  "key-ornament[code=-7]": { "foreground": "var(--coral)", "background": "var(--space)" },
   "key-ornament[code=-7]:pressed": { "foreground": "var(--glyph)", "background": "var(--recess)" },
   "key-ornament[code=32]": { "foreground": "var(--cyan-lit)", "background": "var(--recess)" },
-  "key-ornament[code=10]": { "foreground": "var(--recess)" },
+  "key-ornament[code=10]": { "foreground": "var(--glyph)" },
   "key-ornament[code=10]:pressed": { "foreground": "var(--glyph)" },
 
-  "key[code=-7]": { "background": "var(--chrome)", "foreground": "var(--glyph)", "font-size": "14sp" },
+  "key[code=-7]": { "background": "var(--recess)", "foreground": "var(--coral)", "font-size": "14sp" },
   "key[code=-7]:pressed": { "background": "var(--coral)", "foreground": "var(--glyph)" },
   "key[code=-8]": { "background": "var(--chrome)", "foreground": "var(--glyph)" },
 
   "key[code=-11]": { "background": "var(--recess)", "foreground": "var(--coral)", "shape": "rounded-corner(50%,0%,0%,50%)" },
-  "key[code=-11]:pressed": { "background": "var(--chrome)", "foreground": "var(--coral)" },
+  "key[code=-11]:pressed": { "background": "var(--chrome)", "foreground": "var(--lilac)" },
+  "key[code=-11][ctrlstate=`active`]": { "background": "var(--lilac)", "foreground": "var(--glyph)" },
+  "key[code=-11][ctrlstate=`locked`]": { "background": "var(--lilac-lit)", "foreground": "var(--glyph)" },
 
-  "key[code=10]": { "background": "var(--cap)", "foreground": "var(--glyph)", "font-size": "14sp", "shape": "rounded-corner(5dp,5dp,22dp,5dp)" },
-  "key[code=10]:pressed": { "background": "var(--cyan-lit)", "foreground": "var(--glyph)" },
+  "key[code=10]": { "background": "var(--amber)", "foreground": "var(--glyph)", "font-size": "14sp", "shape": "rounded-corner(5dp,5dp,22dp,5dp)" },
+  "key[code=10]:pressed": { "background": "var(--amber-lit)", "foreground": "var(--glyph)" },
 
   "key[code=32]": { "background": "var(--space)", "foreground": "var(--glyph-dim)", "font-size": "11sp", "letter-spacing": "2sp", "border-width": "1dp", "border-color": "var(--recess)", "shape": "var(--radius-sm)", "text-overflow": "ellipsis", "text-max-lines": "1" },
   "key[code=32]:pressed": { "background": "var(--recess)", "foreground": "var(--plate)" },
@@ -74,11 +86,12 @@
   "key[code=-212]": { "background": "var(--recess)", "foreground": "var(--coral)", "border-width": "1dp", "border-color": "var(--coral)" },
   "key[code=-212]:pressed": { "background": "var(--coral)", "foreground": "var(--glyph)" },
 
-  "key[code=-201,-202,-203,-204,-205,-206,-207]": { "background": "var(--cap)", "foreground": "var(--glyph)", "font-size": "15sp" },
+  "key[code=-201,-202,-203,-204,-205,-206,-207]": { "background": "var(--recess)", "foreground": "var(--cyan-lit)", "font-size": "15sp", "border-width": "1dp", "border-color": "var(--cyan)" },
+  "key[code=-201,-202,-203,-204,-205,-206,-207]:pressed": { "background": "var(--cyan)", "foreground": "var(--glyph)" },
   "key[code=-14,-15,-131,-132,-4,-9]": { "background": "var(--chrome)", "foreground": "var(--glyph)", "font-size": "14sp" },
 
   "key[code=-1]": { "background": "var(--chrome)", "foreground": "var(--glyph)", "font-size": "14sp" },
-  "key[code=-1]:pressed": { "background": "var(--coral)", "foreground": "var(--glyph)" },
+  "key[code=-1]:pressed": { "background": "var(--lilac)", "foreground": "var(--glyph)" },
   "key[code=-400]": { "background": "var(--chrome)", "foreground": "var(--glyph)", "font-size": "14sp" },
   "key[code=-400]:pressed": { "background": "var(--coral)", "foreground": "var(--glyph)" },
 
@@ -89,10 +102,10 @@
   "key[code=-305,-306,-241,-242,-243,-244,-245]:pressed": { "background": "var(--cyan)", "foreground": "var(--plate)" },
   "key[code=-301,-221,-228,-224]": { "background": "var(--recess)", "foreground": "var(--glyph-up)", "font-size": "13sp" },
 
-  "key-popup-box": { "background": "var(--panel)", "foreground": "var(--plate)", "border-width": "1dp", "border-color": "var(--recess)", "shape": "var(--radius)", "shadow-elevation": "4dp", "shadow-color": "var(--void)" },
-  "key-popup-element": { "background": "var(--panel)", "foreground": "var(--plate)", "font-family": "var(--font)", "font-size": "19sp", "shape": "var(--radius-sm)" },
-  "key-popup-element:focus": { "background": "var(--coral)", "foreground": "var(--glyph)" },
-  "key-popup-extended-indicator": { "background": "var(--coral)", "foreground": "var(--glyph)", "shape": "var(--radius-sm)" },
+  "key-popup-box": { "background": "var(--plate)", "foreground": "var(--glyph)", "font-family": "var(--font)", "font-size": "22sp", "font-weight": "bold", "border-width": "1.5dp", "border-color": "var(--recess)", "shape": "var(--pill)", "shadow-elevation": "10dp", "shadow-color": "var(--void)" },
+  "key-popup-element": { "foreground": "var(--glyph)", "font-family": "var(--font)", "font-size": "20sp", "font-weight": "bold", "shape": "var(--pill)" },
+  "key-popup-element:focus": { "background": "var(--plate-lit)", "foreground": "var(--glyph)" },
+  "key-popup-extended-indicator": { "foreground": "var(--chrome)", "font-size": "14sp" },
 
   "smartbar": { "background": "var(--void)", "foreground": "var(--plate)" },
   "smartbar-shared-actions-row": { "background": "var(--void)" },

@@ -15,7 +15,8 @@ AVD=omni-visual
 IMAGE="system-images;android-35;google_apis;x86_64"
 PKG=dev.patrickgold.florisboard.debug
 IME=$PKG/dev.patrickgold.florisboard.FlorisImeService
-PORT=5584
+# A second thread can run its own emulator beside a busy one: PORT=5586 (adds -read-only).
+PORT=${PORT:-5584}
 SERIAL=emulator-$PORT
 export ANDROID_SDK_ROOT=$SDK ANDROID_AVD_HOME=$HOME/.android/avd
 ADB="$SDK/platform-tools/adb -s $SERIAL"
@@ -35,7 +36,7 @@ fi
 
 if ! $ADB get-state >/dev/null 2>&1; then
     nohup "$SDK/emulator/emulator" -avd $AVD -port $PORT -no-window -no-audio -no-boot-anim \
-        -gpu swiftshader_indirect -no-snapshot-save >"$OUT/emulator.log" 2>&1 &
+        -gpu swiftshader_indirect -no-snapshot-save $([[ $PORT != 5584 ]] && echo -read-only) >"$OUT/emulator.log" 2>&1 &
     $ADB wait-for-device
     until [[ "$($ADB shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" == 1 ]]; do sleep 2; done
 fi

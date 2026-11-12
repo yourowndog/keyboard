@@ -46,6 +46,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -530,16 +531,20 @@ private fun TextKeyButton(
                 .requiredSize(size)
                 .absoluteOffset { key.visibleBounds.topLeft.toIntOffset() },
         ) {
+            val isCtrlRevealed = evaluator.state.isCtrlPressed
+            val plateLabel = if (isCtrlRevealed) CtrlReveal.plateLabel(key.computedData.code) else key.hintedLabel
             SnyggBox(
                 FlorisImeUi.KeyPlate.elementName,
                 attributes = attributes,
                 selector = selector,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(KEY_PLATE_WEIGHT),
+                    .weight(KEY_PLATE_WEIGHT)
+                    // While Ctrl is latched, plates without a named chord recede so the named ones read.
+                    .alpha(if (isCtrlRevealed && plateLabel == null) CtrlReveal.BLANK_PLATE_ALPHA else 1f),
                 supportsBackgroundImage = true,
             ) {
-                key.hintedLabel?.let { hintedLabel ->
+                plateLabel?.let { hintedLabel ->
                     SnyggText(
                         modifier = Modifier
                             .wrapContentSize()
@@ -595,6 +600,7 @@ private fun TextKeyButton(
                         structure = ornamentStyle.background(),
                         isPressed = selector == SnyggSelector.PRESSED,
                         shiftState = evaluator.state.inputShiftState,
+                        isCtrlLatched = evaluator.state.isCtrlPressed,
                         deleteSwipeLevel = deleteSwipeLevel,
                         deleteAccent = deleteAccent,
                     ),
@@ -891,6 +897,15 @@ private class TextKeyboardLayoutController(
                             true
                         }
                         KeyCode.SHIFT -> {
+                            if (inputEventDispatcher.isUninterruptedEventSequence(key.computedData) &&
+                                CtrlReveal.shiftHoldLatchesCtrl(keyboard.keys().asSequence().map { it.computedData.code })
+                            ) {
+                                // Holding Shift turns the dial to Ctrl on a board without a Ctrl key. Returning
+                                // true blocks Shift's up, so the release cancels Shift instead of latching a capital.
+                                inputEventDispatcher.sendDownUp(TextKeyData.CTRL)
+                                inputFeedbackController?.keyLongPress(key.computedData)
+                                return@onLongPress true
+                            }
                             if (inputEventDispatcher.isUninterruptedEventSequence(key.computedData)) {
                                 inputEventDispatcher.sendDownUp(TextKeyData.CAPS_LOCK)
                                 inputFeedbackController?.keyLongPress(key.computedData)
