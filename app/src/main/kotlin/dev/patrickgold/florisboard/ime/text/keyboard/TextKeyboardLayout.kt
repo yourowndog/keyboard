@@ -83,6 +83,7 @@ import dev.patrickgold.florisboard.ime.keyboard.geometry.rememberGeometryPrefere
 import dev.patrickgold.florisboard.ime.onehanded.OneHandedMode
 import dev.patrickgold.florisboard.ime.popup.ExceptionsForKeyCodes
 import dev.patrickgold.florisboard.ime.popup.PopupUiController
+import dev.patrickgold.florisboard.ime.popup.PopupGeometry
 import dev.patrickgold.florisboard.ime.popup.rememberPopupUiController
 import dev.patrickgold.florisboard.ime.nlp.HarvestManager
 import dev.patrickgold.florisboard.ime.nlp.HarvestTouch
@@ -383,29 +384,20 @@ fun TextKeyboardLayout(
             }
         }
 
+        // Popups may rise over the smartbar, which is inside the IME window; above that they clip.
+        val popupHeadroomPx = FlorisImeSizing.smartbarUiHeight().toPx()
+        val popupGapPx = POPUP_GAP.toPx()
         val popupUiController = rememberPopupUiController(
             key1 = keyboard,
             key2 = desiredKey,
             boundsProvider = { key ->
-                val keyPopupWidth: Float
-                val keyPopupHeight: Float
-                when {
-                    configuration.isOrientationLandscape() -> {
-                        keyPopupWidth = desiredKey.visibleBounds.width * 1.0f
-                        keyPopupHeight = desiredKey.visibleBounds.height * 3.0f
-                    }
-                    else -> {
-                        keyPopupWidth = desiredKey.visibleBounds.width * 1.1f
-                        keyPopupHeight = desiredKey.visibleBounds.height * 2.5f
-                    }
-                }
-                val keyPopupDiffX = (key.visibleBounds.width - keyPopupWidth) / 2.0f
-                FlorisRect.new().apply {
-                    left = key.visibleBounds.left + keyPopupDiffX
-                    top = key.visibleBounds.bottom - keyPopupHeight
-                    right = left + keyPopupWidth
-                    bottom = top + keyPopupHeight
-                }
+                PopupGeometry.previewPill(
+                    key = key.visibleBounds,
+                    desiredKey = desiredKey.visibleBounds,
+                    layoutWidth = controller.size.width,
+                    headroom = controller.popupUiController.headroomPx,
+                    gap = popupGapPx,
+                )
             },
             isSuitableForBasicPopup = { key ->
                 if (key is TextKey) {
@@ -429,6 +421,7 @@ fun TextKeyboardLayout(
             },
         )
         popupUiController.evaluator = evaluator
+        popupUiController.headroomPx = popupHeadroomPx
         popupUiController.keyHintConfiguration = prefs.keyboard.keyHintConfiguration()
         controller.popupUiController = popupUiController
         val debugShowTouchBoundaries by prefs.devtools.showKeyTouchBoundaries.observeAsState()
@@ -585,6 +578,9 @@ private fun TextKeyButton(
         )
     }
 }
+
+/** Space between a preview pill and the top of the key it belongs to. */
+private val POPUP_GAP = 3.dp
 
 /** Plate and cap split: the reference measures a 42px plate over a 66px cap. */
 private const val KEY_PLATE_WEIGHT = 0.39f
