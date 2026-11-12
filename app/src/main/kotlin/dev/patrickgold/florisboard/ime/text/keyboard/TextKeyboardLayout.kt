@@ -512,6 +512,7 @@ private fun TextKeyButton(
         )
     }
     val suppressGlyph = skinTexture?.first?.carriesOwnGlyph == true
+    val skinLabelColor = skinTexture?.second?.labelColor ?: Color.Unspecified
     val skinBackground: (DrawScope.() -> Unit)? = skinTexture?.let { (slot, texture) ->
         // Only the ordinary key has its own pressed texture; every other slot darkens instead.
         val darken = selector == SnyggSelector.PRESSED && slot != KeySkinSlot.KEY_PRESSED
@@ -602,6 +603,7 @@ private fun TextKeyButton(
             TextKeyContent(
                 key, evaluator, attributes, selector,
                 showCornerHint = true, ornament = activeOrnament, suppressGlyph = suppressGlyph,
+                labelColor = skinLabelColor,
             )
         }
     }
@@ -642,6 +644,7 @@ private fun BoxScope.TextKeyContent(
     showCornerHint: Boolean,
     ornament: KeyOrnament? = null,
     suppressGlyph: Boolean = false,
+    labelColor: Color = Color.Unspecified,
 ) {
     if (suppressGlyph || ornament?.replacesGlyph == true) return
     val glyphAlignment = ornament?.glyphAlignment ?: Alignment.Center
@@ -662,6 +665,7 @@ private fun BoxScope.TextKeyContent(
                 .wrapContentSize()
                 .align(if (isTelPadKey) BiasAlignment(-0.5f, 0f) else glyphAlignment),
             text = customLabel,
+            color = labelColor,
         )
     }
     // Hints are always computed (plates need them); the corner hint keeps its own visibility pref.
@@ -677,6 +681,8 @@ private fun BoxScope.TextKeyContent(
                 .wrapContentSize()
                 .align(if (isTelPadKey) BiasAlignment(0.5f, 0f) else Alignment.TopEnd),
             text = hintedLabel,
+            // Hints are secondary: the skin's label colour, dimmed.
+            color = if (labelColor.isSpecified) labelColor.copy(alpha = 0.7f) else Color.Unspecified,
         )
     }
     key.foregroundImageVector?.let { imageVector ->
@@ -687,6 +693,7 @@ private fun BoxScope.TextKeyContent(
                 modifier = Modifier.align(glyphAlignment),
                 imageVector = imageVector,
                 contentDescription = null,
+                tint = labelColor,
             )
         }
     }

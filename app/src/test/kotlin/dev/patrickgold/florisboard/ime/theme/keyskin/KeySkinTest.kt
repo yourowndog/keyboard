@@ -92,6 +92,14 @@ class KeySkinTest {
     }
 
     @Test
+    fun lightTexturesGetDarkLabelsAndDarkOrClearOnesGetLight() {
+        assertEquals(KeySkinLabels.DarkLabel, KeySkinLabels.labelColorFor(0.8f))
+        assertEquals(KeySkinLabels.LightLabel, KeySkinLabels.labelColorFor(0.2f))
+        // A fully transparent key (some packs draw only the label) shows the dark chassis.
+        assertEquals(KeySkinLabels.LightLabel, KeySkinLabels.labelColorFor(0f))
+    }
+
+    @Test
     fun labelsReadLikeGalleryNames() {
         assertEquals("Sci-Fi 07", KeySkinFiles.labelFor("sfk-07"))
         assertEquals("Swatch 021", KeySkinFiles.labelFor("swatch-021@320.png"))

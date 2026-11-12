@@ -31,6 +31,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
@@ -52,6 +53,16 @@ class KeySkinTexture(private val bitmap: Bitmap, chunk: ByteArray?, private val 
 
     val isNinePatch: Boolean get() = ninePatch != null
 
+    /**
+     * How light the texture reads where a label sits (its middle), composited over the dark
+     * keyboard chassis: 0 is black or fully transparent, 1 is white. A skin's textures are
+     * painted for its own label colour, which a theme cannot know, so labels follow this instead.
+     */
+    val centreLuminance: Float = KeySkinLabels.centreLuminance(bitmap)
+
+    /** Label colour that reads on this texture. */
+    val labelColor: Color get() = KeySkinLabels.labelColorFor(centreLuminance)
+
     /** Draws the texture filling `0,0 - width,height` of [canvas], scaled from its source density. */
     fun draw(canvas: Canvas, width: Float, height: Float, targetDpi: Int, paint: Paint?) {
         val patch = ninePatch
@@ -66,6 +77,41 @@ class KeySkinTexture(private val bitmap: Bitmap, chunk: ByteArray?, private val 
         } else {
             canvas.drawBitmap(bitmap, null, RectF(0f, 0f, width, height), paint)
         }
+    }
+}
+
+/** Picks label colours from texture brightness. */
+object KeySkinLabels {
+    /** Dark ink for light textures, and a warm off-white for dark or see-through ones. */
+    val DarkLabel = Color(0xFF16171D)
+    val LightLabel = Color(0xFFF1ECE2)
+
+    /** Above this centre luminance a texture gets dark labels. Pure, so it is unit tested. */
+    const val LIGHT_TEXTURE_THRESHOLD = 0.5f
+
+    fun labelColorFor(luminance: Float): Color =
+        if (luminance > LIGHT_TEXTURE_THRESHOLD) DarkLabel else LightLabel
+
+    /** Mean relative luminance of the middle 60% of [bitmap], alpha-weighted over black. */
+    fun centreLuminance(bitmap: Bitmap): Float {
+        val w = bitmap.width
+        val h = bitmap.height
+        if (w <= 0 || h <= 0) return 0f
+        val x0 = (w * 0.2f).toInt()
+        val y0 = (h * 0.2f).toInt()
+        val cw = (w * 0.6f).toInt().coerceAtLeast(1)
+        val ch = (h * 0.6f).toInt().coerceAtLeast(1)
+        val pixels = IntArray(cw * ch)
+        bitmap.getPixels(pixels, 0, cw, x0, y0, cw, ch)
+        var sum = 0.0
+        for (p in pixels) {
+            val a = (p ushr 24 and 0xFF) / 255.0
+            val r = (p shr 16 and 0xFF) / 255.0
+            val g = (p shr 8 and 0xFF) / 255.0
+            val b = (p and 0xFF) / 255.0
+            sum += a * (0.2126 * r + 0.7152 * g + 0.0722 * b)
+        }
+        return (sum / pixels.size).toFloat()
     }
 }
 
