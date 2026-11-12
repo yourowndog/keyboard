@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.settings.typing
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -63,7 +65,8 @@ import java.util.Locale
 
 @Composable
 fun NlpDebugScreen() = FlorisScreen {
-    title = "NLP Debug & Logs"
+    panel = ConsolePanel.SYSTEM
+    title = stringRes(R.string.settings__nlp_debug__title)
     previewFieldVisible = true
 
     val context = LocalContext.current

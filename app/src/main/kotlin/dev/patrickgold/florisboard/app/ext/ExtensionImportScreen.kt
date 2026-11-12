@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.ext
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import android.text.format.Formatter
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -92,6 +94,7 @@ enum class ExtensionImportScreenType(
 
 @Composable
 fun ExtensionImportScreen(type: ExtensionImportScreenType, initUuid: String?) = FlorisScreen {
+    panel = ConsolePanel.SYSTEM
     title = stringRes(type.titleResId)
 
     val navController = LocalNavController.current

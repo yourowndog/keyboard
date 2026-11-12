@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.settings.localization
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -196,6 +198,7 @@ private class SubtypeEditorState(init: Subtype?) {
 
 @Composable
 fun SubtypeEditorScreen(id: Long?) = FlorisScreen {
+    panel = ConsolePanel.LAYOUT
     title = stringRes(if (id == null) {
         R.string.settings__localization__subtype_add_title
     } else {

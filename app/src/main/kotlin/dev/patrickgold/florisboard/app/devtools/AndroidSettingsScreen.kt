@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.devtools
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.selection.SelectionContainer
@@ -35,6 +37,7 @@ import org.florisboard.lib.compose.stringRes
 
 @Composable
 fun AndroidSettingsScreen(name: String?) = FlorisScreen {
+    panel = ConsolePanel.SYSTEM
     title = when (name) {
         AndroidSettings.Global.groupId -> stringRes(R.string.devtools__android_settings_global__title)
         AndroidSettings.Secure.groupId -> stringRes(R.string.devtools__android_settings_secure__title)

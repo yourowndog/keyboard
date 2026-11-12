@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.settings.gestures
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -38,6 +40,7 @@ import org.florisboard.lib.color.ColorMappings
 @OptIn(ExperimentalJetPrefDatastoreUi::class)
 @Composable
 fun GesturesScreen() = FlorisScreen {
+    panel = ConsolePanel.GESTURES
     title = stringRes(R.string.settings__gestures__title)
     previewFieldVisible = true
 

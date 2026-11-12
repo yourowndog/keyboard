@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.settings.media
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.EmojiSymbols
 import androidx.compose.material.icons.outlined.Schedule
@@ -48,6 +50,7 @@ import org.florisboard.lib.compose.stringRes
 @OptIn(ExperimentalJetPrefDatastoreUi::class)
 @Composable
 fun MediaScreen() = FlorisScreen {
+    panel = ConsolePanel.SYSTEM
     title = stringRes(R.string.settings__media__title)
     previewFieldVisible = true
     iconSpaceReserved = true

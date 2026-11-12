@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.settings.clipboard
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import androidx.compose.runtime.Composable
 import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.enumDisplayEntriesOf
@@ -34,6 +36,7 @@ import org.florisboard.lib.compose.stringRes
 @OptIn(ExperimentalJetPrefDatastoreUi::class)
 @Composable
 fun ClipboardScreen() = FlorisScreen {
+    panel = ConsolePanel.SYSTEM
     title = stringRes(R.string.settings__clipboard__title)
     previewFieldVisible = true
 

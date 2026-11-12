@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.settings.dictionary
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -84,6 +86,7 @@ enum class UserDictionaryType(val id: String) {
 
 @Composable
 fun UserDictionaryScreen(type: UserDictionaryType) = FlorisScreen {
+    panel = ConsolePanel.TYPING
     title = stringRes(when (type) {
         UserDictionaryType.FLORIS -> R.string.settings__udm__title_floris
         UserDictionaryType.SYSTEM -> R.string.settings__udm__title_system

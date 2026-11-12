@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.settings.keyboard
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -48,6 +50,8 @@ import org.florisboard.lib.compose.stringRes
 @OptIn(ExperimentalJetPrefDatastoreUi::class)
 @Composable
 fun KeyCustomizationScreen() = FlorisScreen {
+    panel = ConsolePanel.LAYOUT
+    dockKeyboard = true
     title = stringRes(R.string.pref__keyboard__key_customization__title)
     previewFieldVisible = true
 

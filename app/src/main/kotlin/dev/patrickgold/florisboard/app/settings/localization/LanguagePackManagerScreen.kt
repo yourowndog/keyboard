@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.settings.localization
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -71,6 +73,7 @@ enum class LanguagePackManagerScreenAction(val id: String) {
 @OptIn(ExperimentalJetPrefDatastoreUi::class)
 @Composable
 fun LanguagePackManagerScreen(action: LanguagePackManagerScreenAction?) = FlorisScreen {
+    panel = ConsolePanel.LAYOUT
     title = stringRes(when (action) {
         LanguagePackManagerScreenAction.MANAGE -> R.string.settings__localization__language_pack_title
         else -> error("LanguagePack manager screen action must not be null")

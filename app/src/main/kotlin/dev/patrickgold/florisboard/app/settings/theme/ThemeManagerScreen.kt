@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.settings.theme
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DarkMode
@@ -55,6 +57,7 @@ enum class ThemeManagerScreenAction(val id: String) {
 
 @Composable
 fun ThemeManagerScreen(action: ThemeManagerScreenAction?) = FlorisScreen {
+    panel = ConsolePanel.LOOK
     title = stringRes(when (action) {
         ThemeManagerScreenAction.SELECT_DAY -> R.string.settings__theme_manager__title_day
         ThemeManagerScreenAction.SELECT_NIGHT -> R.string.settings__theme_manager__title_night

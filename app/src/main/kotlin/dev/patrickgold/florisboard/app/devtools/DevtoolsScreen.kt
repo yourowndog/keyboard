@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.devtools
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -54,6 +56,7 @@ class DebugOnPurposeCrashException : Exception(
 
 @Composable
 fun DevtoolsScreen() = FlorisScreen {
+    panel = ConsolePanel.SYSTEM
     title = stringRes(R.string.devtools__title)
     previewFieldVisible = true
 

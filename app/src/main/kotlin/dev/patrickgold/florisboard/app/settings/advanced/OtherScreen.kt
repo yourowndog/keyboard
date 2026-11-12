@@ -16,8 +16,16 @@
 
 package dev.patrickgold.florisboard.app.settings.advanced
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Assignment
 import androidx.compose.material.icons.filled.Adb
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Extension
+import androidx.compose.material.icons.filled.SentimentSatisfiedAlt
+import androidx.compose.material.icons.outlined.Build
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.filled.Archive
 import androidx.compose.material.icons.filled.FormatColorFill
 import androidx.compose.material.icons.filled.Language
@@ -38,6 +46,7 @@ import dev.patrickgold.florisboard.app.enumDisplayEntriesOf
 import dev.patrickgold.florisboard.ime.core.DisplayLanguageNamesIn
 import dev.patrickgold.florisboard.lib.FlorisLocale
 import dev.patrickgold.florisboard.lib.compose.FlorisScreen
+import dev.patrickgold.florisboard.lib.util.launchAppSelfUninstall
 import dev.patrickgold.jetpref.datastore.model.observeAsState
 import dev.patrickgold.jetpref.datastore.ui.ColorPickerPreference
 import dev.patrickgold.jetpref.datastore.ui.ListPreference
@@ -53,35 +62,14 @@ import org.florisboard.lib.compose.stringRes
 
 @Composable
 fun OtherScreen() = FlorisScreen {
-    title = stringRes(R.string.settings__other__title)
+    panel = ConsolePanel.SYSTEM
+    title = stringRes(R.string.settings__system__title)
     previewFieldVisible = false
 
     val navController = LocalNavController.current
     val context = LocalContext.current
 
     content {
-        ListPreference(
-            prefs.other.settingsTheme,
-            icon = Icons.Default.Palette,
-            title = stringRes(R.string.pref__other__settings_theme__label),
-            entries = enumDisplayEntriesOf(AppTheme::class),
-        )
-        ColorPickerPreference(
-            pref = prefs.other.accentColor,
-            title = stringRes(R.string.pref__other__settings_accent_color__label),
-            defaultValueLabel = stringRes(R.string.action__default),
-            icon = Icons.Default.FormatColorFill,
-            defaultColors = ColorMappings.colors,
-            showAlphaSlider = false,
-            enableAdvancedLayout = false,
-            colorOverride = {
-                if (it.isMaterialYou(context)) {
-                    Color.Unspecified
-                } else {
-                    it
-                }
-            }
-        )
         ListPreference(
             prefs.other.settingsLanguage,
             icon = Icons.Default.Language,
@@ -161,11 +149,24 @@ fun OtherScreen() = FlorisScreen {
             title = stringRes(R.string.physical_keyboard__title),
             onClick = { navController.navigate(Routes.Settings.PhysicalKeyboard) },
         )
-        Preference(
-            icon = Icons.Default.Adb,
-            title = stringRes(R.string.devtools__title),
-            onClick = { navController.navigate(Routes.Devtools.Home) },
-        )
+
+        PreferenceGroup(title = stringRes(R.string.settings__system__group_history)) {
+            Preference(
+                icon = Icons.AutoMirrored.Outlined.Assignment,
+                title = stringRes(R.string.settings__clipboard__title),
+                onClick = { navController.navigate(Routes.Settings.Clipboard) },
+            )
+            Preference(
+                icon = Icons.Default.SentimentSatisfiedAlt,
+                title = stringRes(R.string.settings__media__title),
+                onClick = { navController.navigate(Routes.Settings.Media) },
+            )
+            Preference(
+                icon = Icons.Default.Extension,
+                title = stringRes(R.string.ext__home__title),
+                onClick = { navController.navigate(Routes.Ext.Home) },
+            )
+        }
 
         PreferenceGroup(title = stringRes(R.string.backup_and_restore__title)) {
             Preference(
@@ -179,6 +180,33 @@ fun OtherScreen() = FlorisScreen {
                 icon = Icons.Default.SettingsBackupRestore,
                 title = stringRes(R.string.backup_and_restore__restore__title),
                 summary = stringRes(R.string.backup_and_restore__restore__summary),
+            )
+        }
+
+        PreferenceGroup(title = stringRes(R.string.settings__system__group_diagnostics)) {
+            Preference(
+                icon = Icons.Outlined.Build,
+                title = stringRes(R.string.settings__nlp_debug__title),
+                summary = stringRes(R.string.settings__nlp_debug__summary),
+                onClick = { navController.navigate(Routes.Settings.NlpDebug) },
+            )
+            Preference(
+                icon = Icons.Default.Adb,
+                title = stringRes(R.string.devtools__title),
+                onClick = { navController.navigate(Routes.Devtools.Home) },
+            )
+        }
+
+        PreferenceGroup(title = stringRes(R.string.about__title)) {
+            Preference(
+                icon = Icons.Outlined.Info,
+                title = stringRes(R.string.about__title),
+                onClick = { navController.navigate(Routes.Settings.About) },
+            )
+            Preference(
+                icon = Icons.Default.Delete,
+                title = stringRes(R.string.settings__home__uninstall),
+                onClick = { context.launchAppSelfUninstall() },
             )
         }
     }

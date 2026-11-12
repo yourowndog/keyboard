@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.settings.advanced
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import android.content.ContentUris
 import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -136,6 +138,7 @@ object Backup {
 
 @Composable
 fun BackupScreen() = FlorisScreen {
+    panel = ConsolePanel.SYSTEM
     title = stringRes(R.string.backup_and_restore__back_up__title)
     previewFieldVisible = false
 

@@ -92,6 +92,7 @@ internal fun RowScope.SmartbarCommandStrip(
     val prefs by FlorisPreferenceStore
     val activeProfileId by prefs.keyboard.activeProfileId.observeAsState()
     val activeProfile = KeyboardProfile.fromId(activeProfileId)
+    val keyboardState by keyboardManager.activeState.collectAsState()
 
     @Composable
     fun Command(command: SmartbarCommand) {
@@ -113,6 +114,8 @@ internal fun RowScope.SmartbarCommandStrip(
                 modifier = Modifier.fillMaxSize(),
                 square = false,
                 label = stringRes(labelRes).uppercase(),
+                // MENU stays lit while its console panel is open.
+                active = command == SmartbarCommand.MENU && keyboardState.isActionsOverflowVisible,
                 onLongPress = if (command == SmartbarCommand.MODE) {
                     { LANGUAGE_SWITCH_ACTION.let { it.onPointerDown(context); it.onPointerUp(context) } }
                 } else {

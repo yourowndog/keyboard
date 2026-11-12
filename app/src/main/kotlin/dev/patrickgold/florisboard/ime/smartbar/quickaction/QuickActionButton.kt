@@ -66,6 +66,8 @@ fun QuickActionButton(
     label: String? = null,
     /** Run instead of [action] when the button is held, e.g. MODE's language switch. */
     onLongPress: (() -> Unit)? = null,
+    /** Draw as pressed while true, e.g. MENU while its panel is open. */
+    active: Boolean = false,
 ) {
     val context = LocalContext.current
     // Get the inputFeedbackController through the FlorisImeService companion-object.
@@ -80,7 +82,7 @@ fun QuickActionButton(
     }.elementName
     val attributes = mapOf(FlorisImeUi.Attr.Code to action.keyData().code)
     val selector = when {
-        isPressed -> SnyggSelector.PRESSED
+        isPressed || active -> SnyggSelector.PRESSED
         !isEnabled -> SnyggSelector.DISABLED
         else -> null
     }

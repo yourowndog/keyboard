@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.lib.compose
 
+import dev.patrickgold.florisboard.app.console.Lcars
+
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
@@ -135,6 +137,12 @@ fun PreviewKeyboardField(
                 singleLine = true,
                 shape = RectangleShape,
                 colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Lcars.PanelRaised,
+                    unfocusedContainerColor = Lcars.PanelRaised,
+                    focusedPlaceholderColor = Lcars.Amber,
+                    unfocusedPlaceholderColor = Lcars.Amber,
+                    focusedTrailingIconColor = Lcars.Amber,
+                    unfocusedTrailingIconColor = Lcars.Amber,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent,

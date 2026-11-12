@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.settings.localization
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.material.icons.Icons
@@ -78,6 +80,7 @@ internal fun localizationSubtypeEntries(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LocalizationScreen() = FlorisScreen {
+    panel = ConsolePanel.LAYOUT
     title = stringRes(R.string.settings__localization__title)
     previewFieldVisible = true
     iconSpaceReserved = false

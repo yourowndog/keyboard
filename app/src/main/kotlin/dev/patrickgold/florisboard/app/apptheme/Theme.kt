@@ -16,6 +16,9 @@
 
 package dev.patrickgold.florisboard.app.apptheme
 
+import dev.patrickgold.florisboard.app.console.lcarsColorScheme
+import dev.patrickgold.florisboard.app.console.lcarsTypography
+
 import android.app.Activity
 import android.content.Context
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -117,33 +120,27 @@ fun ColorScheme.amoled(): ColorScheme {
     return this.copy(background = Color.Black, surface = Color.Black)
 }
 
+/**
+ * The settings app always wears the LCARS console (see app/console/Lcars.kt) so it reads as the
+ * keyboard's own device rather than a Material skin. [theme] is still accepted so callers and the
+ * stored preference stay valid, but it no longer changes the palette.
+ */
 @Composable
 fun FlorisAppTheme(
     theme: AppTheme,
     content: @Composable () -> Unit,
 ) {
-    val colors = getColorScheme(
-        context = LocalContext.current,
-        theme = theme,
-    )
-
-    val darkTheme =
-        theme == AppTheme.DARK
-            || theme == AppTheme.AMOLED_DARK
-            || (theme == AppTheme.AUTO && isSystemInDarkTheme())
-            || (theme == AppTheme.AUTO_AMOLED && isSystemInDarkTheme())
-
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = !darkTheme
+            WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = false
         }
     }
 
     MaterialTheme(
-        colorScheme = colors,
-        typography = Typography,
+        colorScheme = lcarsColorScheme(),
+        typography = lcarsTypography(),
         content = content,
     )
 }

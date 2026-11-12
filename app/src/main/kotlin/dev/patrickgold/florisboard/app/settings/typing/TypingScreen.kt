@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.settings.typing
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.LibraryBooks
@@ -35,6 +37,7 @@ import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.LocalNavController
 import dev.patrickgold.florisboard.app.Routes
 import dev.patrickgold.florisboard.app.enumDisplayEntriesOf
+import dev.patrickgold.florisboard.ime.input.CapitalizationBehavior
 import dev.patrickgold.florisboard.ime.keyboard.IncognitoMode
 import dev.patrickgold.florisboard.ime.nlp.SpellingLanguageMode
 import dev.patrickgold.florisboard.lib.compose.FlorisScreen
@@ -50,6 +53,7 @@ import org.florisboard.lib.compose.stringRes
 @OptIn(ExperimentalJetPrefDatastoreUi::class)
 @Composable
 fun TypingScreen() = FlorisScreen {
+    panel = ConsolePanel.TYPING
     title = stringRes(R.string.settings__typing__title)
     previewFieldVisible = true
 
@@ -83,6 +87,11 @@ fun TypingScreen() = FlorisScreen {
         }
 
         PreferenceGroup(title = stringRes(R.string.pref__correction__title)) {
+            ListPreference(
+                prefs.keyboard.capitalizationBehavior,
+                title = stringRes(R.string.pref__keyboard__capitalization_behavior__label),
+                entries = enumDisplayEntriesOf(CapitalizationBehavior::class),
+            )
             SwitchPreference(
                 prefs.correction.autoCapitalization,
                 title = stringRes(R.string.pref__correction__auto_capitalization__label),

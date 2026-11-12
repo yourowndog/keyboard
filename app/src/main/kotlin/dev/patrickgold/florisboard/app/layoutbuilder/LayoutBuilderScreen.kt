@@ -1,5 +1,7 @@
 package dev.patrickgold.florisboard.app.layoutbuilder
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -46,6 +48,7 @@ private data class LayoutBuilderUiState(
 
 @Composable
 fun LayoutBuilderScreen() = FlorisScreen {
+    panel = ConsolePanel.SYSTEM
     title = stringRes(R.string.layout_builder__title)
     previewFieldVisible = false
 

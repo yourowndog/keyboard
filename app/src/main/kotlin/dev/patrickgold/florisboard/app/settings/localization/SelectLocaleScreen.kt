@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.settings.localization
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -58,6 +60,7 @@ const val SelectLocaleScreenResultLanguageTag = "SelectLocaleScreen.languageTag"
 
 @Composable
 fun SelectLocaleScreen() = FlorisScreen {
+    panel = ConsolePanel.LAYOUT
     title = stringRes(R.string.settings__localization__subtype_select_locale)
     scrollable = false
 

@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.settings.about
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.Text
@@ -37,6 +39,7 @@ import org.florisboard.lib.compose.stringRes
 
 @Composable
 fun ProjectLicenseScreen() = FlorisScreen {
+    panel = ConsolePanel.SYSTEM
     title = stringRes(R.string.about__project_license__title)
     scrollable = false
 

@@ -17,7 +17,14 @@
 package dev.patrickgold.florisboard.lib.compose
 
 import android.app.Activity
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.ui.unit.dp
+import dev.patrickgold.florisboard.app.console.ConsoleHeader
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+import dev.patrickgold.florisboard.app.console.ConsoleRail
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -27,7 +34,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
+import kotlinx.coroutines.delay
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -72,6 +81,15 @@ interface FlorisScreenScope {
 
     var iconSpaceReserved: Boolean
 
+    /** Which settings panel this screen belongs to; sets the colour of its LCARS elbow and rail. */
+    var panel: ConsolePanel
+
+    /**
+     * Open the real keyboard on the preview field when the screen appears, so changes to look,
+     * sound or geometry show on the live keyboard docked under the controls as they are made.
+     */
+    var dockKeyboard: Boolean
+
     fun actions(actions: FlorisScreenActions)
 
     fun bottomBar(bottomBar: FlorisScreenBottomBar)
@@ -89,11 +107,14 @@ private class FlorisScreenScopeImpl : FlorisScreenScope {
     override var previewFieldVisible: Boolean by mutableStateOf(false)
     override var scrollable: Boolean by mutableStateOf(true)
     override var iconSpaceReserved: Boolean by mutableStateOf(true)
+    override var panel: ConsolePanel by mutableStateOf(ConsolePanel.HOME)
+    override var dockKeyboard: Boolean by mutableStateOf(false)
 
     private var actions: FlorisScreenActions = @Composable { }
     private var bottomBar: FlorisScreenBottomBar = @Composable { }
     private var content: FlorisScreenContent = @Composable { }
     private var fab: FlorisScreenFab = @Composable { }
+    private var customNavigationIcon: FlorisScreenNavigationIcon? = null
     private var navigationIcon: FlorisScreenNavigationIcon = @Composable {
         val navController = LocalNavController.current
         FlorisIconButton(
@@ -120,6 +141,7 @@ private class FlorisScreenScopeImpl : FlorisScreenScope {
     }
 
     override fun navigationIcon(navigationIcon: FlorisScreenNavigationIcon) {
+        this.customNavigationIcon = navigationIcon
         this.navigationIcon = navigationIcon
     }
 
@@ -142,11 +164,33 @@ private class FlorisScreenScopeImpl : FlorisScreenScope {
             }
         }
 
-        val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+        val navController = LocalNavController.current
+        val color = panel.color
+
+        if (dockKeyboard && previewFieldVisible && previewFieldController != null) {
+            LaunchedEffect(Unit) {
+                // Wait for the preview field's enter animation before asking for focus.
+                delay(350)
+                runCatching { previewFieldController.focusRequester.requestFocus() }
+            }
+        }
 
         Scaffold(
-            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-            topBar = { FlorisAppBar(title, navigationIcon.takeIf { navigationIconVisible }, actions, scrollBehavior) },
+            containerColor = colorScheme.background,
+            topBar = {
+                ConsoleHeader(
+                    title = title,
+                    color = color,
+                    navigation = customNavigationIcon.takeIf { navigationIconVisible },
+                    onBack = if (navigationIconVisible && customNavigationIcon == null) {
+                        { navController.popBackStack() }
+                    } else {
+                        null
+                    },
+                    actions = actions,
+                    modifier = Modifier.statusBarsPadding().padding(top = 8.dp),
+                )
+            },
             bottomBar = bottomBar,
             floatingActionButton = fab,
         ) { innerPadding ->
@@ -155,15 +199,22 @@ private class FlorisScreenScopeImpl : FlorisScreenScope {
             } else {
                 Modifier
             }
-            PreferenceLayout(
-                FlorisPreferenceStore,
+            Row(
                 modifier = Modifier
                     .padding(innerPadding)
-                    .fillMaxWidth()
-                    .then(scrollModifier),
-                iconSpaceReserved = iconSpaceReserved,
-                content = content,
-            )
+                    .fillMaxSize(),
+            ) {
+                ConsoleRail(color = color, modifier = Modifier.padding(bottom = 8.dp))
+                PreferenceLayout(
+                    FlorisPreferenceStore,
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                        .then(scrollModifier),
+                    iconSpaceReserved = iconSpaceReserved,
+                    content = content,
+                )
+            }
         }
     }
 }

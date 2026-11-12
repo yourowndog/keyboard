@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.ext
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -78,6 +80,7 @@ fun ExtensionViewScreen(id: String) {
 
 @Composable
 private fun ViewScreen(ext: Extension) = FlorisScreen {
+    panel = ConsolePanel.SYSTEM
     title = ext.meta.title
 
     val navController = LocalNavController.current

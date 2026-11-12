@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.ext
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import dev.patrickgold.florisboard.R
@@ -25,6 +27,7 @@ import org.florisboard.lib.compose.stringRes
 
 @Composable
 fun CheckUpdatesScreen() = FlorisScreen {
+    panel = ConsolePanel.SYSTEM
     title = stringRes(R.string.ext__check_updates__title)
 
     val context = LocalContext.current

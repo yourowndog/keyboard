@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.settings.theme
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -143,6 +145,7 @@ fun ThemeEditorScreen(
     workspace: CacheManager.ExtEditorWorkspace<*>,
     editor: ThemeExtensionComponentEditor,
 ) = FlorisScreen {
+    panel = ConsolePanel.LOOK
     title = stringRes(R.string.ext__editor__edit_component__title_theme)
     scrollable = false
 

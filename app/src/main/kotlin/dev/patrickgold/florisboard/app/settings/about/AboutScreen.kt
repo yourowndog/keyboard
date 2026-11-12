@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.settings.about
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -50,6 +52,7 @@ import org.florisboard.lib.compose.stringRes
 
 @Composable
 fun AboutScreen() = FlorisScreen {
+    panel = ConsolePanel.SYSTEM
     title = stringRes(R.string.about__title)
 
     val navController = LocalNavController.current

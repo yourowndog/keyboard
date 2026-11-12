@@ -16,12 +16,19 @@
 
 package dev.patrickgold.florisboard.app.settings.theme
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import androidx.compose.material.icons.Icons
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material.icons.filled.AddPhotoAlternate
 import androidx.compose.material.icons.filled.Animation
 import androidx.compose.material.icons.filled.Wallpaper
+import androidx.compose.material.icons.filled.CallToAction
+import androidx.compose.material.icons.filled.FormatSize
+import androidx.compose.material.icons.filled.Layers
+import androidx.compose.material.icons.filled.VisibilityOff
+import dev.patrickgold.florisboard.ime.smartbar.IncognitoDisplayMode
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -77,7 +84,9 @@ import org.florisboard.lib.compose.stringRes
 @OptIn(ExperimentalJetPrefDatastoreUi::class)
 @Composable
 fun ThemeScreen() = FlorisScreen {
-    title = stringRes(R.string.settings__theme__title)
+    panel = ConsolePanel.LOOK
+    dockKeyboard = true
+    title = stringRes(R.string.settings__look__title)
     previewFieldVisible = true
 
     val context = LocalContext.current
@@ -162,6 +171,39 @@ fun ThemeScreen() = FlorisScreen {
         KeyboardBackdropGroup()
 
         KeySkinGroup()
+
+        PreferenceGroup(title = stringRes(R.string.pref__look__group_keys)) {
+            DialogSliderPreference(
+                primaryPref = prefs.keyboard.fontSizeMultiplierPortrait,
+                secondaryPref = prefs.keyboard.fontSizeMultiplierLandscape,
+                icon = Icons.Default.FormatSize,
+                title = stringRes(R.string.pref__keyboard__font_size_multiplier__label),
+                primaryLabel = stringRes(R.string.screen_orientation__portrait),
+                secondaryLabel = stringRes(R.string.screen_orientation__landscape),
+                valueLabel = { stringRes(R.string.unit__percent__symbol, "v" to it) },
+                min = 50,
+                max = 150,
+                stepIncrement = 5,
+            )
+            SwitchPreference(
+                prefs.keyboard.popupEnabled,
+                icon = Icons.Default.CallToAction,
+                title = stringRes(R.string.pref__keyboard__popup_enabled__label),
+                summary = stringRes(R.string.pref__keyboard__popup_enabled__summary),
+            )
+            SwitchPreference(
+                prefs.keyboard.mergeHintPopupsEnabled,
+                icon = Icons.Default.Layers,
+                title = stringRes(R.string.pref__keyboard__merge_hint_popups_enabled__label),
+                summary = stringRes(R.string.pref__keyboard__merge_hint_popups_enabled__summary),
+            )
+            ListPreference(
+                listPref = prefs.keyboard.incognitoDisplayMode,
+                icon = Icons.Default.VisibilityOff,
+                title = stringRes(R.string.pref__keyboard__incognito_indicator__label),
+                entries = enumDisplayEntriesOf(IncognitoDisplayMode::class),
+            )
+        }
 
         AddonManagementReferenceBox(type = ExtensionListScreenType.EXT_THEME)
     }

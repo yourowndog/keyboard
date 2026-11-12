@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.ext
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -89,6 +91,7 @@ enum class ExtensionListScreenType(
 
 @Composable
 fun ExtensionListScreen(type: ExtensionListScreenType, showUpdate: Boolean) = FlorisScreen {
+    panel = ConsolePanel.SYSTEM
     title = stringRes(type.titleResId)
     previewFieldVisible = false
     scrollable = false

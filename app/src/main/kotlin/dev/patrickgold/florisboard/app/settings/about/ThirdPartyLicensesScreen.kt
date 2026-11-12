@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.settings.about
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
@@ -31,6 +33,7 @@ import org.florisboard.lib.compose.stringRes
 
 @Composable
 fun ThirdPartyLicensesScreen() = FlorisScreen {
+    panel = ConsolePanel.SYSTEM
     title = stringRes(R.string.about__third_party_licenses__title)
     scrollable = false
     iconSpaceReserved = false

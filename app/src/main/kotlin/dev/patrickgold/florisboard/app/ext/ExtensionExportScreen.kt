@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.ext
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
@@ -44,6 +46,7 @@ fun ExtensionExportScreen(id: String) {
 
 @Composable
 private fun ExportScreen(ext: Extension) = FlorisScreen {
+    panel = ConsolePanel.SYSTEM
     title = ext.meta.title
     scrollable = false
 

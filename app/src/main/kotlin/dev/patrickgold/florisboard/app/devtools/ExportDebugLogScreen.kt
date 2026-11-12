@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.devtools
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -52,6 +54,7 @@ import org.florisboard.lib.android.showShortToastSync
 // TODO: This screen is just a quick thrown-together thing and needs further enhancing in the UI
 @Composable
 fun ExportDebugLogScreen() = FlorisScreen {
+    panel = ConsolePanel.SYSTEM
     title = stringRes(R.string.devtools__debuglog__title)
     scrollable = false
 

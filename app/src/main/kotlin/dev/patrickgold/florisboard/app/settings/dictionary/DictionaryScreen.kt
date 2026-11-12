@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.settings.dictionary
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import androidx.compose.runtime.Composable
 import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.LocalNavController
@@ -27,6 +29,7 @@ import org.florisboard.lib.compose.stringRes
 
 @Composable
 fun DictionaryScreen() = FlorisScreen {
+    panel = ConsolePanel.TYPING
     title = stringRes(R.string.settings__dictionary__title)
     previewFieldVisible = true
 

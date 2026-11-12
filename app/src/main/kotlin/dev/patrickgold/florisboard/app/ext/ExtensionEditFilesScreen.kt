@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.ext
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import android.provider.OpenableColumns
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -85,6 +87,7 @@ val MIME_TYPES = mapOf(
 
 @Composable
 fun ExtensionEditFilesScreen(workspace: CacheManager.ExtEditorWorkspace<*>) = FlorisScreen {
+    panel = ConsolePanel.SYSTEM
     title = stringRes(R.string.ext__editor__files__title)
 
     fun handleBackPress() {

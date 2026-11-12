@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.setup
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import android.content.Context
 import android.content.Intent
 import android.os.Environment
@@ -68,6 +70,7 @@ import org.florisboard.lib.compose.stringRes
 
 @Composable
 fun SetupScreen() = FlorisScreen {
+    panel = ConsolePanel.HOME
     title = stringRes(R.string.setup__title)
     navigationIconVisible = false
     scrollable = false

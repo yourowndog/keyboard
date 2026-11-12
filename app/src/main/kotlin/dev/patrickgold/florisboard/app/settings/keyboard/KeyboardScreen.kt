@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.settings.keyboard
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -23,15 +25,12 @@ import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.LocalNavController
 import dev.patrickgold.florisboard.app.Routes
 import dev.patrickgold.florisboard.app.enumDisplayEntriesOf
-import dev.patrickgold.florisboard.ime.input.CapitalizationBehavior
 import dev.patrickgold.florisboard.ime.keyboard.KeyboardProfile
 import dev.patrickgold.florisboard.ime.keyboard.SpaceBarMode
-import dev.patrickgold.florisboard.ime.smartbar.IncognitoDisplayMode
 import dev.patrickgold.florisboard.ime.text.key.KeyHintMode
 import dev.patrickgold.florisboard.ime.text.key.UtilityKeyAction
 import dev.patrickgold.florisboard.lib.compose.FlorisScreen
 import dev.patrickgold.jetpref.datastore.model.observeAsState
-import dev.patrickgold.jetpref.datastore.ui.DialogSliderPreference
 import dev.patrickgold.jetpref.datastore.ui.ExperimentalJetPrefDatastoreUi
 import dev.patrickgold.jetpref.datastore.ui.ListPreference
 import dev.patrickgold.jetpref.datastore.ui.Preference
@@ -43,7 +42,9 @@ import org.florisboard.lib.compose.stringRes
 @OptIn(ExperimentalJetPrefDatastoreUi::class)
 @Composable
 fun KeyboardScreen() = FlorisScreen {
-    title = stringRes(R.string.settings__keyboard__title)
+    panel = ConsolePanel.LAYOUT
+    dockKeyboard = true
+    title = stringRes(R.string.settings__layout__title)
     previewFieldVisible = true
 
     val navController = LocalNavController.current
@@ -101,29 +102,10 @@ fun KeyboardScreen() = FlorisScreen {
                 title = stringRes(R.string.pref__keyboard__space_bar_mode__label),
                 entries = enumDisplayEntriesOf(SpaceBarMode::class),
             )
-        }
-
-        PreferenceGroup(title = stringRes(R.string.pref__keyboard__group_display__label)) {
-            ListPreference(
-                prefs.keyboard.capitalizationBehavior,
-                title = stringRes(R.string.pref__keyboard__capitalization_behavior__label),
-                entries = enumDisplayEntriesOf(CapitalizationBehavior::class),
-            )
-            DialogSliderPreference(
-                primaryPref = prefs.keyboard.fontSizeMultiplierPortrait,
-                secondaryPref = prefs.keyboard.fontSizeMultiplierLandscape,
-                title = stringRes(R.string.pref__keyboard__font_size_multiplier__label),
-                primaryLabel = stringRes(R.string.screen_orientation__portrait),
-                secondaryLabel = stringRes(R.string.screen_orientation__landscape),
-                valueLabel = { stringRes(R.string.unit__percent__symbol, "v" to it) },
-                min = 50,
-                max = 150,
-                stepIncrement = 5,
-            )
-            ListPreference(
-                listPref = prefs.keyboard.incognitoDisplayMode,
-                title = stringRes(R.string.pref__keyboard__incognito_indicator__label),
-                entries = enumDisplayEntriesOf(IncognitoDisplayMode::class),
+            SwitchPreference(
+                prefs.keyboard.spaceBarSwitchesToCharacters,
+                title = stringRes(R.string.pref__keyboard__space_bar_switches_to_characters__label),
+                summary = stringRes(R.string.pref__keyboard__space_bar_switches_to_characters__summary),
             )
         }
 
@@ -138,36 +120,12 @@ fun KeyboardScreen() = FlorisScreen {
                 summary = stringRes(R.string.pref__keyboard__key_customization__summary),
                 onClick = { navController.navigate(Routes.Settings.KeyCustomization) },
             )
+            Preference(
+                title = stringRes(R.string.settings__localization__title),
+                summary = stringRes(R.string.settings__localization__summary),
+                onClick = { navController.navigate(Routes.Settings.Localization) },
+            )
         }
 
-        PreferenceGroup(title = stringRes(R.string.pref__keyboard__group_keypress__label)) {
-            Preference(
-                title = stringRes(R.string.settings__input_feedback__title),
-                onClick = { navController.navigate(Routes.Settings.InputFeedback) },
-            )
-            SwitchPreference(
-                prefs.keyboard.popupEnabled,
-                title = stringRes(R.string.pref__keyboard__popup_enabled__label),
-                summary = stringRes(R.string.pref__keyboard__popup_enabled__summary),
-            )
-            SwitchPreference(
-                prefs.keyboard.mergeHintPopupsEnabled,
-                title = stringRes(R.string.pref__keyboard__merge_hint_popups_enabled__label),
-                summary = stringRes(R.string.pref__keyboard__merge_hint_popups_enabled__summary),
-            )
-            DialogSliderPreference(
-                prefs.keyboard.longPressDelay,
-                title = stringRes(R.string.pref__keyboard__long_press_delay__label),
-                valueLabel = { stringRes(R.string.unit__milliseconds__symbol, "v" to it) },
-                min = 100,
-                max = 700,
-                stepIncrement = 10,
-            )
-            SwitchPreference(
-                prefs.keyboard.spaceBarSwitchesToCharacters,
-                title = stringRes(R.string.pref__keyboard__space_bar_switches_to_characters__label),
-                summary = stringRes(R.string.pref__keyboard__space_bar_switches_to_characters__summary),
-            )
-        }
     }
 }

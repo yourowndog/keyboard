@@ -16,6 +16,8 @@
 
 package dev.patrickgold.florisboard.app.settings.advanced
 
+import dev.patrickgold.florisboard.app.console.ConsolePanel
+
 import android.content.Intent
 import android.content.res.Configuration
 import android.provider.Settings
@@ -34,6 +36,7 @@ import org.florisboard.lib.compose.stringRes
 
 @Composable
 fun PhysicalKeyboardScreen() = FlorisScreen {
+    panel = ConsolePanel.SYSTEM
     title = stringRes(R.string.physical_keyboard__title)
 
     val context = LocalContext.current
