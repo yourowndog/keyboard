@@ -109,6 +109,11 @@ This is render-only. Rows are not resized and touch bounds are unchanged, so a
 tap anywhere on the plate or cap types the letter and a long press types the
 plate symbol, exactly as before. Themes without a `key-plate` background keep
 the corner `key-hint`. Raise the keyboard's row height if the caps feel short.
+
+The hint is computed whenever symbol or number hints are enabled. The hidden
+`keyboard__key_hints_visible` pref (no settings switch, default off) only
+controls the classic corner hint. It used to gate the computation itself, which
+left every plate empty on a default install.
 Code: `TextKeyButton` and `isPlateCandidate` in `TextKeyboardLayout.kt`.
 
 ### Ornament layer
@@ -119,6 +124,8 @@ per key code by giving `key-ornament` a foreground. That foreground is the
 accent, and `key-ornament`'s background is the structure colour, both
 resolved through Snygg, so the art re-themes and no hex lives in Kotlin.
 
+- **Shift housing:** a half stadium, `rounded-corner(50%,0%,0%,50%)`: round on
+  the outer edge, straight on the inner edge facing Z, as in the reference.
 - **Shift dial:** an empty ring when off, a half arc for one capital, and a
   full ring with a solid core for caps lock. It replaces the shift icon, so the
   Jefferies shift key no longer turns solid coral when pressed or in caps lock;
