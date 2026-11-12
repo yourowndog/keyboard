@@ -43,6 +43,7 @@ import dev.patrickgold.florisboard.ime.nlp.shared.NeuralEvidence
 import dev.patrickgold.florisboard.ime.nlp.shared.ShortcutCorrection
 import dev.patrickgold.florisboard.ime.nlp.shared.TypedLexicalStatus
 import dev.patrickgold.florisboard.ime.nlp.shared.PersonalLexicon
+import dev.patrickgold.florisboard.ime.nlp.shared.ComposingTouchTrace
 import dev.patrickgold.florisboard.ime.nlp.shared.WordSegmentation
 import dev.patrickgold.florisboard.lib.devtools.flogDebug
 import kotlinx.coroutines.Dispatchers
@@ -337,7 +338,12 @@ class LatinLanguageProvider(context: Context) : SpellingProvider, SuggestionProv
         if (engine != null) {
             // Map SymSpell items to (Term, Distance) pairs
             val mappedCandidates = rawCandidates.map { candidate -> candidate.term to candidate.distance }
-            val ngramRanked = engine.rank(mappedCandidates, currentWordRaw, previousWord)
+            val ngramRanked = engine.rank(
+                mappedCandidates,
+                currentWordRaw,
+                previousWord,
+                touches = ComposingTouchTrace.snapshotFor(currentWordRaw),
+            )
             val editOnlyCandidates = editCandidates.map { candidate -> candidate.term to candidate.distance }
             val neuralDecision = neuralScorer?.scoreCandidates(
                 typed = currentWordRaw,

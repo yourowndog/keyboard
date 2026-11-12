@@ -15,7 +15,12 @@ data class SuggestionRequest(
 
 interface SuggestionEngine {
     fun suggest(request: SuggestionRequest): List<SuggestionCandidate>
-    fun rank(candidates: List<Pair<String, Double>>, originalInput: String, prevWord: String?): List<SuggestionCandidate> {
+    fun rank(
+        candidates: List<Pair<String, Double>>,
+        originalInput: String,
+        prevWord: String?,
+        touches: List<dev.patrickgold.florisboard.ime.nlp.shared.TouchSample?>? = null,
+    ): List<SuggestionCandidate> {
         return emptyList() // Default implementation for engines that don't support ranking
     }
     /**
@@ -80,7 +85,8 @@ class NgramSuggestionEngine(
     override fun rank(
         candidates: List<Pair<String, Double>>,
         originalInput: String,
-        prevWord: String?
+        prevWord: String?,
+        touches: List<dev.patrickgold.florisboard.ime.nlp.shared.TouchSample?>?,
     ): List<SuggestionCandidate> {
         val typedLower = originalInput.lowercase()
         val scoredCandidates = mutableListOf<WordSuggestionCandidate>()
@@ -99,6 +105,7 @@ class NgramSuggestionEngine(
                 prevWord = prevWord?.lowercase(),
                 isInUserDict = userBoosts.containsKey(wordLower),
                 frequency = frequency,
+                touches = touches,
             )
             
             // Convert to confidence (higher = better) for UI display

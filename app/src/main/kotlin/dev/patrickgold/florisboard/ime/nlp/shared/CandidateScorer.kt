@@ -78,6 +78,7 @@ object CandidateScorer {
         prevWord: String?,
         isInUserDict: Boolean = false,
         frequency: Double = 0.0,
+        touches: List<TouchSample?>? = null,
     ): Double {
         val typedNoApos = typed.replace("'", "")
         val candidateNoApos = candidate.replace("'", "")
@@ -86,7 +87,7 @@ object CandidateScorer {
         var score = editDistance + ContextualEvidence.rankingPenalty(typed, candidate, prevWord)
         
         // Spatial cost: penalize far keys, reward transpositions
-        score += spatialCost(typed, candidate)
+        score += spatialCost(typed, candidate, touches)
         
         // Bigram context
         val bigramResult = bigramScore(prevWord, candidate)
@@ -142,7 +143,7 @@ object CandidateScorer {
      * - Transpositions like ie→ei (0.3)
      * - Length differences (0.5 per char)
      */
-    fun spatialCost(typed: String, candidate: String): Double {
+    fun spatialCost(typed: String, candidate: String, touches: List<TouchSample?>? = null): Double {
         var cost = 0.0
         val len = kotlin.math.min(typed.length, candidate.length)
 
@@ -169,7 +170,12 @@ object CandidateScorer {
 
             // Use continuous Euclidean distance (0.0 - 2.0 range)
             // Adjacent keys ≈ 0.5-1.0, same-row-skip ≈ 1.4, cross-keyboard ≈ 2.0
-            cost += KeyboardLayout.keyDistance(t, c)
+            val touch = touches?.getOrNull(i)
+            cost += if (touch != null && touch.char == t.lowercaseChar()) {
+                touchSubstitutionCost(touch, t, c)
+            } else {
+                KeyboardLayout.keyDistance(t, c)
+            }
             i++
         }
 
@@ -180,6 +186,30 @@ object CandidateScorer {
         return cost
     }
     
+    /**
+     * Cost of reading a tap that registered as [typed] as an intended [intended].
+     *
+     * How much further the actual touch point is from [intended]'s centre than from [typed]'s.
+     * A tap dead in the middle of [typed] costs exactly the key distance, as before; a tap on
+     * the border between the two keys costs almost nothing; a tap leaning away costs more.
+     * Replayed against the 2026-11 harvest this picks the word that was meant more often
+     * (`wtiting` → writing not witting, `fot` → for not oft, `cbat` → chat not cba) without
+     * changing whether a correction fires.
+     */
+    fun touchSubstitutionCost(touch: TouchSample, typed: Char, intended: Char): Double {
+        val from = KeyboardLayout.QWERTY_POSITIONS[typed.lowercaseChar()]
+        val to = KeyboardLayout.QWERTY_POSITIONS[intended.lowercaseChar()]
+        if (from == null || to == null) return KeyboardLayout.keyDistance(typed, intended)
+        val x = from.first + touch.dx
+        val y = from.second + touch.dy
+        val toIntended = kotlin.math.hypot((x - to.first).toDouble(), (y - to.second).toDouble())
+        val toTyped = kotlin.math.hypot((x - from.first).toDouble(), (y - from.second).toDouble())
+        return (toIntended - toTyped).coerceIn(TOUCH_MIN_COST, SPATIAL_FAR_COST)
+    }
+
+    /** Floor so that even a border tap is not free: the key that registered stays the default. */
+    private const val TOUCH_MIN_COST = 0.1
+
     /**
      * Get bigram score for context-aware ranking.
      * @return BigramResult with bonus (higher=better) and whether a hit was found

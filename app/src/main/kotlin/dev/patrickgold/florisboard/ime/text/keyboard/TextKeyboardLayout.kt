@@ -89,6 +89,7 @@ import dev.patrickgold.florisboard.ime.popup.PopupGeometry
 import dev.patrickgold.florisboard.ime.popup.rememberPopupUiController
 import dev.patrickgold.florisboard.ime.nlp.HarvestManager
 import dev.patrickgold.florisboard.ime.nlp.HarvestTouch
+import dev.patrickgold.florisboard.ime.nlp.shared.ComposingTouchTrace
 import dev.patrickgold.florisboard.ime.text.gestures.GlideTypingGesture
 import dev.patrickgold.florisboard.ime.text.gestures.SwipeAction
 import dev.patrickgold.florisboard.ime.text.gestures.SwipeGesture
@@ -1023,6 +1024,14 @@ private class TextKeyboardLayoutController(
                 spatialFrame?.resolveTouch(x, y) { _, _ -> activeKey }
             } else {
                 null
+            }
+            when {
+                keyName == "BKSP" -> ComposingTouchTrace.onBackspace()
+                keyName == "BKSP_WORD" -> ComposingTouchTrace.reset()
+                character != null && character.length == 1 && character[0].isLetter() ->
+                    ComposingTouchTrace.onLetter(character[0], spatial?.dx, spatial?.dy)
+                character == "'" -> ComposingTouchTrace.onLetter('\'', null, null)
+                character != null -> ComposingTouchTrace.reset()
             }
             HarvestManager.recordTouch(
                 HarvestTouch(
