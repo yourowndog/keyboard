@@ -107,8 +107,12 @@ fun QuickAction.computeDisplayName(evaluator: ComputingEvaluator): String {
                 R.string.general__empty_string
             }
             KeyCode.NOOP -> R.string.quick_action__noop
-            else -> R.string.general__invalid_fatal
-        })
+            KeyCode.ESCAPE -> R.string.quick_action__escape
+            KeyCode.IME_HIDE_UI -> R.string.quick_action__ime_hide_ui
+            // An action this build has no name for falls back to the key's own label rather than
+            // an error string; an empty label still shows the icon alone.
+            else -> R.string.general__empty_string
+        }).ifEmpty { data.label }
         is QuickAction.InsertText -> data
     }
 }
@@ -145,7 +149,9 @@ fun QuickAction.computeTooltip(evaluator: ComputingEvaluator): String {
                 R.string.general__empty_string
             }
             KeyCode.NOOP -> R.string.quick_action__noop__tooltip
-            else -> R.string.general__invalid_fatal
+            KeyCode.ESCAPE -> R.string.quick_action__escape__tooltip
+            KeyCode.IME_HIDE_UI -> R.string.quick_action__ime_hide_ui__tooltip
+            else -> R.string.general__empty_string
         })
         is QuickAction.InsertText -> "Insert text '$data'"
     }

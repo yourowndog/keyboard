@@ -18,7 +18,9 @@ package dev.patrickgold.florisboard.app.settings.keyboard
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import dev.patrickgold.florisboard.R
+import kotlinx.coroutines.launch
 import dev.patrickgold.florisboard.app.enumDisplayEntriesOf
 import dev.patrickgold.florisboard.ime.keyboard.KeyboardProfile
 import dev.patrickgold.florisboard.ime.landscapeinput.LandscapeInputUiMode
@@ -44,6 +46,7 @@ fun KeyboardGeometryScreen() = FlorisScreen {
         val activeProfileId by prefs.keyboard.activeProfileId.observeAsState()
         val activeProfile = KeyboardProfile.fromId(activeProfileId)
         val profile = prefs.keyboard.profile(activeProfile)
+        val scope = rememberCoroutineScope()
 
         Preference(
             title = stringRes(R.string.pref__keyboard__active_profile__label),
@@ -51,6 +54,7 @@ fun KeyboardGeometryScreen() = FlorisScreen {
                 R.string.pref__keyboard__active_profile__summary_single,
                 "v" to stringRes(activeProfile.labelRes),
             ),
+            onClick = { scope.launch { prefs.keyboard.activeProfileId.set(activeProfile.toggled().id) } },
         )
 
         PreferenceGroup(title = stringRes(R.string.pref__keyboard__group_overall_size__label)) {
