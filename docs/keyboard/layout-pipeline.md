@@ -75,6 +75,31 @@ available from Devtools rather than the primary Layouts screen. Layout Builder
 is likewise routed only from Devtools. Its `LayoutPack`, repository, validation,
 and application/runtime constructor wiring remain intact.
 
+## Profiles: Text and Coding
+
+> Last verified: 2026-11-12 against `ProfileLayouts.kt` and the bundled assets.
+
+The active keyboard profile (`KeyboardProfile`, persisted as
+`keyboard__active_profile_id`) chooses between two boards. The command strip's
+third key shows the active one (TEXT or CODE) and switches to the other on tap
+(`TOGGLE_KEYBOARD_PROFILE`, code `-308`); holding it is the language switch that
+key used to do. Settings, Keyboard, "Keyboard profile" toggles it too.
+
+- **Coding** uses the subtype's own layouts: `qwerty_wide` letters with its two
+  utility rows, and the atom key (`-202`) opens `symbols/western_wide` with
+  `#+=` (`-203`) leading to `symbols2/western_wide`.
+- **Text** is the conventional board from the LCARS Jefferies mockup. For a
+  subtype in the Coding family (`qwerty_wide`, `qwerty_wide_full`,
+  `qwerty_wide_swipe`) `ProfileLayouts` swaps in `characters/qwerty_text`
+  (shift, letters, delete; `123`, comma, space, period, enter) and the
+  `western_text` symbol pages. Other alphabets keep their own layouts.
+
+Each profile's symbol pages are also its hint plates (see Hints below), laid out
+so the plates match the mockup: Text shows `1-0`, `@#$&*-+()`, `!"':;/?`;
+Coding shows `1-0`, `{}[]<>=_~`, `=> && || != :: -> //`. The coding operators
+are `multi_text_key`s and commit as one unit (`KeyboardManager.isOperatorText`),
+so `!=` does not eat the space before it the way a typed `!` does.
+
 ## Row families
 
 - `characters/`: main character rows.

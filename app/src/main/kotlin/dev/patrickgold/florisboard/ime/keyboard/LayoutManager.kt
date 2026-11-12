@@ -548,6 +548,9 @@ class LayoutManager(context: Context) {
         var main: LTN? = null
         var modifier: LTN? = null
         val extensions = mutableListOf<LTN>()
+        val profile = prefs.keyboard.activeProfile()
+        fun layoutFor(mode: KeyboardMode, subtypeLayout: ExtensionComponentName) =
+            ProfileLayouts.resolve(profile, mode, subtype.layoutMap.characters, subtypeLayout)
 
         when (keyboardMode) {
             KeyboardMode.CHARACTERS -> {
@@ -557,7 +560,7 @@ class LayoutManager(context: Context) {
                 if (prefs.keyboard.activeProfilePrefs().devRow.get()) {
                     extensions.add(LTN(LayoutType.NUMERIC_ROW, extCoreLayout("dev_row")))
                 }
-                main = LTN(LayoutType.CHARACTERS, subtype.layoutMap.characters)
+                main = LTN(LayoutType.CHARACTERS, layoutFor(keyboardMode, subtype.layoutMap.characters))
                 modifier = LTN(LayoutType.CHARACTERS_MOD, extCoreLayout("default"))
             }
             KeyboardMode.EDITING -> {
@@ -593,11 +596,11 @@ class LayoutManager(context: Context) {
                 if (prefs.keyboard.activeProfilePrefs().numberRow.get()) {
                     extensions.add(LTN(LayoutType.NUMERIC_ROW, subtype.layoutMap.numericRow))
                 }
-                main = LTN(LayoutType.SYMBOLS, subtype.layoutMap.symbols)
+                main = LTN(LayoutType.SYMBOLS, layoutFor(keyboardMode, subtype.layoutMap.symbols))
                 modifier = LTN(LayoutType.SYMBOLS_MOD, extCoreLayout("default"))
             }
             KeyboardMode.SYMBOLS2 -> {
-                main = LTN(LayoutType.SYMBOLS2, subtype.layoutMap.symbols2)
+                main = LTN(LayoutType.SYMBOLS2, layoutFor(keyboardMode, subtype.layoutMap.symbols2))
                 modifier = LTN(LayoutType.SYMBOLS2_MOD, extCoreLayout("default"))
             }
             KeyboardMode.SMARTBAR_CLIPBOARD_CURSOR_ROW -> {

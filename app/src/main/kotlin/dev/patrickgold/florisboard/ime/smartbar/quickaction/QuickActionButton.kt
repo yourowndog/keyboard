@@ -64,6 +64,8 @@ fun QuickActionButton(
     square: Boolean = true,
     /** A text label shown instead of the action's icon, e.g. "VOICE" on the command strip. */
     label: String? = null,
+    /** Run instead of [action] when the button is held, e.g. MODE's language switch. */
+    onLongPress: (() -> Unit)? = null,
 ) {
     val context = LocalContext.current
     // Get the inputFeedbackController through the FlorisImeService companion-object.
@@ -95,7 +97,10 @@ fun QuickActionButton(
 
     // Disable tooltip for VOICE_INPUT so long-press can trigger voice history
     val isVoiceInput = action is QuickAction.InsertKey && action.data.code == KeyCode.VOICE_INPUT
-    PlainTooltip(action.computeTooltip(evaluator), enabled = type == QuickActionBarType.INTERACTIVE_BUTTON && !isVoiceInput) {
+    PlainTooltip(
+        action.computeTooltip(evaluator),
+        enabled = type == QuickActionBarType.INTERACTIVE_BUTTON && !isVoiceInput && onLongPress == null,
+    ) {
         SnyggBox(
             elementName = elementName,
             attributes = attributes,
@@ -103,7 +108,7 @@ fun QuickActionButton(
             modifier = modifier,
             clickAndSemanticsModifier = (if (square) Modifier.aspectRatio(1f) else Modifier)
                 .indication(interactionSource, LocalIndication.current)
-                .pointerInput(action, isEnabled) {
+                .pointerInput(action, isEnabled, onLongPress) {
                     awaitEachGesture {
                         val down = awaitFirstDown()
                         down.consume()
@@ -127,6 +132,9 @@ fun QuickActionButton(
                                     val km by context.keyboardManager()
                                     km.activeState.imeUiMode =
                                         dev.patrickgold.florisboard.ime.ImeUiMode.VOICE_HISTORY
+                                } else if (onLongPress != null && holdMs > 400) {
+                                    action.onPointerCancel(context)
+                                    onLongPress()
                                 } else {
                                     action.onPointerUp(context)
                                 }

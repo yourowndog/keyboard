@@ -1,0 +1,41 @@
+[
+  [
+    {"$": "text_key", "code": 33, "label": "!"},
+    {"$": "text_key", "code": 64, "label": "@"},
+    {"$": "text_key", "code": 35, "label": "#"},
+    {"$": "text_key", "code": 36, "label": "$"},
+    {"$": "text_key", "code": 37, "label": "%"},
+    {"$": "text_key", "code": 94, "label": "^"},
+    {"$": "text_key", "code": 38, "label": "&"},
+    {"$": "text_key", "code": 42, "label": "*"},
+    {"$": "text_key", "code": 40, "label": "("},
+    {"$": "text_key", "code": 41, "label": ")"}
+  ],
+  [
+    {"$": "text_key", "code": 96, "label": "`"},
+    {"$": "text_key", "code": 124, "label": "|"},
+    {"$": "text_key", "code": 92, "label": "\\"},
+    {"$": "text_key", "code": 43, "label": "+"},
+    {"$": "text_key", "code": 45, "label": "-"},
+    {"$": "text_key", "code": 47, "label": "/"},
+    {"$": "text_key", "code": 39, "label": "'"},
+    {"$": "text_key", "code": 34, "label": "\""},
+    {"$": "text_key", "code": 63, "label": "?"}
+  ],
+  [
+    {"code": -202, "label": "{}", "type": "system_gui"},
+    {"$": "text_key", "code": 59, "label": ";"},
+    {"$": "text_key", "code": 58, "label": ":"},
+    {"$": "multi_text_key", "codePoints": [61, 61], "label": "=="},
+    {"$": "multi_text_key", "codePoints": [43, 61], "label": "+="},
+    {"$": "multi_text_key", "codePoints": [46, 46, 46], "label": "..."},
+    {"$": "multi_text_key", "codePoints": [60, 61], "label": "<="},
+    {"$": "multi_text_key", "codePoints": [62, 61], "label": ">="},
+    {"code": -7, "label": "delete", "type": "enter_editing"}
+  ],
+  [
+    {"$": "text_key", "code": 44, "label": ",", "groupId": 1, "popup": {"main": {"$": "text_key", "code": 59, "label": ";"}, "relevant": [{"$": "text_key", "code": 58, "label": ":"}, {"$": "text_key", "code": 39, "label": "'"}, {"$": "text_key", "code": 34, "label": "\""}]}},
+    {"$": "text_key", "code": 32, "label": "space"},
+    {"$": "text_key", "code": 46, "label": ".", "groupId": 2, "popup": {"main": {"$": "text_key", "code": 63, "label": "?"}, "relevant": [{"$": "text_key", "code": 33, "label": "!"}, {"$": "text_key", "code": 8230, "label": "…"}, {"$": "text_key", "code": 39, "label": "'"}]}}
+  ]
+]

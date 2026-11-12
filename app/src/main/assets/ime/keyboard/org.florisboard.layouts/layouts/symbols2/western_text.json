@@ -1,0 +1,41 @@
+[
+  [
+    {"$": "text_key", "code": 126, "label": "~"},
+    {"$": "text_key", "code": 96, "label": "`"},
+    {"$": "text_key", "code": 124, "label": "|"},
+    {"$": "text_key", "code": 8226, "label": "•"},
+    {"$": "text_key", "code": 8730, "label": "√"},
+    {"$": "text_key", "code": 960, "label": "π"},
+    {"$": "text_key", "code": 247, "label": "÷"},
+    {"$": "text_key", "code": 215, "label": "×"},
+    {"$": "text_key", "code": 182, "label": "¶"},
+    {"$": "text_key", "code": 8710, "label": "∆"}
+  ],
+  [
+    {"$": "text_key", "code": 37, "label": "%"},
+    {"$": "text_key", "code": 94, "label": "^"},
+    {"$": "text_key", "code": 95, "label": "_"},
+    {"$": "text_key", "code": 61, "label": "="},
+    {"$": "text_key", "code": 123, "label": "{"},
+    {"$": "text_key", "code": 125, "label": "}"},
+    {"$": "text_key", "code": 91, "label": "["},
+    {"$": "text_key", "code": 93, "label": "]"},
+    {"$": "text_key", "code": 92, "label": "\\"}
+  ],
+  [
+    {"code": -202, "label": "123", "type": "system_gui"},
+    {"$": "text_key", "code": 60, "label": "<"},
+    {"$": "text_key", "code": 62, "label": ">"},
+    {"$": "text_key", "code": 163, "label": "£"},
+    {"$": "text_key", "code": 8364, "label": "€"},
+    {"$": "text_key", "code": 165, "label": "¥"},
+    {"$": "text_key", "code": 176, "label": "°"},
+    {"$": "text_key", "code": 169, "label": "©"},
+    {"code": -7, "label": "delete", "type": "enter_editing"}
+  ],
+  [
+    {"$": "text_key", "code": 44, "label": ",", "groupId": 1, "popup": {"main": {"$": "text_key", "code": 59, "label": ";"}, "relevant": [{"$": "text_key", "code": 58, "label": ":"}, {"$": "text_key", "code": 39, "label": "'"}, {"$": "text_key", "code": 34, "label": "\""}]}},
+    {"$": "text_key", "code": 32, "label": "space"},
+    {"$": "text_key", "code": 46, "label": ".", "groupId": 2, "popup": {"main": {"$": "text_key", "code": 63, "label": "?"}, "relevant": [{"$": "text_key", "code": 33, "label": "!"}, {"$": "text_key", "code": 8230, "label": "…"}, {"$": "text_key", "code": 39, "label": "'"}]}}
+  ]
+]

@@ -18,6 +18,7 @@ package dev.patrickgold.florisboard.app.settings.keyboard
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.LocalNavController
 import dev.patrickgold.florisboard.app.Routes
@@ -36,6 +37,7 @@ import dev.patrickgold.jetpref.datastore.ui.ListPreference
 import dev.patrickgold.jetpref.datastore.ui.Preference
 import dev.patrickgold.jetpref.datastore.ui.PreferenceGroup
 import dev.patrickgold.jetpref.datastore.ui.SwitchPreference
+import kotlinx.coroutines.launch
 import org.florisboard.lib.compose.stringRes
 
 @OptIn(ExperimentalJetPrefDatastoreUi::class)
@@ -48,6 +50,7 @@ fun KeyboardScreen() = FlorisScreen {
 
     content {
         val activeProfileId by prefs.keyboard.activeProfileId.observeAsState()
+        val scope = rememberCoroutineScope()
         val activeProfile = KeyboardProfile.fromId(activeProfileId)
         val profile = prefs.keyboard.profile(activeProfile)
 
@@ -58,6 +61,9 @@ fun KeyboardScreen() = FlorisScreen {
                     R.string.pref__keyboard__active_profile__summary_single,
                     "v" to stringRes(activeProfile.labelRes),
                 ),
+                // Same switch as the command strip's TEXT/CODE key, so the settings below can be
+                // tuned for either profile without opening the keyboard first.
+                onClick = { scope.launch { prefs.keyboard.activeProfileId.set(activeProfile.toggled().id) } },
             )
             SwitchPreference(
                 profile.numberRow,

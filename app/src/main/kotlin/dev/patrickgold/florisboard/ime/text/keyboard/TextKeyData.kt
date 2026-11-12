@@ -149,6 +149,7 @@ data class TextKeyData(
                 TOGGLE_SMARTBAR_VISIBILITY,
                 TOGGLE_NUMBER_ROW,
                 TOGGLE_DEV_ROW,
+                TOGGLE_KEYBOARD_PROFILE,
                 TOGGLE_ACTIONS_OVERFLOW,
                 TOGGLE_ACTIONS_EDITOR,
                 TOGGLE_INCOGNITO_MODE,
@@ -523,6 +524,13 @@ data class TextKeyData(
             type = KeyType.SYSTEM_GUI,
             code = KeyCode.TOGGLE_DEV_ROW,
             label = "toggle_dev_row",
+        )
+
+        /** Predefined key data for [KeyCode.TOGGLE_KEYBOARD_PROFILE] */
+        val TOGGLE_KEYBOARD_PROFILE = TextKeyData(
+            type = KeyType.SYSTEM_GUI,
+            code = KeyCode.TOGGLE_KEYBOARD_PROFILE,
+            label = "toggle_keyboard_profile",
         )
 
         /** Predefined key data for [KeyCode.TOGGLE_ACTIONS_OVERFLOW] */

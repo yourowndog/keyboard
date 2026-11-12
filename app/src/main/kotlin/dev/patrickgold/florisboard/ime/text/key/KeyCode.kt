@@ -106,6 +106,8 @@ object KeyCode {
     const val TOGGLE_NUMBER_ROW =           -305
     const val TOGGLE_DEV_ROW =              -306
     const val AI_GENERATE =                 -307
+    /** Flips between the Text and Coding keyboard profiles. The LANG/TEXT/CODE command. */
+    const val TOGGLE_KEYBOARD_PROFILE =     -308
     const val TMUX_PREFIX =                 -400
     const val TOGGLE_ACTIONS_OVERFLOW =     -242
     const val TOGGLE_ACTIONS_EDITOR =       -243

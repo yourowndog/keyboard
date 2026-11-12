@@ -101,11 +101,10 @@ at `western`, the component that exists. Two follow-ups came out of it:
   Sam's install needs one: **yes** — all three of his persisted subtypes name
   `org.florisboard.layouts:western_wide` for `symbols2` explicitly.
 
-A third follow-up came out of the device checkpoint rather than the code: the Coding profile has
-no key that reaches Symbols2 or Numeric-Advanced at all. `symbolsMod/western_wide_mod.json`
-carries neither `-203` (VIEW_SYMBOLS2) nor `-205` (VIEW_NUMERIC_ADVANCED), so the repaired default
-fixes a layer that is currently unreachable. Adding the key is a layout-content decision for
-Stage 06.
+Resolved 2026-11-12: `symbols2/western_wide` now exists (the Coding profile's second symbol
+page, reached by `#+=`), `SYMBOLS2_DEFAULT` points at it again, and Sam's persisted subtypes
+resolve without a migration. The Text profile also landed then, ahead of the rest of Stage 08;
+see `docs/keyboard/layout-pipeline.md`.
 
 ---
 

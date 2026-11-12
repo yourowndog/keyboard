@@ -282,11 +282,13 @@ class ProfileScopeMigrationTest {
     }
 
     @Test
-    fun `a profile with no runtime behind it is never selected`() {
-        // Text is declared but has no layout until Stage 08. Persisting its id must not be able to
-        // route the keyboard to assets that do not exist yet.
-        assertTrue(!KeyboardProfile.TEXT.isSelectable, "Text must stay unselectable until Stage 08")
-        assertEquals(KeyboardProfile.Default, KeyboardProfile.fromId(KeyboardProfile.TEXT.id))
+    fun `both profiles are selectable and toggle into each other`() {
+        // Text gained its own layouts (characters/qwerty_text and symbols/western_text), so its
+        // persisted id now selects it instead of falling back to Coding.
+        assertTrue(KeyboardProfile.TEXT.isSelectable)
+        assertSame(KeyboardProfile.TEXT, KeyboardProfile.fromId(KeyboardProfile.TEXT.id))
+        assertSame(KeyboardProfile.CODING, KeyboardProfile.TEXT.toggled())
+        assertSame(KeyboardProfile.TEXT, KeyboardProfile.CODING.toggled())
         assertTrue(
             KeyboardProfile.Default.isSelectable,
             "the fallback profile must itself be selectable",

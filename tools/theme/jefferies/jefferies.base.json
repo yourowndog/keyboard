@@ -68,8 +68,8 @@
   "key[code=-233]": { "background": "var(--recess)", "foreground": "var(--glyph-up)" },
   "key[code=-233]:pressed": { "background": "var(--cyan)", "foreground": "var(--plate)" },
 
-  "key[code=-227]": { "background": "var(--recess)", "foreground": "var(--cyan-lit)", "border-width": "1dp", "border-color": "var(--cyan)" },
-  "key[code=-227]:pressed": { "background": "var(--cyan)", "foreground": "var(--glyph)" },
+  "key[code=-227,-308]": { "background": "var(--recess)", "foreground": "var(--cyan-lit)", "border-width": "1dp", "border-color": "var(--cyan)" },
+  "key[code=-227,-308]:pressed": { "background": "var(--cyan)", "foreground": "var(--glyph)" },
 
   "key[code=-212]": { "background": "var(--recess)", "foreground": "var(--coral)", "border-width": "1dp", "border-color": "var(--coral)" },
   "key[code=-212]:pressed": { "background": "var(--coral)", "foreground": "var(--glyph)" },
@@ -104,8 +104,8 @@
   "smartbar-action-key:disabled": { "background": "var(--recess)", "foreground": "var(--glyph-dim)" },
   "smartbar-action-key[code=-233]": { "background": "var(--recess)", "foreground": "var(--glyph-up)" },
   "smartbar-action-key[code=-233]:pressed": { "background": "var(--coral)", "foreground": "var(--glyph)" },
-  "smartbar-action-key[code=-227]": { "background": "var(--void)", "foreground": "var(--cyan-lit)", "border-width": "1.5dp", "border-color": "var(--cyan)" },
-  "smartbar-action-key[code=-227]:pressed": { "background": "var(--cyan)", "foreground": "var(--glyph)" },
+  "smartbar-action-key[code=-227,-308]": { "background": "var(--void)", "foreground": "var(--cyan-lit)", "border-width": "1.5dp", "border-color": "var(--cyan)" },
+  "smartbar-action-key[code=-227,-308]:pressed": { "background": "var(--cyan)", "foreground": "var(--glyph)" },
   "smartbar-action-key[code=-212]": { "background": "var(--void)", "foreground": "var(--coral)", "border-width": "1.5dp", "border-color": "var(--coral)" },
   "smartbar-action-key[code=-212]:pressed": { "background": "var(--coral)", "foreground": "var(--glyph)" },
   "smartbar-action-key[code=-242]": { "background": "var(--chrome)", "foreground": "var(--glyph)" },

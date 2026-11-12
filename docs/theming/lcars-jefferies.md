@@ -148,12 +148,14 @@ reference's fixed strip: `MENU | EMOJI | LANG ... VOICE`. It is a layout choice,
 not a theme setting, so pick it in Settings, Smartbar, Layout.
 
 - MENU opens the actions overflow (`TOGGLE_ACTIONS_OVERFLOW`), EMOJI the media
-  panel, LANG switches language (it becomes the normal/coding switch once those
-  layouts exist), VOICE starts voice input. Long-pressing VOICE still opens voice
-  history.
+  panel, the third key (LANG in the reference) reads TEXT or CODE and switches
+  between the Text and Coding profiles (`-308`, styled with the `-227` cyan
+  rules; see `docs/keyboard/layout-pipeline.md`), VOICE starts voice input.
+  Long-pressing the TEXT/CODE key switches language; long-pressing VOICE still
+  opens voice history.
 - While there are suggestions or inline autofill, they take the middle between
   the coral and cyan rules, and only MENU and VOICE stay.
-- Command widths are shares of the whole bar (MENU 14%, EMOJI and LANG 15%,
+- Command widths are shares of the whole bar (MENU 14%, EMOJI and TEXT/CODE 15%,
   VOICE 14%); the free middle takes exactly what is left. Labels are single
   line, 14sp, tracked 1sp (`smartbar-action-key`).
 - Check visual changes here with the emulator loop in `tools/visual/`

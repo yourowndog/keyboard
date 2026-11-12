@@ -145,13 +145,13 @@
     "background": "var(--cyan)",
     "foreground": "var(--plate)"
   },
-  "key[code=-227]": {
+  "key[code=-227,-308]": {
     "background": "var(--recess)",
     "foreground": "var(--cyan-lit)",
     "border-width": "1dp",
     "border-color": "var(--cyan)"
   },
-  "key[code=-227]:pressed": {
+  "key[code=-227,-308]:pressed": {
     "background": "var(--cyan)",
     "foreground": "var(--glyph)"
   },
@@ -289,13 +289,13 @@
     "background": "var(--coral)",
     "foreground": "var(--glyph)"
   },
-  "smartbar-action-key[code=-227]": {
+  "smartbar-action-key[code=-227,-308]": {
     "background": "var(--void)",
     "foreground": "var(--cyan-lit)",
     "border-width": "1.5dp",
     "border-color": "var(--cyan)"
   },
-  "smartbar-action-key[code=-227]:pressed": {
+  "smartbar-action-key[code=-227,-308]:pressed": {
     "background": "var(--cyan)",
     "foreground": "var(--glyph)"
   },
