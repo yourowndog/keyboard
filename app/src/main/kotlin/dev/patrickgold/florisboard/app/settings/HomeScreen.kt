@@ -16,22 +16,25 @@
  */
 
 package dev.patrickgold.florisboard.app.settings
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.Assignment
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Extension
 import androidx.compose.material.icons.filled.Gesture
-import androidx.compose.material.icons.filled.Language
-import androidx.compose.material.icons.filled.SentimentSatisfiedAlt
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.SmartButton
 import androidx.compose.material.icons.filled.Spellcheck
-import androidx.compose.material.icons.outlined.Build
-import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.filled.TouchApp
 import androidx.compose.material.icons.outlined.Keyboard
 import androidx.compose.material.icons.outlined.Palette
+import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -40,13 +43,16 @@ import dev.patrickgold.florisboard.app.LocalNavController
 import dev.patrickgold.florisboard.app.Routes
 import dev.patrickgold.florisboard.lib.compose.FlorisScreen
 import dev.patrickgold.florisboard.lib.util.InputMethodUtils
-import dev.patrickgold.florisboard.lib.util.launchAppSelfUninstall
-import dev.patrickgold.jetpref.datastore.model.observeAsState
 import dev.patrickgold.jetpref.datastore.ui.Preference
 import org.florisboard.lib.compose.FlorisErrorCard
 import org.florisboard.lib.compose.FlorisWarningCard
 import org.florisboard.lib.compose.stringRes
 
+/**
+ * Settings home: seven panels grouped by what the user is trying to do, plus a search over
+ * [SettingsSearchIndex]. Routes keep their old deep-link paths (settings/theme opens Look, and so
+ * on), so shortcuts and the keyboard's SETTINGS key still land in the right place.
+ */
 @Composable
 fun HomeScreen() = FlorisScreen {
     title = stringRes(R.string.settings__home__title)
@@ -57,8 +63,6 @@ fun HomeScreen() = FlorisScreen {
     val context = LocalContext.current
 
     content {
-        val isCollapsed by prefs.internal.homeIsBetaToolboxCollapsed.observeAsState()
-
         val isFlorisBoardEnabled by InputMethodUtils.observeIsFlorisboardEnabled(foregroundOnly = true)
         val isFlorisBoardSelected by InputMethodUtils.observeIsFlorisboardSelected(foregroundOnly = true)
         if (!isFlorisBoardEnabled) {
@@ -77,103 +81,76 @@ fun HomeScreen() = FlorisScreen {
             )
         }
 
-        /*Card(modifier = Modifier.padding(8.dp)) {
-            Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-                Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        text = "Welcome to the 0.4 alpha series!",
-                        style = MaterialTheme.typography.subtitle1,
-                        fontWeight = FontWeight.Bold,
-                    )
-                    Spacer(modifier = Modifier.weight(1.0f))
-                    IconButton(onClick = { this@content.prefs.internal.homeIsBetaToolboxCollapsed.set(!isCollapsed) }) {
-                        Icon(
-                            painter = painterResource(if (isCollapsed) {
-                                R.drawable.ic_keyboard_arrow_down
-                            } else {
-                                R.drawable.ic_keyboard_arrow_up
-                            }),
-                            contentDescription = null,
-                        )
-                    }
-                }
-                if (!isCollapsed) {
-                    Text("0.4 will be quite a big release and finally work on adding support for word suggestion and inline autocorrect within the keyboard UI, at first for Latin-based languages. Additionally general improvements and bug fixes will also be made.\n")
-                    Text("Currently the alpha releases are preparations for the suggestions implementation and general improvements and bug fixes.\n")
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text("Note that this release does not contain support for word suggestions (will show the current word plus numbers as a placeholder).", color = Color.Red)
-                    Text("Please DO NOT file an issue for this. It is already more than known and a major goal for implementation in 0.4.0. Thank you!\n")
-                    Spacer(modifier = Modifier.height(16.dp))
-                }
+        var query by rememberSaveable { mutableStateOf("") }
+        OutlinedTextField(
+            value = query,
+            onValueChange = { query = it },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            singleLine = true,
+            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+            placeholder = { Text(stringRes(R.string.settings__search__hint)) },
+        )
+
+        if (query.isNotBlank()) {
+            val results = SettingsSearchIndex.search(query) { context.getString(it) }
+            if (results.isEmpty()) {
+                Text(
+                    text = stringRes(R.string.settings__search__no_results, "q" to query.trim()),
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                )
             }
-        }*/
-        Preference(
-            icon = Icons.Default.Language,
-            title = stringRes(R.string.settings__localization__title),
-            onClick = { navController.navigate(Routes.Settings.Localization) },
-        )
-        Preference(
-            icon = Icons.Outlined.Palette,
-            title = stringRes(R.string.settings__theme__title),
-            onClick = { navController.navigate(Routes.Settings.Theme) },
-        )
-        Preference(
-            icon = Icons.Outlined.Keyboard,
-            title = stringRes(R.string.settings__keyboard__title),
-            onClick = { navController.navigate(Routes.Settings.Keyboard) },
-        )
-        Preference(
-            icon = Icons.Default.SmartButton,
-            title = stringRes(R.string.settings__smartbar__title),
-            onClick = { navController.navigate(Routes.Settings.Smartbar) },
-        )
-        Preference(
-            icon = Icons.Default.Spellcheck,
-            title = stringRes(R.string.settings__typing__title),
-            onClick = { navController.navigate(Routes.Settings.Typing) },
-        )
-        Preference(
-            icon = Icons.Outlined.Build,
-            title = "NLP Debug & Logs",
-            summary = "View status of autocorrect and suggestion engines",
-            onClick = { navController.navigate(Routes.Settings.NlpDebug) },
-        )
-        Preference(
-            icon = Icons.Default.Gesture,
-            title = stringRes(R.string.settings__gestures__title),
-            onClick = { navController.navigate(Routes.Settings.Gestures) },
-        )
-        Preference(
-            icon = Icons.AutoMirrored.Outlined.Assignment,
-            title = stringRes(R.string.settings__clipboard__title),
-            onClick = { navController.navigate(Routes.Settings.Clipboard) },
-        )
-        Preference(
-            icon = Icons.Default.SentimentSatisfiedAlt,
-            title = stringRes(R.string.settings__media__title),
-            onClick = { navController.navigate(Routes.Settings.Media) },
-        )
-        Preference(
-            icon = Icons.Default.Extension,
-            title = stringRes(R.string.ext__home__title),
-            onClick = { navController.navigate(Routes.Ext.Home) },
-        )
-        Preference(
-            icon = Icons.Outlined.Build,
-            title = stringRes(R.string.settings__other__title),
-            onClick = { navController.navigate(Routes.Settings.Other) },
-        )
-        Preference(
-            icon = Icons.Outlined.Info,
-            title = stringRes(R.string.about__title),
-            onClick = { navController.navigate(Routes.Settings.About) },
-        )
-        Preference(
-            icon = Icons.Default.Delete,
-            title = stringRes(R.string.settings__home__uninstall),
-            onClick = {
-                context.launchAppSelfUninstall()
-            },
-        )
+            for (entry in results) {
+                Preference(
+                    title = stringRes(entry.labelRes),
+                    summary = stringRes(entry.panelRes),
+                    onClick = { navController.navigate(entry.route) },
+                )
+            }
+        } else {
+            Preference(
+                icon = Icons.Outlined.Palette,
+                title = stringRes(R.string.settings__look__title),
+                summary = stringRes(R.string.settings__look__summary),
+                onClick = { navController.navigate(Routes.Settings.Theme) },
+            )
+            Preference(
+                icon = Icons.Default.TouchApp,
+                title = stringRes(R.string.settings__sound_touch__title),
+                summary = stringRes(R.string.settings__sound_touch__summary),
+                onClick = { navController.navigate(Routes.Settings.InputFeedback) },
+            )
+            Preference(
+                icon = Icons.Outlined.Keyboard,
+                title = stringRes(R.string.settings__layout__title),
+                summary = stringRes(R.string.settings__layout__summary),
+                onClick = { navController.navigate(Routes.Settings.Keyboard) },
+            )
+            Preference(
+                icon = Icons.Default.SmartButton,
+                title = stringRes(R.string.settings__smartbar__title),
+                summary = stringRes(R.string.settings__command_strip__summary),
+                onClick = { navController.navigate(Routes.Settings.Smartbar) },
+            )
+            Preference(
+                icon = Icons.Default.Spellcheck,
+                title = stringRes(R.string.settings__typing__title),
+                summary = stringRes(R.string.settings__typing__summary),
+                onClick = { navController.navigate(Routes.Settings.Typing) },
+            )
+            Preference(
+                icon = Icons.Default.Gesture,
+                title = stringRes(R.string.settings__gestures__title),
+                summary = stringRes(R.string.settings__gestures__summary),
+                onClick = { navController.navigate(Routes.Settings.Gestures) },
+            )
+            Preference(
+                icon = Icons.Outlined.Settings,
+                title = stringRes(R.string.settings__system__title),
+                summary = stringRes(R.string.settings__system__summary),
+                onClick = { navController.navigate(Routes.Settings.Other) },
+            )
+        }
     }
 }

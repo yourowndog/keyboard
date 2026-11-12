@@ -63,7 +63,7 @@ import java.util.Locale
 
 @Composable
 fun NlpDebugScreen() = FlorisScreen {
-    title = "NLP Debug & Logs"
+    title = stringRes(R.string.settings__nlp_debug__title)
     previewFieldVisible = true
 
     val context = LocalContext.current

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- OmniBoard's settings map: the seven panels, their summaries and the search index labels. -->
+<resources>
+    <string name="settings__look__title">Look</string>
+    <string name="settings__look__summary">Theme, backdrop, key labels and popups</string>
+    <string name="settings__sound_touch__title">Sound &amp; touch</string>
+    <string name="settings__sound_touch__summary">Key sounds, vibration and long-press timing</string>
+    <string name="settings__layout__title">Layout</string>
+    <string name="settings__layout__summary">Rows, size and spacing, per-key tuning, languages. Separate for Text and Code</string>
+    <string name="settings__command_strip__summary">MENU, EMOJI, TEXT/CODE, VOICE and the suggestion row</string>
+    <string name="settings__typing__summary">Suggestions, autocorrect, capitalization, spelling, dictionaries</string>
+    <string name="settings__gestures__summary">Swipes, space bar and delete gestures, glide typing</string>
+    <string name="settings__system__title">System</string>
+    <string name="settings__system__summary">Clipboard and emoji history, backup, extensions, diagnostics, about</string>
+    <string name="settings__system__group_history">History and extensions</string>
+    <string name="settings__system__group_diagnostics">Diagnostics</string>
+    <string name="settings__nlp_debug__title">Autocorrect diagnostics</string>
+    <string name="settings__nlp_debug__summary">Engine status and recent suggestion activity</string>
+    <string name="settings__localization__summary">Each language and the layout it uses</string>
+    <string name="pref__look__group_keys">Keys</string>
+    <string name="pref__sound_touch__group_keys">Timing</string>
+    <string name="settings__search__hint">Search settings</string>
+    <string name="settings__search__no_results">No setting matches \"{q}\"</string>
+</resources>

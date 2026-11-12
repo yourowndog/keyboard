@@ -35,7 +35,7 @@ import org.florisboard.lib.compose.stringRes
 @OptIn(ExperimentalJetPrefDatastoreUi::class)
 @Composable
 fun InputFeedbackScreen() = FlorisScreen {
-    title = stringRes(R.string.settings__input_feedback__title)
+    title = stringRes(R.string.settings__sound_touch__title)
     previewFieldVisible = true
     iconSpaceReserved = false
 
@@ -43,6 +43,16 @@ fun InputFeedbackScreen() = FlorisScreen {
     val vibrator = context.systemVibratorOrNull()
 
     content {
+        PreferenceGroup(title = stringRes(R.string.pref__sound_touch__group_keys)) {
+            DialogSliderPreference(
+                prefs.keyboard.longPressDelay,
+                title = stringRes(R.string.pref__keyboard__long_press_delay__label),
+                valueLabel = { stringRes(R.string.unit__milliseconds__symbol, "v" to it) },
+                min = 100,
+                max = 700,
+                stepIncrement = 10,
+            )
+        }
         PreferenceGroup(title = stringRes(R.string.pref__input_feedback__group_audio__label)) {
             ListPreference(
                 listPref = prefs.inputFeedback.audioActivationMode,
