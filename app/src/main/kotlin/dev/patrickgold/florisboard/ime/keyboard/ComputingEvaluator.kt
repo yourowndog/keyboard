@@ -156,7 +156,10 @@ fun ComputingEvaluator.computeLabel(data: KeyData): String? {
                 evaluator.context()?.getString(R.string.key__view_phone2)
             }
             KeyCode.VIEW_SYMBOLS2 -> {
-                evaluator.context()?.getString(R.string.key__view_symbols2)
+                // A layout may name its own page key, e.g. `#+=` on the coding symbol page; the stock
+                // layouts use the placeholder label and get the localized `=\<`.
+                data.label.takeIf { it.isNotEmpty() && it != "view_symbols2" }
+                    ?: evaluator.context()?.getString(R.string.key__view_symbols2)
             }
             KeyCode.HALF_SPACE -> {
                 evaluator.context()?.getString(R.string.key__view_half_space)
