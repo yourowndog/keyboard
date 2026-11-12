@@ -92,7 +92,7 @@ fun KeyboardBackdrop(modifier: Modifier = Modifier) {
 private val LcarsCyan = Color(0xFF6FD3E8)
 private val LcarsAmber = Color(0xFFFF9C3A)
 
-private fun DrawScope.drawBuiltin(kind: BuiltinBackdrop) = when (kind) {
+internal fun DrawScope.drawBuiltin(kind: BuiltinBackdrop) = when (kind) {
     BuiltinBackdrop.GRID -> drawGrid()
     BuiltinBackdrop.STARFIELD -> drawStarfield()
     BuiltinBackdrop.SCANLINES -> drawScanlines()

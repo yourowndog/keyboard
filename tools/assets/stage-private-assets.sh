@@ -26,13 +26,21 @@ if ! git -C "$repo" check-ignore -q "$dest/x"; then
     exit 1
 fi
 
+rm -rf "$dest"
+mkdir -p "$dest"
 count=0
 while read -r from to; do
     [[ -z "${from:-}" || "$from" == \#* ]] && continue
-    mkdir -p "$dest/$(dirname "$to")"
-    rsync -t "$source/$from" "$dest/$to"
+    if [[ "$from" == */ ]]; then
+        # A trailing slash stages a whole prepared folder's contents.
+        mkdir -p "$dest/$to"
+        rsync -rt "$source/$from" "$dest/$to"
+    else
+        mkdir -p "$dest/$(dirname "$to")"
+        rsync -t "$source/$from" "$dest/$to"
+    fi
     count=$((count + 1))
 done < "$picks"
 
-echo "staged $count file(s) into $dest from $source"
+echo "staged $count pick(s) into $dest from $source"
 du -sh "$dest"

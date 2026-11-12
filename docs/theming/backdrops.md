@@ -48,9 +48,14 @@ it, and selects it. A failed import leaves nothing behind.
 
 ## Settings
 
+The gallery (`BackdropGalleryDialog`) shows two tiles per row at the key
+field's rough proportions, grouped as Built in, each private-asset collection
+(the file-name prefix before the first `-`, so `scifi_loops-07.gif` is in
+"Scifi loops"), and Imported. Thumbnails show the first frame only.
+
 | Row | Preference | Default |
 | --- | --- | --- |
-| Backdrop | `theme__backdrop_id` | blank (none) |
+| Backdrop (opens a thumbnail gallery, one tap applies) | `theme__backdrop_id` | blank (none) |
 | Import image… | adds a `file:` backdrop and selects it | |
 | Backdrop strength | `theme__backdrop_opacity`, 0-100 | 60 |
 | Animate backdrop | `theme__backdrop_animate` | on |
@@ -61,7 +66,6 @@ cropped to fill (`ContentScale.Crop`), centred.
 
 ## Not there yet
 
-See [LCARS assets](lcars-assets.md) for the plan. In short: a thumbnail
-gallery instead of a list, deleting imports, per-profile backdrops (Text vs
+See [LCARS assets](lcars-assets.md) for the plan. In short: deleting imports, per-profile backdrops (Text vs
 Code), letting a theme name a default backdrop, pausing animation while typing
 fast, and device validation of animated loops for frame cost and battery.
