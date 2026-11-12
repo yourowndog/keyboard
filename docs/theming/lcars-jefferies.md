@@ -150,8 +150,9 @@ resolved through Snygg, so the art re-themes and no hex lives in Kotlin.
   the outer edge, straight on the inner edge facing Z, as in the reference.
 - **Shift dial:** an empty ring when off, a half arc for one capital, and a
   full ring with a solid core for caps lock. It replaces the shift icon, so the
-  Jefferies shift key no longer turns solid coral when pressed or in caps lock;
-  the dial carries the state instead.
+  Jefferies shift key does not turn solid when pressed or in caps lock; the
+  dial carries the state instead. While Ctrl is latched a caret replaces the
+  core (see [Ctrl reveal](#ctrl-reveal)).
 - **Delete grille:** a coral rule over a recessed grille in the top band, in
   line with the letter plates. The cells light when pressed, and the glyph moves
   to the lower right.
@@ -168,6 +169,37 @@ resolved through Snygg, so the art re-themes and no hex lives in Kotlin.
 
 Ornaments are static; motion is a later phase. They never change bounds or
 touch behavior.
+
+### Colour grammar
+
+Each accent colour means one job, and no other key uses it, so special keys can
+be found by peripheral vision rather than by reading glyphs. Enter and Delete,
+the pair that must never be confused, differ in brightness as well as hue.
+
+| Colour | Job | Keys |
+|---|---|---|
+| slate (`--cap`, `--plate`) | type a character | letters, digits, `,` `.` |
+| amber (`--amber`) | commit | Enter: the only bright filled key |
+| coral (`--coral`) | remove | Delete (dark body, coral glyph and grille), the delete-swipe gauge |
+| cyan (`--cyan`, `--cyan-lit`) | change the board | 123, ABC and the other view switches (`-201`..`-207`), TEXT/CODE |
+| lilac (`--lilac`) | hold a state | the shift dial, CTRL, Ctrl's revealed plates |
+
+The reference photo's shift dial is coral; the theme moves it to lilac so coral
+keeps a single meaning.
+
+### Ctrl reveal
+
+While Ctrl is latched, the letter plates show what Ctrl plus that letter does
+instead of the letter's symbol: A `ALL`, C `COPY`, X `CUT`, V `PASTE`, Z `UNDO`.
+Other letters' plates go blank; their chords still send. The plates are styled
+by `key-plate[ctrlstate=`active`]` and `[ctrlstate=`locked`]`. The words are in
+`CtrlReveal.kt`; the chord itself is the existing Ctrl path in
+`KeyboardManager.sendCtrlChordIfNeeded`.
+
+On a board with no Ctrl key of its own (the Text profile), holding Shift
+latches Ctrl instead of locking caps, and the shift key fills lilac with a caret
+in its dial. Double-tapping Shift still locks caps. Holding Shift again before
+typing drops the latch. Boards with a CTRL key (Coding) keep hold-for-caps-lock.
 
 ### Command strip smartbar
 
