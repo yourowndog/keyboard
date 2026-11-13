@@ -62,6 +62,7 @@ import dev.patrickgold.florisboard.ime.input.InputKeyEventReceiver
 import dev.patrickgold.florisboard.ime.input.InputShiftState
 import dev.patrickgold.florisboard.ime.nlp.ClipboardSuggestionCandidate
 import dev.patrickgold.florisboard.ime.nlp.PunctuationRule
+import dev.patrickgold.florisboard.ime.nlp.AddressChipCandidate
 import dev.patrickgold.florisboard.ime.nlp.SuggestionCandidate
 import dev.patrickgold.florisboard.ime.nlp.HarvestRoute
 import dev.patrickgold.florisboard.ime.onehanded.OneHandedMode
@@ -1007,6 +1008,7 @@ class KeyboardManager(
         }
         when (candidate) {
             is ClipboardSuggestionCandidate -> editorInstance.commitClipboardItem(candidate.clipboardItem)
+            is AddressChipCandidate -> editorInstance.commitText(candidate.insert)
             else -> editorInstance.commitCompletion(
                 candidate,
                 harvestRoute = harvestRoute,
@@ -1383,7 +1385,7 @@ class KeyboardManager(
                 else -> { /* Do nothing */ }
             }
         }
-        if (prefs.correction.doubleSpacePeriod.get()) {
+        if (prefs.correction.doubleSpacePeriod.get() && !editorInstance.isLiteralInput()) {
             if (inputEventDispatcher.isConsecutiveUp(data)) {
                 val text = editorInstance.run { activeContent.getTextBeforeCursor(2) }
                 if (text.length == 2 && DoubleSpacePeriodMatcher.matches(text)) {
