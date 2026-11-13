@@ -118,7 +118,10 @@ def analyze(build: Path, dictionary: set[str]) -> dict:
     last_day = None
 
     for r in rows(build / "words.jsonl.gz"):
-        src = r.get("src") or "?"
+        # "TYPED" means the keyboard's own keys produced it (v4 slots, 2026-09 on).
+        # v3 rows only say TYPING, which also covers pasted text, so they count
+        # in the input mix but not in the vocabulary and style statistics.
+        src = r.get("input") or r.get("src") or "?"
         ts = r["ts"]
         dt = datetime.fromisoformat(ts)
         week = dt.strftime("%G-W%V")
@@ -129,7 +132,7 @@ def analyze(build: Path, dictionary: set[str]) -> dict:
         raw = r["word"]
         bare = raw.strip(STRIP)
         low = bare.lower()
-        if src == "TYPING":
+        if src == "TYPED":
             if WORD.match(bare):
                 typed_vocab[low] += 1
                 typed_len.append(len(bare))
@@ -277,7 +280,8 @@ def analyze(build: Path, dictionary: set[str]) -> dict:
                     if LETTER.match(c.lower()) and LETTER.match(prev[1].lower()):
                         bigram_t[prev[1].lower() + c.lower()].append(gap)
             low = c.lower()
-            if LETTER.match(low) and dx is not None and dy is not None and xn is not None and yn is not None:
+            if (LETTER.match(low) and dx is not None and dy is not None and xn is not None and yn is not None
+                    and abs(dx) <= 1 and abs(dy) <= 1):
                 letters += 1
                 if clean:
                     ks = key_stats[low]

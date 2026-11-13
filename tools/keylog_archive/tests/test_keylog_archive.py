@@ -51,6 +51,8 @@ def sample_file() -> bytes:
                  "typed": "teh", "applied": "the", "candidates": [["the", 1.0], ["teh", 0.1]]})
     objs.append({"v": 3, "id": 41, "ts": "2026-11-02T09:00:01.000", "sess": "abcd1234", "type": "REVERTED",
                  "typed": "teh", "rejected": "the", "undoes": 40})
+    objs.append({"v": 3, "id": 43, "ts": "2026-11-02T09:00:03.000", "sess": "abcd1234", "type": "WORD_COMMITTED",
+                 "word": "the", "src": "TYPING", "slot": "abcd1234:2"})
     objs.append({"v": 3, "id": 42, "ts": "2026-11-02T09:00:02.000", "sess": "abcd1234", "type": "AUTO_APPLIED",
                  "typed": "recieve", "applied": "receive"})
     return lines(objs)
@@ -148,6 +150,10 @@ class ImportAndBuildTests(unittest.TestCase):
         self.assertTrue(corr["teh"]["reverted"])
         self.assertFalse(corr["recieve"]["reverted"])
         self.assertEqual(card["counts"]["quarantined"], 0)
+        words = {r["uid"].split(":")[1]: r for r in (json.loads(l) for l in gzip.open(current / "words.jsonl.gz", "rt"))}
+        self.assertEqual((words["1"]["input"], words["43"]["input"]), ("TYPING_V3", "TYPED"))
+        self.assertEqual(words["43"]["route"], "TYPED_THROUGH")
+        self.assertFalse((current / "words_unjoined.jsonl.gz").exists())
 
     def test_corrupted_chunk_blocks_promotion(self):
         import_file.import_file(self.src, self.store, 700, "test")

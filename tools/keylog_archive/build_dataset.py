@@ -23,7 +23,7 @@ Pipeline, in order:
    - ``events.jsonl.gz``        every valid event, + ``_uid``, ``_stream``, ``_day``, ``_split``
    - ``typing_slots.jsonl.gz``  WORD_SLOTs with touch evidence: the neural model's examples
    - ``corrections.jsonl.gz``   AUTO_APPLIED decisions labelled kept / reverted
-   - ``words.jsonl.gz``         committed words in order, with input source (LM text)
+   - ``words.jsonl.gz``         committed words in order, with how each arrived (LM text)
    - ``quarantine.jsonl.gz``    invalid lines and why
    - ``DATASET.json``           the card: provenance, counts, gates, split rule, file hashes
 
@@ -174,6 +174,22 @@ def typing_example(obj: dict, uid: str, day: str, split: str, ts_utc: str | None
     }
 
 
+TYPED_ROUTES = {"TYPED_THROUGH", "AUTO_APPLIED", "BAR_PICK", "ABANDONED", "AUTO_REVERTED"}
+
+
+def word_input(route: str | None, src: str | None) -> str:
+    """How a committed word got into the field: TYPED, GLIDE, VOICE, PASTE, or TYPING_V3 (unknown mix)."""
+    if route in TYPED_ROUTES:
+        return "TYPED"
+    if route in ("GLIDE", "VOICE", "PASTE"):
+        return route
+    if route == "CLIPBOARD":
+        return "PASTE"
+    if src == "VOICE":
+        return "VOICE"
+    return "TYPING_V3"
+
+
 class Writer:
     """gzip JSONL writer that tracks rows, split counts and the file digest."""
 
@@ -273,7 +289,8 @@ def build(store: KeylogStore, verify_only: bool = False, promote: bool = True) -
     tmp_dir.mkdir(parents=True, exist_ok=False)
 
     writers = {name: Writer(tmp_dir / f"{name}.jsonl.gz")
-               for name in ("events", "typing_slots", "words", "quarantine")}
+               for name in ("events", "typing_slots", "words_unjoined", "quarantine")}
+    slot_route: dict[str, str] = {}
     corrections: list[dict] = []
     undone: dict[str, str] = {}
 
@@ -335,13 +352,15 @@ def build(store: KeylogStore, verify_only: bool = False, promote: bool = True) -
                 obj["_uid"], obj["_stream"], obj["_day"], obj["_split"], obj["_ts_utc"] = uid, stream, day, split, ts_utc
                 writers["events"].write(obj)
 
+                if typ == "WORD_SLOT":
+                    slot_route[f"{stream}:{obj['slot']}"] = obj["outcome"]["route"]
                 if typ == "WORD_SLOT" and schema.is_typing_slot(obj):
                     ex = typing_example(obj, uid, day, split, ts_utc)
                     quality[ex["quality"]] += 1
                     writers["typing_slots"].write(ex)
                 elif typ == "WORD_COMMITTED":
-                    writers["words"].write({
-                        "uid": uid, "ts": obj["ts"], "day": day, "split": split, "sess": obj["sess"],
+                    writers["words_unjoined"].write({
+                        "uid": uid, "stream": stream, "ts": obj["ts"], "day": day, "split": split, "sess": obj["sess"],
                         "app": obj.get("app"), "word": obj["word"], "src": obj.get("src"), "slot": obj.get("slot"),
                     })
                 elif typ == "AUTO_APPLIED":
@@ -362,6 +381,24 @@ def build(store: KeylogStore, verify_only: bool = False, promote: bool = True) -
         cw.write(row)
 
     files = {name: w.close() for name, w in writers.items()}
+
+    # WORD_COMMITTED is written before its WORD_SLOT closes, so the route that says
+    # how the word really arrived (typed, pasted, dictated, picked) is joined here.
+    # Before v4 (2026-09) there is no slot: ``input`` then falls back to the v3
+    # ``src``, where TYPING still includes pasted text.
+    unjoined = writers.pop("words_unjoined").path
+    files.pop("words_unjoined")
+    ww = Writer(tmp_dir / "words.jsonl.gz")
+    with gzip.open(unjoined, "rt", encoding="utf-8") as fh:
+        for line in fh:
+            row = json.loads(line)
+            stream_ = row.pop("stream")
+            route = slot_route.get(f"{stream_}:{row['slot']}") if row.get("slot") else None
+            row["route"] = route
+            row["input"] = word_input(route, row.get("src"))
+            ww.write(row)
+    unjoined.unlink()
+    files["words"] = ww.close()
     files["corrections"] = cw.close()
     files = {f"{k}.jsonl.gz": v for k, v in files.items()}
 
