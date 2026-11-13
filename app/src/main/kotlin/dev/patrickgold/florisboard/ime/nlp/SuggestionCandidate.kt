@@ -181,3 +181,19 @@ data class EmojiSuggestionCandidate(
     override val secondaryText = if (showName) emoji.name else null
     override val word: String get() = text
 }
+
+/**
+ * A strip chip that types a fixed piece of an email address or URL (`@gmail.com`, `.io`) at the
+ * cursor instead of replacing the current word. See [dev.patrickgold.florisboard.ime.editor.FieldPolicy].
+ */
+data class AddressChipCandidate(
+    override val text: CharSequence,
+    val insert: String,
+) : SuggestionCandidate {
+    override val secondaryText: CharSequence? = null
+    override val confidence: Double = 1.0
+    override val isEligibleForAutoCommit: Boolean = false
+    override val isEligibleForUserRemoval: Boolean = false
+    override val icon: ImageVector? = null
+    override val sourceProvider: SuggestionProvider? = null
+}

@@ -178,7 +178,29 @@ is never itself marked for auto-commit.
 
 ## Field gating
 
-Password, email and URI variations never correct. Elsewhere a field that sets
+`FieldPolicy` (`ime/editor/FieldPolicy.kt`) decides when prose rules may touch
+text. Prose rules are autocorrect, word suggestions and phrase predictions,
+auto-space after punctuation, eating the space before punctuation, phantom
+space and the double-space period.
+
+- Password, email and URI variations are always literal.
+- In any other field, the token ending at the cursor is literal once it is
+  address-shaped: `name@host` (something before the `@`, so a Slack `@sam`
+  mention is still prose), `scheme://` or `www.`. A space ends the token.
+
+`NlpManager.getAutoCommitCandidate` returns nothing for literal input, which
+covers every autocorrect path (space, punctuation, hardware space, Termux raw
+path). Before this gate, only the `noSuggestions` override checked the
+variation, so a URI field that asked for `autoCorrect` turned `https` into
+`Http`, and an email field turned `sam.` into `Sam. `.
+
+In literal input the strip shows address chips instead of words
+(`AddressChipCandidate`, inserted at the cursor): whole mail hosts
+(`@gmail.com`) for an email local part, host completions after `@`, and
+`.com .io .net .org .dev .ai` while typing a host, completing the top-level
+domain after the last dot. URLs get no chips once the path starts.
+
+Elsewhere a field that sets
 `TYPE_TEXT_FLAG_AUTO_CORRECT` gets correction even if it also sets
 `noSuggestions` (the Google search box does both); see
 `AbstractEditorInstance.autoCorrectOverridesNoSuggestions`. In the Termux raw

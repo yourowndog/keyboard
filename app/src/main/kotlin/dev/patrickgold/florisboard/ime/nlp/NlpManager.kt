@@ -23,6 +23,7 @@ import androidx.lifecycle.MutableLiveData
 import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.clipboardManager
 import dev.patrickgold.florisboard.editorInstance
+import dev.patrickgold.florisboard.ime.editor.FieldPolicy
 import dev.patrickgold.florisboard.ime.clipboard.provider.ClipboardItem
 import dev.patrickgold.florisboard.ime.clipboard.provider.ItemType
 import dev.patrickgold.florisboard.ime.core.Subtype
@@ -305,6 +306,20 @@ class NlpManager(context: Context) {
 
     fun suggest(subtype: Subtype, content: EditorContent) {
         val reqTime = SystemClock.uptimeMillis()
+        val fieldKind = FieldPolicy.kindOf(editorInstance.activeInfo.inputAttributes.variation)
+        if (FieldPolicy.isLiteral(fieldKind, content.textBeforeSelection)) {
+            // Email, URL and password fields, and address-shaped tokens anywhere: no word
+            // suggestions or phrase predictions, only chips that finish the address.
+            val chips = FieldPolicy.addressChips(fieldKind, content.textBeforeSelection)
+                .map { AddressChipCandidate(text = it.label, insert = it.insert) }
+            clearPhraseCandidates()
+            runBlocking {
+                internalSuggestionsGuard.withLock {
+                    if (internalSuggestions.first < reqTime) internalSuggestions = reqTime to chips
+                }
+            }
+            return
+        }
         scope.launch {
             val emojiSuggestions = when {
                 prefs.emoji.suggestionEnabled.get() -> {
@@ -418,6 +433,8 @@ class NlpManager(context: Context) {
         // often taken by the typed word and prefix completions, which are shown but never
         // eligible ("arr" -> [arr, Array, Arrest, Are...] must still auto-commit "Are").
         // Eligibility itself is gated hard in LatinLanguageProvider.shouldCommit.
+        val fieldKind = FieldPolicy.kindOf(editorInstance.activeInfo.inputAttributes.variation)
+        if (FieldPolicy.isLiteral(fieldKind, editorInstance.activeContent.textBeforeSelection)) return null
         return activeCandidates.firstOrNull { it.isEligibleForAutoCommit }
     }
 

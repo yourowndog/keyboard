@@ -51,6 +51,8 @@ import dev.patrickgold.florisboard.ime.nlp.HarvestRoute
 class EditorInstance(context: Context) : AbstractEditorInstance(context) {
     companion object {
         private const val SPACE = " "
+        /** How far back [isLiteralInput] looks for the start of the current token. */
+        private const val NumCharsTokenWindow = 128
     }
 
     private val prefs by FlorisPreferenceStore
@@ -265,6 +267,15 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         return super.setSelection(selection)
     }
 
+    /**
+     * True when prose rules must leave the text alone: an email, URL or password field, or an
+     * address-shaped token in any field. See [FieldPolicy].
+     */
+    fun isLiteralInput(): Boolean = FieldPolicy.isLiteral(
+        FieldPolicy.kindOf(activeInfo.inputAttributes.variation),
+        activeContent.getTextBeforeCursor(NumCharsTokenWindow),
+    )
+
     private fun shouldInsertAutoSpaceBefore(text: String): Boolean {
         if (!prefs.correction.autoSpacePunctuation.get() || text.isEmpty()) return false
         if (activeInfo.isRawInputEditor) return false
@@ -318,10 +329,15 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         // the user typed deliberately. phantomSpace signals this too, but async selection
         // updates can clear it before the next key lands; the local flag is race-free.
         val attachesToWord = char == "'" || char == "\"" || char == "’"
-        val shouldEatTrailingSpace = (isPunctuation || (attachesToWord && (afterCandidateSpace || phantomSpace.isActive))) && hasTrailingSpace
+        // Email/URL/password fields and address-shaped tokens are typed literally: no space
+        // eating, auto-space or phantom space around punctuation.
+        val isLiteral = isLiteralInput()
+        val shouldEatTrailingSpace = !isLiteral &&
+            (isPunctuation || (attachesToWord && (afterCandidateSpace || phantomSpace.isActive))) && hasTrailingSpace
 
-        val isInsertAutoSpaceBeforeChar = shouldInsertAutoSpaceBefore(char)
-        val isInsertAutoSpaceAfterChar = shouldInsertAutoSpaceAfter(char, spaceWillBeEaten = shouldEatTrailingSpace)
+        val isInsertAutoSpaceBeforeChar = !isLiteral && shouldInsertAutoSpaceBefore(char)
+        val isInsertAutoSpaceAfterChar = !isLiteral &&
+            shouldInsertAutoSpaceAfter(char, spaceWillBeEaten = shouldEatTrailingSpace)
         val isDeletePreviousSpace = isInsertAutoSpaceAfterChar && autoSpace.isActive
 
         // SESSION LOGGING: accumulate chars into words
@@ -344,7 +360,7 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         } else {
             autoSpace.setInactive()
         }
-        val isPhantomSpaceActive = phantomSpace.determine(char)
+        val isPhantomSpaceActive = !isLiteral && phantomSpace.determine(char)
         phantomSpace.setInactive()
         val result = super.commitChar(
             char = char,
