@@ -339,6 +339,16 @@
     "background": "var(--cyan)",
     "foreground": "var(--glyph)"
   },
+  "smartbar-action-key[code=-31,-32,-33,-35]": {
+    "background": "var(--void)",
+    "foreground": "var(--lilac-lit)",
+    "border-width": "1.5dp",
+    "border-color": "var(--lilac)"
+  },
+  "smartbar-action-key[code=-31,-32,-33,-35]:pressed": {
+    "background": "var(--lilac)",
+    "foreground": "var(--glyph)"
+  },
   "smartbar-action-key[code=-212]": {
     "background": "var(--void)",
     "foreground": "var(--coral)",

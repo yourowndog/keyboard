@@ -88,3 +88,20 @@ latch after the event is handed to an active input connection, until the next
 non-Tmux key is released or the input session ends. That latch does not pretend
 that the keyboard can observe tmux's external state or prove that the target
 application handled the event.
+
+## Shift and Delete gestures
+
+Delete's swipe left selects text before the cursor as the finger travels and
+deletes it on release (`gestures.deleteKeySwipeLeft` picks characters or words,
+delete or select only). Tapping Shift and dragging right is its mirror: once the
+drag passes the swipe detector's first step heading right, while the finger is
+still on Shift and before the long press has fired, the touch becomes a forward
+delete for the rest of the gesture (`ShiftForwardDelete`,
+`TextKeyboardLayout.handleShiftForwardDeleteSwipe`). It selects after the
+cursor, deletes on release, follows the same precision setting, and restores
+the shift state the press started from (so caps lock survives it).
+
+What this replaces: a horizontal slide from Shift onto Z used to type a capital.
+Slides that leave Shift upward still do, and so do slides in raw input editors
+(terminals), where a forward delete has no selection to grow. Holding Shift
+first and then moving keeps the long-press behaviour.
