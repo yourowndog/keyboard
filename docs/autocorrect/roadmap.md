@@ -452,15 +452,17 @@ Measured on a replay bench of the 2026-11-12 harvest snapshot (LM cut at
 2026-10-15, dev/test split at 2026-10-29). PR #82 shipped on-device learning
 with the rival test, touch-aware substitution cost (self-fixed words recovered
 42.0→46.0% on test, no change in false fires), the single-letter and acronym
-destination blockers, D8 and the Termux apostrophe fix. Still open, by
-expected impact:
+destination blockers, D8 and the Termux apostrophe fix. Its on-device
+learning broke invariant 1 and Sam rejected it on 2026-11-13 (reinstalls wipe
+learned state, and an end-user word list is the wrong principle); the lexicon
+is now a build-time asset from the harvest. Still open, by expected impact:
 
 1. **Personal frequency in ranking.** `PersonalLexicon` counts are only a
    vocabulary gate today; blend them into the frequency term so the person's
    own common words outrank dictionary strangers.
-2. **Learned words as correction targets.** SymSpell cannot retrieve a word it
-   does not hold, so a learned word protects itself but a typo of it is never
-   corrected to it. Add learned words to retrieval.
+2. **Personal words as correction targets.** SymSpell cannot retrieve a word
+   it does not hold, so a personal word protects itself but a typo of it is
+   never corrected to it. Add known personal words to retrieval.
 3. **Self-fix capture.** In 80% of words the person fixed by hand, the intended
    word was already in the bar. A confidence margin that commits those (with
    touch evidence) is the largest pool left, but `AUTO_OK` labels are polluted
@@ -469,7 +471,9 @@ expected impact:
    lost to the current engine on long novel words; it needs a calibrated
    insertion/deletion model before it can replace the edit-distance penalty.
 5. **Termux first-word correction**, still suppressed by line shape.
-6. **Keylog shipping to Titan** like the voice archive, so the bench and a
-   personal model train on fresh data without manual snapshots.
+6. **Keylog shipping to Titan** like the voice archive, so the bench, the
+   personal lexicon asset and a personal model build from fresh data without
+   manual snapshots. Checked 2026-11-13 across every branch and tag: no
+   keylog uploader or receiver was ever written; only voice ships to Titan.
 7. **Personal model.** Next-word prediction from the personal LM first, then a
    trained reranker once 1–6 give clean labels.

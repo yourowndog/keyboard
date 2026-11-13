@@ -185,27 +185,29 @@ Password, email and URI variations never correct. Elsewhere a field that sets
 path, an apostrophe between two letters is ignored by the command-line shape
 check, so `don't` no longer makes a prose line look like shell syntax.
 
-## Personal learning
+## Personal lexicon
 
-`PersonalLexicon` (`nlp/shared/PersonalLexicon.kt`) is the on-device memory of
-what this person types. It is consulted as vocabulary by valid-word immunity,
+Nothing is learned on the device (roadmap invariant 1). `PersonalLexicon`
+(`nlp/shared/PersonalLexicon.kt`) is a read-only asset built from the harvest
+and packed into the APK, so every install starts out knowing the person and a
+reinstall loses nothing. It is consulted as vocabulary by valid-word immunity,
 the typed-word lexical status and word segmentation, and its refused pairs join
 the anti-corrections.
 
-- Every committed word is counted (not in incognito, harvest-blocked or
-  `noPersonalizedLearning` fields). Three commits make it known.
-- Undoing a correction, or picking the typed form from the bar, learns the
-  typed word at once; an undo also refuses that exact typed→candidate pair.
+- `tools/harvesting/build_personal_lexicon.py SNAPSHOT/usage_harvest.jsonl[.gz]`
+  writes `private-assets/ime/personal/lexicon.tsv`, which the build adds to the
+  assets as `ime/personal/lexicon.tsv`. `private-assets/` is gitignored; the
+  asset is personal data and never enters the repo. A build without it has an
+  empty lexicon.
+- Lines: `c<TAB>word<TAB>count` (committed uses), `l<TAB>word` (an undone
+  correction or a bar pick of the typed form), `r<TAB>typed<TAB>rejected` (an
+  undone correction pair).
+- A word committed three times, or marked `l`, is known.
 - The rival test overrides both: a form that has a one-edit (Damerau)
   neighbour committed at least five times as often is typo-shaped and is never
-  known or protected (`thst` beside `that`, `tbe` beside `the`). In the harvest
-  722 of 978 undone corrections were real typos restored by a backspace while
-  fixing something else.
-- The store is `files/personal_lexicon.tsv`, written atomically off the input
-  thread. An offline seed built by
-  `tools/harvesting/build_personal_lexicon_seed.py` and pushed to the app's
-  external files directory as `personal_lexicon_seed.tsv` is merged once and
-  renamed `.imported`. The seed is personal data and never enters the repo.
+  known or protected (`thst` beside `that`, `tbe` beside `the`). In the
+  2026-11 harvest 722 of 978 undone corrections were real typos restored by a
+  backspace while fixing something else.
 
 ## Phrase prediction
 
