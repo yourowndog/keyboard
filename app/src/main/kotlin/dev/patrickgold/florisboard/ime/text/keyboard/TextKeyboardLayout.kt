@@ -893,10 +893,14 @@ private class TextKeyboardLayoutController(
 
         val key = keyboard.getKeyForPos(event.getX(pointer.index), event.getY(pointer.index))
         pointer.downTimeMs = event.eventTime
-        pointer.downX = event.getX(pointer.index)
-        pointer.downY = event.getY(pointer.index)
-        pointer.downTouchMajor = event.getTouchMajor(pointer.index)
-        pointer.downPressure = event.getPressure(pointer.index)
+        // Sliding off a key re-enters here with a MOVE sample; keep the physical
+        // contact's first sample so x0/y0, mv and pressure describe the real touch.
+        if (pointer.downX.isNaN()) {
+            pointer.downX = event.getX(pointer.index)
+            pointer.downY = event.getY(pointer.index)
+            pointer.downTouchMajor = event.getTouchMajor(pointer.index)
+            pointer.downPressure = event.getPressure(pointer.index)
+        }
         if (key != null && key.isEnabled) {
             key.computedDataOnDown = key.computedData
             pointer.shiftStateOnDown = keyboardManager.activeState.inputShiftState
