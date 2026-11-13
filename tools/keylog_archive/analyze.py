@@ -398,16 +398,117 @@ def analyze(build: Path, dictionary: set[str]) -> dict:
     return out
 
 
+def report_rows(o: dict) -> dict:
+    """Flatten a summary into named row tables, one per chart, for a dashboard."""
+    DOW = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]
+    ADJ = {}
+    rows_ = ["qwertyuiop", "asdfghjkl", "zxcvbnm"]
+    pos = {}
+    for r, row in enumerate(rows_):
+        for c, ch in enumerate(row):
+            pos[ch] = (r, c + 0.5 * r)
+    def adjacent(a, b):
+        if a not in pos or b not in pos: return False
+        (r1, c1), (r2, c2) = pos[a], pos[b]
+        return abs(r1 - r2) <= 1 and abs(c1 - c2) <= 1.0 and (a != b)
+    t = o["typing"]; v = o["vocab"]; ac = o["autocorrect"]; st = o["style"]; ds = o["dataset"]
+    mix = o["input_mix_weekly"]
+    tot = {}
+    for w in mix:
+        for k, n in w.items():
+            if k != "week": tot[k] = tot.get(k, 0) + n
+    words_total = sum(tot.values())
+    rep = {}
+    rep["overview"] = [{
+        "days": ds["counts"]["days"],
+        "first_day": ds["time_range_local"][0][:10], "last_day": ds["time_range_local"][1][:10],
+        "events": ds["counts"]["lines_read"],
+        "words": words_total,
+        "typed_words": tot.get("TYPED", 0), "voice_words": tot.get("VOICE", 0), "paste_words": tot.get("PASTE", 0),
+        "glide_words": tot.get("GLIDE", 0), "v3_words": tot.get("TYPING_V3", 0),
+        "voice_share": round(tot.get("VOICE", 0) / words_total, 4),
+        "burst_wpm": t["burst_wpm"], "iki_median": t["iki_median"], "dwell_median": t["dwell_median"],
+        "notice_median": t["notice_median"],
+        "typing_slots": t["slots"],
+        "clean_share": round(t["quality"].get("clean", 0) / t["slots"], 4),
+        "ac_applied": ac["applied"], "ac_reverted": ac["reverted"],
+        "ac_revert_rate": round(ac["reverted"] / ac["applied"], 4),
+        "dy_mean": o["touch"]["dy_mean"], "dx_mean": o["touch"]["dx_mean"],
+        "dx_sd": o["touch"]["dx_sd"], "dy_sd": o["touch"]["dy_sd"],
+        "typed_unique": v["typed_unique"], "voice_unique": v["voice_unique"],
+        "typed_mean_len": v["typed_mean_len"], "voice_mean_len": v["voice_mean_len"],
+        "oov_unique": v.get("typed_oov_unique"), "oov_share": v.get("typed_oov_token_share"),
+        "bar_picks": sum(t["bar_index"].values()), "bar_pick_slot1": t["bar_index"].get("1", 0),
+    }]
+    rep["input_weekly"] = [{"week": w["week"], "TYPED": w.get("TYPED", 0), "GLIDE": w.get("GLIDE", 0), "TYPING_V3": w.get("TYPING_V3", 0),
+                            "VOICE": w.get("VOICE", 0), "PASTE": w.get("PASTE", 0)} for w in mix]
+    rep["hour_dow"] = [{"dow": DOW[d], "dow_i": d, "hour": h, "words": o["hour_dow"][d][h]} for d in range(7) for h in range(24)]
+    rep["typing_hourly"] = [{"hour": r["hour"], "iki_median": r["iki_median"], "fix_rate": r["fix_rate"], "slots": r["slots"],
+                             "wpm": round(60000 / r["iki_median"] / 5, 1) if r["iki_median"] else None} for r in t["by_hour"]]
+    rep["typing_weekly"] = t["weekly"]
+    rep["key_bias"] = [{"key": k, **s} for k, s in sorted(o["touch"]["keys"].items())]
+    conf = []
+    for a, b, n in o["errors"]["confusions"][:25]:
+        conf.append({"typed": a, "meant": b, "count": n, "adjacent": adjacent(a, b), "how": "you fixed it"})
+    rep["slips_self"] = conf
+    rep["slips_auto"] = [{"typed": a, "meant": b, "count": n, "adjacent": adjacent(a, b)} for a, b, n in ac["substitutions_fixed"][:20]]
+    rep["ac_weekly"] = [{"week": w["week"], "applied": w.get("applied", 0), "reverted": w.get("reverted", 0),
+                         "revert_rate": round(w.get("reverted", 0) / w["applied"], 4) if w.get("applied") else None} for w in ac["weekly"]]
+    rep["ac_reverted"] = [{"typed": a, "applied": b, "count": n} for a, b, n in ac["reverted_top"][:20]]
+    rep["ac_kept"] = [{"typed": a, "applied": b, "count": n} for a, b, n in ac["kept_top"][:20]]
+    rep["vocab_typed_lift"] = [{"word": w, "count": n, "lift": l} for w, n, l in v["typed_more_than_spoken"][:20]]
+    rep["vocab_spoken_lift"] = [{"word": w, "count": n, "lift": l} for w, n, l in v["spoken_more_than_typed"][:20]]
+    rep["vocab_oov"] = [{"word": w, "count": n} for w, n in v.get("typed_oov_top", [])[:40]]
+    rep["vocab_top"] = [{"word": w, "count": n} for w, n in v["typed_top"][:30]]
+    rep["word_len"] = [{"length": i + 1, "typed": v["typed_len_hist"][i], "voice": v["voice_len_hist"][i]} for i in range(15)]
+    rep["vocab_growth"] = [{"day": d, "tokens": tk, "unique": u} for d, tk, u in v["growth"]]
+    tw = max(1, st.get("typed_words", 1))
+    rep["style"] = [
+        {"metric": "Lowercase “i” as a word", "group": "i", "value": st.get("lowercase_i", 0)},
+        {"metric": "Capital “I”", "group": "i", "value": st.get("capital_I", 0)},
+        {"metric": "Contractions typed without the apostrophe", "group": "apos", "value": st.get("apostrophe_dropped", 0)},
+        {"metric": "Contractions typed with it", "group": "apos", "value": st.get("apostrophe_kept", 0)},
+        {"metric": "Words ending a sentence with a period", "group": "punct", "value": st.get("ends_period", 0)},
+        {"metric": "Words followed by a comma", "group": "punct", "value": st.get("ends_comma", 0)},
+        {"metric": "Questions", "group": "punct", "value": st.get("ends_question", 0)},
+        {"metric": "Exclamations", "group": "punct", "value": st.get("ends_exclaim", 0)},
+        {"metric": "ALL-CAPS words", "group": "case", "value": st.get("all_caps", 0)},
+        {"metric": "Capitalized words", "group": "case", "value": st.get("capitalized", 0)},
+        {"metric": "Words with emoji", "group": "case", "value": st.get("emoji_words", 0)},
+        {"metric": "Typed words counted", "group": "total", "value": st.get("typed_words", 0)},
+    ]
+    rep["apostrophe_drops"] = sorted([{"word": k[5:], "count": n} for k, n in st.items() if k.startswith("drop:")], key=lambda r: -r["count"])[:12]
+    rep["apps"] = [{"app": a["app"], "TYPED": a.get("TYPED", 0), "GLIDE": a.get("GLIDE", 0), "TYPING_V3": a.get("TYPING_V3", 0),
+                    "VOICE": a.get("VOICE", 0), "PASTE": a.get("PASTE", 0)} for a in o["apps"]]
+    rep["iki_hist"] = [{"ms": i * 20, "taps": n} for i, n in enumerate(t["iki_hist"])]
+    rep["notice_hist"] = [{"ms": i * 50, "count": n} for i, n in enumerate(t["notice_hist"])]
+    rep["slot_quality"] = [{"quality": k, "slots": n} for k, n in sorted(t["quality"].items(), key=lambda kv: -kv[1])]
+    rep["bigrams_fast"] = [{"bigram": b, "ms": m, "n": n} for b, m, n in t["fastest_bigrams"][:10]]
+    rep["bigrams_slow"] = [{"bigram": b, "ms": m, "n": n} for b, m, n in t["slowest_bigrams"][:10]]
+    rep["dataset"] = [{"file": k, "rows": f["rows"], "bytes": f["bytes"]} for k, f in ds["files"].items()]
+    rep["dataset_meta"] = [{"build_id": ds["build_id"], "built_at": ds["built_at"], "gates_passed": ds["gates"]["passed"],
+                            "invalid_fraction": ds["gates"]["invalid_fraction"], "quarantined": ds["counts"]["quarantined"],
+                            "duplicates": ds["counts"]["duplicate_lines_dropped"], "train_days": ds["split_days"].get("train", 0),
+                            "val_days": ds["split_days"].get("val", 0), "test_days": ds["split_days"].get("test", 0),
+                            **{f"q_{k}": n for k, n in t["quality"].items()}}]
+    rep["density"] = [{"row": r, "col": c, "taps": n} for r, row in enumerate(o["touch"]["density"]) for c, n in enumerate(row) if n]
+    return rep
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--build", type=Path, default=None)
     ap.add_argument("--dict", type=Path, default=None)
     ap.add_argument("--out", type=Path, required=True)
+    ap.add_argument("--report", type=Path, default=None, help="also write per-chart row tables here")
     args = ap.parse_args()
     build = args.build or (default_root() / "derived" / "current")
     summary = analyze(build.resolve(), load_dict(args.dict))
     args.out.write_text(json.dumps(summary, ensure_ascii=False))
     print(f"wrote {args.out} ({args.out.stat().st_size} bytes)")
+    if args.report:
+        args.report.write_text(json.dumps(report_rows(summary), ensure_ascii=False, separators=(",", ":")))
+        print(f"wrote {args.report} ({args.report.stat().st_size} bytes)")
     return 0
 
 
