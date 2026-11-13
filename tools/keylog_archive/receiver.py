@@ -22,7 +22,7 @@ Contract with the client (``HarvestShipper`` on the phone)::
          X-Keylog-Offset        byte offset of the chunk in the file
          X-Keylog-Sha256        sha256 of the *uncompressed* bytes
          X-Keylog-Anchor        optional sha256 of the <=4 KiB before offset
-         X-Keylog-Utc-Offset    optional device UTC offset in minutes
+         X-Keylog-Tz            optional device zone id, e.g. America/Chicago
        200 {"ok": true, "sha256", "committed_offset", "duplicate"}
        409 {"ok": false, "error", "committed_offset"}  resync to that offset
        4xx otherwise; the client keeps its cursor and retries later.
@@ -51,6 +51,7 @@ TOKEN_FILE = Path(os.environ.get("KEYLOG_ARCHIVE_TOKEN_FILE", "/etc/voice-archiv
 BIND_HOST = os.environ.get("KEYLOG_ARCHIVE_HOST", "127.0.0.1")
 BIND_PORT = int(os.environ.get("KEYLOG_ARCHIVE_PORT", "8791"))
 MAX_BODY = 32 * 1024 * 1024
+TZ_RE = re.compile(r"^[A-Za-z][A-Za-z0-9_+\-/]{0,63}$")
 STREAM_PATH = re.compile(r"^/v1/keylog/streams/([0-9a-f]{16})$")
 
 STORE = KeylogStore()
@@ -154,14 +155,9 @@ class Handler(BaseHTTPRequestHandler):
         except ValueError:
             self._json(400, {"ok": False, "error": "bad X-Keylog-Offset"})
             return
-        utc_offset = None
-        if h.get("X-Keylog-Utc-Offset"):
-            try:
-                utc_offset = int(h["X-Keylog-Utc-Offset"])
-                if not -16 * 60 <= utc_offset <= 16 * 60:
-                    utc_offset = None
-            except ValueError:
-                utc_offset = None
+        device_tz = h.get("X-Keylog-Tz") or None
+        if device_tz and not TZ_RE.match(device_tz):
+            device_tz = None
 
         try:
             data = gunzip_bounded(body, MAX_CHUNK_BYTES)
@@ -177,7 +173,7 @@ class Handler(BaseHTTPRequestHandler):
                 claimed_sha256=claimed,
                 anchor_sha256=h.get("X-Keylog-Anchor") or None,
                 source="phone",
-                utc_offset_minutes=utc_offset,
+                device_tz=device_tz,
                 gz_payload=body,
             )
         except ChunkRejected as exc:

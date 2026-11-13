@@ -33,7 +33,7 @@ sentence with a training word, and the assignment of an existing day never
 changes as new days arrive.
 
 Timestamps on the phone are local without an offset. ``ts_utc`` uses the
-chunk's reported UTC offset when the phone sent one, otherwise the device zone
+zone the phone reported with the chunk when it sent one, otherwise the device zone
 (America/Chicago) is assumed, and the card says which.
 
     python3 build_dataset.py                 # build + promote if gates pass
@@ -53,7 +53,7 @@ import subprocess
 import sys
 import time
 from collections import Counter, defaultdict
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -81,17 +81,29 @@ def split_for_day(day: str) -> str:
     return "train"
 
 
-def to_utc(ts: str, utc_offset_minutes: int | None) -> str | None:
+_ZONES: dict[str, object] = {}
+
+
+def zone_for(name: str | None):
+    if not name:
+        return None
+    if name not in _ZONES:
+        try:
+            _ZONES[name] = ZoneInfo(name)
+        except Exception:
+            _ZONES[name] = None
+    return _ZONES[name]
+
+
+def to_utc(ts: str, tz=None) -> str | None:
     try:
         local = datetime.fromisoformat(ts)
     except ValueError:
         return None
-    if utc_offset_minutes is not None:
-        aware = local.replace(tzinfo=timezone(timedelta(minutes=utc_offset_minutes)))
-    elif DEVICE_TZ is not None:
-        aware = local.replace(tzinfo=DEVICE_TZ)
-    else:
+    zone = tz or DEVICE_TZ
+    if zone is None:
         return None
+    aware = local.replace(tzinfo=zone)
     return aware.astimezone(timezone.utc).isoformat(timespec="milliseconds").replace("+00:00", "Z")
 
 
@@ -279,7 +291,7 @@ def build(store: KeylogStore, verify_only: bool = False, promote: bool = True) -
     for stream, chunks in sorted(good.items()):
         for rec in chunks:
             data = gzip.decompress((store.root / rec["path"]).read_bytes())
-            utc_off = rec.get("utc_offset_minutes")
+            chunk_tz = zone_for(rec.get("device_tz"))
             for raw in io.BytesIO(data):
                 raw = raw.rstrip(b"\n")
                 if not raw:
@@ -311,8 +323,8 @@ def build(store: KeylogStore, verify_only: bool = False, promote: bool = True) -
                 uid = f"{stream}:{ev_id}"
                 day = obj["ts"][:10]
                 split = split_for_day(day)
-                ts_utc = to_utc(obj["ts"], utc_off)
-                tz_source["chunk_offset" if utc_off is not None else ("assumed_device_tz" if ts_utc else "none")] += 1
+                ts_utc = to_utc(obj["ts"], chunk_tz)
+                tz_source["phone_reported_zone" if chunk_tz else ("assumed_device_tz" if ts_utc else "none")] += 1
                 typ = obj["type"]
                 by_type[typ] += 1
                 by_version[obj["v"]] += 1

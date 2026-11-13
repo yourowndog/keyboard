@@ -188,7 +188,7 @@ class KeylogStore:
         claimed_sha256: str,
         anchor_sha256: str | None = None,
         source: str = "phone",
-        utc_offset_minutes: int | None = None,
+        device_tz: str | None = None,
         gz_payload: bytes | None = None,
     ) -> dict:
         """Store ``data`` as bytes [offset, offset+len) of ``stream``.
@@ -263,7 +263,7 @@ class KeylogStore:
                 "last_ts": summary.last_ts,
                 "types": summary.types,
                 "source": source,
-                "utc_offset_minutes": utc_offset_minutes,
+                "device_tz": device_tz,
                 "received_at": now_iso(),
             }
             self._append_manifest(record)
