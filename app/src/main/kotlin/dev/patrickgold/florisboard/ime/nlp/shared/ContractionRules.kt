@@ -51,6 +51,8 @@ object ContractionRules {
         "wouldnt" to "wouldn't",
         "shouldnt" to "shouldn't",
         "youre" to "you're",
+        // Harvest 2026-11: all six "youve" auto-corrections were split into "you ve".
+        "youve" to "you've",
         "theyre" to "they're",
         // Ambiguous valid words "were" and "its" deliberately have no shortcut.
         "hes" to "he's",
