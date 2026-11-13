@@ -150,7 +150,11 @@ class HarvestV4StateTest {
         state.touch(HarvestTouch("a", "a", .1f, .5f, 0f, 0f, 10, 20, 40, "TAP"))
         state.typed("a")
         state.touch(
-            HarvestTouch(" ", "SPACE", .5f, 1.2f, .1f, 0f, 10, 20, 40, "TAP", keyBounds = listOf(.3f, 1.05f, .7f, 1.33f)),
+            HarvestTouch(
+                " ", "SPACE", .5f, 1.2f, .1f, 0f, 10, 20, 40, "TAP",
+                keyBounds = listOf(.3f, 1.05f, .7f, 1.33f),
+                extras = mapOf("x0" to .5f, "shift" to "SHIFTED_MANUAL", "kb" to "ignored"),
+            ),
         )
         state.commit("a", HarvestRoute.TYPED_THROUGH)
         state.finish()
@@ -158,6 +162,8 @@ class HarvestV4StateTest {
         @Suppress("UNCHECKED_CAST")
         val keys = rows.single().getValue("keys") as List<Map<String, Any?>>
         assertFalse(keys[0].containsKey("kb"))
+        assertEquals("SHIFTED_MANUAL", keys[1]["shift"])
+        assertEquals(0.5f, keys[1]["x0"])
         assertEquals(listOf(.3f, 1.05f, .7f, 1.33f), keys[1]["kb"])
     }
 

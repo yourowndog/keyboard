@@ -36,6 +36,12 @@ data class HarvestTouch(
      * size varies (space, the bottom row). Letter keys leave it null: their grid is fixed per layout.
      */
     val keyBounds: List<Float>? = null,
+    /**
+     * Touch-path and state fields, stored as given: x0/y0 (down point, alpha frame), mv (travel
+     * from down to up in key widths), maj (contact size px), pr (pressure), roll (other fingers
+     * down), shift (shift state on down), mode (keyboard mode).
+     */
+    val extras: Map<String, Any?> = emptyMap(),
 )
 
 private data class V4Slot(
@@ -156,7 +162,10 @@ internal class HarvestV4State(
             "py" to touch.py,
             "dur" to touch.durationMs,
             "src" to touch.source,
-        ).apply { if (touch.keyBounds != null) put("kb", touch.keyBounds) }
+        ).apply {
+            if (touch.keyBounds != null) put("kb", touch.keyBounds)
+            for ((name, value) in touch.extras) if (name !in this) put(name, value)
+        }
         slot.eventCount++
         enforceBound(slot)
     }
