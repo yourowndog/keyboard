@@ -1649,6 +1649,7 @@ class KeyboardManager(
             KeyCode.SYSTEM_PREV_INPUT_METHOD -> FlorisImeService.switchToPrevInputMethod()
             KeyCode.SYSTEM_NEXT_INPUT_METHOD -> FlorisImeService.switchToNextInputMethod()
             KeyCode.TAB -> editorInstance.sendDownUpKeyEvent(KeyEvent.KEYCODE_TAB, 0)
+            KeyCode.NEWLINE -> editorInstance.performEnter()
             KeyCode.ESCAPE -> {
                 editorInstance.sendDownUpKeyEvent(KeyEvent.KEYCODE_ESCAPE, 0)
             }

@@ -377,6 +377,8 @@ class FlorisImeService : LifecycleInputMethodService() {
     override fun onStartInputView(info: EditorInfo?, restarting: Boolean) {
         flogInfo { "restarting=$restarting info=${info?.debugSummarize()}" }
         super.onStartInputView(info, restarting)
+        // A swipe deletion from another field must not come back here on Delete's swipe up.
+        if (!restarting) dev.patrickgold.florisboard.ime.text.keyboard.DeleteSwipeUndo.clear()
         if (info == null) return
         val editorInfo = FlorisEditorInfo.wrap(info)
         activeState.batchEdit {

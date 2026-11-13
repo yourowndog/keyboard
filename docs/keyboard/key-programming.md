@@ -105,3 +105,17 @@ What this replaces: a horizontal slide from Shift onto Z used to type a capital.
 Slides that leave Shift upward still do, and so do slides in raw input editors
 (terminals), where a forward delete has no selection to grow. Holding Shift
 first and then moving keeps the long-press behaviour.
+
+Swiping up from Delete (at least four swipe units up, at most one sideways)
+puts back what the last Delete or Shift swipe deleted, once
+(`DeleteSwipeUndo`). While the undo is armed the spacebar gauge shows how many
+characters will come back. Only swipe deletions are remembered, and the memory
+is cleared when a new input field starts.
+
+## Enter long press
+
+Holding Enter opens its popup from the `~enter` entry of the default popup
+mapping. The main choice is `NEWLINE` (`-310`, ⏎), a line break that never
+fires the field's action, so a chat message can have a second line without
+sending. The others are Tab, Esc, the emoji panel, the clipboard and one-handed
+mode.
