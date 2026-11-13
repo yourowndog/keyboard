@@ -5,8 +5,9 @@
  * This helps a developer iterating on builds to capture their actual usage patterns
  * (accepted corrections, rejected corrections, new words) without losing data on reinstall.
  * 
- * Output: /sdcard/Documents/usage_harvest.md
- * Capture to repo: python3 tools/harvesting/snapshot_device.py --adb
+ * Output: /sdcard/Documents/usage_harvest.md (+ usage_harvest.jsonl via HarvestJsonl)
+ * The JSONL is relayed to Titan by HarvestShipper (docs/autocorrect/keylog-pipeline.md).
+ * Manual capture: python3 tools/harvesting/snapshot_device.py --adb
  */
 package dev.patrickgold.florisboard.ime.nlp
 
@@ -88,7 +89,11 @@ object HarvestManager {
             isInitialized = true
         }
         // Structured JSONL log lives alongside the markdown log
-        harvestFile?.parentFile?.let { HarvestJsonl.init(it) }
+        harvestFile?.parentFile?.let {
+            HarvestJsonl.init(it)
+            // Relay the JSONL to the keylog archive on Titan (tools/keylog_archive).
+            HarvestShipper.init(context, File(it, "usage_harvest.jsonl"))
+        }
     }
 
     /**
@@ -114,6 +119,8 @@ object HarvestManager {
         currentAppContext?.let { flushSession(appContext = it) }
         HarvestV4.finish()
         currentAppContext = null
+        // The keyboard just closed: a natural pause to ship new harvest bytes.
+        HarvestShipper.poke()
     }
 
     fun updateLayout(fingerprint: dev.patrickgold.florisboard.ime.keyboard.geometry.LayoutFingerprint) {

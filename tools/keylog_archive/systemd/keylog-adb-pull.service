@@ -1,0 +1,11 @@
+# User unit on Titan (systemctl --user). Fallback/second path: pulls only the
+# missing harvest bytes off icarion through sleeper's adb and ships them with the
+# same protocol as the phone. Harmless alongside HarvestShipper: both resume
+# from Titan's committed offset.
+[Unit]
+Description=Ship new OmniBoard harvest bytes from icarion via sleeper adb
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /opt/keylog-archive/client.py --device-cmd "ssh -o BatchMode=yes -o ConnectTimeout=15 sleeper /home/sam/.local/bin/icarion-shell"
+TimeoutStartSec=900

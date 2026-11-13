@@ -32,6 +32,9 @@ if [[ "$QUICK" == "1" ]]; then
     exit "$fail"
 fi
 
+step "Keylog archive tests"
+python3 -m unittest discover -s tools/keylog_archive/tests || fail=1
+
 step "Unit tests"
 ./gradlew --no-daemon testDebugUnitTest || fail=1
 

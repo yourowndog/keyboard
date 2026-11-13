@@ -94,6 +94,21 @@ android {
             "\"${getLocalOrEnv("ARCHIVE_URL", "http://100.104.232.94:8790/v1/archive")}\"",
         )
         buildConfigField("String", "ARCHIVE_TOKEN", "\"${getLocalOrEnv("ARCHIVE_TOKEN")}\"")
+        // Keylog archive on Titan (tools/keylog_archive/receiver.py). Shares ARCHIVE_TOKEN.
+        buildConfigField(
+            "String",
+            "KEYLOG_ARCHIVE_URL",
+            "\"${getLocalOrEnv("KEYLOG_ARCHIVE_URL", "http://100.104.232.94:8791/v1/keylog")}\"",
+        )
+        if (getLocalOrEnv("ARCHIVE_TOKEN").isBlank()) {
+            // Titan rejects every upload without it. From 2026-10-05 to 2026-11-13 every
+            // APK built on sisyphus shipped without a token and voice archiving silently
+            // failed 111k times. Device builds need ARCHIVE_TOKEN in local.properties.
+            logger.warn(
+                "w: ARCHIVE_TOKEN is not set: this APK cannot upload voice or keylogs to Titan. " +
+                    "Add ARCHIVE_TOKEN to local.properties for device builds.",
+            )
+        }
 
         // A debug APK packages native libraries for every ABI, which is about
         // 120 MB of the ~143 MB total. A 64-bit phone can execute exactly one

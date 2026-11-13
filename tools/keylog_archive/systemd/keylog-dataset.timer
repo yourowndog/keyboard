@@ -1,0 +1,10 @@
+[Unit]
+Description=Rebuild the OmniBoard keylog dataset every 6 hours
+
+[Timer]
+OnCalendar=*-*-* 00/6:30:00
+Persistent=true
+RandomizedDelaySec=10min
+
+[Install]
+WantedBy=timers.target

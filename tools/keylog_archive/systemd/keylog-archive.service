@@ -1,0 +1,25 @@
+[Unit]
+Description=OmniBoard keylog archive receiver (phone -> Titan)
+After=network-online.target tailscaled.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=sam
+Group=sam
+ExecStart=/usr/bin/python3 /opt/keylog-archive/receiver.py
+Environment=KEYLOG_ARCHIVE_HOST=100.104.232.94
+Environment=KEYLOG_ARCHIVE_PORT=8791
+Environment=KEYLOG_ARCHIVE_ROOT=/home/sam/datasets/sam-keylog
+# Shared with voice-archive.service: one ARCHIVE_TOKEN in the APK serves both.
+Environment=KEYLOG_ARCHIVE_TOKEN_FILE=/etc/voice-archive/token
+Restart=always
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/sam/datasets
+
+[Install]
+WantedBy=multi-user.target

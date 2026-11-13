@@ -1,0 +1,10 @@
+[Unit]
+Description=Hourly adb fallback for the OmniBoard keylog relay
+
+[Timer]
+OnCalendar=hourly
+RandomizedDelaySec=5min
+Persistent=true
+
+[Install]
+WantedBy=timers.target

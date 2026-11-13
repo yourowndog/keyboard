@@ -35,6 +35,8 @@ jobs:
       - run: pip install jsonschema
       - name: Validate packaged stylesheets
         run: python3 tools/theme/validate_stylesheets.py
+      - name: Keylog archive tests
+        run: python3 -m unittest discover -s tools/keylog_archive/tests
 
   unit-tests:
     name: Unit tests
