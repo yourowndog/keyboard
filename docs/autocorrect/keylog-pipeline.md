@@ -117,7 +117,7 @@ half-written build. The last four builds are kept.
 | file | contents |
 |---|---|
 | `events.jsonl.gz` | every valid event, plus `_uid`, `_stream`, `_day`, `_split`, `_ts_utc` |
-| `typing_slots.jsonl.gz` | v4 slots with a letter tap: keys as `[t, c, k, xn, yn, dx, dy, dur, src, kb]`, replayed `typed`, `intended`, route, revert fields, `preds`/`predKind`/`predRank`, signals, and `quality` (`clean`, `self_corrected`, `struggle`, `reverted`, `partial`) |
+| `typing_slots.jsonl.gz` | v4 slots with a letter tap: keys as `[t, c, k, xn, yn, dx, dy, dur, src, kb, x0, y0, mv, maj, pr, roll, shift, mode]`, replayed `typed`, `intended`, route, revert fields, `preds`/`predKind`/`predRank`, signals, and `quality` (`clean`, `self_corrected`, `struggle`, `reverted`, `partial`) |
 | `corrections.jsonl.gz` | every `AUTO_APPLIED` with its candidates and a `reverted` label joined from `REVERTED.undoes` |
 | `words.jsonl.gz` | committed words in order, with `input`: `TYPED`, `GLIDE`, `VOICE`, `PASTE`, or `TYPING_V3` (before v4 slots, where pasted text is mixed in) |
 | `quarantine.jsonl.gz` | invalid lines and why |
@@ -153,6 +153,21 @@ simply lack them.
   word they were shown. `outcome.predKind`/`predRank` give the committed word's
   best place among them; route `BAR_PICK` means it was tapped, and any other
   route means it was shown but typed or ignored.
+
+Later the same day each key also gained touch-path and state fields:
+
+| field | meaning |
+|---|---|
+| `x0`, `y0` | where the finger went down, alpha frame (`xn`/`yn` is where it lifted) |
+| `mv` | travel from down to up, in key widths: a slide or rolled tap |
+| `maj` | contact size in px (thumb pad vs tip), larger of down and up |
+| `pr` | pressure on down; often constant on Samsung panels |
+| `roll` | other fingers down at release: two-thumb rollover |
+| `shift` | shift state when the key went down |
+| `mode` | keyboard mode (`CHARACTERS`, `SYMBOLS`, ...) |
+
+App and field context (`ctx.app`, `inputType`, `inputVariation`, `flags`,
+`imeOptions`, `hint`) was already on every slot.
 
 ## Analysis
 

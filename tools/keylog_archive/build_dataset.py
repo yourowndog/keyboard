@@ -68,7 +68,8 @@ except Exception:  # pragma: no cover - zoneinfo/tzdata missing
 
 KEEP_BUILDS = 4
 MAX_INVALID_FRACTION = 0.01
-KEY_COLUMNS = ["t", "c", "k", "xn", "yn", "dx", "dy", "dur", "src", "kb"]
+KEY_COLUMNS = ["t", "c", "k", "xn", "yn", "dx", "dy", "dur", "src", "kb",
+               "x0", "y0", "mv", "maj", "pr", "roll", "shift", "mode"]
 LETTERS_PUNCT = ".,!?;:\"()[]{}"
 
 

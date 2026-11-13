@@ -893,6 +893,10 @@ private class TextKeyboardLayoutController(
 
         val key = keyboard.getKeyForPos(event.getX(pointer.index), event.getY(pointer.index))
         pointer.downTimeMs = event.eventTime
+        pointer.downX = event.getX(pointer.index)
+        pointer.downY = event.getY(pointer.index)
+        pointer.downTouchMajor = event.getTouchMajor(pointer.index)
+        pointer.downPressure = event.getPressure(pointer.index)
         if (key != null && key.isEnabled) {
             key.computedDataOnDown = key.computedData
             pointer.shiftStateOnDown = keyboardManager.activeState.inputShiftState
@@ -1089,6 +1093,7 @@ private class TextKeyboardLayoutController(
                         else -> "TAP"
                     },
                     keyBounds = keyBounds,
+                    extras = touchExtras(event, pointer, frame, x, y),
                 ),
             )
             activeKey.isPressed = false
@@ -1586,6 +1591,35 @@ private class TextKeyboardLayoutController(
         }
     }
 
+    /**
+     * Touch-path and state signals for the harvest: where the finger went down (it can slide
+     * before lifting), contact size and pressure, how many other fingers were down (rollover),
+     * and the shift state and keyboard mode the key was pressed in. Rounded to keep lines short.
+     */
+    private fun touchExtras(
+        event: MotionEvent,
+        pointer: TouchPointer,
+        frame: SpatialCoordinateFrame?,
+        upX: Float,
+        upY: Float,
+    ): Map<String, Any?> {
+        fun r(v: Float) = Math.round(v * 10_000f) / 10_000f
+        val extras = linkedMapOf<String, Any?>()
+        if (frame != null && !pointer.downX.isNaN()) {
+            val down = frame.normalize(pointer.downX, pointer.downY)
+            extras["x0"] = r(down.x)
+            extras["y0"] = r(down.y)
+            val travel = kotlin.math.hypot(upX - pointer.downX, upY - pointer.downY)
+            extras["mv"] = r(travel / frame.representativeKeyWidth.coerceAtLeast(1f))
+        }
+        extras["maj"] = Math.round(maxOf(pointer.downTouchMajor, event.getTouchMajor(pointer.index)))
+        extras["pr"] = r(pointer.downPressure)
+        extras["roll"] = (event.pointerCount - 1).coerceAtLeast(0)
+        extras["shift"] = pointer.shiftStateOnDown.name
+        extras["mode"] = keyboardManager.activeState.keyboardMode.name
+        return extras
+    }
+
     private class TouchPointer : Pointer() {
         var initialKey: TextKey? = null
         var activeKey: TextKey? = null
@@ -1605,6 +1639,11 @@ private class TextKeyboardLayoutController(
         var shiftDialChoice: ShiftDial.Choice? = null
         var pressedKeyInfo: InputEventDispatcher.PressedKeyInfo? = null
         var downTimeMs: Long = 0L
+        /** Where and how the finger first landed, for the harvest's touch-path fields. */
+        var downX: Float = Float.NaN
+        var downY: Float = Float.NaN
+        var downTouchMajor: Float = 0f
+        var downPressure: Float = 0f
 
         override fun reset() {
             super.reset()
@@ -1621,6 +1660,10 @@ private class TextKeyboardLayoutController(
             shiftDialChoice = null
             pressedKeyInfo = null
             downTimeMs = 0L
+            downX = Float.NaN
+            downY = Float.NaN
+            downTouchMajor = 0f
+            downPressure = 0f
         }
 
         override fun toString(): String {
