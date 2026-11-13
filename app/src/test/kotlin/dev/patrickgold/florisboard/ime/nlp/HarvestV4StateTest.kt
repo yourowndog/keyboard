@@ -100,6 +100,67 @@ class HarvestV4StateTest {
     }
 
     @Test
+    fun `predictions shown before a word ride on its slot`() {
+        var now = 1_000L
+        val rows = mutableListOf<Map<String, Any?>>()
+        val state = HarvestV4State(
+            emit = { _, _, _, fields -> rows += fields.toMap() },
+            clockMs = { now },
+            timestamp = { "t$it" },
+        )
+        state.attach(context(), restarting = false, sessionId = "sess")
+        state.prediction("next", listOf("the", "a", "to"))
+        state.prediction("next", listOf("the", "a", "to"))
+        state.prediction("phrase", listOf("to be", "of the"))
+        now += 400
+        "to".forEach { char ->
+            state.touch(HarvestTouch(char.toString(), char.toString(), .5f, .5f, 0f, 0f, 10, 20, 40, "TAP"))
+            state.typed(char.toString())
+        }
+        state.prediction("next", listOf("late"))
+        state.commit("to", HarvestRoute.TYPED_THROUGH)
+        state.typed("go")
+        state.commit("go", HarvestRoute.TYPED_THROUGH)
+        state.finish()
+
+        assertEquals(2, rows.size)
+        @Suppress("UNCHECKED_CAST")
+        val preds = rows[0].getValue("preds") as List<Map<String, Any?>>
+        assertEquals(listOf("next", "phrase"), preds.map { it["kind"] })
+        assertEquals(400L, preds[0]["lead"])
+        @Suppress("UNCHECKED_CAST")
+        val outcome = rows[0].getValue("outcome") as Map<String, Any?>
+        assertEquals("next", outcome["predKind"])
+        assertEquals(2, outcome["predRank"])
+        assertEquals(emptyList<Any>(), rows[1].getValue("preds"))
+        @Suppress("UNCHECKED_CAST")
+        assertNull((rows[1].getValue("outcome") as Map<String, Any?>)["predRank"])
+    }
+
+    @Test
+    fun `non-letter keys carry their bounds`() {
+        val rows = mutableListOf<Map<String, Any?>>()
+        val state = HarvestV4State(
+            emit = { _, _, _, fields -> rows += fields.toMap() },
+            clockMs = { 1_000L },
+            timestamp = { "t$it" },
+        )
+        state.attach(context(), restarting = false, sessionId = "sess")
+        state.touch(HarvestTouch("a", "a", .1f, .5f, 0f, 0f, 10, 20, 40, "TAP"))
+        state.typed("a")
+        state.touch(
+            HarvestTouch(" ", "SPACE", .5f, 1.2f, .1f, 0f, 10, 20, 40, "TAP", keyBounds = listOf(.3f, 1.05f, .7f, 1.33f)),
+        )
+        state.commit("a", HarvestRoute.TYPED_THROUGH)
+        state.finish()
+
+        @Suppress("UNCHECKED_CAST")
+        val keys = rows.single().getValue("keys") as List<Map<String, Any?>>
+        assertFalse(keys[0].containsKey("kb"))
+        assertEquals(listOf(.3f, 1.05f, .7f, 1.33f), keys[1]["kb"])
+    }
+
+    @Test
     fun `autocorrect revert closes before the next word`() {
         val rows = mutableListOf<Map<String, Any?>>()
         val state = HarvestV4State(

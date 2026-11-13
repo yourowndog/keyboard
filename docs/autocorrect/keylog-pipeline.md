@@ -117,7 +117,7 @@ half-written build. The last four builds are kept.
 | file | contents |
 |---|---|
 | `events.jsonl.gz` | every valid event, plus `_uid`, `_stream`, `_day`, `_split`, `_ts_utc` |
-| `typing_slots.jsonl.gz` | v4 slots with touch evidence: keys as `[t, c, k, xn, yn, dx, dy, dur, src]`, replayed `typed`, `intended`, route, revert fields, signals, and `quality` (`clean`, `self_corrected`, `struggle`, `reverted`, `partial`) |
+| `typing_slots.jsonl.gz` | v4 slots with a letter tap: keys as `[t, c, k, xn, yn, dx, dy, dur, src, kb]`, replayed `typed`, `intended`, route, revert fields, `preds`/`predKind`/`predRank`, signals, and `quality` (`clean`, `self_corrected`, `struggle`, `reverted`, `partial`) |
 | `corrections.jsonl.gz` | every `AUTO_APPLIED` with its candidates and a `reverted` label joined from `REVERTED.undoes` |
 | `words.jsonl.gz` | committed words in order, with `input`: `TYPED`, `GLIDE`, `VOICE`, `PASTE`, or `TYPING_V3` (before v4 slots, where pasted text is mixed in) |
 | `quarantine.jsonl.gz` | invalid lines and why |
@@ -135,6 +135,24 @@ records which.
 First build (2026-11-13, backfilled 2026-11-12 snapshot): 1,600,876 events
 over 120 days (2026-07-09 to 2026-11-12), 0 invalid, 0 duplicates, 37,660
 touch-bearing typing slots, 11,596 labelled autocorrect decisions.
+
+## Capture additions (2026-11-13)
+
+Builds from 2026-11-13 on add three things to each `WORD_SLOT`. Older lines
+simply lack them.
+
+- **Every key has a position.** Space, backspace, punctuation and enter now
+  carry `xn`/`yn`/`dx`/`dy` like letters. Before this, 23% of taps had none.
+  `xn`/`yn` stay in the alpha frame, so keys below the letters have `yn > 1`.
+- **`kb` on non-letter keys:** the key's visible rectangle in the alpha frame
+  as `[left, top, right, bottom]`. The bottom row resizes, so a space-bar tap
+  is only meaningful next to the bar's own bounds at that moment.
+- **`preds`:** predictions on the bar before the word's first key, as
+  `{kind, cands, lead}`. `kind` is `next` (candidate bar) or `phrase` (phrase
+  row, only when that row is enabled), and `lead` is how many ms before the
+  word they were shown. `outcome.predKind`/`predRank` give the committed word's
+  best place among them; route `BAR_PICK` means it was tapped, and any other
+  route means it was shown but typed or ignored.
 
 ## Analysis
 

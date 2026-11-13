@@ -68,7 +68,7 @@ except Exception:  # pragma: no cover - zoneinfo/tzdata missing
 
 KEEP_BUILDS = 4
 MAX_INVALID_FRACTION = 0.01
-KEY_COLUMNS = ["t", "c", "k", "xn", "yn", "dx", "dy", "dur", "src"]
+KEY_COLUMNS = ["t", "c", "k", "xn", "yn", "dx", "dy", "dur", "src", "kb"]
 LETTERS_PUNCT = ".,!?;:\"()[]{}"
 
 
@@ -169,6 +169,9 @@ def typing_example(obj: dict, uid: str, day: str, split: str, ts_utc: str | None
         "revertedTo": out.get("revertedTo"),
         "revertedFrom": out.get("revertedFrom"),
         "commitChar": out.get("commitChar"),
+        "preds": obj.get("preds") or [],
+        "predKind": out.get("predKind"),
+        "predRank": out.get("predRank"),
         "signals": obj["signals"],
         "quality": label_quality(obj),
     }

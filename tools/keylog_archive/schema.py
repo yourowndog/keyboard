@@ -157,6 +157,18 @@ def _validate_slot(obj: dict, errors: list[str]) -> None:
             errors.extend(f"keys.{e}" for e in kerr[:2])
             break
 
+    preds = obj.get("preds")
+    if preds is not None:
+        if not isinstance(preds, list):
+            errors.append("type:preds")
+        else:
+            for pred in preds:
+                if not (isinstance(pred, dict) and isinstance(pred.get("kind"), str)
+                        and isinstance(pred.get("cands"), list)
+                        and all(isinstance(c, str) for c in pred["cands"])):
+                    errors.append("type:preds[]")
+                    break
+
     sig = obj["signals"]
     if "partial" in sig and not isinstance(sig["partial"], bool):
         errors.append("type:signals.partial")
@@ -169,5 +181,8 @@ def is_typing_slot(obj: dict) -> bool:
     route = obj.get("outcome", {}).get("route")
     if route in ("VOICE", "PASTE", "CLIPBOARD"):
         return False
+    # Since 2026-11-13 every key carries xn/yn, so require a letter tap: a slot of backspaces alone
+    # is an edit, not a typed word.
     return any(isinstance(k, dict) and k.get("src") in (None, "TAP", "LONGPRESS", "POPUP") and k.get("xn") is not None
+               and isinstance(k.get("k"), str) and len(k["k"]) == 1 and k["k"].isalpha()
                for k in obj.get("keys", []))

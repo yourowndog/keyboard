@@ -70,7 +70,7 @@ def attempts_before_backspace(keys: list[list]) -> list[str]:
     buf: list[str] = []
     out: list[str] = []
     prev_bk = False
-    for t, c, k, xn, yn, dx, dy, dur, src in keys:
+    for t, c, k, xn, yn, dx, dy, dur, src, *_ in keys:
         if k in ("BKSP", "BKSP_WORD"):
             if not prev_bk and buf:
                 out.append("".join(buf))
@@ -259,7 +259,7 @@ def analyze(build: Path, dictionary: set[str]) -> dict:
         clean = q == "clean"
         letters = 0
         for key in keys:
-            t, c, k, xn, yn, dx, dy, dur, src = key
+            t, c, k, xn, yn, dx, dy, dur, src, *_ = key
             if k in ("BKSP", "BKSP_WORD"):
                 if prev is not None and prev[2] not in ("BKSP", "BKSP_WORD") and isinstance(t, int):
                     gap = t - prev[0]

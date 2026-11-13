@@ -375,6 +375,9 @@ class NlpManager(context: Context) {
                         )
                     }
                     updatePhraseCandidates(phraseCandidates)
+                    if (prefs.smartbar.phraseRowEnabled.get()) {
+                        HarvestManager.logPredictionsShown("phrase", allPhrases.take(3))
+                    }
                 } else {
                     clearPhraseCandidates()
                 }

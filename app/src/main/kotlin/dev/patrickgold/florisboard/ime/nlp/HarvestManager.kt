@@ -354,7 +354,12 @@ object HarvestManager {
      * accepted/ignored/fought a correction. JSONL only — too verbose for the md log.
      */
     fun logSuggestionsShown(typed: String, prevWord: String?, candidates: List<Pair<String, Double>>) {
-        if (typed.isEmpty() || candidates.isEmpty()) return
+        if (candidates.isEmpty()) return
+        if (typed.isEmpty()) {
+            // Nothing composed yet: the bar is showing next-word predictions, not corrections.
+            logPredictionsShown("next", candidates.map { it.first })
+            return
+        }
         HarvestV4.offer(typed, candidates, shown = candidates.size)
         jsonl(
             "SUGGESTIONS_SHOWN", null,
@@ -363,6 +368,15 @@ object HarvestManager {
             "candidates" to candidates,
             "slot" to HarvestV4.slotForLegacy(),
         )
+    }
+
+    /**
+     * Log predictions shown before a word starts ([kind] is "next" for the candidate bar,
+     * "phrase" for the phrase row). They ride on the next word slot, so the dataset records
+     * what was offered and ignored, not only what was tapped. JSONL v4 only.
+     */
+    fun logPredictionsShown(kind: String, candidates: List<String>) {
+        HarvestV4.prediction(kind, candidates)
     }
 
     /**
