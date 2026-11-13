@@ -185,6 +185,20 @@ class SchemaTests(unittest.TestCase):
         self.assertFalse(schema.is_typing_slot(voice))
         self.assertTrue(schema.is_typing_slot(slot(7)))
 
+    def test_backspace_only_slot_is_not_typing_even_with_coordinates(self):
+        bksp = slot(9, keys=[{"t": 0, "c": None, "k": "BKSP", "xn": 0.9, "yn": 1.2, "dx": 0.1, "dy": 0.0,
+                              "px": 1, "py": 2, "dur": 40, "src": "TAP", "kb": [0.85, 1.0, 1.0, 1.3]}])
+        self.assertEqual(schema.validate(bksp), [])
+        self.assertFalse(schema.is_typing_slot(bksp))
+
+    def test_predictions_validate(self):
+        ok = slot(10)
+        ok["preds"] = [{"kind": "next", "cands": ["the", "a"], "lead": 300}]
+        self.assertEqual(schema.validate(ok), [])
+        bad = slot(11)
+        bad["preds"] = [{"kind": "next", "cands": [1, 2]}]
+        self.assertIn("type:preds[]", schema.validate(bad))
+
     def test_problems_are_named(self):
         broken = slot(8)
         broken["keys"][0]["t"] = "zero"

@@ -31,6 +31,11 @@ data class HarvestTouch(
     val py: Int,
     val durationMs: Long,
     val source: String,
+    /**
+     * The key's visible rectangle in the alpha frame as [left, top, right, bottom], for keys whose
+     * size varies (space, the bottom row). Letter keys leave it null: their grid is fixed per layout.
+     */
+    val keyBounds: List<Float>? = null,
 )
 
 private data class V4Slot(
@@ -43,6 +48,8 @@ private data class V4Slot(
     val voice: Map<String, Any?>? = null,
     val keys: MutableList<Map<String, Any?>> = mutableListOf(),
     val offers: MutableList<Map<String, Any?>> = mutableListOf(),
+    /** Predictions on the bar before the word's first key: what was shown, taken or ignored. */
+    val preds: List<Map<String, Any?>> = emptyList(),
     val edits: MutableList<Map<String, Any?>> = mutableListOf(),
     var shadow: Map<String, Any?> = emptyMap(),
     val logicalText: StringBuilder = StringBuilder(),
@@ -78,6 +85,9 @@ internal class HarvestV4State(
     private var voiceMetadata: Map<String, Any?>? = null
     private var voiceSegmentIndex = 0
     private val recentRejectedTargets = linkedMapOf<String, Long>()
+    private val pendingPreds = mutableListOf<PendingPrediction>()
+
+    private class PendingPrediction(val kind: String, val cands: List<String>, val shownMs: Long)
 
     @Synchronized
     fun attach(appContext: AppContext, restarting: Boolean, sessionId: String) {
@@ -88,6 +98,7 @@ internal class HarvestV4State(
             inputSession++
             recentRejectedTargets.clear()
         }
+        pendingPreds.clear()
     }
 
     @Synchronized
@@ -133,7 +144,7 @@ internal class HarvestV4State(
         if (current == null && !wordProducing && !editing) return
         if (current == null && editing && pendingClosed != null) reopenPending()
         val slot = if (current != null) current!! else openSlot()
-        slot.keys += linkedMapOf(
+        slot.keys += linkedMapOf<String, Any?>(
             "t" to elapsed(slot),
             "c" to touch.character,
             "k" to touch.key,
@@ -145,7 +156,7 @@ internal class HarvestV4State(
             "py" to touch.py,
             "dur" to touch.durationMs,
             "src" to touch.source,
-        )
+        ).apply { if (touch.keyBounds != null) put("kb", touch.keyBounds) }
         slot.eventCount++
         enforceBound(slot)
     }
@@ -209,6 +220,24 @@ internal class HarvestV4State(
         enforceBound(slot)
     }
 
+    /**
+     * Records predictions shown while no word is being composed (next-word bar, phrase row).
+     * They attach to the next slot that opens, so a prediction model sees what it offered and
+     * whether Sam took it, typed the same word anyway, or wrote something else. Results that
+     * arrive after a word has started are mid-word suggestions, already covered by [offer].
+     */
+    @Synchronized
+    fun prediction(kind: String, candidates: List<String>) {
+        val app = context ?: return
+        if (app.isHarvestBlocked || current != null) return
+        val cands = candidates.filter { it.isNotBlank() }.take(MAX_PRED_CANDIDATES)
+        if (cands.isEmpty()) return
+        val last = pendingPreds.lastOrNull { it.kind == kind }
+        if (last != null && last.cands == cands) return
+        pendingPreds += PendingPrediction(kind, cands, clockMs())
+        while (pendingPreds.size > MAX_PRED_SETS) pendingPreds.removeAt(0)
+    }
+
     @Synchronized
     fun shadow(
         heuristicTop: String?,
@@ -262,6 +291,7 @@ internal class HarvestV4State(
         if (slot.logicalText.isEmpty()) slot.logicalText.append(final)
         slot.previous = listOfNotNull(prevPrevWord, prevWord).takeLast(2)
         val reach = reachability(slot, final)
+        val predHit = predictionHit(slot, final)
         val now = clockMs()
         pruneRejectedTargets(now)
         if (route == HarvestRoute.AUTO_APPLIED || route == HarvestRoute.BAR_PICK) {
@@ -285,6 +315,8 @@ internal class HarvestV4State(
             "commitChar" to commitChar,
             "reachable" to reach.first,
             "reachableAt" to reach.second,
+            "predKind" to predHit?.first,
+            "predRank" to predHit?.second,
         )
         pendingClosed?.let(::emitSlot)
         pendingClosed = slot
@@ -360,6 +392,7 @@ internal class HarvestV4State(
     @Synchronized
     fun finish() {
         flushAll(partialActive = true)
+        pendingPreds.clear()
         context = null
         endVoice()
     }
@@ -381,6 +414,14 @@ internal class HarvestV4State(
         val voice = voiceMetadata?.toMutableMap()?.also { metadata ->
             metadata["segIndex"] = voiceSegmentIndex++
         }
+        val preds = pendingPreds.map { pending ->
+            linkedMapOf<String, Any?>(
+                "kind" to pending.kind,
+                "cands" to pending.cands,
+                "lead" to (now - pending.shownMs).coerceAtLeast(0L),
+            )
+        }
+        pendingPreds.clear()
         return V4Slot(
             openedMs = now,
             openedAt = timestamp(now),
@@ -389,6 +430,7 @@ internal class HarvestV4State(
             context = app,
             layout = layout,
             voice = voice,
+            preds = preds,
         ).also { current = it }
     }
 
@@ -451,6 +493,30 @@ internal class HarvestV4State(
         return (best != null) to best
     }
 
+    /**
+     * The best place the committed word held among the predictions shown before it, as
+     * (kind, rank). A phrase counts when its first word is the committed word.
+     */
+    private fun predictionHit(slot: V4Slot, final: String): Pair<String, Int>? {
+        val word = final.trim()
+        if (word.isEmpty()) return null
+        var best: Pair<String, Int>? = null
+        for (pred in slot.preds) {
+            val kind = pred["kind"] as? String ?: continue
+            @Suppress("UNCHECKED_CAST")
+            val cands = pred["cands"] as? List<String> ?: continue
+            cands.forEachIndexed { index, cand ->
+                val head = cand.trim().substringBefore(' ')
+                if ((cand.trim().equals(word, ignoreCase = true) || head.equals(word, ignoreCase = true)) &&
+                    (best == null || index < best!!.second)
+                ) {
+                    best = kind to index
+                }
+            }
+        }
+        return best
+    }
+
     private fun pruneRejectedTargets(now: Long) {
         val iterator = recentRejectedTargets.iterator()
         while (iterator.hasNext()) {
@@ -498,6 +564,7 @@ internal class HarvestV4State(
                 "layout" to slot.layout,
                 "keys" to slot.keys,
                 "offers" to slot.offers,
+                "preds" to slot.preds,
                 "edits" to slot.edits,
                 "outcome" to (slot.outcome ?: emptyMap<String, Any?>()),
                 "shadow" to slot.shadow,
@@ -509,6 +576,8 @@ internal class HarvestV4State(
 
     private companion object {
         const val REJECTION_HORIZON_MS = 60_000L
+        const val MAX_PRED_CANDIDATES = 8
+        const val MAX_PRED_SETS = 4
     }
 }
 
@@ -531,6 +600,7 @@ object HarvestV4 {
     fun edit(operation: String, count: Int = 1, left: String? = null) = state.edit(operation, count, left)
     fun offer(prefix: String, candidates: List<Pair<String, Double>>, shown: Int) =
         state.offer(prefix, candidates, shown)
+    fun prediction(kind: String, candidates: List<String>) = state.prediction(kind, candidates)
 
     fun shadow(
         heuristicTop: String?,

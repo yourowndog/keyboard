@@ -1050,9 +1050,17 @@ private class TextKeyboardLayoutController(
             }
             val x = event.getX(pointer.index)
             val y = event.getY(pointer.index)
+            // Every key carries spatial evidence: space, backspace and punctuation misses are
+            // errors too. xn/yn stay in the alpha frame, so keys outside it fall outside 0..1.
+            val frame = spatialFrame
+            val spatial = frame?.resolveTouch(x, y) { _, _ -> activeKey }
             val isAlphaKey = keyCode in 'a'.code..'z'.code || keyCode in 'A'.code..'Z'.code
-            val spatial = if (isAlphaKey) {
-                spatialFrame?.resolveTouch(x, y) { _, _ -> activeKey }
+            val keyBounds = if (frame != null && !isAlphaKey) {
+                val bounds = activeKey.visibleBounds
+                val topLeft = frame.normalize(bounds.left, bounds.top)
+                val bottomRight = frame.normalize(bounds.right, bounds.bottom)
+                listOf(topLeft.x, topLeft.y, bottomRight.x, bottomRight.y)
+                    .map { Math.round(it * 10_000f) / 10_000f }
             } else {
                 null
             }
@@ -1080,6 +1088,7 @@ private class TextKeyboardLayoutController(
                         pointer.hasTriggeredLongPress -> "LONGPRESS"
                         else -> "TAP"
                     },
+                    keyBounds = keyBounds,
                 ),
             )
             activeKey.isPressed = false
