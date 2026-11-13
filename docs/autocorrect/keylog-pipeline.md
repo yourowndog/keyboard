@@ -75,6 +75,7 @@ by `sudo tools/keylog_archive/install.sh` from a checkout on Titan.
 |---|---|
 | `keylog-archive.service` | receiver on `100.104.232.94:8791`; token `/etc/voice-archive/token` |
 | `keylog-dataset.timer` | runs `build_dataset.py` every 6 hours |
+| `keylog-adb-pull.timer` (user unit) | hourly `client.py` pull through sleeper's adb: a second path that works even when the installed APK cannot ship |
 
 `GET /v1/keylog/health` (no token) lists each stream's committed offset, line
 count and last event time. It is the quickest check that the phone is
