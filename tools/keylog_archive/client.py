@@ -55,7 +55,10 @@ class DeviceSource:
         self.path = path
 
     def _run(self, shell: str) -> bytes:
-        return subprocess.run(self.cmd + [shell], check=True, capture_output=True, timeout=600).stdout
+        # ssh joins its arguments and the remote shell parses them again, so the
+        # device command needs one extra level of quoting to arrive as one argument.
+        arg = shlex.quote(shell) if Path(self.cmd[0]).name == "ssh" else shell
+        return subprocess.run(self.cmd + [arg], check=True, capture_output=True, timeout=600).stdout
 
     def length(self) -> int:
         return int(self._run(f"stat -c %s {self.path}").strip())
