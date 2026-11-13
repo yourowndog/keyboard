@@ -119,3 +119,13 @@ mapping. The main choice is `NEWLINE` (`-310`, ⏎), a line break that never
 fires the field's action, so a chat message can have a second line without
 sending. The others are Tab, Esc, the emoji panel, the clipboard and one-handed
 mode.
+
+## Momentary symbol layer
+
+Press 123 and slide off it: the board shows the symbol page while the finger
+stays down. Lifting on a key types it and the board returns to letters
+(`MomentarySymbols`, `TextKeyboardLayout.finishMomentarySymbols`). Lifting on a
+page switch just returns. The key is looked up at the lift position on the
+board as it is then, because the pressed key may still belong to the letter
+page if the finger has not moved since the switch. A plain tap on 123 still
+switches pages.

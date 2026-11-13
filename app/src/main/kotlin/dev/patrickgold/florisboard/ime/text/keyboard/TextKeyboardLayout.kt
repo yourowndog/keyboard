@@ -974,6 +974,14 @@ private class TextKeyboardLayoutController(
                     || (event.getY(pointer.index) < activeKey.visibleBounds.top - 0.35f * activeKey.visibleBounds.height)
                     || (event.getY(pointer.index) > activeKey.visibleBounds.bottom + 0.35f * activeKey.visibleBounds.height)
                 ) {
+                    if (!pointer.isMomentarySymbols && activeKey === initialKey &&
+                        MomentarySymbols.starts(initialKey.computedData.code, keyboard.mode)
+                    ) {
+                        // Sliding off 123 peeks at the symbol page for one key, like a laptop's Fn.
+                        pointer.isMomentarySymbols = true
+                        keyboardManager.activeState.keyboardMode = KeyboardMode.SYMBOLS
+                        inputFeedbackController?.gestureMovingSwipe(initialKey.computedData)
+                    }
                     onTouchCancelInternal(event, pointer)
                     onTouchDownInternal(event, pointer)
                 }
@@ -983,6 +991,10 @@ private class TextKeyboardLayoutController(
 
     private fun onTouchUpInternal(event: MotionEvent, pointer: TouchPointer) {
         flogDebug(LogTopic.TEXT_KEYBOARD_VIEW) { "pointer=$pointer" }
+        if (pointer.isMomentarySymbols) {
+            finishMomentarySymbols(event, pointer)
+            return
+        }
         when (pointer.initialKey?.computedData?.code) {
             KeyCode.DELETE, KeyCode.SHIFT -> DeleteSwipeReadout.level = 0
             KeyCode.SPACE, KeyCode.CJK_SPACE -> DeleteSwipeReadout.cursorTravel = 0
@@ -1094,6 +1106,30 @@ private class TextKeyboardLayoutController(
             pointer.activeKey = null
         }
         pointer.hasTriggeredGestureMove = false
+    }
+
+    /**
+     * Ends a slide from 123: types the symbol-page key under the finger, then returns to the letters.
+     * The key is looked up on the board as it is now, because the finger may not have moved since the
+     * page switched and the pressed key still belongs to the letter page.
+     */
+    private fun finishMomentarySymbols(event: MotionEvent, pointer: TouchPointer) {
+        pointer.pressedKeyInfo?.cancelJobs()
+        pointer.pressedKeyInfo = null
+        pointer.activeKey?.let { activeKey ->
+            activeKey.isPressed = false
+            inputEventDispatcher.sendCancel(activeKey.computedDataOnDown)
+        }
+        popupUiController.hide()
+        pointer.activeKey = null
+        pointer.hasTriggeredGestureMove = false
+        val key = keyboard.getKeyForPos(event.getX(pointer.index), event.getY(pointer.index))
+        if (keyboard.mode == KeyboardMode.SYMBOLS && key != null && key.isEnabled &&
+            MomentarySymbols.types(key.computedData.code)
+        ) {
+            inputEventDispatcher.sendDownUp(key.computedData)
+        }
+        keyboardManager.activeState.keyboardMode = KeyboardMode.CHARACTERS
     }
 
     private fun onTouchCancelInternal(event: MotionEvent, pointer: TouchPointer) {
@@ -1520,6 +1556,8 @@ private class TextKeyboardLayoutController(
         var shiftStateOnDown: InputShiftState = InputShiftState.UNSHIFTED
         /** A swipe up from Delete that will restore the last swipe deletion on release. */
         var isDeleteUndoArmed: Boolean = false
+        /** The touch slid off 123 and is peeking at the symbol page until it lifts. */
+        var isMomentarySymbols: Boolean = false
         var pressedKeyInfo: InputEventDispatcher.PressedKeyInfo? = null
         var downTimeMs: Long = 0L
 
@@ -1533,6 +1571,7 @@ private class TextKeyboardLayoutController(
             isShiftForwardDelete = false
             shiftStateOnDown = InputShiftState.UNSHIFTED
             isDeleteUndoArmed = false
+            isMomentarySymbols = false
             pressedKeyInfo = null
             downTimeMs = 0L
         }
