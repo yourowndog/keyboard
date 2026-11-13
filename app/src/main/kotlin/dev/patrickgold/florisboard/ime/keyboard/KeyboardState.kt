@@ -103,6 +103,7 @@ open class KeyboardState protected constructor(open var rawValue: ULong) {
         const val F_IS_RECORDING: ULong =                   0x2_0000_0000u
         const val F_IS_TRANSCRIBING: ULong =                0x4_0000_0000u
         const val F_IS_PAUSED: ULong =                      0x8_0000_0000u
+        const val F_IS_ALT_PRESSED: ULong =                 0x10_0000_0000u
 
         const val F_DEBUG_SHOW_DRAG_AND_DROP_HELPERS =      0x01_00_00_00_00_00_00_00uL
 
@@ -244,6 +245,11 @@ open class KeyboardState protected constructor(open var rawValue: ULong) {
     var isCtrlLocked: Boolean
         get() = getFlag(F_IS_CTRL_LOCKED)
         set(v) { setFlag(F_IS_CTRL_LOCKED, v) }
+
+    /** One-shot Alt latch, set by sliding the held Shift dial right; the next key goes out as Alt+key. */
+    var isAltPressed: Boolean
+        get() = getFlag(F_IS_ALT_PRESSED)
+        set(v) { setFlag(F_IS_ALT_PRESSED, v) }
 
     var isTmuxPrefixActive: Boolean
         get() = getFlag(F_IS_TMUX_PREFIX_ACTIVE)
