@@ -341,26 +341,55 @@ which in turn require the Phase 0.0 frame. Gaussian
 proximity retrieval over the key-center grid. This is the single biggest reachability lever
 and it needs no neural net.
 
-### Phase 4 — Neural ranker v2
+### Phase 4 — Personal decoder: touch model × language model
 
-**4.1 Fix `agrees` semantics before anything else.** It is false on 12,441 events where
-`neuralTop` is byte-identical to `typed`. Whatever it encodes, it is not agreement, and it
-must not be a gating input until defined.
+**Chosen by Sam 2026-11-13**, replacing "neural ranker v2" as the direction. A
+ranker can only reorder what edit-distance retrieval hands it, and the
+2026-11 bench showed the hand-tuned scorer is at a local optimum (lower
+bigram weight, a personal-frequency term and personal correction targets all
+failed to improve it). The misses left are real-word errors in context
+(`os`/`is`, `of`/`if`), half-typed words (`wan`→`want`) and garbled taps
+(`npw`→`up` instead of `now`), which need a model of what Sam would say next
+and of where his finger lands.
 
-**4.2 Retrain** on the post-cull dictionary with real harvest events (`AUTO_APPLIED`,
-`REVERTED`, `USER_PICKED`, `INSISTED`, `MANUAL_EDIT`) weighted over synthetic bulk.
+The design is the one production keyboards use (Ouyang et al. 2017, *Mobile
+Keyboard Input Decoding with Finite-State Transducers*): a beam search that
+scores each hypothesis as `log P(taps | word) + λ·log P(word | context)`.
 
-**4.3 Promote to primary ranker** only on a bench result that beats the heuristic on both
-fix-recall and false-fire. Until then the current neural net stays a gate — and per the
-autopsy, a gate that contributes nothing on 66% of events and pulls away from the dictionary
-on every disagreement.
+| part | what it is | trained from |
+|---|---|---|
+| **Touch model** `P(tap \| key)` | per-key 2-D Gaussian (later a small mixture) over tap offsets, so a low-landing `h` still reads as `h` | v4 `dx`/`dy` of clean taps; replaces `touchSubstitutionCost` |
+| **Language model** `P(word \| context)` | small word-level neural LM (LSTM or tiny transformer, int8 ONNX, target < 20 MB) over a fixed vocabulary | general English pretrain, fine-tuned on Sam's typed text and *cleaned* voice transcripts (D14) |
+| **Decoder** | beam search over taps → letters → words, with insert/delete/transpose arcs | the bench; costs fitted on `SELF_FIX`/`AUTO_REV`/bar picks, never on `AUTO_OK` (polluted labels) |
 
-### Phase 5 — Next-word prediction
+One model then serves correction, completion and next-word prediction
+(Phase 5 collapses into this phase). It honours invariant 1: everything is
+trained on Titan from `~/datasets/sam-keylog/derived/current` (day-level
+train/val/test split) and shipped as build-time assets.
 
-Deliberately last. Phase 0 exists so that when this starts, `SESSION_TEXT` (typing and voice,
-already tagged) is sitting in the right format with no retroactive extraction needed.
+**Steps, each measured on the replay bench before the next:**
 
----
+1. LM training text from the dataset: typed words plus cleaned voice, by
+   split; held-out perplexity versus the current unigram+bigram tables.
+2. LM as the context term in today's scorer (rescoring only). Success:
+   real-word `SELF_FIX` cases recovered with no rise in `KEEP_KNOWN` changes.
+3. Touch model fitted per key from clean taps; replaces the touch cost.
+4. Full decoder on the bench against the shipped engine, both on dev and the
+   held-out test days. Ships only if it wins on fix-recall and false fires
+   (invariant 5, D15).
+5. On-device: ONNX LM behind the existing provider, shadow-logged first (the
+   `NEURAL_SHADOW` pattern), then live.
+6. Next-word prediction from the same LM. Needs the shown-and-ignored
+   prediction impressions the harvest does not yet log (raised with the
+   pipeline work 2026-11-13).
+
+Training framework: PyTorch → ONNX, as `training/` already does. JAX would
+train fast on Titan but still has to be exported for the phone, so it buys
+nothing at inference.
+
+The existing ONNX gate (`neural-scorer.md`) stays as it is until step 5
+replaces it; its `agrees` semantics defect (12,441 events) is moot once the
+decoder owns the decision.
 
 ## 5. Sequencing rationale
 
@@ -475,5 +504,5 @@ is now a build-time asset from the harvest. Still open, by expected impact:
    personal lexicon asset and a personal model build from fresh data without
    manual snapshots. Checked 2026-11-13 across every branch and tag: no
    keylog uploader or receiver was ever written; only voice ships to Titan.
-7. **Personal model.** Next-word prediction from the personal LM first, then a
-   trained reranker once 1–6 give clean labels.
+7. **Personal model.** Superseded 2026-11-13 by Phase 4 (personal decoder:
+   touch model × language model), which Sam chose over a neural ranker.
