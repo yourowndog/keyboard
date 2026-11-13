@@ -144,7 +144,7 @@ internal class HarvestV4State(
         if (current == null && !wordProducing && !editing) return
         if (current == null && editing && pendingClosed != null) reopenPending()
         val slot = if (current != null) current!! else openSlot()
-        slot.keys += linkedMapOf(
+        slot.keys += linkedMapOf<String, Any?>(
             "t" to elapsed(slot),
             "c" to touch.character,
             "k" to touch.key,
