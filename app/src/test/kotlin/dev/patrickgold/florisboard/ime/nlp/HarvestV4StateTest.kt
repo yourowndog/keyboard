@@ -130,8 +130,9 @@ class HarvestV4StateTest {
         assertEquals(400L, preds[0]["lead"])
         @Suppress("UNCHECKED_CAST")
         val outcome = rows[0].getValue("outcome") as Map<String, Any?>
-        assertEquals("next", outcome["predKind"])
-        assertEquals(2, outcome["predRank"])
+        // "to" is third on the next-word bar but leads the phrase "to be": the best place wins.
+        assertEquals("phrase", outcome["predKind"])
+        assertEquals(0, outcome["predRank"])
         assertEquals(emptyList<Any>(), rows[1].getValue("preds"))
         @Suppress("UNCHECKED_CAST")
         assertNull((rows[1].getValue("outcome") as Map<String, Any?>)["predRank"])
