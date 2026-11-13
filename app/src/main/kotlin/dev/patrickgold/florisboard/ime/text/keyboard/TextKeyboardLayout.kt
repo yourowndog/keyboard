@@ -475,6 +475,8 @@ private fun TextKeyButton(
         FlorisImeUi.Attr.CtrlState to when {
             evaluator.state.isCtrlLocked -> "locked"
             evaluator.state.isCtrlPressed -> "active"
+            // An Alt latch from the dial lights Shift the way Ctrl does; the plates stay as they are.
+            evaluator.state.isAltPressed && key.computedData.code == KeyCode.SHIFT -> "active"
             else -> "none"
         },
         FlorisImeUi.Attr.TmuxState to if (evaluator.state.isTmuxPrefixActive) "active" else "none",
@@ -617,6 +619,7 @@ private fun TextKeyButton(
                         isPressed = surfaceSelector == SnyggSelector.PRESSED,
                         shiftState = evaluator.state.inputShiftState,
                         isCtrlLatched = evaluator.state.isCtrlPressed,
+                        isAltLatched = evaluator.state.isAltPressed,
                         deleteSwipeLevel = deleteSwipeLevel,
                         deleteAccent = deleteAccent,
                         deleteSwipeForward = isSpaceRun && DeleteSwipeReadout.isForward,
@@ -909,8 +912,15 @@ private class TextKeyboardLayoutController(
                             ) {
                                 // Holding Shift turns the dial to Ctrl on a board without a Ctrl key. Returning
                                 // true blocks Shift's up, so the release cancels Shift instead of latching a capital.
+                                // Holding it again with Alt latched drops Alt, as it drops Ctrl.
+                                if (keyboardManager.activeState.isAltPressed) {
+                                    keyboardManager.activeState.isAltPressed = false
+                                    inputFeedbackController?.keyLongPress(key.computedData)
+                                    return@onLongPress true
+                                }
                                 inputEventDispatcher.sendDownUp(TextKeyData.CTRL)
                                 inputFeedbackController?.keyLongPress(key.computedData)
+                                pointer.hasLatchedCtrlFromShift = true
                                 return@onLongPress true
                             }
                             if (inputEventDispatcher.isUninterruptedEventSequence(key.computedData)) {
@@ -1161,6 +1171,29 @@ private class TextKeyboardLayoutController(
         val initialKey = pointer.initialKey ?: return false
         val activeKey = pointer.activeKey
         flogDebug(LogTopic.TEXT_KEYBOARD_VIEW)
+
+        if (initialKey.computedData.code == KeyCode.SHIFT && pointer.hasLatchedCtrlFromShift) {
+            // The dial is held with Ctrl latched: a slide picks Alt or Escape instead, once.
+            if (event.type == SwipeGesture.Type.TOUCH_MOVE && pointer.shiftDialChoice == null) {
+                ShiftDial.choiceFor(event.direction)?.let { choice ->
+                    pointer.shiftDialChoice = choice
+                    val state = keyboardManager.activeState
+                    when (choice) {
+                        ShiftDial.Choice.ALT -> {
+                            state.isCtrlPressed = false
+                            state.isAltPressed = true
+                        }
+                        ShiftDial.Choice.ESC -> {
+                            state.isCtrlPressed = false
+                            inputEventDispatcher.sendDownUp(TextKeyData.ESCAPE)
+                        }
+                        ShiftDial.Choice.CTRL -> Unit
+                    }
+                    inputFeedbackController?.keyLongPress(initialKey.computedData)
+                }
+            }
+            return true
+        }
 
         if (initialKey.computedData.code == KeyCode.SHIFT && (pointer.isShiftForwardDelete ||
                 ShiftForwardDelete.engages(
@@ -1558,6 +1591,9 @@ private class TextKeyboardLayoutController(
         var isDeleteUndoArmed: Boolean = false
         /** The touch slid off 123 and is peeking at the symbol page until it lifts. */
         var isMomentarySymbols: Boolean = false
+        /** Holding Shift latched Ctrl on this touch, so a slide now works the dial. */
+        var hasLatchedCtrlFromShift: Boolean = false
+        var shiftDialChoice: ShiftDial.Choice? = null
         var pressedKeyInfo: InputEventDispatcher.PressedKeyInfo? = null
         var downTimeMs: Long = 0L
 
@@ -1572,6 +1608,8 @@ private class TextKeyboardLayoutController(
             shiftStateOnDown = InputShiftState.UNSHIFTED
             isDeleteUndoArmed = false
             isMomentarySymbols = false
+            hasLatchedCtrlFromShift = false
+            shiftDialChoice = null
             pressedKeyInfo = null
             downTimeMs = 0L
         }

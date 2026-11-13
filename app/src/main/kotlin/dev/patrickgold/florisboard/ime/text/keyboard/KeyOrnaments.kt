@@ -77,6 +77,8 @@ internal data class KeyOrnamentPaint(
     val shiftState: InputShiftState,
     /** Ctrl is latched: the shift dial shows a caret instead of its core. */
     val isCtrlLatched: Boolean = false,
+    /** Alt is latched from the dial: a chevron pointing right, the way the finger slid. */
+    val isAltLatched: Boolean = false,
     /** How far a delete swipe has reached, in units of [deleteSwipeLitDots]. Spacebar only. */
     val deleteSwipeLevel: Int = 0,
     /** The colour a delete swipe lights the spacebar dots in: the delete key's own accent. */
@@ -164,6 +166,16 @@ private fun DrawScope.drawShiftDial(paint: KeyOrnamentPaint) {
             lineTo(center.x + radius * 0.5f, center.y + radius * 0.25f)
         }
         drawPath(caret, paint.accent, style = Stroke(stroke * 1.4f, cap = StrokeCap.Round, join = StrokeJoin.Round))
+        return
+    }
+    if (paint.isAltLatched) {
+        // The dial slid right to Alt: the same stroke turned to point the way the finger went.
+        val chevron = Path().apply {
+            moveTo(center.x - radius * 0.25f, center.y - radius * 0.5f)
+            lineTo(center.x + radius * 0.35f, center.y)
+            lineTo(center.x - radius * 0.25f, center.y + radius * 0.5f)
+        }
+        drawPath(chevron, paint.accent, style = Stroke(stroke * 1.4f, cap = StrokeCap.Round, join = StrokeJoin.Round))
         return
     }
     val coreAlpha = when {

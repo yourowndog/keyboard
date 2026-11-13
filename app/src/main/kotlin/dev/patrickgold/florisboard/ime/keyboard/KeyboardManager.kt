@@ -1319,16 +1319,19 @@ class KeyboardManager(
      * Sends a ctrl+key chord for character keys and returns true if handled.
      */
     private fun sendCtrlChordIfNeeded(data: KeyData): Boolean {
-        if (!activeState.isCtrlPressed) return false
+        val ctrl = activeState.isCtrlPressed
+        val alt = activeState.isAltPressed
+        if (!ctrl && !alt) return false
         if (data.code == KeyCode.CTRL) return false
         if (data.code !in KeyCode.Spec.CHARACTERS) return false
         val keyEventCode = keyEventCodeForChar(data.code.toChar()) ?: return false
         val shiftPressed = inputEventDispatcher.isPressed(KeyCode.SHIFT)
-        val metaState = meta(ctrl = true, shift = shiftPressed)
+        val metaState = meta(ctrl = ctrl, alt = alt, shift = shiftPressed)
         val handled = editorInstance.sendDownUpKeyEvent(keyEventCode, metaState)
         if (handled && !activeState.isCtrlLocked) {
             activeState.isCtrlPressed = false
         }
+        if (handled) activeState.isAltPressed = false
         return handled
     }
 
@@ -1510,8 +1513,11 @@ class KeyboardManager(
             activeState.isTmuxPrefixActive = false
         }
         val shouldConsumeCtrl = activeState.isCtrlPressed && data.code != KeyCode.CTRL
-        if (shouldConsumeCtrl && sendCtrlChordIfNeeded(data)) {
+        // Shift's own up is excluded: the dial slide that latches Alt ends on Shift.
+        val shouldConsumeAlt = activeState.isAltPressed && data.code != KeyCode.SHIFT && data.code != KeyCode.CTRL
+        if ((shouldConsumeCtrl || shouldConsumeAlt) && sendCtrlChordIfNeeded(data)) {
             activeState.isCtrlPressed = false
+            activeState.isAltPressed = false
             return@batchEdit
         }
         when (data.code) {
@@ -1742,6 +1748,9 @@ class KeyboardManager(
         }
         if (shouldConsumeCtrl) {
             activeState.isCtrlPressed = false
+        }
+        if (shouldConsumeAlt) {
+            activeState.isAltPressed = false
         }
     }
 

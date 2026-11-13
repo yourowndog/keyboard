@@ -206,6 +206,13 @@ latches Ctrl instead of locking caps, and the shift key fills lilac with a caret
 in its dial. Double-tapping Shift still locks caps. Holding Shift again before
 typing drops the latch. Boards with a CTRL key (Coding) keep hold-for-caps-lock.
 
+While still holding after the latch, slide to pick another modifier
+(`ShiftDial`): right latches Alt instead (one shot, a right chevron in the dial,
+the next letter goes out as Alt+letter), left sends Escape and drops Ctrl, and up
+keeps Ctrl. The first slide decides; lifting ends it. The Alt latch is
+`KeyboardState.isAltPressed`, consumed by `sendCtrlChordIfNeeded` alongside
+Ctrl.
+
 ### Command strip smartbar
 
 `SmartbarLayout.COMMAND_STRIP` ("Command strip" in Smartbar settings) is the
