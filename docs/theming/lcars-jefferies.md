@@ -218,6 +218,11 @@ not a theme setting, so pick it in Settings, Smartbar, Layout.
   rules; see `docs/keyboard/layout-pipeline.md`), VOICE starts voice input.
   Long-pressing the TEXT/CODE key switches language; long-pressing VOICE still
   opens voice history.
+- While text is selected the middle shows the selection strip instead of
+  suggestions: COPY, CUT, PASTE and ALL (`SelectionCommand` in
+  `SmartbarCommandStrip.kt`), lilac like Ctrl's revealed plates and styled by
+  `smartbar-action-key[code=-31,-32,-33,-35]`. A delete swipe's growing
+  selection does not trigger it.
 - While there are suggestions or inline autofill, they take the middle between
   the coral and cyan rules, and only MENU and VOICE stay.
 - Command widths are shares of the whole bar (MENU 14%, EMOJI and TEXT/CODE 15%,
