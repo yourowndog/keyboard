@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.BiasAlignment
@@ -80,6 +81,10 @@ internal data class KeyOrnamentPaint(
     val deleteSwipeLevel: Int = 0,
     /** The colour a delete swipe lights the spacebar dots in: the delete key's own accent. */
     val deleteAccent: Color = Color.Unspecified,
+    /** The delete swipe removes text after the cursor (from Shift), so the gauge fills from the left. */
+    val deleteSwipeForward: Boolean = false,
+    /** Signed characters a spacebar cursor slide has travelled; 0 when no slide is in progress. */
+    val cursorTravel: Int = 0,
 )
 
 /** Number of indicator dots in the spacebar run. */
@@ -92,7 +97,19 @@ internal const val SPACE_DOT_COUNT = 8
  */
 internal object DeleteSwipeReadout {
     var level by mutableIntStateOf(0)
+
+    /** The swipe deletes forward (a drag right from Shift) rather than back from Delete. */
+    var isForward by mutableStateOf(false)
+
+    /**
+     * Signed distance, in cursor steps, of the spacebar slide in progress: negative is left. The dot run
+     * shows it as a travelling cyan light, the same gauge a delete swipe fills in coral.
+     */
+    var cursorTravel by mutableIntStateOf(0)
 }
+
+/** Which dot of the run is lit for a cursor slide of [travel] steps: the light walks with the cursor. */
+internal fun cursorTravelDot(travel: Int): Int = Math.floorMod(SPACE_DOT_COUNT / 2 - 1 + travel, SPACE_DOT_COUNT)
 
 /** How many spacebar dots a delete swipe of [level] lights, filling the run at [SPACE_DOT_COUNT]. */
 internal fun deleteSwipeLitDots(level: Int): Int = level.coerceIn(0, SPACE_DOT_COUNT)
@@ -233,12 +250,22 @@ private fun DrawScope.drawSpaceDotRun(paint: KeyOrnamentPaint) {
     val idleAlpha = if (paint.isPressed) 1f else 0.6f
     for (i in 0 until SPACE_DOT_COUNT) {
         val center = Offset(w * 0.10f + i * r * 3.2f, h * 0.68f)
+        if (!isSwiping && paint.cursorTravel != 0) {
+            if (i == cursorTravelDot(paint.cursorTravel)) {
+                drawCircle(paint.accent.copy(alpha = 0.3f), r * 2.1f, center)
+                drawCircle(paint.accent, r * 1.15f, center)
+            } else {
+                drawCircle(paint.accent.copy(alpha = 0.22f), r, center)
+            }
+            continue
+        }
         if (!isSwiping) {
             drawCircle(paint.accent.copy(alpha = idleAlpha), r, center)
             continue
         }
-        // Light from the right end: the last `litDots` dots are on.
-        val isLit = i >= SPACE_DOT_COUNT - litDots
+        // A delete swipe lights from the end nearest the text it eats: the right end for Delete (text
+        // before the cursor), the left end for Shift's forward delete (text after it).
+        val isLit = if (paint.deleteSwipeForward) i < litDots else i >= SPACE_DOT_COUNT - litDots
         if (isLit) {
             drawCircle(deleteAccent.copy(alpha = 0.28f), r * 2.1f, center)
             drawCircle(deleteAccent, r * 1.15f, center)

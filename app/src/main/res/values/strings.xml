@@ -1147,6 +1147,10 @@
     <string name="smartbar__command__text" comment="Command strip key while the Text profile is active; tapping it switches to Coding">Text</string>
     <string name="smartbar__command__code" comment="Command strip key while the Coding profile is active; tapping it switches to Text">Code</string>
     <string name="smartbar__command__voice">Voice</string>
+    <string name="smartbar__command__copy" comment="Selection strip: copy the selected text">Copy</string>
+    <string name="smartbar__command__cut" comment="Selection strip: cut the selected text">Cut</string>
+    <string name="smartbar__command__paste" comment="Selection strip: paste over the selected text">Paste</string>
+    <string name="smartbar__command__all" comment="Selection strip: select all text in the field">All</string>
 
     <string name="enum__snygg_level__basic" comment="Enum value label">Basic</string>
     <string name="enum__snygg_level__basic__description" comment="Enum value description">Only color properties are shown, properties and rules are translated.</string>

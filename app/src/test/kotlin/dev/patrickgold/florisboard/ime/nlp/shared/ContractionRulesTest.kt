@@ -43,4 +43,9 @@ class ContractionRulesTest {
         assertFalse(ContractionRules.isValidLicense("dont", "don't", CandidateProvenance.CONTRACTION_RULE, cant.license))
         assertFalse(ContractionRules.isValidLicense("dont", "don't", CandidateProvenance.CONTRACTION_RULE, null))
     }
+
+    @Test
+    fun youveBecomesTheContractionNotTwoWords() {
+        assertEquals("you've", assertNotNull(ContractionRules.resolveStatic("youve")).candidate)
+    }
 }

@@ -119,6 +119,8 @@
   "smartbar-action-key[code=-233]:pressed": { "background": "var(--coral)", "foreground": "var(--glyph)" },
   "smartbar-action-key[code=-227,-308]": { "background": "var(--void)", "foreground": "var(--cyan-lit)", "border-width": "1.5dp", "border-color": "var(--cyan)" },
   "smartbar-action-key[code=-227,-308]:pressed": { "background": "var(--cyan)", "foreground": "var(--glyph)" },
+  "smartbar-action-key[code=-31,-32,-33,-35]": { "background": "var(--void)", "foreground": "var(--lilac-lit)", "border-width": "1.5dp", "border-color": "var(--lilac)" },
+  "smartbar-action-key[code=-31,-32,-33,-35]:pressed": { "background": "var(--lilac)", "foreground": "var(--glyph)" },
   "smartbar-action-key[code=-212]": { "background": "var(--void)", "foreground": "var(--coral)", "border-width": "1.5dp", "border-color": "var(--coral)" },
   "smartbar-action-key[code=-212]:pressed": { "background": "var(--coral)", "foreground": "var(--glyph)" },
   "smartbar-action-key[code=-242]": { "background": "var(--chrome)", "foreground": "var(--glyph)" },

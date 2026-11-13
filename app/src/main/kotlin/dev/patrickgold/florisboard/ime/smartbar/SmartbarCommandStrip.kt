@@ -17,6 +17,7 @@
 package dev.patrickgold.florisboard.ime.smartbar
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -31,6 +32,7 @@ import dev.patrickgold.florisboard.app.FlorisPreferenceStore
 import dev.patrickgold.florisboard.ime.keyboard.KeyboardProfile
 import dev.patrickgold.florisboard.ime.smartbar.quickaction.QuickAction
 import dev.patrickgold.florisboard.ime.smartbar.quickaction.QuickActionButton
+import dev.patrickgold.florisboard.ime.text.keyboard.DeleteSwipeReadout
 import dev.patrickgold.florisboard.ime.text.keyboard.TextKeyData
 import dev.patrickgold.florisboard.ime.theme.FlorisImeUi
 import dev.patrickgold.florisboard.keyboardManager
@@ -54,6 +56,26 @@ internal enum class SmartbarCommand(val data: TextKeyData, val labelRes: Int, va
     val code: Int get() = data.code
     val action: QuickAction = QuickAction.InsertKey(data)
 }
+
+/**
+ * The selection strip: while text is selected, the strip's middle offers these instead of suggestions,
+ * so the edits that would otherwise need Ctrl or the system's floating toolbar sit under the thumb.
+ */
+internal enum class SelectionCommand(val data: TextKeyData, val labelRes: Int) {
+    COPY(TextKeyData.CLIPBOARD_COPY, R.string.smartbar__command__copy),
+    CUT(TextKeyData.CLIPBOARD_CUT, R.string.smartbar__command__cut),
+    PASTE(TextKeyData.CLIPBOARD_PASTE, R.string.smartbar__command__paste),
+    ALL(TextKeyData.CLIPBOARD_SELECT_ALL, R.string.smartbar__command__all);
+
+    val action: QuickAction = QuickAction.InsertKey(data)
+}
+
+/**
+ * Whether the strip shows [SelectionCommand]s. Not while a delete swipe is growing its selection: that
+ * selection is about to be deleted, and flashing COPY and CUT under the finger would only distract.
+ */
+internal fun showsSelectionCommands(isSelectionMode: Boolean, deleteSwipeLevel: Int): Boolean =
+    isSelectionMode && deleteSwipeLevel == 0
 
 /** What holding MODE does: the language switch that LANG used to perform on tap. */
 private val LANGUAGE_SWITCH_ACTION = QuickAction.InsertKey(TextKeyData.LANGUAGE_SWITCH)
@@ -147,11 +169,28 @@ internal fun RowScope.SmartbarCommandStrip(
         ) {}
     }
 
+    val isSelecting = showsSelectionCommands(keyboardState.isSelectionMode, DeleteSwipeReadout.level)
+
     Command(SmartbarCommand.MENU)
     // The coral and cyan rules stay in both states, so the strip keeps its frame while the
     // candidates take the middle.
     Rule(beside = SmartbarCommand.MENU)
-    if (isTyping) {
+    if (isSelecting) {
+        Row(modifier = Modifier.weight(TYPING_CANDIDATES_WEIGHT).fillMaxHeight()) {
+            for (command in SelectionCommand.entries) {
+                Box(modifier = Modifier.weight(1f).fillMaxHeight()) {
+                    QuickActionButton(
+                        action = command.action,
+                        evaluator = evaluator,
+                        modifier = Modifier.fillMaxSize(),
+                        square = false,
+                        label = stringRes(command.labelRes).uppercase(),
+                    )
+                }
+            }
+        }
+        Rule(beside = SmartbarCommand.VOICE)
+    } else if (isTyping) {
         Box(modifier = Modifier.weight(TYPING_CANDIDATES_WEIGHT).fillMaxHeight()) {
             candidates()
         }
