@@ -302,7 +302,7 @@ class FlorisImeService : LifecycleInputMethodService() {
         }
         dev.patrickgold.florisboard.ime.nlp.SymSpellManager.init(this, lifecycleScope)
         dev.patrickgold.florisboard.ime.nlp.HarvestManager.init(this)
-        dev.patrickgold.florisboard.ime.nlp.shared.PersonalLexicon.init(filesDir, getExternalFilesDir(null))
+        dev.patrickgold.florisboard.ime.nlp.shared.PersonalLexicon.init(this)
         dev.patrickgold.florisboard.ime.keyboard.KeyCustomizationExporter.init(this, lifecycleScope, prefs)
         dev.patrickgold.florisboard.ime.nlp.GemmaClient.loadPersona(this)
         @Suppress("DEPRECATION") // We do not retrieve the wallpaper but only listen to changes
@@ -437,7 +437,6 @@ class FlorisImeService : LifecycleInputMethodService() {
         super.onFinishInput()
         activeState.isTmuxPrefixActive = false
         editorInstance.handleFinishInput()
-        dev.patrickgold.florisboard.ime.nlp.shared.PersonalLexicon.flush()
         NlpInlineAutofill.clearInlineSuggestions()
     }
 

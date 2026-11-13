@@ -1,20 +1,18 @@
 #!/usr/bin/env python3
-"""Build the on-device personal lexicon seed from a harvest snapshot.
+"""Build the personal lexicon asset from a harvest snapshot.
 
-The keyboard learns from what it sees after install (see PersonalLexicon.kt). This
-seeds it with everything already in the harvest, so it starts out knowing the
-words you use, the corrections you undid and the words you insisted on.
+The keyboard does not learn on the device (roadmap invariant 1). Instead this
+turns the harvest into an asset packed into every APK, so each install already
+knows the words you use, the corrections you undid and the words you insisted
+on. PersonalLexicon.kt applies the rival test at lookup time, so a typo you
+committed often next to a far more frequent word stays correctable.
 
-    python3 tools/harvesting/build_personal_lexicon_seed.py \
-        SNAPSHOT/usage_harvest.jsonl[.gz] OUT/personal_lexicon_seed.tsv
+    python3 tools/harvesting/build_personal_lexicon.py SNAPSHOT/usage_harvest.jsonl[.gz]
 
-Then push it where the app looks for it once, at startup:
-
-    adb push OUT/personal_lexicon_seed.tsv \
-        /sdcard/Android/data/<package>/files/personal_lexicon_seed.tsv
-
-The app merges it into its own store and renames it to `.imported`, so it is
-never counted twice. The output is personal data: write it outside the repo.
+writes private-assets/ime/personal/lexicon.tsv, which the Gradle build adds to
+the APK's assets. The output is personal data: it may only be written to the
+gitignored private-assets/ folder or outside the repository. Pass a second
+argument to choose another path.
 
 Counts come from v4 WORD_SLOT outcomes (typed, auto-applied, bar picks and voice)
 and v3 WORD_COMMITTED events from before the first v4 slot, so the two schemas
@@ -28,6 +26,7 @@ import sys
 from collections import Counter
 from pathlib import Path
 
+DEFAULT_OUT = Path("private-assets/ime/personal/lexicon.tsv")
 WORD = re.compile(r"^[a-z][a-z']{1,31}$")
 
 
@@ -43,12 +42,15 @@ def open_any(path):
 
 
 def main():
-    if len(sys.argv) != 3:
+    if len(sys.argv) not in (2, 3):
         print(__doc__)
         sys.exit(2)
-    src, out = Path(sys.argv[1]), Path(sys.argv[2])
-    if out.resolve().is_relative_to(Path(__file__).resolve().parents[2]):
-        sys.exit("refusing to write personal data inside the repository")
+    repo = Path(__file__).resolve().parents[2]
+    src = Path(sys.argv[1])
+    out = Path(sys.argv[2]) if len(sys.argv) == 3 else repo / DEFAULT_OUT
+    resolved = out.resolve()
+    if resolved.is_relative_to(repo) and not resolved.is_relative_to(repo / "private-assets"):
+        sys.exit("refusing to write personal data inside the repository outside private-assets/")
 
     counts, learned, rejected = Counter(), set(), set()
     first_v4 = None
