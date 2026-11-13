@@ -164,6 +164,11 @@ resolved through Snygg, so the art re-themes and no hex lives in Kotlin.
   the existing moving-swipe tick; filling the run adds one firmer detent.
   `DeleteSwipeReadout` carries the level from the touch controller to the
   spacebar, and it resets when the delete pointer lifts or cancels.
+  A forward delete from Shift (tap Shift and drag right) fills the same gauge
+  from the left end instead, and for the length of the drag Shift wears the
+  Delete key's pressed surface (coral flood). While the spacebar slides the
+  cursor, one dot lights at full cyan and walks with the cursor, wrapping past
+  either end (`DeleteSwipeReadout.cursorTravel`, `cursorTravelDot`).
 - **Enter:** an inner line with one oversized rounded corner, as in the
   reference. The label moves to the upper right.
 

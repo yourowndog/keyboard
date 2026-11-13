@@ -568,8 +568,22 @@ private fun TextKeyButton(
         }
     } else {
         val ornament = KeyOrnament.forCode(key.computedData.code)
+        // While a drag right from Shift is deleting forward, Shift wears the Delete key's pressed surface:
+        // coral means remove, whichever key is doing it. Only Shift reads the readout, so only it recomposes.
+        val isForwardDeleting = key.computedData.code == KeyCode.SHIFT &&
+            DeleteSwipeReadout.isForward && DeleteSwipeReadout.level > 0
+        val surfaceAttributes = if (isForwardDeleting) {
+            attributes + (FlorisImeUi.Attr.Code to KeyCode.DELETE)
+        } else {
+            attributes
+        }
+        val surfaceSelector = if (isForwardDeleting) SnyggSelector.PRESSED else selector
         val ornamentStyle = rememberSnyggThemeQuery(FlorisImeUi.KeyOrnament.elementName, attributes, selector)
-        val ornamentAccent = ornamentStyle.foreground()
+        val ornamentAccent = if (isForwardDeleting) {
+            rememberSnyggThemeQuery(FlorisImeUi.Key.elementName, surfaceAttributes, surfaceSelector).foreground()
+        } else {
+            ornamentStyle.foreground()
+        }
         // Ornaments are drawn for the theme's own surfaces; on a texture they would clash with it.
         val activeOrnament = ornament?.takeIf { ornamentAccent.isSpecified && skinBackground == null }
         // The spacebar's delete-swipe gauge borrows the delete key's ornament accent.
@@ -582,11 +596,12 @@ private fun TextKeyButton(
         } else {
             Color.Unspecified
         }
-        val deleteSwipeLevel = if (activeOrnament == KeyOrnament.SPACE_DOT_RUN) DeleteSwipeReadout.level else 0
+        val isSpaceRun = activeOrnament == KeyOrnament.SPACE_DOT_RUN
+        val deleteSwipeLevel = if (isSpaceRun) DeleteSwipeReadout.level else 0
         SnyggBox(
             FlorisImeUi.Key.elementName,
-            attributes = attributes,
-            selector = selector,
+            attributes = surfaceAttributes,
+            selector = surfaceSelector,
             modifier = Modifier
                 .requiredSize(size)
                 .absoluteOffset { key.visibleBounds.topLeft.toIntOffset() },
@@ -599,16 +614,18 @@ private fun TextKeyButton(
                     KeyOrnamentPaint(
                         accent = ornamentAccent,
                         structure = ornamentStyle.background(),
-                        isPressed = selector == SnyggSelector.PRESSED,
+                        isPressed = surfaceSelector == SnyggSelector.PRESSED,
                         shiftState = evaluator.state.inputShiftState,
                         isCtrlLatched = evaluator.state.isCtrlPressed,
                         deleteSwipeLevel = deleteSwipeLevel,
                         deleteAccent = deleteAccent,
+                        deleteSwipeForward = isSpaceRun && DeleteSwipeReadout.isForward,
+                        cursorTravel = if (isSpaceRun) DeleteSwipeReadout.cursorTravel else 0,
                     ),
                 )
             }
             TextKeyContent(
-                key, evaluator, attributes, selector,
+                key, evaluator, surfaceAttributes, surfaceSelector,
                 showCornerHint = true, ornament = activeOrnament, suppressGlyph = suppressGlyph,
                 labelColor = skinLabelColor,
             )
@@ -804,7 +821,8 @@ private class TextKeyboardLayoutController(
                                 it == SwipeAction.DELETE_CHARACTERS_PRECISELY || it == SwipeAction.SELECT_CHARACTERS_PRECISELY
                             }
                             || pointer.initialKey?.computedData?.code == KeyCode.SPACE
-                            || pointer.initialKey?.computedData?.code == KeyCode.CJK_SPACE))
+                            || pointer.initialKey?.computedData?.code == KeyCode.CJK_SPACE
+                            || pointer.isShiftForwardDelete))
                         if (swipeGestureDetector.onTouchMove(event, pointer, alwaysTriggerOnMove) || pointer.hasTriggeredGestureMove) {
                             pointer.hasTriggeredGestureMove = true
                             pointer.activeKey?.let { activeKey ->
@@ -830,12 +848,7 @@ private class TextKeyboardLayoutController(
                 if (pointer != null) {
                     pointer.index = pointerIndex
                     if (swipeGestureDetector.onTouchUp(event, pointer) || pointer.hasTriggeredGestureMove) {
-                        if (pointer.hasTriggeredGestureMove && pointer.initialKey?.computedData?.code == KeyCode.DELETE) {
-                            val selection = editorInstance.activeContent.selection
-                            if (selection.isSelectionMode) {
-                                editorInstance.deleteBackwards(OperationUnit.CHARACTERS)
-                            }
-                        }
+                        commitSwipeDeletion(pointer)
                         onTouchCancelInternal(event, pointer)
                     } else {
                         onTouchUpInternal(event, pointer)
@@ -850,15 +863,7 @@ private class TextKeyboardLayoutController(
                     if (pointer.id == pointerId) {
                         pointer.index = pointerIndex
                         if (swipeGestureDetector.onTouchUp(event, pointer) || pointer.hasTriggeredGestureMove) {
-                            if (pointer.hasTriggeredGestureMove &&
-                                pointer.initialKey?.computedData?.code == KeyCode.DELETE &&
-                                prefs.gestures.deleteKeySwipeLeft.get() != SwipeAction.SELECT_CHARACTERS_PRECISELY &&
-                                prefs.gestures.deleteKeySwipeLeft.get() != SwipeAction.SELECT_WORDS_PRECISELY) {
-                                val selection = editorInstance.activeContent.selection
-                                if (selection.isSelectionMode) {
-                                    editorInstance.deleteBackwards(OperationUnit.CHARACTERS)
-                                }
-                            }
+                            commitSwipeDeletion(pointer)
                             onTouchCancelInternal(event, pointer)
                         } else {
                             onTouchUpInternal(event, pointer)
@@ -887,6 +892,7 @@ private class TextKeyboardLayoutController(
         pointer.downTimeMs = event.eventTime
         if (key != null && key.isEnabled) {
             key.computedDataOnDown = key.computedData
+            pointer.shiftStateOnDown = keyboardManager.activeState.inputShiftState
             pointer.pressedKeyInfo = inputEventDispatcher.sendDown(
                 data = key.computedData,
                 onLongPress = onLongPress@ {
@@ -977,7 +983,10 @@ private class TextKeyboardLayoutController(
 
     private fun onTouchUpInternal(event: MotionEvent, pointer: TouchPointer) {
         flogDebug(LogTopic.TEXT_KEYBOARD_VIEW) { "pointer=$pointer" }
-        if (pointer.initialKey?.computedData?.code == KeyCode.DELETE) DeleteSwipeReadout.level = 0
+        when (pointer.initialKey?.computedData?.code) {
+            KeyCode.DELETE, KeyCode.SHIFT -> DeleteSwipeReadout.level = 0
+            KeyCode.SPACE, KeyCode.CJK_SPACE -> DeleteSwipeReadout.cursorTravel = 0
+        }
         pointer.pressedKeyInfo?.cancelJobs()
         pointer.pressedKeyInfo = null
 
@@ -1090,6 +1099,7 @@ private class TextKeyboardLayoutController(
     private fun onTouchCancelInternal(event: MotionEvent, pointer: TouchPointer) {
         flogDebug(LogTopic.TEXT_KEYBOARD_VIEW) { "pointer=$pointer" }
         DeleteSwipeReadout.level = 0
+        DeleteSwipeReadout.cursorTravel = 0
         pointer.pressedKeyInfo?.cancelJobs()
         pointer.pressedKeyInfo = null
 
@@ -1115,6 +1125,19 @@ private class TextKeyboardLayoutController(
         val initialKey = pointer.initialKey ?: return false
         val activeKey = pointer.activeKey
         flogDebug(LogTopic.TEXT_KEYBOARD_VIEW)
+
+        if (initialKey.computedData.code == KeyCode.SHIFT && (pointer.isShiftForwardDelete ||
+                ShiftForwardDelete.engages(
+                    isMove = event.type == SwipeGesture.Type.TOUCH_MOVE,
+                    direction = event.direction,
+                    isStillOnShift = activeKey?.computedData?.code == KeyCode.SHIFT,
+                    hasLongPressed = pointer.hasTriggeredLongPress,
+                    isRawInputEditor = editorInstance.activeInfo.isRawInputEditor,
+                ))
+        ) {
+            pointer.isShiftForwardDelete = true
+            return handleShiftForwardDeleteSwipe(event)
+        }
 
         return when (initialKey.computedData.code) {
             KeyCode.DELETE -> handleDeleteSwipe(event)
@@ -1163,6 +1186,7 @@ private class TextKeyboardLayoutController(
         return when (event.type) {
             SwipeGesture.Type.TOUCH_MOVE -> when (prefs.gestures.deleteKeySwipeLeft.get()) {
                 SwipeAction.DELETE_CHARACTERS_PRECISELY, SwipeAction.SELECT_CHARACTERS_PRECISELY -> {
+                    DeleteSwipeReadout.isForward = false
                     if (abs(event.relUnitCountX) > 0) {
                         inputFeedbackController?.gestureMovingSwipe(TextKeyData.DELETE)
                     }
@@ -1188,6 +1212,7 @@ private class TextKeyboardLayoutController(
                     true
                 }
                 SwipeAction.DELETE_WORDS_PRECISELY, SwipeAction.SELECT_WORDS_PRECISELY -> {
+                    DeleteSwipeReadout.isForward = false
                     if (abs(event.relUnitCountX) > 0) {
                         inputFeedbackController?.gestureMovingSwipe(TextKeyData.DELETE)
                     }
@@ -1228,6 +1253,46 @@ private class TextKeyboardLayoutController(
     }
 
     /**
+     * Tap Shift and drag right: the mirror of the Delete key's swipe, selecting text after the cursor as
+     * the finger travels and deleting it on release. It follows the Delete swipe's precision setting
+     * (characters or words, delete or select only), ticks the same haptics and fills the spacebar gauge
+     * from its left end, so the two read as one tool pointed in two directions.
+     */
+    private fun handleShiftForwardDeleteSwipe(event: SwipeGesture.Event): Boolean {
+        if (event.type != SwipeGesture.Type.TOUCH_MOVE) return true
+        val unit = ShiftForwardDelete.unitFor(prefs.gestures.deleteKeySwipeLeft.get())
+        val n = ShiftForwardDelete.selectedUnits(event.absUnitCountX, unit)
+        DeleteSwipeReadout.isForward = true
+        if (abs(event.relUnitCountX) > 0) {
+            inputFeedbackController?.gestureMovingSwipe(TextKeyData.DELETE)
+        }
+        val activeSelection = editorInstance.activeContent.selection
+        updateDeleteSwipeReadout(if (activeSelection.isValid) n else 0)
+        if (activeSelection.isValid) {
+            editorInstance.setSelectionSurrounding(n = n, unit = unit, scope = OperationScope.AFTER_CURSOR)
+        }
+        return true
+    }
+
+    /**
+     * On release of a Delete or Shift swipe, deletes what the swipe selected, unless the Delete swipe is
+     * set to select only.
+     */
+    private fun commitSwipeDeletion(pointer: TouchPointer) {
+        if (!pointer.hasTriggeredGestureMove) return
+        // The drag cancelled Shift's press, which drops the shift state; put back what it was (caps lock
+        // in particular) so a forward delete never changes the case of what comes next.
+        if (pointer.isShiftForwardDelete) keyboardManager.activeState.inputShiftState = pointer.shiftStateOnDown
+        val isDeleteSwipe = pointer.initialKey?.computedData?.code == KeyCode.DELETE || pointer.isShiftForwardDelete
+        if (!isDeleteSwipe) return
+        val action = prefs.gestures.deleteKeySwipeLeft.get()
+        if (action == SwipeAction.SELECT_CHARACTERS_PRECISELY || action == SwipeAction.SELECT_WORDS_PRECISELY) return
+        if (editorInstance.activeContent.selection.isSelectionMode) {
+            editorInstance.deleteBackwards(OperationUnit.CHARACTERS)
+        }
+    }
+
+    /**
      * Feeds the spacebar's delete gauge with how many units the swipe has selected, mirroring the
      * `n` passed to `setSelectionSurrounding`. A firmer haptic marks the gauge filling.
      */
@@ -1258,6 +1323,7 @@ private class TextKeyboardLayoutController(
                                     editorInstance.massSelection.begin()
                                 }
                                 keyboardManager.handleArrow(KeyCode.ARROW_LEFT, count)
+                                DeleteSwipeReadout.cursorTravel -= count
                             }
                         }
                         true
@@ -1277,6 +1343,7 @@ private class TextKeyboardLayoutController(
                                     editorInstance.massSelection.begin()
                                 }
                                 keyboardManager.handleArrow(KeyCode.ARROW_RIGHT, count)
+                                DeleteSwipeReadout.cursorTravel += count
                             }
                         }
                         true
@@ -1418,6 +1485,10 @@ private class TextKeyboardLayoutController(
         var hasTriggeredGestureMove: Boolean = false
         var hasTriggeredLongPress: Boolean = false
         var hasTriggeredMassSelection: Boolean = false
+        /** A drag right from Shift became a forward delete; it stays one until the finger lifts. */
+        var isShiftForwardDelete: Boolean = false
+        /** The shift state before this touch went down, restored after a forward delete from Shift. */
+        var shiftStateOnDown: InputShiftState = InputShiftState.UNSHIFTED
         var pressedKeyInfo: InputEventDispatcher.PressedKeyInfo? = null
         var downTimeMs: Long = 0L
 
@@ -1428,6 +1499,8 @@ private class TextKeyboardLayoutController(
             hasTriggeredGestureMove = false
             hasTriggeredLongPress = false
             hasTriggeredMassSelection = false
+            isShiftForwardDelete = false
+            shiftStateOnDown = InputShiftState.UNSHIFTED
             pressedKeyInfo = null
             downTimeMs = 0L
         }
