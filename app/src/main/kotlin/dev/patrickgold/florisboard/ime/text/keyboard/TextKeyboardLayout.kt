@@ -974,6 +974,14 @@ private class TextKeyboardLayoutController(
                     || (event.getY(pointer.index) < activeKey.visibleBounds.top - 0.35f * activeKey.visibleBounds.height)
                     || (event.getY(pointer.index) > activeKey.visibleBounds.bottom + 0.35f * activeKey.visibleBounds.height)
                 ) {
+                    if (!pointer.isMomentarySymbols && activeKey === initialKey &&
+                        MomentarySymbols.starts(initialKey.computedData.code, keyboard.mode)
+                    ) {
+                        // Sliding off 123 peeks at the symbol page for one key, like a laptop's Fn.
+                        pointer.isMomentarySymbols = true
+                        keyboardManager.activeState.keyboardMode = KeyboardMode.SYMBOLS
+                        inputFeedbackController?.gestureMovingSwipe(initialKey.computedData)
+                    }
                     onTouchCancelInternal(event, pointer)
                     onTouchDownInternal(event, pointer)
                 }
@@ -983,6 +991,10 @@ private class TextKeyboardLayoutController(
 
     private fun onTouchUpInternal(event: MotionEvent, pointer: TouchPointer) {
         flogDebug(LogTopic.TEXT_KEYBOARD_VIEW) { "pointer=$pointer" }
+        if (pointer.isMomentarySymbols) {
+            finishMomentarySymbols(event, pointer)
+            return
+        }
         when (pointer.initialKey?.computedData?.code) {
             KeyCode.DELETE, KeyCode.SHIFT -> DeleteSwipeReadout.level = 0
             KeyCode.SPACE, KeyCode.CJK_SPACE -> DeleteSwipeReadout.cursorTravel = 0
@@ -1096,6 +1108,30 @@ private class TextKeyboardLayoutController(
         pointer.hasTriggeredGestureMove = false
     }
 
+    /**
+     * Ends a slide from 123: types the symbol-page key under the finger, then returns to the letters.
+     * The key is looked up on the board as it is now, because the finger may not have moved since the
+     * page switched and the pressed key still belongs to the letter page.
+     */
+    private fun finishMomentarySymbols(event: MotionEvent, pointer: TouchPointer) {
+        pointer.pressedKeyInfo?.cancelJobs()
+        pointer.pressedKeyInfo = null
+        pointer.activeKey?.let { activeKey ->
+            activeKey.isPressed = false
+            inputEventDispatcher.sendCancel(activeKey.computedDataOnDown)
+        }
+        popupUiController.hide()
+        pointer.activeKey = null
+        pointer.hasTriggeredGestureMove = false
+        val key = keyboard.getKeyForPos(event.getX(pointer.index), event.getY(pointer.index))
+        if (keyboard.mode == KeyboardMode.SYMBOLS && key != null && key.isEnabled &&
+            MomentarySymbols.types(key.computedData.code)
+        ) {
+            inputEventDispatcher.sendDownUp(key.computedData)
+        }
+        keyboardManager.activeState.keyboardMode = KeyboardMode.CHARACTERS
+    }
+
     private fun onTouchCancelInternal(event: MotionEvent, pointer: TouchPointer) {
         flogDebug(LogTopic.TEXT_KEYBOARD_VIEW) { "pointer=$pointer" }
         DeleteSwipeReadout.level = 0
@@ -1182,6 +1218,24 @@ private class TextKeyboardLayoutController(
 
     private fun handleDeleteSwipe(event: SwipeGesture.Event): Boolean {
         if (editorInstance.activeInfo.isRawInputEditor) return false
+
+        if (event.type == SwipeGesture.Type.TOUCH_MOVE) {
+            val pointer = pointerMap.findById(event.pointerId)
+            val isUndo = DeleteSwipeUndo.hasText && DeleteSwipeUndo.isUndoGesture(event.absUnitCountX, event.absUnitCountY)
+            if (pointer != null && isUndo != pointer.isDeleteUndoArmed) {
+                pointer.isDeleteUndoArmed = isUndo
+                inputFeedbackController?.gestureMovingSwipe(TextKeyData.DELETE)
+            }
+            if (isUndo) {
+                // Swiping up from Delete puts back the last swipe deletion; the gauge shows how much.
+                if (editorInstance.activeContent.selection.isSelectionMode) {
+                    editorInstance.setSelectionSurrounding(0, OperationUnit.CHARACTERS, OperationScope.BEFORE_CURSOR)
+                }
+                DeleteSwipeReadout.isForward = false
+                updateDeleteSwipeReadout(DeleteSwipeUndo.restoreLength)
+                return true
+            }
+        }
 
         return when (event.type) {
             SwipeGesture.Type.TOUCH_MOVE -> when (prefs.gestures.deleteKeySwipeLeft.get()) {
@@ -1280,6 +1334,15 @@ private class TextKeyboardLayoutController(
      */
     private fun commitSwipeDeletion(pointer: TouchPointer) {
         if (!pointer.hasTriggeredGestureMove) return
+        if (pointer.isDeleteUndoArmed) {
+            DeleteSwipeUndo.take()?.let { (text, wasForward) ->
+                val at = editorInstance.activeContent.selection.start
+                editorInstance.commitText(text)
+                // Text deleted forward came from after the cursor, so the cursor goes back in front of it.
+                if (wasForward && at >= 0) editorInstance.setSelection(at, at)
+            }
+            return
+        }
         // The drag cancelled Shift's press, which drops the shift state; put back what it was (caps lock
         // in particular) so a forward delete never changes the case of what comes next.
         if (pointer.isShiftForwardDelete) keyboardManager.activeState.inputShiftState = pointer.shiftStateOnDown
@@ -1287,7 +1350,9 @@ private class TextKeyboardLayoutController(
         if (!isDeleteSwipe) return
         val action = prefs.gestures.deleteKeySwipeLeft.get()
         if (action == SwipeAction.SELECT_CHARACTERS_PRECISELY || action == SwipeAction.SELECT_WORDS_PRECISELY) return
-        if (editorInstance.activeContent.selection.isSelectionMode) {
+        val content = editorInstance.activeContent
+        if (content.selection.isSelectionMode) {
+            DeleteSwipeUndo.remember(content.selectedText, isForward = pointer.isShiftForwardDelete)
             editorInstance.deleteBackwards(OperationUnit.CHARACTERS)
         }
     }
@@ -1489,6 +1554,10 @@ private class TextKeyboardLayoutController(
         var isShiftForwardDelete: Boolean = false
         /** The shift state before this touch went down, restored after a forward delete from Shift. */
         var shiftStateOnDown: InputShiftState = InputShiftState.UNSHIFTED
+        /** A swipe up from Delete that will restore the last swipe deletion on release. */
+        var isDeleteUndoArmed: Boolean = false
+        /** The touch slid off 123 and is peeking at the symbol page until it lifts. */
+        var isMomentarySymbols: Boolean = false
         var pressedKeyInfo: InputEventDispatcher.PressedKeyInfo? = null
         var downTimeMs: Long = 0L
 
@@ -1501,6 +1570,8 @@ private class TextKeyboardLayoutController(
             hasTriggeredMassSelection = false
             isShiftForwardDelete = false
             shiftStateOnDown = InputShiftState.UNSHIFTED
+            isDeleteUndoArmed = false
+            isMomentarySymbols = false
             pressedKeyInfo = null
             downTimeMs = 0L
         }

@@ -105,3 +105,27 @@ What this replaces: a horizontal slide from Shift onto Z used to type a capital.
 Slides that leave Shift upward still do, and so do slides in raw input editors
 (terminals), where a forward delete has no selection to grow. Holding Shift
 first and then moving keeps the long-press behaviour.
+
+Swiping up from Delete (at least four swipe units up, at most one sideways)
+puts back what the last Delete or Shift swipe deleted, once
+(`DeleteSwipeUndo`). While the undo is armed the spacebar gauge shows how many
+characters will come back. Only swipe deletions are remembered, and the memory
+is cleared when a new input field starts.
+
+## Enter long press
+
+Holding Enter opens its popup from the `~enter` entry of the default popup
+mapping. The main choice is `NEWLINE` (`-310`, ⏎), a line break that never
+fires the field's action, so a chat message can have a second line without
+sending. The others are Tab, Esc, the emoji panel, the clipboard and one-handed
+mode.
+
+## Momentary symbol layer
+
+Press 123 and slide off it: the board shows the symbol page while the finger
+stays down. Lifting on a key types it and the board returns to letters
+(`MomentarySymbols`, `TextKeyboardLayout.finishMomentarySymbols`). Lifting on a
+page switch just returns. The key is looked up at the lift position on the
+board as it is then, because the pressed key may still belong to the letter
+page if the finger has not moved since the switch. A plain tap on 123 still
+switches pages.
