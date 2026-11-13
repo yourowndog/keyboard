@@ -1008,7 +1008,7 @@ class KeyboardManager(
         }
         when (candidate) {
             is ClipboardSuggestionCandidate -> editorInstance.commitClipboardItem(candidate.clipboardItem)
-            is AddressChipCandidate -> editorInstance.commitText(candidate.insert)
+            is AddressChipCandidate -> editorInstance.commitAddressChip(candidate.insert)
             else -> editorInstance.commitCompletion(
                 candidate,
                 harvestRoute = harvestRoute,

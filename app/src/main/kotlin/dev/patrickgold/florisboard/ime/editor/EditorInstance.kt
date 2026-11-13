@@ -511,6 +511,28 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         }
     }
 
+    /**
+     * Types an address chip ([dev.patrickgold.florisboard.ime.nlp.AddressChipCandidate]) at the
+     * cursor. The insert continues the word being typed (`sam@gm` + `ail.com`), so it extends
+     * the pending word buffer and the whole address is logged once at the next boundary, instead
+     * of the suffix being logged as a word of its own. The key trace and the v4 slot text get
+     * the insert too: a chip is not a typo, and the trace may only diverge from the word on a
+     * mid-word correction.
+     */
+    fun commitAddressChip(insert: String): Boolean {
+        if (insert.isEmpty()) return false
+        phantomSpace.setInactive()
+        autoSpace.setInactive()
+        lastCommitAppendedSpace = false
+        return super.commitText(insert).also { committed ->
+            if (committed) {
+                currentWordBuffer.append(insert)
+                currentWordTrace.append(insert)
+                HarvestManager.recordTyped(insert)
+            }
+        }
+    }
+
     /** Commits text through a route that cannot be inferred from the resulting editor text. */
     fun commitTextFromRoute(text: String, route: String): Boolean {
         explicitHarvestRoute = route
