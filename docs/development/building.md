@@ -41,7 +41,13 @@ Relevant voice settings include:
 ```properties
 WHISPER_RELAY_URL=https://weakling.chronicle-procyon.ts.net/v1/whisper/transcriptions
 WHISPER_RELAY_TOKEN=...
+ARCHIVE_TOKEN=...
 ```
+
+`ARCHIVE_TOKEN` authenticates the voice archive (`:8790`) and the keylog archive
+(`:8791`) on Titan; its value is `/etc/voice-archive/token` there. A device build
+without it uploads nothing, and Gradle warns
+`ARCHIVE_TOKEN is not set`. Every sisyphus checkout has it as of 2026-11-13.
 
 The token authenticates only to the narrow relay and is expected to be
 extractable from a distributed APK. Never place an OpenAI provider credential

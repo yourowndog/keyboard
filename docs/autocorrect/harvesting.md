@@ -21,6 +21,9 @@ records. V4 keeps the complete touch/edit/offer/outcome journey in one record;
 v3 remains schema-compatible for the existing review tools. New readers prefer a
 v4 slot when its `slot` join key also appears on a v3 mirror row.
 
+The JSONL stream is relayed to Titan automatically and rebuilt into a
+validated training dataset; see [Keylog pipeline](keylog-pipeline.md).
+
 Repository copies live under `data/harvest/raw/`. Exact device captures first
 land in the ignored `data/harvest/inbox/`; capture never merges or line-deduplicates
 the canonical corpus. Operational commands are documented in

@@ -5,8 +5,9 @@
  * This helps a developer iterating on builds to capture their actual usage patterns
  * (accepted corrections, rejected corrections, new words) without losing data on reinstall.
  * 
- * Output: /sdcard/Documents/usage_harvest.md
- * Capture to repo: python3 tools/harvesting/snapshot_device.py --adb
+ * Output: /sdcard/Documents/usage_harvest.md (+ usage_harvest.jsonl via HarvestJsonl)
+ * The JSONL is relayed to Titan by HarvestShipper (docs/autocorrect/keylog-pipeline.md).
+ * Manual capture: python3 tools/harvesting/snapshot_device.py --adb
  */
 package dev.patrickgold.florisboard.ime.nlp
 

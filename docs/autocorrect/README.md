@@ -27,6 +27,8 @@ Read:
   authority.
 - [Phrase prediction](phrase-prediction.md) for the second smartbar row.
 - [Harvesting](harvesting.md) for feedback data and review boundaries.
+- [Keylog pipeline](keylog-pipeline.md) for the phone-to-Titan relay and the
+  training dataset builds.
 
 Phrase prediction is related but separate: it populates a second smartbar row
 after a word boundary and never auto-commits.

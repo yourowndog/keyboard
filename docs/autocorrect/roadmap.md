@@ -437,9 +437,9 @@ Recorded so these stop consuming attention:
 6. **Tuned constants.** Sam has accepted the existing hand-tuned scorer
    constants as a stopgap ("if I have to live with it, I'll live with it").
    They retire with Phase 4, not before.
-7. **Live relay.** Deferred to implementation judgement: schema first, relay
-   second, both inside Phase 0. Tailnet-only, no provider keys in
-   `BuildConfig`.
+7. **Live relay.** Built 2026-11-13: `HarvestShipper` relays the JSONL to
+   `keylog-archive.service` on Titan, which builds a validated dataset every
+   six hours. Tailnet-only, token-gated. See `keylog-pipeline.md`.
 8. **Coordinate-frame hardening owner.** Promoted to **Phase 0.0** and scoped
    as its own session --- it blocks 0.3. Source implementation and unit coverage
    were completed on 2026-09-11; expanded-row/non-medium-height device
