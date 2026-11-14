@@ -200,7 +200,18 @@ re-decides it, and the incognito key re-decides the open field immediately.
 
 Known gaps: the gates apply from the build that adds them. The voice archive
 (audio and transcript) is a separate path and does not consult these gates.
-Rows already on Titan are not touched by these gates.
+Rows already on Titan are not touched by these gates. Instead, every dataset
+build passes rows through `tools/keylog_archive/privacy.py`, which applies the
+same rules to whatever context a row carries and leaves matching rows out of
+every view (events, typing slots, words, corrections). Raw chunks are never
+modified. Legacy (pre-v4) rows record only the app, variation and flags, so a
+legacy row is also dropped when a v4 slot in the same session and field was
+sensitive, or when its field class is unknown and its text is a long digit
+string. `DATASET.json` reports `privacy.excluded_by_reason` and
+`unclassified_class_kept` (kept rows whose input class was never recorded).
+Quarantine keeps only the errors, type, length and hash of a bad line, never
+its text. `python3 build_dataset.py --privacy-report` counts what would be
+excluded without writing anything.
 
 The relay is tailnet-only and token-gated. Raw data and builds live only
 under `~/datasets/sam-keylog` on Titan and are never committed. This

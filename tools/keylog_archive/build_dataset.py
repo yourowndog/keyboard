@@ -15,6 +15,12 @@ Pipeline, in order:
    broken chunk; everything after it is excluded and reported.
 2. **Validation.** Each line is parsed and checked by ``schema.validate``.
    Failures go to ``quarantine.jsonl.gz`` with their reasons, never dropped.
+   Quarantine rows keep the errors, type, length and hash, never the line's text.
+2b. **Privacy.** ``privacy.exclusion_reason`` leaves out rows from sensitive
+   fields (terminals, passwords, email, number/phone fields, no-learning apps,
+   secret hints, and legacy rows from a field a v4 slot marked sensitive). A
+   first pass collects those fields. Excluded rows are counted by reason in the
+   card and written nowhere. Raw chunks are untouched.
 3. **Dedup.** Byte-identical lines are kept once across all streams (a copied
    snapshot and the live file overlap completely). Distinct lines that share a
    ``(stream, id)`` are kept and counted as id collisions.
@@ -38,6 +44,7 @@ zone the phone reported with the chunk when it sent one, otherwise the device zo
 
     python3 build_dataset.py                 # build + promote if gates pass
     python3 build_dataset.py --verify-only   # integrity check, no build
+    python3 build_dataset.py --privacy-report  # counts the privacy filter would exclude, read-only
 """
 
 from __future__ import annotations
@@ -57,6 +64,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import privacy  # noqa: E402
 import schema  # noqa: E402
 from keylog_store import KeylogStore, now_iso, sha256_hex  # noqa: E402
 
@@ -262,6 +270,27 @@ def verify_streams(store: KeylogStore) -> tuple[dict[str, list[dict]], list[dict
     return good, problems
 
 
+def sensitive_fields(store: KeylogStore, good: dict[str, list[dict]]) -> set:
+    """First pass: fields that a v4 WORD_SLOT shows to be sensitive."""
+    out: set = set()
+    for stream, chunks in sorted(good.items()):
+        for rec in chunks:
+            data = gzip.decompress((store.root / rec["path"]).read_bytes())
+            slots = []
+            for raw in io.BytesIO(data):
+                if b'"WORD_SLOT"' not in raw:
+                    continue
+                try:
+                    obj = json.loads(raw)
+                except (ValueError, UnicodeDecodeError):
+                    continue
+                # Malformed rows are left to the quarantine path of the main pass.
+                if isinstance(obj, dict) and not schema.validate(obj):
+                    slots.append(obj)
+            out |= privacy.sensitive_fields(stream, slots)
+    return out
+
+
 def git_rev() -> str | None:
     try:
         return subprocess.run(["git", "-C", str(Path(__file__).parent), "rev-parse", "--short", "HEAD"],
@@ -309,6 +338,10 @@ def build(store: KeylogStore, verify_only: bool = False, promote: bool = True) -
     tz_source: Counter = Counter()
     first_ts = last_ts = None
 
+    blocked_fields = sensitive_fields(store, good)
+    excluded: Counter = Counter()
+    unclassified_class = 0
+
     for stream, chunks in sorted(good.items()):
         for rec in chunks:
             data = gzip.decompress((store.root / rec["path"]).read_bytes())
@@ -333,9 +366,17 @@ def build(store: KeylogStore, verify_only: bool = False, promote: bool = True) -
                     errors.update(problems_)
                     writers["quarantine"].write({
                         "stream": stream, "chunk_offset": rec["offset"], "errors": problems_,
-                        "line": raw.decode("utf-8", "replace")[:20000],
+                        "type": obj.get("type") if isinstance(obj, dict) else None,
+                        "bytes": len(raw), "sha256": hashlib.sha256(raw).hexdigest(),
                     })
                     continue
+
+                reason = privacy.exclusion_reason(obj, stream, blocked_fields)
+                if reason:
+                    excluded[reason] += 1
+                    continue
+                if privacy.context(obj)["cls"] is None:
+                    unclassified_class += 1
 
                 ev_id = obj["id"]
                 if (stream, ev_id) in seen_ids:
@@ -437,6 +478,16 @@ def build(store: KeylogStore, verify_only: bool = False, promote: bool = True) -
             "corrections_reverted": sum(1 for r in corrections if r["uid"] in undone),
             "days": len(days),
         },
+        "privacy": {
+            "rules_version": privacy.RULES_VERSION,
+            "excluded_by_reason": dict(excluded.most_common()),
+            "excluded_total": sum(excluded.values()),
+            "sensitive_fields": len(blocked_fields),
+            # Kept rows whose input class was never recorded (pre-v4 legacy rows
+            # with no v4 slot in the same field): checked by app, variation, flags
+            # and digit shape only.
+            "unclassified_class_kept": unclassified_class,
+        },
         "validation_errors": dict(errors.most_common(50)),
         "time_range_local": [first_ts, last_ts],
         "timezone": {
@@ -481,13 +532,71 @@ def prune_builds(store: KeylogStore) -> None:
             shutil.rmtree(stale, ignore_errors=True)
 
 
+def privacy_report(store: KeylogStore) -> dict:
+    """Count what the privacy filter would exclude, by reason. Reads only; writes nothing.
+
+    The report holds counts and app names, never row contents.
+    """
+    good, problems = verify_streams(store)
+    blocked_fields = sensitive_fields(store, good)
+    excluded: Counter = Counter()
+    excluded_apps: Counter = Counter()
+    by_version_excluded: Counter = Counter()
+    kept = unclassified = unparsed = 0
+    seen: set[bytes] = set()
+    for stream, chunks in sorted(good.items()):
+        for rec in chunks:
+            data = gzip.decompress((store.root / rec["path"]).read_bytes())
+            for raw in io.BytesIO(data):
+                raw = raw.rstrip(b"\n")
+                if not raw:
+                    continue
+                key = hashlib.blake2b(raw, digest_size=16).digest()
+                if key in seen:
+                    continue
+                seen.add(key)
+                try:
+                    obj = json.loads(raw)
+                except (ValueError, UnicodeDecodeError):
+                    unparsed += 1
+                    continue
+                if not isinstance(obj, dict) or schema.validate(obj):
+                    unparsed += 1  # the build quarantines these
+                    continue
+                reason = privacy.exclusion_reason(obj, stream, blocked_fields)
+                if reason:
+                    excluded[reason] += 1
+                    excluded_apps[str(privacy.context(obj)["app"])] += 1
+                    by_version_excluded[str(obj.get("v"))] += 1
+                else:
+                    kept += 1
+                    unclassified += privacy.context(obj)["cls"] is None
+    return {
+        "rules_version": privacy.RULES_VERSION,
+        "integrity_ok": not problems,
+        "kept": kept,
+        "excluded_total": sum(excluded.values()),
+        "excluded_by_reason": dict(excluded.most_common()),
+        "excluded_by_version": dict(by_version_excluded.most_common()),
+        "excluded_top_apps": dict(excluded_apps.most_common(10)),
+        "sensitive_fields": len(blocked_fields),
+        "unclassified_class_kept": unclassified,
+        "invalid_lines": unparsed,
+    }
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--root", type=Path, default=None)
     ap.add_argument("--verify-only", action="store_true")
     ap.add_argument("--no-promote", action="store_true")
+    ap.add_argument("--privacy-report", action="store_true",
+                    help="count what the privacy filter excludes; read-only, writes nothing")
     args = ap.parse_args()
     store = KeylogStore(args.root)
+    if args.privacy_report:
+        print(json.dumps(privacy_report(store), indent=2))
+        return 0
     store.ensure_dirs()
     result = build(store, verify_only=args.verify_only, promote=not args.no_promote)
     if args.verify_only:
