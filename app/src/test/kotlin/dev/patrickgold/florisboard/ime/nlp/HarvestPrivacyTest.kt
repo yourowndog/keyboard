@@ -7,20 +7,20 @@ import kotlin.test.assertNull
 
 class HarvestPrivacyTest {
     private fun reason(
+        packageName: String = "com.example.chat",
         inputType: String = "text",
         inputVariation: String = "normal",
         noPersonalizedLearning: Boolean = false,
         incognito: Boolean = false,
         hint: String? = null,
         label: String? = null,
-    ) = HarvestPrivacy.blockReason(inputType, inputVariation, noPersonalizedLearning, incognito, hint, label)
+    ) = HarvestPrivacy.blockReason(packageName, inputType, inputVariation, noPersonalizedLearning, incognito, hint, label)
 
     @Test
     fun `ordinary prose fields are harvested`() {
         assertNull(reason(hint = "Message"))
         assertNull(reason(inputVariation = "web_edit_text", hint = "Ask anything"))
         assertNull(reason(inputVariation = "uri", hint = "Search or type URL"))
-        assertNull(reason(inputType = "null"))
         // Whole words only: these contain secret words as substrings.
         assertNull(reason(hint = "Type a message about shopping"))
         assertNull(reason(hint = "Compass notes"))
@@ -55,5 +55,32 @@ class HarvestPrivacyTest {
         )
         for (h in hints) assertEquals(Reason.SECRET_HINT, reason(hint = h), h)
         assertEquals(Reason.SECRET_HINT, reason(label = "Security code"))
+    }
+
+    @Test
+    fun `terminal apps are never recorded, whatever field they report`() {
+        // Termux's terminal view reports TYPE_NULL; its text-input drawer reports plain text.
+        assertEquals(Reason.TERMINAL, reason(packageName = "com.termux", inputType = "null"))
+        assertEquals(Reason.TERMINAL, reason(packageName = "com.termux", inputType = "text", hint = "Message"))
+        assertEquals(Reason.TERMINAL, reason(packageName = "org.connectbot"))
+        assertEquals(Reason.TERMINAL, reason(packageName = "com.sonelli.juicessh", inputType = "null"))
+        // A password prompt in the terminal looks exactly like a command line.
+        assertEquals(
+            reason(packageName = "com.termux", inputType = "null"),
+            reason(packageName = "com.termux", inputType = "null", hint = "Password:"),
+        )
+    }
+
+    @Test
+    fun `typeless fields in any app are treated as terminals`() {
+        assertEquals(Reason.TERMINAL, reason(packageName = "com.unknown.shell", inputType = "null"))
+        assertEquals(Reason.TERMINAL, reason(packageName = "com.unknown.shell", inputType = "null", incognito = false))
+    }
+
+    @Test
+    fun `terminal block does not leak into the next app`() {
+        assertEquals(Reason.TERMINAL, reason(packageName = "com.termux", inputType = "null"))
+        assertNull(reason(packageName = "com.openai.chatgpt", inputVariation = "web_edit_text", hint = "Ask anything"))
+        assertNull(reason(packageName = "com.google.android.apps.messaging", inputVariation = "short_message"))
     }
 }

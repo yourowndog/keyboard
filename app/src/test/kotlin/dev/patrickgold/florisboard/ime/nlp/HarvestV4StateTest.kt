@@ -256,6 +256,27 @@ class HarvestV4StateTest {
     }
 
     @Test
+    fun `leaving a blocked terminal for a chat app logs only the chat`() {
+        val rows = mutableListOf<Map<String, Any?>>()
+        val state = HarvestV4State(
+            emit = { _, _, _, fields -> rows += fields.toMap() },
+            clockMs = { 9_000L },
+            timestamp = { "t$it" },
+        )
+        state.attach(context(blocked = true), restarting = false, sessionId = "termux")
+        state.touch(HarvestTouch("s", "s", .5f, .5f, 0f, 0f, 1, 2, 30, "TAP"))
+        state.typed("s")
+        state.commit("s", HarvestRoute.TYPED_THROUGH)
+        state.attach(context(), restarting = false, sessionId = "chat")
+        state.touch(HarvestTouch("h", "h", .5f, .5f, 0f, 0f, 1, 2, 30, "TAP"))
+        state.typed("hi")
+        state.commit("hi", HarvestRoute.TYPED_THROUGH)
+        state.finish()
+        val finals = rows.map { (it.getValue("outcome") as Map<*, *>)["final"] }
+        assertEquals(listOf<Any?>("hi"), finals)
+    }
+
+    @Test
     fun `layout and editor metadata are stamped into every emitted slot`() {
         val rows = mutableListOf<Map<String, Any?>>()
         val state = HarvestV4State(
