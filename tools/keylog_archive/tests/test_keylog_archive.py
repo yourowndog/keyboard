@@ -16,6 +16,7 @@ HERE = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(HERE))
 
 import build_dataset  # noqa: E402
+import privacy  # noqa: E402
 import import_file  # noqa: E402
 import receiver  # noqa: E402
 import schema  # noqa: E402
@@ -43,17 +44,17 @@ def lines(objs) -> bytes:
 
 
 def sample_file() -> bytes:
-    objs = [{"v": 3, "id": 1, "ts": "2026-11-01T09:00:00.000", "sess": "abcd1234", "type": "WORD_COMMITTED",
+    objs = [{"v": 3, "id": 1, "ts": "2026-11-01T09:00:00.000", "sess": "abcd1234", "type": "WORD_COMMITTED", "app": "com.example",
              "word": "hello", "src": "TYPING"}]
     for i in range(2, 40):
         objs.append(slot(i, day="2026-11-0%d" % (1 + i % 5)))
-    objs.append({"v": 3, "id": 40, "ts": "2026-11-02T09:00:00.000", "sess": "abcd1234", "type": "AUTO_APPLIED",
+    objs.append({"v": 3, "id": 40, "ts": "2026-11-02T09:00:00.000", "sess": "abcd1234", "type": "AUTO_APPLIED", "app": "com.example",
                  "typed": "teh", "applied": "the", "candidates": [["the", 1.0], ["teh", 0.1]]})
-    objs.append({"v": 3, "id": 41, "ts": "2026-11-02T09:00:01.000", "sess": "abcd1234", "type": "REVERTED",
+    objs.append({"v": 3, "id": 41, "ts": "2026-11-02T09:00:01.000", "sess": "abcd1234", "type": "REVERTED", "app": "com.example",
                  "typed": "teh", "rejected": "the", "undoes": 40})
-    objs.append({"v": 3, "id": 43, "ts": "2026-11-02T09:00:03.000", "sess": "abcd1234", "type": "WORD_COMMITTED",
+    objs.append({"v": 3, "id": 43, "ts": "2026-11-02T09:00:03.000", "sess": "abcd1234", "type": "WORD_COMMITTED", "app": "com.example",
                  "word": "the", "src": "TYPING", "slot": "abcd1234:2"})
-    objs.append({"v": 3, "id": 42, "ts": "2026-11-02T09:00:02.000", "sess": "abcd1234", "type": "AUTO_APPLIED",
+    objs.append({"v": 3, "id": 42, "ts": "2026-11-02T09:00:02.000", "sess": "abcd1234", "type": "AUTO_APPLIED", "app": "com.example",
                  "typed": "recieve", "applied": "receive"})
     return lines(objs)
 
@@ -175,6 +176,140 @@ class ImportAndBuildTests(unittest.TestCase):
         self.assertEqual(card["counts"]["quarantined"], 2)
         q = [json.loads(l) for l in gzip.open(self.store.derived / "builds" / card["build_id"] / "quarantine.jsonl.gz", "rt")]
         self.assertEqual(len(q), 2)
+
+
+def ctx_slot(i: int, sess: str = "abcd1234", field: int = 7, **ctx) -> dict:
+    obj = slot(i)
+    obj["sess"] = sess
+    obj["ctx"] = {"app": "com.example", "fieldId": field, "inputType": "text", "inputVariation": "normal",
+                  "flags": "none", "hint": None, "label": None, **ctx}
+    return obj
+
+
+def legacy(i: int, sess: str = "abcd1234", field: int = 7, **fields) -> dict:
+    row = {"v": 3, "id": i, "ts": "2026-11-01T09:00:00.000", "sess": sess, "type": "WORD_COMMITTED",
+           "app": "com.example", "field": field, "inputType": "normal", "flags": "none", "word": "ok", "src": "TYPING"}
+    row.update(fields)
+    return row
+
+
+class PrivacyTests(unittest.TestCase):
+    """Fixture rows only: no real harvest content is used or printed."""
+
+    def reason(self, obj, blocked=frozenset()):
+        return privacy.exclusion_reason(obj, "s", blocked)
+
+    def test_ordinary_rows_are_kept(self):
+        self.assertIsNone(self.reason(ctx_slot(1)))
+        self.assertIsNone(self.reason(ctx_slot(2, inputVariation="uri", hint="Search or type URL")))
+        self.assertIsNone(self.reason(legacy(3)))
+        self.assertIsNone(self.reason(legacy(4, word="2026s")))
+
+    def test_v4_context_rules(self):
+        cases = {
+            "terminal": [ctx_slot(1, app="com.termux"), ctx_slot(2, inputType="null")],
+            "password": [ctx_slot(3, inputVariation="web_password"), ctx_slot(4, inputType="number", inputVariation="password")],
+            "email": [ctx_slot(5, inputVariation="email_address")],
+            "non_text": [ctx_slot(6, inputType="number"), ctx_slot(7, inputType="phone")],
+            "no_learning": [ctx_slot(8, flags="autoCorrect,noPersonalizedLearning")],
+            "secret_hint": [ctx_slot(9, hint="Enter OTP"), ctx_slot(10, label="Verification code")],
+        }
+        for want, rows in cases.items():
+            for row in rows:
+                self.assertEqual(self.reason(row), want, row["ctx"])
+
+    def test_legacy_rows_use_app_variation_and_flags(self):
+        self.assertEqual(self.reason(legacy(1, app="com.termux")), "terminal")
+        self.assertEqual(self.reason(legacy(2, inputType="password")), "password")
+        self.assertEqual(self.reason(legacy(3, inputType="web_email_address")), "email")
+        self.assertEqual(self.reason(legacy(4, flags="noPersonalizedLearning")), "no_learning")
+        no_app = legacy(5)
+        del no_app["app"]
+        self.assertEqual(self.reason(no_app), "no_context")
+
+    def test_legacy_rows_inherit_their_fields_v4_verdict(self):
+        rows = [ctx_slot(1, sess="s1", field=9, inputType="number"), legacy(2, sess="s1", field=9, word="ok")]
+        blocked = privacy.sensitive_fields("s", rows)
+        self.assertEqual(self.reason(rows[1], blocked), "same_field")
+        # Same field id in another session is a different field.
+        self.assertIsNone(self.reason(legacy(3, sess="s2", field=9), blocked))
+
+    def test_unknown_class_digit_strings_are_excluded(self):
+        self.assertEqual(self.reason(legacy(1, word="482913")), "otp_shaped")
+        self.assertEqual(self.reason(legacy(2, type="SESSION_TEXT", text="code is 482913 thanks")), "otp_shaped")
+        self.assertIsNone(self.reason(legacy(3, type="SESSION_TEXT", text="see you in 2026")))
+        # A v4 slot knows its class, so digits in a text field are kept.
+        self.assertIsNone(self.reason(ctx_slot(4)))
+
+    def test_rules_are_deterministic(self):
+        rows = [ctx_slot(i, inputType=t) for i, t in enumerate(["text", "number", "null", "text"])]
+        first = [self.reason(r) for r in rows]
+        self.assertEqual(first, [self.reason(r) for r in rows])
+
+
+class PrivacyBuildTests(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.store = KeylogStore(Path(self.tmp.name) / "store")
+        self.store.ensure_dirs()
+        rows = [slot(i) for i in range(1, 6)]
+        for r in rows:
+            r["ctx"] = {"app": "com.example", "fieldId": 1, "inputType": "text", "inputVariation": "normal"}
+        secret = ctx_slot(6, sess="bank", field=4, inputType="number")
+        rows += [
+            secret,
+            legacy(7, sess="bank", field=4, word="ok"),            # legacy row from the same number field
+            ctx_slot(8, sess="term", app="com.termux", inputType="null"),
+            legacy(9, sess="term", app="com.termux", type="SESSION_TEXT", text="ls"),
+            legacy(10, word="482913"),
+            legacy(11),
+        ]
+        self.src = Path(self.tmp.name) / "h.jsonl"
+        self.src.write_bytes(lines(rows))
+        import_file.import_file(self.src, self.store, 1 << 20, "test")
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def read(self, card, name):
+        path = self.store.derived / "builds" / card["build_id"] / name
+        return [json.loads(l) for l in gzip.open(path, "rt")]
+
+    def test_build_leaves_sensitive_rows_out_of_every_view(self):
+        card = build_dataset.build(self.store, promote=False)
+        ids = {r["id"] for r in self.read(card, "events.jsonl.gz")}
+        self.assertEqual(ids, {1, 2, 3, 4, 5, 11})
+        self.assertEqual(len(self.read(card, "typing_slots.jsonl.gz")), 5)
+        words = {r["uid"].split(":")[1] for r in self.read(card, "words.jsonl.gz")}
+        self.assertEqual(words, {"11"})
+        self.assertEqual(card["privacy"]["excluded_by_reason"],
+                         {"terminal": 2, "non_text": 1, "same_field": 1, "otp_shaped": 1})
+        self.assertEqual(card["privacy"]["unclassified_class_kept"], 1)
+        # Raw chunks are untouched.
+        self.assertEqual(self.store.manifest()[0]["sha256"], build_dataset.sha256_hex(self.src.read_bytes()))
+
+    def test_rebuild_is_idempotent(self):
+        a = build_dataset.build(self.store, promote=False)
+        b = build_dataset.build(self.store, promote=False)
+        self.assertEqual(a["privacy"], b["privacy"])
+        self.assertEqual(a["files"]["events.jsonl.gz"]["sha256"], b["files"]["events.jsonl.gz"]["sha256"])
+
+    def test_report_matches_build_and_writes_nothing(self):
+        before = sorted(p.name for p in (self.store.derived).iterdir())
+        report = build_dataset.privacy_report(self.store)
+        self.assertEqual(sorted(p.name for p in (self.store.derived).iterdir()), before)
+        card = build_dataset.build(self.store, promote=False)
+        self.assertEqual(report["excluded_by_reason"], card["privacy"]["excluded_by_reason"])
+        self.assertEqual(report["kept"], 6)
+
+    def test_quarantine_keeps_no_text(self):
+        p = Path(self.tmp.name) / "bad.jsonl"
+        p.write_bytes(b'{"v":3,"id":99,"ts":"x","type":"SESSION_TEXT","text":"hunter2"}\nnot json hunter2\n')
+        import_file.import_file(p, self.store, 1 << 20, "test")
+        card = build_dataset.build(self.store, promote=False)
+        q = self.read(card, "quarantine.jsonl.gz")
+        self.assertEqual(len(q), 2)
+        self.assertNotIn("hunter2", json.dumps(q))
 
 
 class SchemaTests(unittest.TestCase):
