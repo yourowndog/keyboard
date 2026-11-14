@@ -95,9 +95,16 @@ private val TYPING_CANDIDATES_WEIGHT =
     1f - SmartbarCommand.MENU.widthWeight - SmartbarCommand.VOICE.widthWeight - 2 * RULE_WEIGHT
 
 /**
+ * While the user types, EMOJI keeps its idle place and only MODE gives its room to the candidates.
+ * Hiding EMOJI took the emoji panel out of reach whenever a word or a prediction was showing, which
+ * is almost always once a field has text, and a tap aimed at it committed a suggestion instead.
+ */
+private val TYPING_ROW_CANDIDATES_WEIGHT = TYPING_CANDIDATES_WEIGHT - SmartbarCommand.EMOJI.widthWeight
+
+/**
  * The fixed MENU | EMOJI | MODE ... VOICE strip from the LCARS Jefferies reference. While the user
- * types (candidates or inline autofill present), [candidates] takes the middle and only MENU and
- * VOICE stay, so suggestions are never hidden behind commands. Voice mode is handled by the caller,
+ * types (candidates or inline autofill present), [candidates] take MODE's place and the free middle,
+ * and MENU, EMOJI and VOICE stay where they were. Voice mode is handled by the caller,
  * which shows the existing WhisperBar unchanged.
  *
  * Buttons are ordinary quick actions, so haptics, enabled state and VOICE's long press for voice
@@ -191,7 +198,8 @@ internal fun RowScope.SmartbarCommandStrip(
         }
         Rule(beside = SmartbarCommand.VOICE)
     } else if (isTyping) {
-        Box(modifier = Modifier.weight(TYPING_CANDIDATES_WEIGHT).fillMaxHeight()) {
+        Command(SmartbarCommand.EMOJI)
+        Box(modifier = Modifier.weight(TYPING_ROW_CANDIDATES_WEIGHT).fillMaxHeight()) {
             candidates()
         }
         Rule(beside = SmartbarCommand.VOICE)

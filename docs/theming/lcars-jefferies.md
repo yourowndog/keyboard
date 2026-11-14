@@ -230,8 +230,10 @@ not a theme setting, so pick it in Settings, Smartbar, Layout.
   `SmartbarCommandStrip.kt`), lilac like Ctrl's revealed plates and styled by
   `smartbar-action-key[code=-31,-32,-33,-35]`. A delete swipe's growing
   selection does not trigger it.
-- While there are suggestions or inline autofill, they take the middle between
-  the coral and cyan rules, and only MENU and VOICE stay.
+- While there are suggestions or inline autofill, they take TEXT/CODE's place
+  and the free middle up to the cyan rule. MENU, EMOJI and VOICE stay where they
+  are, so the emoji panel is reachable mid-sentence and a tap aimed at EMOJI
+  never lands on a suggestion.
 - Command widths are shares of the whole bar (MENU 14%, EMOJI and TEXT/CODE 15%,
   VOICE 14%); the free middle takes exactly what is left. Labels are single
   line, 14sp, tracked 1sp (`smartbar-action-key`).
