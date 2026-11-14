@@ -177,7 +177,25 @@ report is in the project's artifacts, not in the repository.
 
 ## Privacy
 
-Password and email fields are never harvested (see [Harvesting](harvesting.md)).
+`HarvestPrivacy.blockReason` decides, once per field, whether anything is
+written to the harvest. A blocked field writes nothing to `usage_harvest.md` or
+`usage_harvest.jsonl`, so the shipper never sends it and no dataset build sees it.
+Blocked fields (see [Harvesting](harvesting.md)):
+
+- password variations, including numeric passwords
+- email address fields
+- number, phone and date/time fields (PINs, one-time codes, card and phone numbers)
+- fields whose app sets `IME_FLAG_NO_PERSONALIZED_LEARNING` (incognito tabs,
+  temporary chats, many banking apps), and fields where the keyboard's own
+  incognito mode is forced on
+- text fields whose hint or label names a secret as a whole word (password,
+  passcode, PIN, OTP, one-time, verification/security code, CVV, card number,
+  API key, token and similar)
+
+Known gaps: Termux reports no field type, so a password typed at a shell
+prompt (`sudo`, `ssh`) is logged like any other Termux text. The gates apply
+from the build that adds them; data already on Titan is not filtered.
+
 The relay is tailnet-only and token-gated. Raw data and builds live only
 under `~/datasets/sam-keylog` on Titan and are never committed. This
 repository is public.
