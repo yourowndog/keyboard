@@ -238,6 +238,24 @@ class HarvestV4StateTest {
     }
 
     @Test
+    fun `re-attaching a field as blocked stops logging mid-field`() {
+        val rows = mutableListOf<Map<String, Any?>>()
+        val state = HarvestV4State(
+            emit = { _, _, _, fields -> rows += fields.toMap() },
+            clockMs = { 9_000L },
+            timestamp = { "t$it" },
+        )
+        state.attach(context(), restarting = false, sessionId = "sess")
+        // The incognito key re-attaches the same field as blocked.
+        state.attach(context(blocked = true), restarting = false, sessionId = "sess2")
+        state.touch(HarvestTouch("x", "x", .5f, .5f, 0f, 0f, 1, 2, 30, "TAP"))
+        state.typed("x")
+        state.commit("x", HarvestRoute.TYPED_THROUGH)
+        state.finish()
+        assertTrue(rows.isEmpty())
+    }
+
+    @Test
     fun `layout and editor metadata are stamped into every emitted slot`() {
         val rows = mutableListOf<Map<String, Any?>>()
         val state = HarvestV4State(

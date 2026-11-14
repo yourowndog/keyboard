@@ -1406,6 +1406,7 @@ class KeyboardManager(
         prefs.suggestion.forceIncognitoModeFromDynamic.set(!prefs.suggestion.forceIncognitoModeFromDynamic.get())
         val newState = !activeState.isIncognitoMode
         activeState.isIncognitoMode = newState
+        editorInstance.refreshHarvestPrivacy(incognito = newState)
         lastToastReference.get()?.cancel()
         lastToastReference = WeakReference(
             if (newState) {

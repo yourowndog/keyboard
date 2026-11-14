@@ -100,7 +100,7 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
      * Build AppContext from current EditorInfo for harvest logging.
      * Caches the result so it's only computed once per input session.
      */
-    private fun buildAppContext(): AppContext? {
+    private fun buildAppContext(incognitoOverride: Boolean? = null): AppContext? {
         cachedAppContext?.let { return it }
 
         val info = activeInfo
@@ -116,7 +116,7 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         }.joinToString(",").ifEmpty { "none" }
 
         val variation = info.inputAttributes.variation
-        val incognito = when (prefs.suggestion.incognitoMode.get()) {
+        val incognito = incognitoOverride ?: when (prefs.suggestion.incognitoMode.get()) {
             IncognitoMode.FORCE_OFF -> false
             IncognitoMode.FORCE_ON -> true
             IncognitoMode.DYNAMIC_ON_OFF -> prefs.suggestion.forceIncognitoModeFromDynamic.get()
@@ -146,6 +146,15 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         )
         cachedAppContext = ctx
         return ctx
+    }
+
+    /**
+     * Re-decides harvest privacy for the open field after the incognito key is toggled, so
+     * typing after the toggle is not logged (and logging resumes when it is turned off).
+     */
+    fun refreshHarvestPrivacy(incognito: Boolean) {
+        cachedAppContext = null
+        buildAppContext(incognitoOverride = incognito)?.let { HarvestManager.onInputAttached(it, restarting = false) }
     }
 
     override fun handleStartInputView(editorInfo: FlorisEditorInfo, isRestart: Boolean) {
