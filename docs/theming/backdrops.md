@@ -1,7 +1,7 @@
 # Keyboard backdrops
 
 > Status: Canonical (first pass: picker, built-ins, imports, private assets; not yet device-validated)
-> Last verified: 2026-11-12 against `ime/theme/backdrop/` and `TextInputLayout.kt`
+> Last verified: 2026-11-14 against `ime/theme/backdrop/` and `TextInputLayout.kt`
 
 A backdrop is an image or drawing behind the key field, chosen in
 **Settings → Theme → Keyboard backdrop** independently of the theme. Keys stay
@@ -58,11 +58,42 @@ field's rough proportions, grouped as Built in, each private-asset collection
 | Backdrop (opens a thumbnail gallery, one tap applies) | `theme__backdrop_id` | blank (none) |
 | Import image… | adds a `file:` backdrop and selects it | |
 | Backdrop strength | `theme__backdrop_opacity`, 0-100 | 60 |
+| Backdrop hue (inline slider, -180° to +180°, Reset) | `theme__backdrop_hue_shifts`, per backdrop | blank (original colours) |
 | Animate backdrop | `theme__backdrop_animate` | on |
 
 Animated GIF and WebP backdrops play through Coil's animated decoder when
 "Animate backdrop" is on, and show their first frame when it is off. Images are
 cropped to fill (`ContentScale.Crop`), centred.
+
+## Hue shift
+
+`BackdropHue` rotates an image backdrop's colours around the colour wheel so a
+GIF or still can be matched to, or set against, the theme. It is a 4x5 colour
+matrix (the luminance-preserving `hueRotate` from SVG/CSS) passed to
+`AsyncImage` as its `colorFilter`:
+
+- It is applied when each frame is drawn. For an animated backdrop the painter
+  calls `Drawable.setColorFilter` on Coil's `AnimatedImageDrawable`, so the GIF
+  is decoded once and moving the slider never decodes a frame again. The cost
+  is one colour-matrix pass per frame in the GPU draw, the same kind of work as
+  the existing alpha.
+- Only the backdrop layer is filtered. Keys, labels, plates, the command strip
+  and state indicators draw on top of it and keep the theme's colours, and the
+  stored file is never rewritten. Alpha and frame timing pass through
+  unchanged, and brightness is roughly kept, so contrast against the keys does
+  not move much.
+- Shifts are saved per backdrop as `id=degrees;…` in one string preference, so
+  each image keeps its own setting and switching back restores it. Zero removes
+  the entry. Built-in, code-drawn backdrops are already in the LCARS palette
+  and are not shifted.
+- While the slider is dragged, `BackdropHue.preview` (an in-memory flow; the
+  settings screen and the keyboard share a process) drives the keyboard at
+  frame rate. The preference is written once when the drag ends. Look docks the
+  live keyboard, so the animated result shows under the slider.
+
+The Android 11+ conditional in `FlorisImeService` is about the Snygg theme's own
+`background-image`, drawn through a `SurfaceView`. Backdrops do not use that
+path; they are ordinary Compose content inside the key field.
 
 ## Not there yet
 

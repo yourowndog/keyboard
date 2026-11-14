@@ -191,6 +191,11 @@
     <string name="pref__theme__backdrop__import_summary" comment="Summary of the backdrop import action">Pick a PNG, JPG, WebP or GIF to show behind the keys. It is copied into the keyboard\'s own storage.</string>
     <string name="pref__theme__backdrop__import_success" comment="Toast after a backdrop image was imported">Backdrop imported and selected</string>
     <string name="pref__theme__backdrop__opacity" comment="Label of the backdrop opacity slider">Backdrop strength</string>
+    <string name="pref__theme__backdrop__hue" comment="Label of the backdrop hue shift slider">Backdrop hue</string>
+    <string name="pref__theme__backdrop__hue_summary" comment="Summary of the backdrop hue shift slider">Turns the image\'s colours around the colour wheel. Keys and labels keep their colours; the file is not changed. Saved for this backdrop.</string>
+    <string name="pref__theme__backdrop__hue_unsupported" comment="Summary of the backdrop hue slider when no image backdrop is selected">Pick an image or GIF backdrop to shift its colours.</string>
+    <string name="pref__theme__backdrop__hue_original" comment="Value shown when the backdrop hue shift is zero">Original</string>
+    <string name="pref__theme__backdrop__hue_reset" comment="Button that resets the backdrop hue shift to zero">Reset</string>
     <string name="pref__theme__backdrop__animate" comment="Label of the switch that plays animated backdrops">Animate backdrop</string>
     <string name="pref__theme__backdrop__animate_summary" comment="Summary of the animate backdrop switch">Play animated GIF and WebP backdrops. Off shows the first frame.</string>
     <string name="pref__theme__key_skin__group" comment="Title of the key skin group in Theme">Key skin</string>
