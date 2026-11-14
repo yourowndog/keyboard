@@ -44,6 +44,8 @@ object SettingsSearchIndex {
             listOf("day", "night", "sunrise", "sunset", "auto")),
         SettingsSearchEntry(R.string.pref__theme__backdrop__label, R.string.settings__look__title, Routes.Settings.Theme,
             listOf("background", "wallpaper", "gif", "animation", "image")),
+        SettingsSearchEntry(R.string.pref__theme__backdrop__hue, R.string.settings__look__title, Routes.Settings.Theme,
+            listOf("hue", "tint", "recolour", "recolor", "colour shift", "color shift", "gif")),
         SettingsSearchEntry(R.string.pref__theme__window_background_opacity__label, R.string.settings__look__title,
             Routes.Settings.Theme, listOf("transparent", "opacity", "see through")),
         SettingsSearchEntry(R.string.pref__keyboard__font_size_multiplier__label, R.string.settings__look__title,

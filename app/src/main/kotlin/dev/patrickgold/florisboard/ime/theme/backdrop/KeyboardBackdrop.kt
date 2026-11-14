@@ -19,12 +19,15 @@ package dev.patrickgold.florisboard.ime.theme.backdrop
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -51,6 +54,8 @@ fun KeyboardBackdrop(modifier: Modifier = Modifier) {
     val rawId by prefs.theme.backdropId.observeAsState()
     val opacity by prefs.theme.backdropOpacity.observeAsState()
     val animate by prefs.theme.backdropAnimate.observeAsState()
+    val rawHueShifts by prefs.theme.backdropHueShifts.observeAsState()
+    val huePreview by BackdropHue.preview.collectAsState()
     val id = remember(rawId) { BackdropId.parse(rawId) }
     if (id == BackdropId.None || opacity <= 0) return
 
@@ -61,6 +66,15 @@ fun KeyboardBackdrop(modifier: Modifier = Modifier) {
             val context = LocalContext.current
             val store = remember(context) { BackdropStore(context) }
             val model = remember(id) { store.imageModel(id) } ?: return
+            // A slider drag in settings wins over the saved shift until it is saved.
+            val hueDegrees = huePreview?.takeIf { it.first == id.storedValue }?.second
+                ?: BackdropHue.shiftFor(rawHueShifts, id)
+            // Applied by the painter at draw time (Drawable.setColorFilter for animated images), so
+            // changing it never re-decodes the GIF; null keeps the plain, filter-free draw path.
+            val hueFilter = remember(hueDegrees) {
+                if (hueDegrees == 0) null
+                else ColorFilter.colorMatrix(ColorMatrix(BackdropHue.matrix(hueDegrees.toFloat())))
+            }
             Box(modifier.alpha(alpha)) {
                 AsyncImage(
                     model = remember(model, animate) {
@@ -81,6 +95,7 @@ fun KeyboardBackdrop(modifier: Modifier = Modifier) {
                     },
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
+                    colorFilter = hueFilter,
                     modifier = Modifier.matchParentSize(),
                 )
             }

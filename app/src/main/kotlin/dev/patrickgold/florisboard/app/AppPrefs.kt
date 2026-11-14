@@ -1082,6 +1082,15 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
             key = "theme__backdrop_animate",
             default = true,
         )
+        /**
+         * Hue shift per image backdrop, as `id=degrees` pairs; see
+         * [dev.patrickgold.florisboard.ime.theme.backdrop.BackdropHue]. Blank means every backdrop
+         * shows its original colours.
+         */
+        val backdropHueShifts = string(
+            key = "theme__backdrop_hue_shifts",
+            default = "",
+        )
 
         /**
          * The key skin: textures that replace the theme's key surfaces, one per key slot. Stored

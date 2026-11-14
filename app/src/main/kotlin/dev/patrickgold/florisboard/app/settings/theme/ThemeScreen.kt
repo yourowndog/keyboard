@@ -272,6 +272,7 @@ private fun PreferenceUiScope<FlorisPreferenceModel>.KeyboardBackdropGroup() {
             stepIncrement = 5,
             enabledIf = { prefs.theme.backdropId isNotEqualTo "" },
         )
+        BackdropHueControl(selectedId)
         SwitchPreference(
             prefs.theme.backdropAnimate,
             icon = Icons.Default.Animation,
