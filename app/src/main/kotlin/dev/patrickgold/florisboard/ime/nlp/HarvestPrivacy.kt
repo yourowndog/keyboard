@@ -11,7 +11,7 @@ package dev.patrickgold.florisboard.ime.nlp
  */
 object HarvestPrivacy {
     /** Why a field was blocked; null means the field may be harvested. */
-    enum class Reason { PASSWORD, EMAIL, NON_TEXT, NO_PERSONALIZED_LEARNING, INCOGNITO, SECRET_HINT }
+    enum class Reason { TERMINAL, PASSWORD, EMAIL, NON_TEXT, NO_PERSONALIZED_LEARNING, INCOGNITO, SECRET_HINT }
 
     // Words that mark a credential, one-time code or payment field when the app forgets the
     // password input type. Matched as whole words in the field's hint or label.
@@ -23,6 +23,24 @@ object HarvestPrivacy {
     )
 
     /**
+     * Terminal and SSH apps. A shell prompt never tells the keyboard it is asking for a
+     * password (sudo, ssh, gpg, an OTP), so everything typed in these apps is treated as secret,
+     * including their own text-input drawers that do report a text field.
+     */
+    val TERMINAL_PACKAGES = setOf(
+        "com.termux",
+        "com.termux.x11",
+        "jackpal.androidterm",
+        "yarolegovich.materialterminal",
+        "org.connectbot",
+        "com.sonelli.juicessh",
+        "com.server.auditor.ssh.client",
+        "com.offsec.nhterm",
+        "com.googlecode.android_scripting",
+    )
+
+    /**
+     * @param packageName the app that owns the field.
      * @param inputType lowercased [dev.patrickgold.florisboard.ime.editor.InputAttributes.Type] name.
      * @param inputVariation lowercased Variation name.
      * @param noPersonalizedLearning the app set IME_FLAG_NO_PERSONALIZED_LEARNING (incognito tabs,
@@ -30,6 +48,7 @@ object HarvestPrivacy {
      * @param incognito the keyboard's own incognito mode is on for this field.
      */
     fun blockReason(
+        packageName: String,
         inputType: String,
         inputVariation: String,
         noPersonalizedLearning: Boolean,
@@ -37,6 +56,10 @@ object HarvestPrivacy {
         hint: String?,
         label: String?,
     ): Reason? = when {
+        packageName in TERMINAL_PACKAGES -> Reason.TERMINAL
+        // TYPE_NULL is how terminal-style views (and anything that handles raw keys itself)
+        // describe their input: the keyboard cannot tell a prompt for a secret from a command.
+        inputType == "null" -> Reason.TERMINAL
         inputVariation in PASSWORD_VARIATIONS -> Reason.PASSWORD
         inputVariation in EMAIL_VARIATIONS -> Reason.EMAIL
         // PINs, one-time codes, card and phone numbers. Typing there teaches the models nothing.

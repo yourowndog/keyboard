@@ -122,6 +122,7 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
             IncognitoMode.DYNAMIC_ON_OFF -> prefs.suggestion.forceIncognitoModeFromDynamic.get()
         }
         val blockReason = HarvestPrivacy.blockReason(
+            packageName = pkg,
             inputType = info.inputAttributes.type.name.lowercase(),
             inputVariation = variation.name.lowercase(),
             noPersonalizedLearning = info.imeOptions.flagNoPersonalizedLearning,

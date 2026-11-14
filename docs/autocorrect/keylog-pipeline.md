@@ -182,6 +182,9 @@ written to the harvest. A blocked field writes nothing to `usage_harvest.md` or
 `usage_harvest.jsonl`, so the shipper never sends it and no dataset build sees it.
 Blocked fields (see [Harvesting](harvesting.md)):
 
+- terminal and SSH apps (Termux, ConnectBot, JuiceSSH, Termius and similar),
+  every field they show, plus any field that reports `TYPE_NULL`. A shell
+  prompt never says it wants a password, so terminal typing is not recorded at all
 - password variations, including numeric passwords
 - email address fields
 - number, phone and date/time fields (PINs, one-time codes, card and phone numbers)
@@ -192,9 +195,12 @@ Blocked fields (see [Harvesting](harvesting.md)):
   passcode, PIN, OTP, one-time, verification/security code, CVV, card number,
   API key, token and similar)
 
-Known gaps: Termux reports no field type, so a password typed at a shell
-prompt (`sudo`, `ssh`) is logged like any other Termux text. The gates apply
-from the build that adds them; data already on Titan is not filtered.
+The decision is made each time a field opens, so moving to another app or field
+re-decides it, and the incognito key re-decides the open field immediately.
+
+Known gaps: the gates apply from the build that adds them. The voice archive
+(audio and transcript) is a separate path and does not consult these gates.
+Rows already on Titan are not touched by these gates.
 
 The relay is tailnet-only and token-gated. Raw data and builds live only
 under `~/datasets/sam-keylog` on Titan and are never committed. This
