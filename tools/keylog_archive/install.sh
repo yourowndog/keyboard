@@ -7,7 +7,7 @@ SRC="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DEST=/opt/keylog-archive
 install -d -m 755 "$DEST"
 changed=0
-for f in keylog_store.py receiver.py schema.py build_dataset.py import_file.py client.py analyze.py; do
+for f in keylog_store.py receiver.py schema.py privacy.py build_dataset.py import_file.py client.py analyze.py; do
     if ! cmp -s "$SRC/$f" "$DEST/$f"; then
         install -m 755 "$SRC/$f" "$DEST/$f"
         changed=1

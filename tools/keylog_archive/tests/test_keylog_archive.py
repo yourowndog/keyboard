@@ -302,6 +302,19 @@ class PrivacyBuildTests(unittest.TestCase):
         self.assertEqual(report["excluded_by_reason"], card["privacy"]["excluded_by_reason"])
         self.assertEqual(report["kept"], 6)
 
+    def test_malformed_sensitive_slot_is_quarantined_not_fatal(self):
+        bad = ctx_slot(50, sess="bank", field=4, inputType="number")
+        bad["sess"] = []
+        p = Path(self.tmp.name) / "malformed.jsonl"
+        p.write_bytes(lines([bad]))
+        import_file.import_file(p, self.store, 1 << 20, "test")
+        card = build_dataset.build(self.store, promote=False)
+        self.assertEqual(card["counts"]["quarantined"], 1)
+        self.assertIn("invalid_lines", build_dataset.privacy_report(self.store))
+
+    def test_installer_ships_privacy_module(self):
+        self.assertIn("privacy.py", (HERE / "install.sh").read_text())
+
     def test_quarantine_keeps_no_text(self):
         p = Path(self.tmp.name) / "bad.jsonl"
         p.write_bytes(b'{"v":3,"id":99,"ts":"x","type":"SESSION_TEXT","text":"hunter2"}\nnot json hunter2\n')

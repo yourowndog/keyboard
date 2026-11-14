@@ -281,10 +281,13 @@ def sensitive_fields(store: KeylogStore, good: dict[str, list[dict]]) -> set:
                 if b'"WORD_SLOT"' not in raw:
                     continue
                 try:
-                    slots.append(json.loads(raw))
+                    obj = json.loads(raw)
                 except (ValueError, UnicodeDecodeError):
                     continue
-            out |= privacy.sensitive_fields(stream, (o for o in slots if isinstance(o, dict)))
+                # Malformed rows are left to the quarantine path of the main pass.
+                if isinstance(obj, dict) and not schema.validate(obj):
+                    slots.append(obj)
+            out |= privacy.sensitive_fields(stream, slots)
     return out
 
 
@@ -557,8 +560,8 @@ def privacy_report(store: KeylogStore) -> dict:
                 except (ValueError, UnicodeDecodeError):
                     unparsed += 1
                     continue
-                if not isinstance(obj, dict):
-                    unparsed += 1
+                if not isinstance(obj, dict) or schema.validate(obj):
+                    unparsed += 1  # the build quarantines these
                     continue
                 reason = privacy.exclusion_reason(obj, stream, blocked_fields)
                 if reason:
@@ -578,7 +581,7 @@ def privacy_report(store: KeylogStore) -> dict:
         "excluded_top_apps": dict(excluded_apps.most_common(10)),
         "sensitive_fields": len(blocked_fields),
         "unclassified_class_kept": unclassified,
-        "unparsed_lines": unparsed,
+        "invalid_lines": unparsed,
     }
 
 

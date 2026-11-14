@@ -89,9 +89,10 @@ def context(obj: dict) -> dict:
 
 def field_key(stream: str, obj: dict) -> tuple | None:
     ctx = context(obj)
-    if ctx["field"] is None or obj.get("sess") is None:
+    sess, field = obj.get("sess"), ctx["field"]
+    if not isinstance(sess, str) or not isinstance(field, (int, str)) or isinstance(field, bool):
         return None
-    return (stream, obj["sess"], ctx["field"])
+    return (stream, sess, field)
 
 
 def context_reason(ctx: dict) -> str | None:
