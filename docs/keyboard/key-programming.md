@@ -89,6 +89,14 @@ non-Tmux key is released or the input session ends. That latch does not pretend
 that the keyboard can observe tmux's external state or prove that the target
 application handled the event.
 
+The « and » keys (`MOVE_START_OF_LINE` `-27`, `MOVE_END_OF_LINE` `-28`) send
+Ctrl+Home and Ctrl+End in ordinary text fields, which Android reads as start and
+end of the whole field. In a raw-input editor (a terminal; Termux reports a null
+input type) they send plain Home and End instead (`LineJump.kt`): Termux turns
+Ctrl+Home into `ESC[1;5H`, which bash, zsh and readline leave unbound, while
+plain Home and End become `ESC[H` and `ESC[F`, start and end of line. A latched
+Ctrl still goes out with the key in both cases.
+
 ## Shift and Delete gestures
 
 Delete's swipe left selects text before the cursor as the finger travels and

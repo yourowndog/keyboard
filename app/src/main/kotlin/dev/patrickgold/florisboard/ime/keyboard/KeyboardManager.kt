@@ -1103,14 +1103,14 @@ class KeyboardManager(
                     activeState.isManualSelectionModeStart = true
                     activeState.isManualSelectionModeEnd = false
                 }
-                sendDownUpKeyEvent(KeyEvent.KEYCODE_MOVE_HOME, meta(ctrl = true, shift = isShiftPressed), count)
+                sendDownUpKeyEvent(KeyEvent.KEYCODE_MOVE_HOME, meta(ctrl = LineJump.addsCtrl(activeInfo.isRawInputEditor), shift = isShiftPressed), count)
             }
             KeyCode.MOVE_END_OF_LINE -> {
                 if (!selection.isSelectionMode && activeState.isManualSelectionMode) {
                     activeState.isManualSelectionModeStart = false
                     activeState.isManualSelectionModeEnd = true
                 }
-                sendDownUpKeyEvent(KeyEvent.KEYCODE_MOVE_END, meta(ctrl = true, shift = isShiftPressed), count)
+                sendDownUpKeyEvent(KeyEvent.KEYCODE_MOVE_END, meta(ctrl = LineJump.addsCtrl(activeInfo.isRawInputEditor), shift = isShiftPressed), count)
             }
         }
     }
@@ -1697,8 +1697,10 @@ class KeyboardManager(
             KeyCode.VIEW_SYMBOLS2 -> activeState.keyboardMode = KeyboardMode.SYMBOLS2
             else -> {
                 if (activeState.imeUiMode == ImeUiMode.MEDIA) {
-                    nlpManager.getAutoCommitCandidate()?.let { commitCandidate(it) }
-                    editorInstance.commitText(data.asString(isForDisplay = false))
+                    // An emoji goes in right after the word as typed. Committing the auto-commit
+                    // candidate first replaced that word with the top suggestion and added a space
+                    // ("hello" then an emoji became "Hello " and the emoji).
+                    editorInstance.commitEmoji(data.asString(isForDisplay = false))
                     if (shouldConsumeCtrl) {
                         activeState.isCtrlPressed = false
                     }
