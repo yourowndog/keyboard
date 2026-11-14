@@ -46,6 +46,7 @@ import kotlinx.coroutines.runBlocking
 import org.florisboard.lib.android.showShortToastSync
 import dev.patrickgold.florisboard.ime.nlp.HarvestManager
 import dev.patrickgold.florisboard.ime.nlp.AppContext
+import dev.patrickgold.florisboard.ime.nlp.HarvestPrivacy
 import dev.patrickgold.florisboard.ime.nlp.HarvestRoute
 
 class EditorInstance(context: Context) : AbstractEditorInstance(context) {
@@ -99,7 +100,7 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
      * Build AppContext from current EditorInfo for harvest logging.
      * Caches the result so it's only computed once per input session.
      */
-    private fun buildAppContext(): AppContext? {
+    private fun buildAppContext(incognitoOverride: Boolean? = null): AppContext? {
         cachedAppContext?.let { return it }
 
         val info = activeInfo
@@ -115,8 +116,19 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         }.joinToString(",").ifEmpty { "none" }
 
         val variation = info.inputAttributes.variation
-        val isEmailEntry = variation == InputAttributes.Variation.EMAIL_ADDRESS ||
-            variation == InputAttributes.Variation.WEB_EMAIL_ADDRESS
+        val incognito = incognitoOverride ?: when (prefs.suggestion.incognitoMode.get()) {
+            IncognitoMode.FORCE_OFF -> false
+            IncognitoMode.FORCE_ON -> true
+            IncognitoMode.DYNAMIC_ON_OFF -> prefs.suggestion.forceIncognitoModeFromDynamic.get()
+        }
+        val blockReason = HarvestPrivacy.blockReason(
+            inputType = info.inputAttributes.type.name.lowercase(),
+            inputVariation = variation.name.lowercase(),
+            noPersonalizedLearning = info.imeOptions.flagNoPersonalizedLearning,
+            incognito = incognito,
+            hint = info.base.hintText?.toString(),
+            label = info.base.label?.toString(),
+        )
         val ctx = AppContext(
             packageName = pkg,
             fieldId = info.base.fieldId,
@@ -124,7 +136,7 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
             inputVariation = variation.name.lowercase(),
             flags = flags,
             isPassword = info.inputAttributes.isPassword,
-            isHarvestBlocked = info.inputAttributes.isPassword || isEmailEntry,
+            isHarvestBlocked = blockReason != null,
             imeOptions = "action${info.imeOptions.action.name.lowercase().replaceFirstChar { it.uppercase() }}",
             hint = info.base.hintText?.toString(),
             label = info.base.label?.toString(),
@@ -134,6 +146,15 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
         )
         cachedAppContext = ctx
         return ctx
+    }
+
+    /**
+     * Re-decides harvest privacy for the open field after the incognito key is toggled, so
+     * typing after the toggle is not logged (and logging resumes when it is turned off).
+     */
+    fun refreshHarvestPrivacy(incognito: Boolean) {
+        cachedAppContext = null
+        buildAppContext(incognitoOverride = incognito)?.let { HarvestManager.onInputAttached(it, restarting = false) }
     }
 
     override fun handleStartInputView(editorInfo: FlorisEditorInfo, isRestart: Boolean) {
