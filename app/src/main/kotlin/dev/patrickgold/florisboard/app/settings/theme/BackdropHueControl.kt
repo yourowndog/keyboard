@@ -95,7 +95,7 @@ internal fun BackdropHueControl(selectedId: BackdropId) {
             contentDescription = null,
             modifier = Modifier.padding(top = 4.dp).size(24.dp),
         )
-        Spacer(Modifier.width(32.dp))
+        Spacer(Modifier.width(16.dp))
         Column(Modifier.weight(1f)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
