@@ -512,6 +512,20 @@ class EditorInstance(context: Context) : AbstractEditorInstance(context) {
     }
 
     /**
+     * Commits an emoji from the media panel right after the word being typed, without applying a
+     * suggestion to that word. The emoji ends the word, so the word is flushed to the harvest
+     * session as typed first; otherwise the emoji would be logged ahead of it, or the words on
+     * either side of the emoji would run together in the session and the key trace.
+     */
+    fun commitEmoji(text: String): Boolean {
+        if (currentWordBuffer.isNotEmpty()) {
+            val (prevWord, prevPrevWord) = getContextWords(currentWordBuffer.toString())
+            flushCurrentWordToSession(buildAppContext(), prevWord, prevPrevWord, text)
+        }
+        return commitText(text)
+    }
+
+    /**
      * Types an address chip ([dev.patrickgold.florisboard.ime.nlp.AddressChipCandidate]) at the
      * cursor. The insert continues the word being typed (`sam@gm` + `ail.com`), so it extends
      * the pending word buffer and the whole address is logged once at the next boundary, instead

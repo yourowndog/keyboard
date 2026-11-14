@@ -1698,9 +1698,8 @@ class KeyboardManager(
                 if (activeState.imeUiMode == ImeUiMode.MEDIA) {
                     // An emoji goes in right after the word as typed. Committing the auto-commit
                     // candidate first replaced that word with the top suggestion and added a space
-                    // ("hello" then an emoji became "Hello " and the emoji);
-                    // commitText finishes the composing word as typed.
-                    editorInstance.commitText(data.asString(isForDisplay = false))
+                    // ("hello" then an emoji became "Hello " and the emoji).
+                    editorInstance.commitEmoji(data.asString(isForDisplay = false))
                     if (shouldConsumeCtrl) {
                         activeState.isCtrlPressed = false
                     }
