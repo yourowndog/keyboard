@@ -63,7 +63,8 @@ class BackdropHueTest {
         val shifted = apply(BackdropHue.matrix(180f), coral[0], coral[1], coral[2])
         // Coral turned half way round the wheel is a blue-green: red drops, blue rises.
         assertTrue(shifted[0] < coral[0] - 0.3f && shifted[2] > coral[2] + 0.2f, "got ${shifted.toList()}")
-        val back = apply(BackdropHue.matrix(-60f), *apply(BackdropHue.matrix(60f), 0.3f, 0.6f, 0.8f).take(3).toFloatArray())
+        val there = apply(BackdropHue.matrix(60f), 0.3f, 0.6f, 0.8f)
+        val back = apply(BackdropHue.matrix(-60f), there[0], there[1], there[2])
         assertClose(floatArrayOf(0.3f, 0.6f, 0.8f, 1f), back, tolerance = 0.02f)
     }
 
